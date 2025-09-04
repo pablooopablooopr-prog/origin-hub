@@ -1,12 +1,29 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import Header from "@/components/Header";
+import Hero from "@/components/Hero";
+import RegionalPacks from "@/components/RegionalPacks";
+import InteractiveMap from "@/components/InteractiveMap";
+import RoutesExplorer from "@/components/RoutesExplorer";
+import HumanRatings from "@/components/HumanRatings";
+import BusinessSection from "@/components/BusinessSection";
+import Testimonials from "@/components/Testimonials";
+import PurposeSponsors from "@/components/PurposeSponsors";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen">
+      <Header />
+      <main>
+        <Hero />
+        <RegionalPacks />
+        <InteractiveMap />
+        <RoutesExplorer />
+        <HumanRatings />
+        <BusinessSection />
+        <Testimonials />
+        <PurposeSponsors />
+      </main>
+      <Footer />
     </div>
   );
 };

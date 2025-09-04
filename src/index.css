@@ -8,89 +8,127 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* ORIGEN Design System - Earth tones, moss green, bone white */
+    --background: 35 20% 96%;  /* Bone white */
+    --foreground: 25 15% 20%;  /* Dark earth */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 35 25% 98%;
+    --card-foreground: 25 15% 20%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 35 25% 98%;
+    --popover-foreground: 25 15% 20%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Earth brown as primary */
+    --primary: 25 35% 35%;
+    --primary-foreground: 35 20% 96%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Moss green as secondary */
+    --secondary: 100 25% 45%;
+    --secondary-foreground: 35 20% 96%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted earth tones */
+    --muted: 30 15% 88%;
+    --muted-foreground: 25 12% 55%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Moss green accent */
+    --accent: 100 25% 45%;
+    --accent-foreground: 35 20% 96%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 35 20% 96%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 30 15% 85%;
+    --input: 30 15% 90%;
+    --ring: 25 35% 35%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Custom ORIGEN tokens */
+    --earth-light: 30 25% 75%;
+    --earth-medium: 25 30% 50%;
+    --earth-dark: 20 25% 30%;
+    --moss-light: 100 20% 70%;
+    --moss-medium: 100 25% 45%;
+    --moss-dark: 100 30% 25%;
+    --bone: 35 20% 96%;
+    --warm-white: 35 15% 98%;
+    
+    /* Gradients */
+    --gradient-earth: linear-gradient(135deg, hsl(30 25% 75%), hsl(25 30% 50%));
+    --gradient-moss: linear-gradient(135deg, hsl(100 20% 70%), hsl(100 25% 45%));
+    --gradient-warm: linear-gradient(180deg, hsl(35 15% 98%), hsl(35 20% 96%));
+    
+    /* Shadows with earth tones */
+    --shadow-earth: 0 4px 20px hsl(25 25% 30% / 0.15);
+    --shadow-moss: 0 4px 20px hsl(100 25% 45% / 0.15);
+    --shadow-soft: 0 2px 8px hsl(25 15% 20% / 0.08);
+    
+    /* Typography */
+    --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-gentle: all 0.2s ease-out;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 35 25% 98%;
+    --sidebar-foreground: 25 15% 20%;
+    --sidebar-primary: 25 35% 35%;
+    --sidebar-primary-foreground: 35 20% 96%;
+    --sidebar-accent: 30 15% 88%;
+    --sidebar-accent-foreground: 25 15% 20%;
+    --sidebar-border: 30 15% 85%;
+    --sidebar-ring: 100 25% 45%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark mode with warmer, earth tones */
+    --background: 25 15% 8%;
+    --foreground: 35 20% 90%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 25 15% 10%;
+    --card-foreground: 35 20% 90%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 25 15% 10%;
+    --popover-foreground: 35 20% 90%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 30 25% 75%;
+    --primary-foreground: 25 15% 8%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 100 20% 35%;
+    --secondary-foreground: 35 20% 90%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 25 12% 15%;
+    --muted-foreground: 30 15% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 100 20% 35%;
+    --accent-foreground: 35 20% 90%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 35 20% 90%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 25 12% 20%;
+    --input: 25 12% 18%;
+    --ring: 30 25% 75%;
+    
+    /* Dark mode custom tokens */
+    --earth-light: 30 20% 50%;
+    --earth-medium: 25 25% 35%;
+    --earth-dark: 20 20% 15%;
+    --moss-light: 100 15% 50%;
+    --moss-medium: 100 20% 35%;
+    --moss-dark: 100 25% 20%;
+    --bone: 35 15% 85%;
+    --warm-white: 35 10% 90%;
+    
+    --sidebar-background: 25 15% 10%;
+    --sidebar-foreground: 35 20% 90%;
+    --sidebar-primary: 30 25% 75%;
+    --sidebar-primary-foreground: 25 15% 8%;
+    --sidebar-accent: 25 12% 15%;
+    --sidebar-accent-foreground: 35 20% 90%;
+    --sidebar-border: 25 12% 20%;
+    --sidebar-ring: 100 20% 35%;
   }
 }
 
@@ -100,6 +138,61 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  
+  /* Ensō watermark utility */
+  .enso-watermark {
+    position: relative;
+  }
+  
+  .enso-watermark::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 200px;
+    background: url('/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png') no-repeat center;
+    background-size: contain;
+    opacity: 0.03;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  .enso-watermark > * {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Smooth animations */
+  .animate-gentle-bounce {
+    animation: gentle-bounce 2s ease-in-out infinite;
+  }
+  
+  @keyframes gentle-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  
+  /* Custom gradient backgrounds */
+  .bg-gradient-earth {
+    background: var(--gradient-earth);
+  }
+  
+  .bg-gradient-moss {
+    background: var(--gradient-moss);
+  }
+  
+  .bg-gradient-warm {
+    background: var(--gradient-warm);
   }
 }

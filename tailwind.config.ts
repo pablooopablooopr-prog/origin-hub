@@ -61,7 +61,38 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// ORIGEN custom colors
+				earth: {
+					light: 'hsl(var(--earth-light))',
+					medium: 'hsl(var(--earth-medium))',
+					dark: 'hsl(var(--earth-dark))'
+				},
+				moss: {
+					light: 'hsl(var(--moss-light))',
+					medium: 'hsl(var(--moss-medium))',
+					dark: 'hsl(var(--moss-dark))'
+				},
+				bone: 'hsl(var(--bone))',
+				'warm-white': 'hsl(var(--warm-white))'
+			},
+			fontFamily: {
+				heading: 'var(--font-heading)',
+				body: 'var(--font-body)'
+			},
+			boxShadow: {
+				'earth': 'var(--shadow-earth)',
+				'moss': 'var(--shadow-moss)',
+				'soft': 'var(--shadow-soft)'
+			},
+			backgroundImage: {
+				'gradient-earth': 'var(--gradient-earth)',
+				'gradient-moss': 'var(--gradient-moss)',
+				'gradient-warm': 'var(--gradient-warm)'
+			},
+			transitionTimingFunction: {
+				'smooth': 'var(--transition-smooth)',
+				'gentle': 'var(--transition-gentle)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
