@@ -1,24 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { MapPin, Menu, X } from "lucide-react";
 import { useState } from "react";
-
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  return (
-    <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
+  return <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
           {/* Logo simplificado */}
           <div className="flex items-center space-x-3">
             <h1 className="text-2xl font-bold tracking-tight text-primary flex items-center">
-              <span>ORIGEN</span>
-              <img 
-                src="/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png" 
-                alt="Ensō" 
-                className="w-6 h-6 object-contain mx-0 -ml-4"
-                style={{ backgroundColor: 'transparent' }}
-              />
+              
+              <img src="/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png" alt="Ensō" className="w-6 h-6 object-contain mx-0 -ml-4" style={{
+              backgroundColor: 'transparent'
+            }} />
               <span>RIGEN</span>
             </h1>
           </div>
@@ -51,17 +45,13 @@ const Header = () => {
           </div>
 
           {/* Menu mobile */}
-          <button
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
+          <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
         {/* Menu mobile desplegable */}
-        {isMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-border">
+        {isMenuOpen && <div className="md:hidden mt-4 pb-4 border-t border-border">
             <nav className="flex flex-col space-y-4 pt-4">
               <a href="#mapa" className="text-muted-foreground hover:text-primary transition-colors">
                 Mapa
@@ -85,11 +75,8 @@ const Header = () => {
                 </Button>
               </div>
             </nav>
-          </div>
-        )}
+          </div>}
       </div>
-    </header>
-  );
+    </header>;
 };
-
 export default Header;
