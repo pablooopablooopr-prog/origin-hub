@@ -5,45 +5,30 @@ import { MapPin, Package, ArrowRight } from "lucide-react";
 const RegionalPacks = () => {
   const packs = [
     {
-      region: "Andalucía",
-      description: "Aceites milenarios, jamones de bellota, quesos de cabra",
+      title: "Pack Tierra de León",
+      region: "León",
+      description: "Cecina artesana, botillo del Bierzo, queso de Valdeón",
+      products: ["Cecina artesana", "Botillo del Bierzo", "Queso de Valdeón", "Morcilla de León"],
       businesses: 45,
-      image: "🫒",
+      image: "🥩",
       highlighted: true
     },
     {
-      region: "Castilla y León",
-      description: "Legumbres ancestrales, embutidos tradicionales, miel de flores",
+      title: "Pack Granada Natural",
+      region: "Granada",
+      description: "Aceite Picual, jamón de Trevélez, miel de la Alpujarra",
+      products: ["Aceite Picual", "Jamón de Trevélez", "Miel de la Alpujarra", "Habas secas"],
       businesses: 32,
-      image: "🌾",
+      image: "🫒",
       highlighted: false
     },
     {
+      title: "Pack Galicia Auténtica",
       region: "Galicia",
-      description: "Mariscos frescos, panes artesanos, conservas del mar",
+      description: "Conservas artesanas, queso San Simón, licor de hierbas",
+      products: ["Conservas artesanas", "Queso San Simón", "Licor de hierbas", "Pan de centeno"],
       businesses: 28,
-      image: "🌊",
-      highlighted: false
-    },
-    {
-      region: "País Vasco",
-      description: "Txakoli natural, quesos de oveja, pescados del Cantábrico",
-      businesses: 23,
-      image: "🧀",
-      highlighted: true
-    },
-    {
-      region: "Cataluña",
-      description: "Vinos biodinámicos, frutas de huerta, aceites vírgenes",
-      businesses: 38,
-      image: "🍇",
-      highlighted: false
-    },
-    {
-      region: "Valencia",
-      description: "Arroces tradicionales, cítricos naturales, almendras crudas",
-      businesses: 26,
-      image: "🍊",
+      image: "🦪",
       highlighted: false
     }
   ];
@@ -63,31 +48,39 @@ const RegionalPacks = () => {
         </div>
 
         {/* Grid de packs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {packs.map((pack, index) => (
             <Card 
-              key={pack.region}
+              key={pack.title}
               className={`group hover:shadow-earth transition-all duration-300 hover:-translate-y-2 ${
                 pack.highlighted ? 'ring-2 ring-secondary/20 bg-gradient-moss/10' : ''
               }`}
             >
               <CardHeader className="text-center">
                 <div className="text-4xl mb-4">{pack.image}</div>
-                <CardTitle className="text-xl text-primary">{pack.region}</CardTitle>
+                <CardTitle className="text-xl text-primary">{pack.title}</CardTitle>
                 <CardDescription className="text-sm text-muted-foreground">
                   {pack.businesses} negocios locales
                 </CardDescription>
               </CardHeader>
               <CardContent className="text-center">
-                <p className="text-muted-foreground mb-6 leading-relaxed">
+                <p className="text-muted-foreground mb-4 leading-relaxed text-sm">
                   {pack.description}
                 </p>
+                <div className="mb-6">
+                  <p className="text-xs text-muted-foreground mb-2">Incluye:</p>
+                  <div className="grid grid-cols-2 gap-1 text-xs">
+                    {pack.products.slice(0, 4).map((product, idx) => (
+                      <div key={idx} className="text-muted-foreground">• {product}</div>
+                    ))}
+                  </div>
+                </div>
                 <Button 
                   variant={pack.highlighted ? "default" : "outline"} 
                   className="w-full group-hover:shadow-soft transition-all"
                 >
                   <Package className="w-4 h-4 mr-2" />
-                  Ver pack
+                  Ver más
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </CardContent>

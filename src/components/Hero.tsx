@@ -3,23 +3,22 @@ import { ArrowRight, Map, Building } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="min-h-screen bg-gradient-warm enso-watermark flex items-center justify-center relative overflow-hidden">
+    <section className="min-h-screen bg-gradient-warm enso-watermark flex items-center justify-center relative overflow-hidden pt-16">
       {/* Fondo sutil con textura */}
       <div className="absolute inset-0 bg-gradient-to-br from-earth-light/20 via-transparent to-moss-light/20"></div>
       
-      <div className="container mx-auto px-6 py-20 text-center relative z-10">
-        {/* Ensō principal más visible */}
-        <div className="w-32 h-32 mx-auto mb-8 opacity-20 animate-gentle-bounce">
-          <img 
-            src="/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png" 
-            alt="Ensō ORIGEN" 
-            className="w-full h-full object-contain"
-          />
-        </div>
-
-        {/* Título principal */}
-        <h1 className="text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight">
-          Vuelve al origen
+      <div className="container mx-auto px-6 py-12 text-center relative z-10">
+        {/* Título principal con Ensō integrado */}
+        <h1 className="text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight flex items-center justify-center flex-wrap gap-2">
+          <span>Vuelve al</span>
+          <span className="inline-flex items-center">
+            <img 
+              src="/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png" 
+              alt="Ensō" 
+              className="w-12 h-12 md:w-20 md:h-20 object-contain mx-1"
+            />
+            <span>rigen</span>
+          </span>
         </h1>
 
         {/* Subtítulo */}

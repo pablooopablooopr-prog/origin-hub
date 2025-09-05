@@ -6,18 +6,11 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="container mx-auto px-6 py-4">
+    <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
+      <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
-          {/* Logo con Ensō */}
+          {/* Logo simplificado */}
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 opacity-90">
-              <img 
-                src="/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png" 
-                alt="Ensō ORIGEN" 
-                className="w-full h-full object-contain"
-              />
-            </div>
             <h1 className="text-2xl font-bold tracking-tight text-primary">
               ORIGEN
             </h1>
@@ -34,8 +27,8 @@ const Header = () => {
             <a href="#rutas" className="text-muted-foreground hover:text-primary transition-colors">
               Rutas
             </a>
-            <a href="#empresas" className="text-muted-foreground hover:text-primary transition-colors">
-              Empresas
+            <a href="#contacto" className="text-muted-foreground hover:text-primary transition-colors">
+              Contacto
             </a>
           </nav>
 
@@ -72,8 +65,8 @@ const Header = () => {
               <a href="#rutas" className="text-muted-foreground hover:text-primary transition-colors">
                 Rutas
               </a>
-              <a href="#empresas" className="text-muted-foreground hover:text-primary transition-colors">
-                Empresas
+              <a href="#contacto" className="text-muted-foreground hover:text-primary transition-colors">
+                Contacto
               </a>
               <div className="flex flex-col space-y-2 pt-4">
                 <Button variant="outline" size="sm">

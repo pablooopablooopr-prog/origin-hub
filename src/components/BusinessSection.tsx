@@ -31,7 +31,7 @@ const BusinessSection = () => {
               <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
                 ¿Tienes un negocio con alma?
               </h2>
-              <p className="text-xl text-muted-foreground leading-relaxed mb-8">
+              <p className="text-xl text-foreground/90 leading-relaxed mb-8">
                 Forma parte de la comunidad que está salvando lo esencial. 
                 Visibilidad nacional, venta directa y comunidad real.
               </p>

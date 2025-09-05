@@ -38,7 +38,7 @@ const RoutesExplorer = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-warm enso-watermark" id="rutas">
+    <section className="py-20 bg-gradient-warm enso-watermark relative" id="rutas">
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">
@@ -54,8 +54,16 @@ const RoutesExplorer = () => {
         {/* Rutas destacadas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {routes.map((route, index) => (
-            <Card key={route.title} className="group hover:shadow-earth transition-all duration-300 hover:-translate-y-1">
-              <CardHeader className="text-center">
+            <Card key={route.title} className="group hover:shadow-earth transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+              {/* Imagen de fondo con transparencia */}
+              <div className="absolute inset-0 opacity-5">
+                <img 
+                  src="/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png" 
+                  alt="" 
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <CardHeader className="text-center relative z-10">
                 <div className="text-5xl mb-4">{route.image}</div>
                 <CardTitle className="text-xl text-primary mb-2">{route.title}</CardTitle>
                 <CardDescription className="text-muted-foreground">

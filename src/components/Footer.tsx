@@ -58,16 +58,16 @@ const Footer = () => {
             <h4 className="text-lg font-semibold">Información</h4>
             <nav className="flex flex-col space-y-3">
               <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                Sobre ORIGEN
+                Sobre Origen
               </a>
               <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Blog
               </a>
-              <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                Política de Privacidad
+              <a href="#contacto" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                Contacto
               </a>
               <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                Términos de Uso
+                Política de Privacidad
               </a>
             </nav>
           </div>
