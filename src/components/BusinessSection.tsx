@@ -86,55 +86,6 @@ const BusinessSection = () => {
             </div>
           </div>
 
-          {/* Testimonios visuales */}
-          <div className="space-y-6">
-            <Card className="bg-background/90 backdrop-blur-sm shadow-soft">
-              <CardContent className="p-6">
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-moss flex items-center justify-center text-white font-bold">
-                    MR
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-primary mb-2">María Rodríguez</h4>
-                    <p className="text-sm text-muted-foreground mb-2">Quesería Los Robles, Salamanca</p>
-                    <p className="text-muted-foreground italic text-sm leading-relaxed">
-                      "Desde que estamos en ORIGEN hemos triplicado nuestras ventas directas. 
-                      Los clientes valoran la autenticidad y nosotros no perdemos nuestra esencia."
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-background/90 backdrop-blur-sm shadow-soft">
-              <CardContent className="p-6">
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-earth flex items-center justify-center text-white font-bold">
-                    JL
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-primary mb-2">José Luis García</h4>
-                    <p className="text-sm text-muted-foreground mb-2">Conservas del Cantábrico, Santoña</p>
-                    <p className="text-muted-foreground italic text-sm leading-relaxed">
-                      "La plataforma nos ha conectado con gente que realmente entiende nuestro trabajo. 
-                      Las valoraciones humanas son mucho más valiosas que las estrellas."
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-moss/10 border-secondary/20 shadow-moss">
-              <CardContent className="p-6 text-center">
-                <div className="text-3xl mb-4">🌱</div>
-                <h4 className="font-semibold text-primary mb-2">Únete al movimiento</h4>
-                <p className="text-sm text-muted-foreground">
-                  Más de 500 negocios ya forman parte de la red ORIGEN. 
-                  Preservamos lo auténtico juntos.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
         </div>
       </div>
     </section>

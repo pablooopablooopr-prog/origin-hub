@@ -6,7 +6,7 @@ import RoutesExplorer from "@/components/RoutesExplorer";
 import HumanRatings from "@/components/HumanRatings";
 import BusinessSection from "@/components/BusinessSection";
 import Testimonials from "@/components/Testimonials";
-import PurposeSponsors from "@/components/PurposeSponsors";
+
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -15,13 +15,12 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
-        <RegionalPacks />
         <InteractiveMap />
+        <RegionalPacks />
         <RoutesExplorer />
-        <HumanRatings />
         <BusinessSection />
+        <HumanRatings />
         <Testimonials />
-        <PurposeSponsors />
       </main>
       <Footer />
     </div>

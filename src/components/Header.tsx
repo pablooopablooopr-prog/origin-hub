@@ -11,8 +11,15 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo simplificado */}
           <div className="flex items-center space-x-3">
-            <h1 className="text-2xl font-bold tracking-tight text-primary">
-              ORIGEN
+            <h1 className="text-2xl font-bold tracking-tight text-primary flex items-center">
+              <span>ORIGEN</span>
+              <img 
+                src="/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png" 
+                alt="Ensō" 
+                className="w-6 h-6 object-contain mx-0 -ml-4"
+                style={{ backgroundColor: 'transparent' }}
+              />
+              <span>RIGEN</span>
             </h1>
           </div>
 

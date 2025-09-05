@@ -8,14 +8,15 @@ const Footer = () => {
           {/* Logo y descripción */}
           <div className="space-y-6">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 opacity-90">
+              <h3 className="text-2xl font-bold flex items-center">
                 <img 
                   src="/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png" 
-                  alt="Ensō ORIGEN" 
-                  className="w-full h-full object-contain filter invert"
+                  alt="Ensō" 
+                  className="w-8 h-8 object-contain filter invert"
+                  style={{ backgroundColor: 'transparent' }}
                 />
-              </div>
-              <h3 className="text-2xl font-bold">ORIGEN</h3>
+                <span>RIGEN</span>
+              </h3>
             </div>
             <p className="text-primary-foreground/80 leading-relaxed">
               Conectando consumidores conscientes con negocios auténticos. 

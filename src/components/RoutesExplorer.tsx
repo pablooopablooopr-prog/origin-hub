@@ -42,8 +42,17 @@ const RoutesExplorer = () => {
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-            Explorador de Rutas ORIGEN
+          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6 flex items-center justify-center">
+            <span>Explorador de Rutas</span>
+            <span className="inline-flex items-center ml-2">
+              <img 
+                src="/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png" 
+                alt="Ensō" 
+                className="w-10 h-10 md:w-14 md:h-14 object-contain mx-0"
+                style={{ backgroundColor: 'transparent' }}
+              />
+              <span>RIGEN</span>
+            </span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
             Marca y comparte rutas visitando negocios locales. Sube valoraciones y reseñas 

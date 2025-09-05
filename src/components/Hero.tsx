@@ -9,13 +9,14 @@ const Hero = () => {
       
       <div className="container mx-auto px-6 py-12 text-center relative z-10">
         {/* Título principal con Ensō integrado */}
-        <h1 className="text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight flex items-center justify-center flex-wrap gap-2">
+        <h1 className="text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1">
           <span>Vuelve al</span>
           <span className="inline-flex items-center">
             <img 
               src="/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png" 
               alt="Ensō" 
-              className="w-12 h-12 md:w-20 md:h-20 object-contain mx-1"
+              className="w-12 h-12 md:w-20 md:h-20 object-contain mx-0"
+              style={{ backgroundColor: 'transparent' }}
             />
             <span>rigen</span>
           </span>
