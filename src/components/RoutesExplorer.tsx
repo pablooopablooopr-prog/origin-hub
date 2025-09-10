@@ -46,7 +46,7 @@ const RoutesExplorer = () => {
             <span>Explorador de Rutas</span>
             <span className="inline-flex items-center ml-2">
               <img 
-                src="/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png" 
+                src="/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png" 
                 alt="Ensō" 
                 className="w-10 h-10 md:w-14 md:h-14 object-contain mx-0"
                 style={{ backgroundColor: 'transparent' }}
@@ -67,7 +67,7 @@ const RoutesExplorer = () => {
               {/* Imagen de fondo con transparencia */}
               <div className="absolute inset-0 opacity-5">
                 <img 
-                  src="/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png" 
+                  src="/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png" 
                   alt="" 
                   className="w-full h-full object-contain"
                 />

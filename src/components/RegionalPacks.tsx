@@ -10,7 +10,7 @@ const RegionalPacks = () => {
       description: "Cecina artesana, botillo del Bierzo, queso de Valdeón",
       products: ["Cecina artesana", "Botillo del Bierzo", "Queso de Valdeón", "Morcilla de León"],
       businesses: 45,
-      image: "🥩",
+      image: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png",
       highlighted: true
     },
     {
@@ -19,7 +19,7 @@ const RegionalPacks = () => {
       description: "Aceite Picual, jamón de Trevélez, miel de la Alpujarra",
       products: ["Aceite Picual", "Jamón de Trevélez", "Miel de la Alpujarra", "Habas secas"],
       businesses: 32,
-      image: "🫒",
+      image: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png",
       highlighted: false
     },
     {
@@ -28,7 +28,7 @@ const RegionalPacks = () => {
       description: "Conservas artesanas, queso San Simón, licor de hierbas",
       products: ["Conservas artesanas", "Queso San Simón", "Licor de hierbas", "Pan de centeno"],
       businesses: 28,
-      image: "🦪",
+      image: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png",
       highlighted: false
     }
   ];
@@ -52,12 +52,19 @@ const RegionalPacks = () => {
           {packs.map((pack, index) => (
             <Card 
               key={pack.title}
-              className={`group hover:shadow-earth transition-all duration-300 hover:-translate-y-2 ${
+              className={`group hover:shadow-earth transition-all duration-300 hover:-translate-y-2 relative overflow-hidden ${
                 pack.highlighted ? 'ring-2 ring-secondary/20 bg-gradient-moss/10' : ''
               }`}
             >
-              <CardHeader className="text-center">
-                <div className="text-4xl mb-4">{pack.image}</div>
+              {/* Background image with transparency */}
+              <div className="absolute inset-0 opacity-10">
+                <img 
+                  src={pack.image} 
+                  alt={pack.region}
+                  className="w-full h-full object-cover grayscale"
+                />
+              </div>
+              <CardHeader className="text-center relative z-10">
                 <CardTitle className="text-xl text-primary">{pack.title}</CardTitle>
                 <CardDescription className="text-sm text-muted-foreground">
                   {pack.businesses} negocios locales

@@ -10,7 +10,7 @@ const Footer = () => {
             <div className="flex items-center space-x-3">
               <h3 className="text-2xl font-bold flex items-center">
                 <img 
-                  src="/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png" 
+                  src="/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png" 
                   alt="Ensō" 
                   className="w-8 h-8 object-contain filter invert"
                   style={{ backgroundColor: 'transparent' }}

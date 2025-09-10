@@ -10,7 +10,7 @@ const Header = () => {
           <div className="flex items-center space-x-3">
             <h1 className="text-2xl font-bold tracking-tight text-primary flex items-center">
               
-              <img src="/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png" alt="Ensō" className="w-6 h-6 object-contain mx-0 -ml-4" style={{
+              <img src="/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png" alt="Ensō" className="w-6 h-6 object-contain mx-0 -ml-4" style={{
               backgroundColor: 'transparent'
             }} />
               <span>RIGEN</span>
