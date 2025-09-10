@@ -1,4 +1,5 @@
 import { MapPin, Mail, Phone, Instagram, Facebook, Twitter } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -39,15 +40,15 @@ const Footer = () => {
           <div className="space-y-6">
             <h4 className="text-lg font-semibold">Explora</h4>
             <nav className="flex flex-col space-y-3">
-              <a href="#mapa" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+              <Link to="/mapa" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Mapa Interactivo
-              </a>
-              <a href="#packs" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+              </Link>
+              <Link to="/packs" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Packs Regionales
-              </a>
-              <a href="#rutas" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+              </Link>
+              <Link to="/rutas" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Rutas ORIGEN
-              </a>
+              </Link>
               <a href="#empresas" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Para Empresas
               </a>
@@ -64,9 +65,9 @@ const Footer = () => {
               <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Blog
               </a>
-              <a href="#contacto" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+              <Link to="/contacto" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Contacto
-              </a>
+              </Link>
               <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Política de Privacidad
               </a>

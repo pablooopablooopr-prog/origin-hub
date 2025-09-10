@@ -3,11 +3,11 @@ import { ArrowRight, Map, Building } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="min-h-screen bg-gradient-warm enso-watermark flex items-center justify-center relative overflow-hidden pt-4">
+    <section className="min-h-screen bg-gradient-warm enso-watermark flex items-center justify-center relative overflow-hidden pt-16">
       {/* Fondo sutil con textura */}
       <div className="absolute inset-0 bg-gradient-to-br from-earth-light/20 via-transparent to-moss-light/20"></div>
       
-      <div className="container mx-auto px-6 py-8 text-center relative z-10">
+      <div className="container mx-auto px-6 py-4 text-center relative z-10">
         {/* Título principal con Ensō integrado */}
         <h1 className="text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1">
           <span>Vuelve al</span>
@@ -52,7 +52,7 @@ const Hero = () => {
         </div>
 
         {/* Indicadores sutiles */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           <div className="space-y-2">
             <div className="text-2xl font-bold text-primary">500+</div>
             <p className="text-sm text-muted-foreground">Negocios locales</p>
