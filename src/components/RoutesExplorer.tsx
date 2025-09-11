@@ -12,7 +12,7 @@ const RoutesExplorer = () => {
       businesses: 3,
       rating: "Auténtico de verdad",
       participants: 24,
-      image: "🫒",
+      image: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png",
       difficulty: "Fácil"
     },
     {
@@ -22,7 +22,7 @@ const RoutesExplorer = () => {
       businesses: 5,
       rating: "Lo recomendaría a mi abuela",
       participants: 18,
-      image: "🧀",
+      image: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png",
       difficulty: "Moderada"
     },
     {
@@ -32,7 +32,7 @@ const RoutesExplorer = () => {
       businesses: 4,
       rating: "Un lugar para volver",
       participants: 31,
-      image: "🦪",
+      image: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png",
       difficulty: "Fácil"
     }
   ];
@@ -41,9 +41,9 @@ const RoutesExplorer = () => {
     <section className="py-20 bg-gradient-warm enso-watermark relative" id="rutas">
       <div className="container mx-auto px-6">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6 flex items-center justify-center">
-            <span>Explorador de Rutas</span>
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 flex items-center justify-center">
+            <span>Rutas</span>
             <span className="inline-flex items-center ml-2">
               <img 
                 src="/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png" 
@@ -54,7 +54,7 @@ const RoutesExplorer = () => {
               <span>RIGEN</span>
             </span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
             Marca y comparte rutas visitando negocios locales. Sube valoraciones y reseñas 
             de cada lugar que descubras en tu camino.
           </p>
@@ -73,7 +73,13 @@ const RoutesExplorer = () => {
                 />
               </div>
               <CardHeader className="text-center relative z-10">
-                <div className="text-5xl mb-4">{route.image}</div>
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full overflow-hidden bg-muted/20 flex items-center justify-center">
+                  <img 
+                    src={route.image} 
+                    alt={route.title}
+                    className="w-12 h-12 object-contain opacity-80"
+                  />
+                </div>
                 <CardTitle className="text-xl text-primary mb-2">{route.title}</CardTitle>
                 <CardDescription className="text-muted-foreground">
                   {route.description}

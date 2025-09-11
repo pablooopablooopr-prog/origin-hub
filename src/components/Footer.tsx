@@ -13,7 +13,7 @@ const Footer = () => {
                 <img 
                   src="/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png" 
                   alt="Ensō" 
-                  className="w-8 h-8 object-contain filter invert"
+                  className="w-8 h-8 object-contain brightness-0 invert"
                   style={{ backgroundColor: 'transparent' }}
                 />
                 <span>RIGEN</span>
