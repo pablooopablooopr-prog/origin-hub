@@ -38,48 +38,6 @@ const Testimonials = () => {
     location: "Santiago",
     avatar: "RM"
   }];
-
-  return (
-    <section className="py-20 bg-gradient-cool" id="testimonials">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-            Voces Auténticas
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Historias reales de personas que han redescubierto el sabor auténtico
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <Card key={index} className="relative overflow-hidden hover:shadow-earth transition-shadow">
-              <CardContent className="p-6">
-                <Quote className="w-8 h-8 text-secondary mb-4 opacity-50" />
-                <blockquote className="text-muted-foreground mb-6 leading-relaxed">
-                  {testimonial.quote}
-                </blockquote>
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                    <span className="text-sm font-semibold text-primary">
-                      {testimonial.avatar}
-                    </span>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-primary">
-                      {testimonial.author}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {testimonial.role} • {testimonial.location}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  return;
 };
 export default Testimonials;
