@@ -17,15 +17,8 @@ const InteractiveMap = () => {
   return (
     <section className="py-20 enso-watermark" id="mapa">
       <div className="container mx-auto px-6">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-            Mapa Interactivo de Empresas
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Encuentra negocios auténticos cerca de ti. Filtra por categoría, busca por ciudad 
-            o tipo de producto.
-          </p>
+        {/* Search and filters section */}
+        <div className="max-w-4xl mx-auto mb-16">
 
           {/* Barra de búsqueda y filtros */}
           <div className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-4 mb-8">
