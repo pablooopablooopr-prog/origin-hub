@@ -2,6 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Route, Star, Users, Clock, MapPin } from "lucide-react";
+import oliveOilBottle from "@/assets/olive-oil-bottle.png";
+import cheeseWheel from "@/assets/cheese-wheel.png";
+import seafoodDisplay from "@/assets/seafood-display.png";
 
 const RoutesExplorer = () => {
   const routes = [
@@ -12,7 +15,7 @@ const RoutesExplorer = () => {
       businesses: 3,
       rating: "Auténtico de verdad",
       participants: 24,
-      image: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png",
+      image: oliveOilBottle,
       difficulty: "Fácil"
     },
     {
@@ -22,7 +25,7 @@ const RoutesExplorer = () => {
       businesses: 5,
       rating: "Lo recomendaría a mi abuela",
       participants: 18,
-      image: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png",
+      image: cheeseWheel,
       difficulty: "Moderada"
     },
     {
@@ -32,7 +35,7 @@ const RoutesExplorer = () => {
       businesses: 4,
       rating: "Un lugar para volver",
       participants: 31,
-      image: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png",
+      image: seafoodDisplay,
       difficulty: "Fácil"
     }
   ];
@@ -40,7 +43,15 @@ const RoutesExplorer = () => {
   return (
     <section className="py-20 bg-gradient-warm enso-watermark relative" id="rutas">
       <div className="container mx-auto px-6">
-        {/* Content starts directly */}
+        {/* Título principal */}
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
+            Rutas ORIGEN
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Marca y comparte rutas visitando negocios locales. Sube valoraciones y reseñas de cada lugar que descubras en tu camino.
+          </p>
+        </div>
 
         {/* Rutas destacadas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
