@@ -20,34 +20,33 @@ const InteractiveMap = () => {
         {/* Barra de búsqueda y filtros */}
         <div className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-4 mb-8">
           <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-              <Input 
-                placeholder="Buscar por ciudad o producto..." 
-                className="pl-11 py-3"
-              />
-            </div>
-            <Button variant="outline" className="sm:w-auto">
-              <Filter className="w-4 h-4 mr-2" />
-              Filtros
-            </Button>
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+            <Input 
+              placeholder="Buscar por ciudad o producto..." 
+              className="pl-11 py-3"
+            />
           </div>
+          <Button variant="outline" className="sm:w-auto">
+            <Filter className="w-4 h-4 mr-2" />
+            Filtros
+          </Button>
+        </div>
 
-          {/* Categorías */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {categories.map((category) => {
-              const IconComponent = category.icon;
-              return (
-                <Badge 
-                  key={category.name}
-                  variant="secondary" 
-                  className="px-4 py-2 text-sm hover:shadow-soft transition-all cursor-pointer"
-                >
-                  <IconComponent className="w-4 h-4 mr-2" />
-                  {category.name} ({category.count})
-                </Badge>
-              );
-            })}
-          </div>
+        {/* Categorías */}
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
+          {categories.map((category) => {
+            const IconComponent = category.icon;
+            return (
+              <Badge 
+                key={category.name}
+                variant="secondary" 
+                className="px-4 py-2 text-sm hover:shadow-soft transition-all cursor-pointer"
+              >
+                <IconComponent className="w-4 h-4 mr-2" />
+                {category.name} ({category.count})
+              </Badge>
+            );
+          })}
         </div>
 
         {/* Mapa placeholder */}
