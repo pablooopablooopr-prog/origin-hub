@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Package, ArrowRight } from "lucide-react";
 
-const RegionalPacks = () => {
+const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
   const packs = [
     {
       title: "Pack Tierra de León",
@@ -36,15 +36,17 @@ const RegionalPacks = () => {
   return (
     <section className="py-20 bg-gradient-warm" id="packs">
       <div className="container mx-auto px-6">
-        {/* Título principal */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
-            Packs por Región
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Descubre lo mejor de cada territorio. Productos seleccionados de negocios cercanos que mantienen viva la tradición.
-          </p>
-        </div>
+        {/* Título principal - solo mostrar si showTitle es true */}
+        {showTitle && (
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
+              Packs por Región
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Descubre lo mejor de cada territorio. Productos seleccionados de negocios cercanos que mantienen viva la tradición.
+            </p>
+          </div>
+        )}
 
         {/* Grid de packs */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">

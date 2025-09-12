@@ -24,7 +24,7 @@ const Mapa = () => {
             </p>
           </div>
         </div>
-        <InteractiveMap />
+        <InteractiveMap showTitle={false} />
       </main>
       <Footer />
     </div>

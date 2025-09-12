@@ -17,14 +17,14 @@ const Rutas = () => {
                 className="w-10 h-10 md:w-12 md:h-12 object-contain"
                 style={{ backgroundColor: 'transparent' }}
               />
-              <span>rigen</span>
+              <span>RIGEN</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Itinerarios curados que conectan historia, tradición y productos auténticos.
+              Marca y comparte rutas visitando negocios locales. Sube valoraciones y reseñas de cada lugar que descubras en tu camino.
             </p>
           </div>
         </div>
-        <RoutesExplorer />
+        <RoutesExplorer showTitle={false} />
       </main>
       <Footer />
     </div>

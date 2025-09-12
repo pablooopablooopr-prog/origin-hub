@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Filter, MapPin, Beef, Milk, Wheat, Leaf, Shirt, Heart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-const InteractiveMap = () => {
+const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   const categories = [
     { name: "Carnes", icon: Beef, count: 89, color: "bg-primary" },
     { name: "Lácteos", icon: Milk, count: 67, color: "bg-secondary" },
@@ -17,15 +17,17 @@ const InteractiveMap = () => {
   return (
     <section className="py-20 enso-watermark" id="mapa">
       <div className="container mx-auto px-6">
-        {/* Título principal */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
-            Mapa Interactivo de Empresas
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Encuentra negocios auténticos cerca de ti. Filtra por categoría, busca por ciudad o tipo de producto.
-          </p>
-        </div>
+        {/* Título principal - solo mostrar si showTitle es true */}
+        {showTitle && (
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
+              Mapa Interactivo de Empresas
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Encuentra negocios auténticos cerca de ti. Filtra por categoría, busca por ciudad o tipo de producto.
+            </p>
+          </div>
+        )}
 
         {/* Search and filters section */}
         <div className="max-w-4xl mx-auto mb-16">

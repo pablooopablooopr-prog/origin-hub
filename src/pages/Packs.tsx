@@ -24,7 +24,7 @@ const Packs = () => {
             </p>
           </div>
         </div>
-        <RegionalPacks />
+        <RegionalPacks showTitle={false} />
       </main>
       <Footer />
     </div>

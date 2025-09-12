@@ -6,7 +6,7 @@ import oliveOilBottle from "@/assets/olive-oil-bottle.png";
 import cheeseWheel from "@/assets/cheese-wheel.png";
 import seafoodDisplay from "@/assets/seafood-display.png";
 
-const RoutesExplorer = () => {
+const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
   const routes = [
     {
       title: "Ruta del Aceite Andaluz",
@@ -43,15 +43,17 @@ const RoutesExplorer = () => {
   return (
     <section className="py-20 bg-gradient-warm enso-watermark relative" id="rutas">
       <div className="container mx-auto px-6">
-        {/* Título principal */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
-            Rutas ORIGEN
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Marca y comparte rutas visitando negocios locales. Sube valoraciones y reseñas de cada lugar que descubras en tu camino.
-          </p>
-        </div>
+        {/* Título principal - solo mostrar si showTitle es true */}
+        {showTitle && (
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
+              Rutas ORIGEN
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Marca y comparte rutas visitando negocios locales. Sube valoraciones y reseñas de cada lugar que descubras en tu camino.
+            </p>
+          </div>
+        )}
 
         {/* Rutas destacadas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
