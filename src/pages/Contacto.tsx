@@ -9,8 +9,8 @@ const Contacto = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="pt-2">
-        <div className="container mx-auto px-6 py-4">
+      <main className="pt-6">
+        <div className="container mx-auto px-6 py-6">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6 flex items-center justify-center gap-2">
               <span>Contacta con</span>

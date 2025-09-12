@@ -15,38 +15,49 @@ const InteractiveMap = () => {
   ];
 
   return (
-    <section className="py-12 enso-watermark" id="mapa">
+    <section className="py-20 enso-watermark" id="mapa">
       <div className="container mx-auto px-6">
-        {/* Barra de búsqueda y filtros */}
-        <div className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-            <Input 
-              placeholder="Buscar por ciudad o producto..." 
-              className="pl-11 py-3"
-            />
-          </div>
-          <Button variant="outline" className="sm:w-auto">
-            <Filter className="w-4 h-4 mr-2" />
-            Filtros
-          </Button>
-        </div>
+        {/* Header */}
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
+            Mapa Interactivo de Empresas
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            Encuentra negocios auténticos cerca de ti. Filtra por categoría, busca por ciudad 
+            o tipo de producto.
+          </p>
 
-        {/* Categorías */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
-          {categories.map((category) => {
-            const IconComponent = category.icon;
-            return (
-              <Badge 
-                key={category.name}
-                variant="secondary" 
-                className="px-4 py-2 text-sm hover:shadow-soft transition-all cursor-pointer"
-              >
-                <IconComponent className="w-4 h-4 mr-2" />
-                {category.name} ({category.count})
-              </Badge>
-            );
-          })}
+          {/* Barra de búsqueda y filtros */}
+          <div className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-4 mb-8">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+              <Input 
+                placeholder="Buscar por ciudad o producto..." 
+                className="pl-11 py-3"
+              />
+            </div>
+            <Button variant="outline" className="sm:w-auto">
+              <Filter className="w-4 h-4 mr-2" />
+              Filtros
+            </Button>
+          </div>
+
+          {/* Categorías */}
+          <div className="flex flex-wrap justify-center gap-3 mb-12">
+            {categories.map((category) => {
+              const IconComponent = category.icon;
+              return (
+                <Badge 
+                  key={category.name}
+                  variant="secondary" 
+                  className="px-4 py-2 text-sm hover:shadow-soft transition-all cursor-pointer"
+                >
+                  <IconComponent className="w-4 h-4 mr-2" />
+                  {category.name} ({category.count})
+                </Badge>
+              );
+            })}
+          </div>
         </div>
 
         {/* Mapa placeholder */}

@@ -38,8 +38,27 @@ const RoutesExplorer = () => {
   ];
 
   return (
-    <section className="py-12 bg-gradient-warm enso-watermark relative" id="rutas">
+    <section className="py-20 bg-gradient-warm enso-watermark relative" id="rutas">
       <div className="container mx-auto px-6">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 flex items-center justify-center">
+            <span>Rutas</span>
+            <span className="inline-flex items-center ml-2">
+              <img 
+                src="/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png" 
+                alt="Ensō" 
+                className="w-10 h-10 md:w-14 md:h-14 object-contain mx-0"
+                style={{ backgroundColor: 'transparent' }}
+              />
+              <span>RIGEN</span>
+            </span>
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
+            Marca y comparte rutas visitando negocios locales. Sube valoraciones y reseñas 
+            de cada lugar que descubras en tu camino.
+          </p>
+        </div>
 
         {/* Rutas destacadas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
