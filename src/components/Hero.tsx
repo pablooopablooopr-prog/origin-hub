@@ -13,8 +13,8 @@ const Hero = () => {
           <span>Vuelve al</span>
           <span className="inline-flex items-center">
             <img 
-              src="/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png" 
-              alt="Ensō" 
+              src="/lovable-uploads/new-enso-symbol.png" 
+              alt="Ensō"
               className="w-12 h-12 md:w-20 md:h-20 object-contain mx-0"
               style={{ backgroundColor: 'transparent' }}
             />

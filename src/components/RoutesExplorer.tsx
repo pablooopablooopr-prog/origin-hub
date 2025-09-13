@@ -62,8 +62,8 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
               {/* Imagen de fondo con transparencia */}
               <div className="absolute inset-0 opacity-5">
                 <img 
-                  src="/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png" 
-                  alt="" 
+                  src="/lovable-uploads/new-enso-symbol.png" 
+                  alt=""
                   className="w-full h-full object-contain"
                 />
               </div>
