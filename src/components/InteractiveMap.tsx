@@ -1,10 +1,17 @@
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter, MapPin, Beef, Milk, Wheat, Leaf, Shirt, Heart } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import MapboxMap from "./MapboxMap";
+import { businessesData, categories as categoriesData } from "@/data/businesses";
 
 const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+
   const categories = [
     { name: "Carnes", icon: Beef, count: 89, color: "bg-primary" },
     { name: "Lácteos", icon: Milk, count: 67, color: "bg-secondary" },
@@ -13,6 +20,39 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
     { name: "EcoModa", icon: Shirt, count: 34, color: "bg-accent" },
     { name: "Vida Natural", icon: Heart, count: 56, color: "bg-moss-dark" }
   ];
+
+  // Filter businesses based on search and category
+  const filteredBusinesses = useMemo(() => {
+    let filtered = businessesData;
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(business =>
+        business.name.toLowerCase().includes(query) ||
+        business.city.toLowerCase().includes(query) ||
+        business.province.toLowerCase().includes(query) ||
+        business.category.toLowerCase().includes(query) ||
+        business.description.toLowerCase().includes(query) ||
+        business.tags.some(tag => tag.toLowerCase().includes(query))
+      );
+    }
+
+    // Filter by category
+    if (selectedCategory) {
+      filtered = filtered.filter(business => business.category === selectedCategory);
+    }
+
+    return filtered;
+  }, [searchQuery, selectedCategory]);
+
+  const handleCategoryClick = (categoryName: string) => {
+    if (selectedCategory === categoryName) {
+      setSelectedCategory(null);
+    } else {
+      setSelectedCategory(categoryName);
+    }
+  };
 
   return (
     <section className="py-20 enso-watermark" id="mapa">
@@ -37,13 +77,19 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input 
-                placeholder="Buscar por ciudad o producto..." 
+                placeholder="Buscar por ciudad, producto o negocio..." 
                 className="pl-11 py-3"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <Button variant="outline" className="sm:w-auto">
+            <Button 
+              variant="outline" 
+              className="sm:w-auto"
+              onClick={() => setShowFilters(!showFilters)}
+            >
               <Filter className="w-4 h-4 mr-2" />
-              Filtros
+              Filtros {selectedCategory && "(1)"}
             </Button>
           </div>
 
@@ -51,11 +97,15 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             {categories.map((category) => {
               const IconComponent = category.icon;
+              const isSelected = selectedCategory === category.name;
               return (
                 <Badge 
                   key={category.name}
-                  variant="secondary" 
-                  className="px-4 py-2 text-sm hover:shadow-soft transition-all cursor-pointer"
+                  variant={isSelected ? "default" : "secondary"}
+                  className={`px-4 py-2 text-sm hover:shadow-soft transition-all cursor-pointer ${
+                    isSelected ? "shadow-md" : ""
+                  }`}
+                  onClick={() => handleCategoryClick(category.name)}
                 >
                   <IconComponent className="w-4 h-4 mr-2" />
                   {category.name} ({category.count})
@@ -63,50 +113,39 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
               );
             })}
           </div>
+
+          {/* Results counter */}
+          <div className="text-center mb-6">
+            <p className="text-sm text-muted-foreground">
+              Mostrando {filteredBusinesses.length} negocios
+              {searchQuery && ` para "${searchQuery}"`}
+              {selectedCategory && ` en la categoría "${selectedCategory}"`}
+            </p>
+            {(searchQuery || selectedCategory) && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedCategory(null);
+                }}
+                className="mt-2"
+              >
+                Limpiar filtros
+              </Button>
+            )}
+          </div>
         </div>
 
-        {/* Mapa placeholder */}
+        {/* Mapa interactivo */}
         <div className="relative">
           <Card className="overflow-hidden shadow-earth">
             <CardContent className="p-0">
-              {/* Placeholder del mapa */}
-              <div className="h-96 md:h-[500px] bg-gradient-to-br from-moss-light/20 to-earth-light/20 relative flex items-center justify-center">
-                {/* Puntos de ejemplo en el mapa */}
-                <div className="absolute top-1/4 left-1/3 w-4 h-4 bg-primary rounded-full animate-pulse shadow-lg"></div>
-                <div className="absolute top-1/2 right-1/4 w-4 h-4 bg-secondary rounded-full animate-pulse shadow-lg"></div>
-                <div className="absolute bottom-1/3 left-1/2 w-4 h-4 bg-moss-medium rounded-full animate-pulse shadow-lg"></div>
-                <div className="absolute top-1/3 right-1/3 w-4 h-4 bg-earth-medium rounded-full animate-pulse shadow-lg"></div>
-                
-                {/* Mensaje central */}
-                <div className="text-center bg-background/90 backdrop-blur-sm rounded-lg p-8 shadow-soft">
-                  <MapPin className="w-12 h-12 text-primary mx-auto mb-4" />
-                  <h3 className="text-2xl font-semibold text-primary mb-2">
-                    Mapa Interactivo
-                  </h3>
-                  <p className="text-muted-foreground mb-4">
-                    Explora más de 500 negocios auténticos en toda España
-                  </p>
-                  <Button className="shadow-earth">
-                    Activar mapa completo
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Info flotante de ejemplo */}
-          <Card className="absolute top-8 right-8 w-64 hidden lg:block shadow-moss">
-            <CardContent className="p-4">
-              <div className="flex items-start space-x-3">
-                <div className="w-3 h-3 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                <div>
-                  <h4 className="font-semibold text-sm text-primary">Granja Los Robles</h4>
-                  <p className="text-xs text-muted-foreground mb-2">Lácteos artesanos - Salamanca</p>
-                  <Badge variant="outline" className="text-xs">
-                    "Auténtico de verdad"
-                  </Badge>
-                </div>
-              </div>
+              <MapboxMap 
+                filteredBusinesses={filteredBusinesses}
+                searchQuery={searchQuery}
+                selectedCategory={selectedCategory}
+              />
             </CardContent>
           </Card>
         </div>
@@ -114,16 +153,16 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
         {/* Estadísticas del mapa */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-12">
           <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">500+</div>
+            <div className="text-3xl font-bold text-primary mb-2">{businessesData.length}</div>
             <p className="text-sm text-muted-foreground">Empresas verificadas</p>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-secondary mb-2">50</div>
+            <div className="text-3xl font-bold text-secondary mb-2">{new Set(businessesData.map(b => b.city)).size}</div>
             <p className="text-sm text-muted-foreground">Ciudades cubiertas</p>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-moss-medium mb-2">25k+</div>
-            <p className="text-sm text-muted-foreground">Productos disponibles</p>
+            <div className="text-3xl font-bold text-moss-medium mb-2">{filteredBusinesses.length}</div>
+            <p className="text-sm text-muted-foreground">Resultados actuales</p>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-earth-medium mb-2">98%</div>
