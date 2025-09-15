@@ -206,14 +206,89 @@ export const businessesData: Business[] = [
     coordinates: [-4.4203, 36.7213],
     rating: 4.3,
     tags: ["Eco-friendly", "Comercio justo", "Sostenible"]
+  },
+  
+  // Restaurantes
+  {
+    id: "16",
+    name: "Casa Lucio",
+    category: "Restaurantes",
+    description: "Restaurante tradicional madrileño desde 1974",
+    address: "Calle Cava Baja, 35",
+    city: "Madrid",
+    province: "Madrid",
+    coordinates: [-3.7087, 40.4102],
+    rating: 4.8,
+    tags: ["Cocido madrileño", "Huevos estrellados", "Tradicional"]
+  },
+  {
+    id: "17", 
+    name: "Cal Pep",
+    category: "Restaurantes",
+    description: "Tapas de autor en el corazón de Barcelona",
+    address: "Plaça de les Olles, 8",
+    city: "Barcelona",
+    province: "Barcelona", 
+    coordinates: [2.1833, 41.3833],
+    rating: 4.7,
+    tags: ["Tapas", "Pescado fresco", "Autor"]
+  },
+  {
+    id: "18",
+    name: "Casa Roberto",
+    category: "Restaurantes", 
+    description: "Paella valenciana auténtica con productos locales",
+    address: "Plaza de la Reina, 15",
+    city: "Valencia",
+    province: "Valencia",
+    coordinates: [-0.3759, 39.4750],
+    rating: 4.9,
+    tags: ["Paella", "Productos locales", "Auténtico"]
+  },
+  {
+    id: "19",
+    name: "Taberna del Alabardero",
+    category: "Restaurantes",
+    description: "Cocina andaluza contemporánea",
+    address: "Calle Zaragoza, 20",
+    city: "Sevilla", 
+    province: "Sevilla",
+    coordinates: [-5.9925, 37.3886],
+    rating: 4.6,
+    tags: ["Andaluza", "Contemporánea", "Tapas modernas"]
+  },
+  {
+    id: "20",
+    name: "Restaurante Zortziko",
+    category: "Restaurantes",
+    description: "Alta cocina vasca con estrella Michelin",
+    address: "Alameda de Mazarredo, 17",
+    city: "Bilbao",
+    province: "Vizcaya", 
+    coordinates: [-2.9312, 43.2681],
+    rating: 4.8,
+    tags: ["Estrella Michelin", "Cocina vasca", "Alta cocina"]
+  },
+  {
+    id: "21",
+    name: "Los Victorinos",
+    category: "Restaurantes",
+    description: "Asador aragonés especializado en ternasco",
+    address: "Calle José Antonio, 3",
+    city: "Zaragoza",
+    province: "Zaragoza",
+    coordinates: [-0.8788, 41.6520], 
+    rating: 4.5,
+    tags: ["Asador", "Ternasco", "Aragonés"]
   }
 ];
 
 export const categories = [
-  { name: "Carnes", icon: "Beef", count: 89, color: "bg-primary" },
-  { name: "Lácteos", icon: "Milk", count: 67, color: "bg-secondary" },
-  { name: "Fermentos", icon: "Wheat", count: 45, color: "bg-moss-medium" },
-  { name: "Herbolarios", icon: "Leaf", count: 78, color: "bg-earth-medium" },
-  { name: "EcoModa", icon: "Shirt", count: 34, color: "bg-accent" },
-  { name: "Vida Natural", icon: "Heart", count: 56, color: "bg-moss-dark" }
+  { name: "Restaurantes", icon: "UtensilsCrossed", count: 42, color: "bg-primary" },
+  { name: "Carnes", icon: "Beef", count: 89, color: "bg-secondary" },
+  { name: "Lácteos", icon: "Milk", count: 67, color: "bg-moss-medium" },
+  { name: "Fermentos", icon: "Wheat", count: 45, color: "bg-earth-medium" },
+  { name: "Herbolarios", icon: "Leaf", count: 78, color: "bg-accent" },
+  { name: "EcoModa", icon: "Shirt", count: 34, color: "bg-moss-dark" },
+  { name: "Vida Natural", icon: "Heart", count: 56, color: "bg-moss-light" }
 ];

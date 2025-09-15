@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, MapPin, Beef, Milk, Wheat, Leaf, Shirt, Heart } from "lucide-react";
+import { Search, Filter, MapPin, Beef, Milk, Wheat, Leaf, Shirt, Heart, UtensilsCrossed } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import MapboxMap from "./MapboxMap";
 import { businessesData, categories as categoriesData } from "@/data/businesses";
@@ -13,12 +13,13 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   const [showFilters, setShowFilters] = useState(false);
 
   const categories = [
-    { name: "Carnes", icon: Beef, count: 89, color: "bg-primary" },
-    { name: "Lácteos", icon: Milk, count: 67, color: "bg-secondary" },
-    { name: "Fermentos", icon: Wheat, count: 45, color: "bg-moss-medium" },
-    { name: "Herbolarios", icon: Leaf, count: 78, color: "bg-earth-medium" },
-    { name: "EcoModa", icon: Shirt, count: 34, color: "bg-accent" },
-    { name: "Vida Natural", icon: Heart, count: 56, color: "bg-moss-dark" }
+    { name: "Restaurantes", icon: UtensilsCrossed, count: 42, color: "bg-primary" },
+    { name: "Carnes", icon: Beef, count: 89, color: "bg-secondary" },
+    { name: "Lácteos", icon: Milk, count: 67, color: "bg-moss-medium" },
+    { name: "Fermentos", icon: Wheat, count: 45, color: "bg-earth-medium" },
+    { name: "Herbolarios", icon: Leaf, count: 78, color: "bg-accent" },
+    { name: "EcoModa", icon: Shirt, count: 34, color: "bg-moss-dark" },
+    { name: "Vida Natural", icon: Heart, count: 56, color: "bg-moss-light" }
   ];
 
   // Filter businesses based on search and category
