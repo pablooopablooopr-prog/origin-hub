@@ -28,8 +28,14 @@ const BusinessSection = () => {
           {/* Contenido principal */}
           <div className="space-y-8">
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-                ¿Tienes un negocio con alma?
+              <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6 flex items-center">
+                ¿Tienes un neg
+                <img 
+                  src="/lovable-uploads/final-enso-symbol.png" 
+                  alt="Ensō"
+                  className="w-8 h-8 md:w-10 md:h-10 object-contain mx-1"
+                />
+                cio con alma?
               </h2>
               <p className="text-xl text-foreground/90 leading-relaxed mb-8">
                 Forma parte de la comunidad que está salvando lo esencial. 
