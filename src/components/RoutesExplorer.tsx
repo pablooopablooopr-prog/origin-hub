@@ -2,43 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Route, Star, Users, Clock, MapPin } from "lucide-react";
-import oliveOilBottle from "@/assets/olive-oil-bottle.png";
-import cheeseWheel from "@/assets/cheese-wheel.png";
-import seafoodDisplay from "@/assets/seafood-display.png";
+import { routesData } from "@/data/routes";
+import { Link } from "react-router-dom";
 
 const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
-  const routes = [
-    {
-      title: "Ruta del Aceite Andaluz",
-      description: "3 almazaras tradicionales en Jaén",
-      duration: "1 día",
-      businesses: 3,
-      rating: "Auténtico de verdad",
-      participants: 24,
-      image: oliveOilBottle,
-      difficulty: "Fácil"
-    },
-    {
-      title: "Sabores de Castilla",
-      description: "Embutidos, quesos y legumbres ancestrales",
-      duration: "Weekend",
-      businesses: 5,
-      rating: "Lo recomendaría a mi abuela",
-      participants: 18,
-      image: cheeseWheel,
-      difficulty: "Moderada"
-    },
-    {
-      title: "Costa Gallega Auténtica",
-      description: "Conserveras artesanas y marisquerías locales",
-      duration: "2 días",
-      businesses: 4,
-      rating: "Un lugar para volver",
-      participants: 31,
-      image: seafoodDisplay,
-      difficulty: "Fácil"
-    }
-  ];
 
   return (
     <section className="py-20 bg-gradient-warm enso-watermark relative" id="rutas">
@@ -57,7 +24,7 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
 
         {/* Rutas destacadas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          {routes.map((route, index) => (
+          {routesData.map((route, index) => (
             <Card key={route.title} className="group hover:shadow-earth transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
               {/* Imagen de fondo con transparencia */}
               <div className="absolute inset-0 opacity-5">
@@ -112,10 +79,12 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
                   </p>
                 </div>
 
-                <Button className="w-full group-hover:shadow-soft transition-all">
-                  <Route className="w-4 h-4 mr-2" />
-                  Explorar ruta
-                </Button>
+                <Link to={`/rutas/${route.id}`}>
+                  <Button className="w-full group-hover:shadow-soft transition-all">
+                    <Route className="w-4 h-4 mr-2" />
+                    Explorar ruta
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           ))}

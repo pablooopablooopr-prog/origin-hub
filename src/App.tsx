@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Mapa from "./pages/Mapa";
 import Packs from "./pages/Packs";
 import Rutas from "./pages/Rutas";
+import RutaDetalle from "./pages/RutaDetalle";
 import Contacto from "./pages/Contacto";
 import MiZona from "./pages/MiZona";
 import SoyEmpresa from "./pages/SoyEmpresa";
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/mapa" element={<Mapa />} />
           <Route path="/packs" element={<Packs />} />
           <Route path="/rutas" element={<Rutas />} />
+          <Route path="/rutas/:id" element={<RutaDetalle />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/mi-zona" element={<MiZona />} />
           <Route path="/soy-empresa" element={<SoyEmpresa />} />
