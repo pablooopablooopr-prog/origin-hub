@@ -38,12 +38,6 @@ const Header = () => {
 
           {/* Botones de acción */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link to="/mi-zona">
-              <Button variant="outline" size="sm">
-                <MapPin className="w-4 h-4 mr-2" />
-                Mi zona
-              </Button>
-            </Link>
             <Link to="/soy-empresa">
               <Button variant="default" size="sm">
                 Soy empresa
@@ -73,12 +67,6 @@ const Header = () => {
                 Contacto
               </Link>
               <div className="flex flex-col space-y-2 pt-4">
-                <Link to="/mi-zona" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="outline" size="sm" className="w-full">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    Mi zona
-                  </Button>
-                </Link>
                 <Link to="/soy-empresa" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="default" size="sm" className="w-full">
                     Soy empresa
