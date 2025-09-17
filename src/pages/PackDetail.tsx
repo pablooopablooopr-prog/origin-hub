@@ -8,9 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import InteractiveMap from "@/components/InteractiveMap";
 import { getPackById } from "@/data/packs";
+import { useToast } from "@/components/ui/use-toast";
 
 const PackDetail = () => {
   const { id } = useParams();
+  const { toast } = useToast();
   const pack = getPackById(id!);
 
   if (!pack) {
@@ -50,7 +52,10 @@ const PackDetail = () => {
       navigator.share({ title: pack.title, text, url });
     } else {
       navigator.clipboard.writeText(`${text} ${url}`);
-      // You would add a toast notification here
+      toast({
+        title: "¡Enlace copiado!",
+        description: "El enlace del pack ha sido copiado al portapapeles",
+      });
     }
   };
 
