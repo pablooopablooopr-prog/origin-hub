@@ -13,6 +13,7 @@ import MiZona from "./pages/MiZona";
 import SoyEmpresa from "./pages/SoyEmpresa";
 import BusinessDetail from "./pages/BusinessDetail";
 import CreateRoute from "./pages/CreateRoute";
+import PackDetail from "./pages/PackDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/mapa" element={<Mapa />} />
           <Route path="/packs" element={<Packs />} />
+          <Route path="/packs/:id" element={<PackDetail />} />
           <Route path="/rutas" element={<Rutas />} />
           <Route path="/rutas/:id" element={<RutaDetalle />} />
           <Route path="/contacto" element={<Contacto />} />

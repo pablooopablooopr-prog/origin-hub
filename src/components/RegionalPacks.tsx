@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
   const packs = [
     {
+      id: "leon",
       title: "Pack Tierra de León",
       region: "León",
       description: "Cecina artesana, botillo del Bierzo, queso de Valdeón",
@@ -15,6 +16,7 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
       highlighted: true
     },
     {
+      id: "granada",
       title: "Pack Granada Natural",
       region: "Granada",
       description: "Aceite Picual, jamón de Trevélez, miel de la Alpujarra",
@@ -24,6 +26,7 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
       highlighted: false
     },
     {
+      id: "galicia",
       title: "Pack Galicia Auténtica",
       region: "Galicia",
       description: "Conservas artesanas, queso San Simón, licor de hierbas",
@@ -84,7 +87,7 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
                     ))}
                   </div>
                 </div>
-                <Link to="/packs" className="w-full">
+                <Link to={`/packs/${pack.id}`} className="w-full">
                   <Button 
                     variant={pack.highlighted ? "default" : "outline"} 
                     className="w-full group-hover:shadow-soft transition-all"
