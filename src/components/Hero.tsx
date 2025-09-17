@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Map, Building } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -35,20 +36,24 @@ const Hero = () => {
 
         {/* Botones de acción */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-          <Button size="lg" className="group px-8 py-4 text-lg shadow-earth">
-            <Map className="w-5 h-5 mr-3" />
-            Explora el mapa
-            <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          <Link to="/mapa">
+            <Button size="lg" className="group px-8 py-4 text-lg shadow-earth">
+              <Map className="w-5 h-5 mr-3" />
+              Explora el mapa
+              <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
           
-          <Button 
-            variant="secondary" 
-            size="lg" 
-            className="px-8 py-4 text-lg shadow-moss"
-          >
-            <Building className="w-5 h-5 mr-3" />
-            Soy una empresa
-          </Button>
+          <Link to="/soy-empresa">
+            <Button 
+              variant="secondary" 
+              size="lg" 
+              className="px-8 py-4 text-lg shadow-moss"
+            >
+              <Building className="w-5 h-5 mr-3" />
+              Soy una empresa
+            </Button>
+          </Link>
         </div>
 
         {/* Indicadores sutiles */}

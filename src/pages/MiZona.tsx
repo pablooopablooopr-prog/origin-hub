@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Search, Filter, Star, Clock } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const MiZona = () => {
   const nearbyBusinesses = [
@@ -115,9 +116,11 @@ const MiZona = () => {
                       ))}
                     </div>
 
-                    <Button className="w-full">
-                      Ver detalles
-                    </Button>
+                    <Link to={`/negocio/${index + 1}`}>
+                      <Button className="w-full">
+                        Ver detalles
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               ))}
@@ -134,12 +137,16 @@ const MiZona = () => {
               Selecciones especiales basadas en los mejores negocios de tu área
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="shadow-earth">
-                Pack Madrid Centro
-              </Button>
-              <Button variant="secondary" size="lg" className="shadow-moss">
-                Pack Mercados Locales
-              </Button>
+              <Link to="/packs">
+                <Button size="lg" className="shadow-earth">
+                  Pack Madrid Centro
+                </Button>
+              </Link>
+              <Link to="/packs">
+                <Button variant="secondary" size="lg" className="shadow-moss">
+                  Pack Mercados Locales
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

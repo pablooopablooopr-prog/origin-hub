@@ -100,14 +100,18 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
             y ayuda a otros a encontrar negocios auténticos.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="shadow-earth">
-              <Route className="w-5 h-5 mr-2" />
-              Crear mi ruta
-            </Button>
-            <Button variant="secondary" size="lg" className="shadow-moss">
-              <MapPin className="w-5 h-5 mr-2" />
-              Ver todas las rutas
-            </Button>
+            <Link to="/crear-ruta">
+              <Button size="lg" className="shadow-earth">
+                <Route className="w-5 h-5 mr-2" />
+                Crear mi ruta
+              </Button>
+            </Link>
+            <Link to="/rutas">
+              <Button variant="secondary" size="lg" className="shadow-moss">
+                <MapPin className="w-5 h-5 mr-2" />
+                Ver todas las rutas
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

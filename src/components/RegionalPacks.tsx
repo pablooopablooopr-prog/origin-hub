@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Package, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
   const packs = [
@@ -83,14 +84,16 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
                     ))}
                   </div>
                 </div>
-                <Button 
-                  variant={pack.highlighted ? "default" : "outline"} 
-                  className="w-full group-hover:shadow-soft transition-all"
-                >
-                  <Package className="w-4 h-4 mr-2" />
-                  Ver más
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
+                <Link to="/packs" className="w-full">
+                  <Button 
+                    variant={pack.highlighted ? "default" : "outline"} 
+                    className="w-full group-hover:shadow-soft transition-all"
+                  >
+                    <Package className="w-4 h-4 mr-2" />
+                    Ver más
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           ))}
@@ -98,10 +101,12 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
 
         {/* CTA central */}
         <div className="text-center">
-          <Button size="lg" variant="secondary" className="shadow-moss">
-            <MapPin className="w-5 h-5 mr-3" />
-            Ver packs de mi zona
-          </Button>
+          <Link to="/mi-zona">
+            <Button size="lg" variant="secondary" className="shadow-moss">
+              <MapPin className="w-5 h-5 mr-3" />
+              Ver packs de mi zona
+            </Button>
+          </Link>
           <p className="text-sm text-muted-foreground mt-4">
             Próximamente: Packs nacionales Cazador, Tribu y Sabio
           </p>
