@@ -120,7 +120,7 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
                 <Link to={`/packs/${pack.id}`} className="w-full">
                   <Button 
                     variant={pack.highlighted ? "default" : "outline"} 
-                    className="w-full group-hover:shadow-soft transition-all"
+                    className="w-full group-hover:shadow-soft transition-all hover:scale-[1.02] active:scale-[0.98] hover:bg-secondary/80 active:bg-secondary"
                   >
                     <Package className="w-4 h-4 mr-2" />
                     Ver más
