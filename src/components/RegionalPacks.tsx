@@ -19,8 +19,14 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
   }));
 
   const handlePackClick = (packId: string) => {
-    console.log('Navigating to pack:', packId);
-    navigate(`/packs/${packId}`);
+    console.log('Button clicked! Pack ID:', packId);
+    console.log('About to navigate to:', `/packs/${packId}`);
+    try {
+      navigate(`/packs/${packId}`);
+      console.log('Navigation called successfully');
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
   };
 
   return (
@@ -76,7 +82,12 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
                 <Button 
                   variant={pack.highlighted ? "default" : "outline"} 
                   className="w-full group-hover:shadow-soft transition-all hover:scale-[1.02] active:scale-[0.98] hover:bg-secondary/80 active:bg-secondary"
-                  onClick={() => handlePackClick(pack.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Button clicked! Event:', e);
+                    handlePackClick(pack.id);
+                  }}
                 >
                   <Package className="w-4 h-4 mr-2" />
                   Ver más
