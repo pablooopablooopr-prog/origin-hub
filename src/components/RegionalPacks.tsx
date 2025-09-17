@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Package, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { packsData } from "@/data/packs";
 
 const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
+  const navigate = useNavigate();
+  
   const packs = packsData.map(pack => ({
     id: pack.id,
     title: pack.title,
@@ -15,6 +17,11 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
     image: pack.image,
     highlighted: pack.highlighted
   }));
+
+  const handlePackClick = (packId: string) => {
+    console.log('Navigating to pack:', packId);
+    navigate(`/packs/${packId}`);
+  };
 
   return (
     <section className="py-20 bg-gradient-warm" id="packs">
@@ -66,16 +73,15 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
                     ))}
                   </div>
                 </div>
-                <Link to={`/packs/${pack.id}`} className="w-full">
-                  <Button 
-                    variant={pack.highlighted ? "default" : "outline"} 
-                    className="w-full group-hover:shadow-soft transition-all hover:scale-[1.02] active:scale-[0.98] hover:bg-secondary/80 active:bg-secondary"
-                  >
-                    <Package className="w-4 h-4 mr-2" />
-                    Ver más
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
+                <Button 
+                  variant={pack.highlighted ? "default" : "outline"} 
+                  className="w-full group-hover:shadow-soft transition-all hover:scale-[1.02] active:scale-[0.98] hover:bg-secondary/80 active:bg-secondary"
+                  onClick={() => handlePackClick(pack.id)}
+                >
+                  <Package className="w-4 h-4 mr-2" />
+                  Ver más
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
               </CardContent>
             </Card>
           ))}
