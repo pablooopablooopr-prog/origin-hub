@@ -11,9 +11,9 @@ const Footer = () => {
             <div className="flex items-center space-x-3">
               <h3 className="text-2xl font-bold flex items-center">
                 <img 
-                  src="/lovable-uploads/clean-enso-symbol.png" 
+                  src="/lovable-uploads/black-enso-symbol.png" 
                   alt="Ensō"
-                  className="w-8 h-8 object-contain brightness-0 invert"
+                  className="w-8 h-8 object-contain invert"
                 />
                 <span>RIGEN</span>
               </h3>
