@@ -34,6 +34,36 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
       businesses: 28,
       image: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png",
       highlighted: false
+    },
+    {
+      id: "pais-vasco",
+      title: "Pack Euskadi Genuino",
+      region: "País Vasco",
+      description: "Queso Idiazábal, txakoli, pintxos tradicionales",
+      products: ["Queso Idiazábal", "Txakoli artesano", "Chorizo de Cantimpalos", "Anchoas del Cantábrico"],
+      businesses: 38,
+      image: "/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png",
+      highlighted: false
+    },
+    {
+      id: "cataluna",
+      title: "Pack Catalunya Artesana",
+      region: "Cataluña",
+      description: "Cava familiar, fuet tradicional, miel del Montseny",
+      products: ["Cava artesano", "Fuet de Vic", "Miel del Montseny", "Pan de coca"],
+      businesses: 41,
+      image: "/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png",
+      highlighted: false
+    },
+    {
+      id: "valencia",
+      title: "Pack Valencia Natural",
+      region: "Valencia",
+      description: "Arroz bomba, azafrán DOP, horchata artesana",
+      products: ["Arroz bomba", "Azafrán de la Mancha", "Horchata de chufa", "Naranjas valencianas"],
+      businesses: 29,
+      image: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png",
+      highlighted: false
     }
   ];
 
@@ -53,7 +83,7 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
         )}
 
         {/* Grid de packs */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {packs.map((pack, index) => (
             <Card 
               key={pack.title}
