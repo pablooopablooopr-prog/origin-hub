@@ -295,6 +295,264 @@ export const packsData: PackDetail[] = [
     businesses: 28,
     image: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png",
     highlighted: false
+  },
+  {
+    id: "pais-vasco",
+    title: "Pack Euskadi Genuino",
+    region: "País Vasco",
+    shortDescription: "Queso Idiazábal, txakoli, pintxos tradicionales",
+    narrative: "El País Vasco es la cuna de una gastronomía única donde la tradición pastoral se encuentra con la innovación culinaria. Esta ruta te lleva desde las montañas donde las ovejas Latxa pastan libremente y dan origen al queso Idiazábal, hasta las txakolis costeras donde se elabora el vino más refrescante de la península. Culminarás en los templos del pintxo, donde cada bocado es una obra de arte en miniatura.",
+    stops: [
+      {
+        id: "queso-idiazabal",
+        name: "Etxeberri Quesería",
+        type: "quesería",
+        icon: "🧀",
+        description: "Quesería familiar de montaña donde elaboran Idiazábal DOP con leche de ovejas Latxa propias",
+        activities: ["Ordeño tradicional de ovejas", "Proceso de elaboración del queso", "Cata de Idiazábal de diferentes maduraciones", "Paseo por los pastos de montaña"],
+        address: "Barrio Etxeberri 12, Ordizia, Gipuzkoa",
+        schedule: "Lunes a Sábado: 8:00-14:00 y 16:00-19:00",
+        coordinates: [-2.0401, 42.9968],
+        images: ["/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png"],
+        reviews: [
+          {
+            text: "Ver el ordeño y probar el queso recién hecho es una experiencia única. Auténtica tradición vasca.",
+            author: "Mikel Aguirre",
+            rating: 5
+          }
+        ]
+      },
+      {
+        id: "txakoli-getaria",
+        name: "Bodega Txomin Etxaniz",
+        type: "bodega",
+        icon: "🍷",
+        description: "Bodega familiar con viñedos frente al Cantábrico, pionera en la elaboración de txakoli",
+        activities: ["Visita a viñedos costeros", "Proceso de elaboración del txakoli", "Cata maridada con productos locales", "Vista panorámica al mar"],
+        address: "Paraje Txakolindegia, Getaria, Gipuzkoa",
+        schedule: "Martes a Domingo: 10:30-18:00",
+        coordinates: [-2.2026, 43.3056],
+        images: ["/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png"],
+        reviews: [
+          {
+            text: "Txakoli excepcional con vistas al mar. La cata es perfecta y el ambiente inmejorable.",
+            author: "Ane Etxeberria",
+            rating: 5
+          }
+        ]
+      },
+      {
+        id: "pintxos-donosti",
+        name: "Bar Txepetxa",
+        type: "bar-tapas",
+        icon: "🍺",
+        description: "Templo de la anchoa y pintxos tradicionales en el corazón de la Parte Vieja donostiarra",
+        activities: ["Ruta de pintxos guiada", "Cata de anchoas premium", "Maridaje con txakoli y cerveza", "Masterclass de pintxo perfecto"],
+        address: "Calle Pescadería 5, San Sebastián, Gipuzkoa",
+        schedule: "Todos los días: 11:00-15:30 y 19:00-24:00",
+        coordinates: [-1.9812, 43.3230],
+        images: ["/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png"],
+        reviews: [
+          {
+            text: "Las mejores anchoas de San Sebastián. Txepetxa es una institución que no puedes perderte.",
+            author: "Jon Azkargorta",
+            rating: 5
+          }
+        ]
+      }
+    ],
+    dailyRecommendations: [
+      "Empieza temprano en la quesería (8:30) para ver el ordeño matutino",
+      "Visita la bodega al mediodía (12:00) para disfrutar del paisaje con buena luz",
+      "Llega a la Parte Vieja sobre las 19:00 para el ambiente auténtico del pintxeo",
+      "Reserva mesa en Txepetxa o prepárate para esperar de pie como los locales"
+    ],
+    practicalInfo: {
+      difficulty: "Fácil",
+      duration: "Día completo (9-10 horas)",
+      recommendedPeople: "2-6 personas",
+      tips: [
+        "Coche recomendable para llegar a la quesería de montaña",
+        "Ropa cómoda para caminar por San Sebastián",
+        "Lleva efectivo para los pintxos (muchos bares no aceptan tarjeta)",
+        "Aprende unas palabras en euskera para conectar con los artesanos"
+      ]
+    },
+    businesses: 38,
+    image: "/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png",
+    highlighted: false
+  },
+  {
+    id: "cataluna", 
+    title: "Pack Catalunya Artesana",
+    region: "Cataluña",
+    shortDescription: "Cava familiar, fuet tradicional, miel del Montseny",
+    narrative: "Catalunya es diversidad de paisajes y sabores que van desde las burbujas doradas del Penedès hasta los bosques del Montseny donde las abejas elaboran mieles extraordinarias. Esta ruta te lleva por los orígenes del cava familiar, te introduce en los secretos del fuet de Vic y culmina en el corazón del Parque Natural donde la miel sabe a roble y castaño. Una experiencia que abarca desde el valle hasta la montaña catalana.",
+    stops: [
+      {
+        id: "cava-penedes",
+        name: "Celler Can Suriol del Castell",
+        type: "bodega", 
+        icon: "🥂",
+        description: "Bodega familiar ecológica con 9 generaciones elaborando cava con métodos tradicionales",
+        activities: ["Visita a viñedos ecológicos", "Proceso tradicional del cava", "Cata en cavas subterráneas", "Degema (eliminación de sedimentos) en directo"],
+        address: "Finca Can Suriol, Font-rubí, Barcelona",
+        schedule: "Miércoles a Domingo: 10:00-17:00",
+        coordinates: [1.7234, 41.4932],
+        images: ["/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png"],
+        reviews: [
+          {
+            text: "Cava excepcional y trato familiar. Las cavas subterráneas son espectaculares.",
+            author: "Montse Roca",
+            rating: 5
+          }
+        ]
+      },
+      {
+        id: "fuet-vic",
+        name: "Casa Riera Ordeix",
+        type: "carnicería",
+        icon: "🥩", 
+        description: "Charcutería centenaria especializada en fuet y embutidos tradicionales de Vic",
+        activities: ["Proceso de elaboración del fuet", "Cata de embutidos curados", "Visita a las cámaras de curación", "Taller de corte tradicional"],
+        address: "Plaça Major 4, Vic, Barcelona", 
+        schedule: "Martes a Sábado: 9:00-14:00 y 17:00-20:00",
+        coordinates: [2.2531, 41.9301],
+        images: ["/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png"],
+        reviews: [
+          {
+            text: "El fuet más auténtico de Catalunya. Riera Ordeix es tradición pura desde 1852.",
+            author: "Pere Soler",
+            rating: 5
+          }
+        ]
+      },
+      {
+        id: "miel-montseny",
+        name: "Mel Siuranella",
+        type: "panadería",
+        icon: "🍯",
+        description: "Apicultor artesano del Montseny que elabora mieles monoflotales únicas de bosque mediterráneo", 
+        activities: ["Visita al colmenar en el bosque", "Cata de mieles monoflotales", "Taller de extracción artesana", "Paseo botánico por el Montseny"],
+        address: "Mas la Siuranella, Arbúcies, Girona",
+        schedule: "Sábados y Domingos: 10:00-18:00 (concertar entre semana)",
+        coordinates: [2.5123, 41.8087],
+        images: ["/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png"],
+        reviews: [
+          {
+            text: "Miel de castaño excepcional. El entorno del Montseny es mágico para la experiencia.",
+            author: "Carme Vidal",
+            rating: 5
+          }
+        ]
+      }
+    ],
+    dailyRecommendations: [
+      "Empieza en el Penedès (10:00) para la visita completa de la bodega",
+      "Llega a Vic para el almuerzo (13:00) y prueba los embutidos frescos",
+      "Visita el Montseny por la tarde (16:00) cuando las abejas están activas", 
+      "Reserva con antelación, especialmente la visita apícola"
+    ],
+    practicalInfo: {
+      difficulty: "Moderado",
+      duration: "Día completo (8-10 horas)",
+      recommendedPeople: "2-6 personas",
+      tips: [
+        "Coche imprescindible (distancias considerables)",
+        "Ropa cómoda para caminar por el bosque",
+        "Conductor designado para las catas de cava",
+        "Mejor época: primavera y otoño para el Montseny"
+      ]
+    },
+    businesses: 41,
+    image: "/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png",
+    highlighted: false
+  },
+  {
+    id: "valencia",
+    title: "Pack Valencia Natural", 
+    region: "Valencia",
+    shortDescription: "Arroz bomba, azafrán DOP, horchata artesana",
+    narrative: "Valencia es la despensa de España, donde la huerta milenaria produce los ingredientes que han conquistado el mundo. Esta ruta te lleva por los campos donde crece el arroz bomba de la paella auténtica, te introduce en el oro rojo del azafrán manchego y culmina en las chufas que dan origen a la horchata más pura. Una experiencia que conecta directamente con los sabores que definen la esencia mediterránea.",
+    stops: [
+      {
+        id: "arroz-albufera",
+        name: "Arroces de la Albufera",
+        type: "restaurante",
+        icon: "🌾",
+        description: "Productor tradicional de arroz bomba en los campos históricos de la Albufera valenciana",
+        activities: ["Visita a los arrozales tradicionales", "Proceso de cultivo y secado", "Cata de diferentes variedades", "Paella auténtica con arroz propio"],
+        address: "Partida del Saler s/n, Valencia",
+        schedule: "Martes a Domingo: 9:00-17:00",
+        coordinates: [-0.3218, 39.3560],
+        images: ["/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png"],
+        reviews: [
+          {
+            text: "Ver los arrozales de la Albufera y probar paella con su arroz es impresionante.",
+            author: "Vicente Martínez",
+            rating: 5
+          }
+        ]
+      },
+      {
+        id: "azafran-manchego", 
+        name: "Oro Rojo de La Mancha",
+        type: "panadería",
+        icon: "🌸",
+        description: "Cultivador artesano de azafrán DOP que mantiene la tradición del oro rojo español",
+        activities: ["Campos de azafrán en flor", "Recolección manual tradicional", "Proceso de tostado artesano", "Cata y maridajes con azafrán"],
+        address: "Calle Real 23, Consuegra, Toledo",
+        schedule: "Lunes a Viernes: 10:00-14:00 y 16:00-19:00 (temporada: octubre-noviembre)",
+        coordinates: [-3.6123, 39.4598],
+        images: ["/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png"],
+        reviews: [
+          {
+            text: "El azafrán más puro que he probado. Ver la recolección manual es único en el mundo.",
+            author: "Carmen Jiménez", 
+            rating: 5
+          }
+        ]
+      },
+      {
+        id: "horchata-alboraya",
+        name: "Horchatería El Tío Che",
+        type: "restaurante",
+        icon: "🥛",
+        description: "Horchatería tradicional que cultiva sus propias chufas y elabora horchata artesana diaria",
+        activities: ["Visita a los campos de chufa", "Proceso completo de la horchata", "Degustación con fartons calientes", "Taller de elaboración casera"],
+        address: "Calle Mayor 15, Alboraya, Valencia", 
+        schedule: "Todos los días: 8:00-22:00 (temporada completa abril-octubre)",
+        coordinates: [-0.3456, 39.5123],
+        images: ["/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png"],
+        reviews: [
+          {
+            text: "La horchata más cremosa y natural. Ver el proceso desde la chufa es fascinante.",
+            author: "Amparo García",
+            rating: 5
+          }
+        ]
+      }
+    ],
+    dailyRecommendations: [
+      "Empieza temprano en los arrozales (9:00) para ver la Albufera en calma",
+      "Visita los campos de azafrán en temporada (octubre-noviembre) es imprescindible", 
+      "Llega a Alboraya para la merienda (17:00) con horchata y fartons recién hechos",
+      "Combina con visita al Parque Natural de la Albufera al atardecer"
+    ],
+    practicalInfo: {
+      difficulty: "Fácil",
+      duration: "Día completo (8-9 horas)",
+      recommendedPeople: "2-8 personas",
+      tips: [
+        "Mejor época: octubre-noviembre para ver azafrán en flor",
+        "Protección solar (campos abiertos)",
+        "Ropa cómoda para caminar por campos",
+        "Reserva obligatoria para campos de azafrán en temporada"
+      ]
+    },
+    businesses: 29,
+    image: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png",
+    highlighted: false
   }
 ];
 
