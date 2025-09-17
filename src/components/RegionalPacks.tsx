@@ -104,13 +104,7 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
 
         {/* CTA central */}
         <div className="text-center">
-          <Link to="/mi-zona">
-            <Button size="lg" variant="secondary" className="shadow-moss">
-              <MapPin className="w-5 h-5 mr-3" />
-              Ver packs de mi zona
-            </Button>
-          </Link>
-          <p className="text-sm text-muted-foreground mt-4">
+          <p className="text-sm text-muted-foreground">
             Próximamente: Packs nacionales Cazador, Tribu y Sabio
           </p>
         </div>

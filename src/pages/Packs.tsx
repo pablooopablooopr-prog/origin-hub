@@ -7,8 +7,8 @@ const Packs = () => {
     <div className="min-h-screen">
       <Header />
       <main className="pt-6">
-        <div className="container mx-auto px-6 py-6">
-          <div className="text-center mb-8">
+        <div className="container mx-auto px-6 py-12">
+          <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4 flex items-center justify-center">
               <span>Packs Regi</span>
               <img 
@@ -18,9 +18,16 @@ const Packs = () => {
               />
               <span>nales</span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Productos auténticos de cada región, seleccionados por su calidad y tradición.
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-6">
+              Productos auténticos de cada región, seleccionados por su calidad y tradición. 
+              Descubre experiencias gastronómicas únicas conectando directamente con los maestros artesanos.
             </p>
+            <div className="flex justify-center gap-4 text-sm text-muted-foreground">
+              <span>🧀 Queserías artesanas</span>
+              <span>🥩 Carnicerías tradicionales</span>
+              <span>🍷 Bodegas familiares</span>
+              <span>🍽 Restaurantes típicos</span>
+            </div>
           </div>
         </div>
         <RegionalPacks showTitle={false} />
