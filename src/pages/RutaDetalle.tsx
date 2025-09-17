@@ -22,13 +22,18 @@ import {
 const RutaDetalle = () => {
   const { id } = useParams<{ id: string }>();
   
+  console.log("RutaDetalle - ID from params:", id);
+  
   if (!id) {
+    console.log("RutaDetalle - No ID, redirecting to /rutas");
     return <Navigate to="/rutas" replace />;
   }
 
   const route = getRouteById(id);
+  console.log("RutaDetalle - Found route:", route);
   
   if (!route) {
+    console.log("RutaDetalle - No route found for ID:", id);
     return <Navigate to="/rutas" replace />;
   }
 
