@@ -2,70 +2,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Package, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { packsData } from "@/data/packs";
 
 const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
-  const packs = [
-    {
-      id: "leon",
-      title: "Pack Tierra de León",
-      region: "León",
-      description: "Cecina artesana, botillo del Bierzo, queso de Valdeón",
-      products: ["Cecina artesana", "Botillo del Bierzo", "Queso de Valdeón", "Morcilla de León"],
-      businesses: 45,
-      image: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png",
-      highlighted: true
-    },
-    {
-      id: "granada",
-      title: "Pack Granada Natural",
-      region: "Granada",
-      description: "Aceite Picual, jamón de Trevélez, miel de la Alpujarra",
-      products: ["Aceite Picual", "Jamón de Trevélez", "Miel de la Alpujarra", "Habas secas"],
-      businesses: 32,
-      image: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png",
-      highlighted: false
-    },
-    {
-      id: "galicia",
-      title: "Pack Galicia Auténtica",
-      region: "Galicia",
-      description: "Conservas artesanas, queso San Simón, licor de hierbas",
-      products: ["Conservas artesanas", "Queso San Simón", "Licor de hierbas", "Pan de centeno"],
-      businesses: 28,
-      image: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png",
-      highlighted: false
-    },
-    {
-      id: "pais-vasco",
-      title: "Pack Euskadi Genuino",
-      region: "País Vasco",
-      description: "Queso Idiazábal, txakoli, pintxos tradicionales",
-      products: ["Queso Idiazábal", "Txakoli artesano", "Chorizo de Cantimpalos", "Anchoas del Cantábrico"],
-      businesses: 38,
-      image: "/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png",
-      highlighted: false
-    },
-    {
-      id: "cataluna",
-      title: "Pack Catalunya Artesana",
-      region: "Cataluña",
-      description: "Cava familiar, fuet tradicional, miel del Montseny",
-      products: ["Cava artesano", "Fuet de Vic", "Miel del Montseny", "Pan de coca"],
-      businesses: 41,
-      image: "/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png",
-      highlighted: false
-    },
-    {
-      id: "valencia",
-      title: "Pack Valencia Natural",
-      region: "Valencia",
-      description: "Arroz bomba, azafrán DOP, horchata artesana",
-      products: ["Arroz bomba", "Azafrán de la Mancha", "Horchata de chufa", "Naranjas valencianas"],
-      businesses: 29,
-      image: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png",
-      highlighted: false
-    }
-  ];
+  const packs = packsData.map(pack => ({
+    id: pack.id,
+    title: pack.title,
+    region: pack.region,
+    description: pack.shortDescription,
+    products: pack.stops.map(stop => stop.name).slice(0, 4),
+    businesses: pack.businesses,
+    image: pack.image,
+    highlighted: pack.highlighted
+  }));
 
   return (
     <section className="py-20 bg-gradient-warm" id="packs">
