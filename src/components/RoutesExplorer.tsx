@@ -79,7 +79,7 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
                   </p>
                 </div>
 
-                <Link to={`/rutas/${route.id}`}>
+                <Link to={`/rutas/${route.id}`} className="w-full">
                   <Button className="w-full group-hover:shadow-soft transition-all">
                     <Route className="w-4 h-4 mr-2" />
                     Explorar ruta
