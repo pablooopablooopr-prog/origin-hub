@@ -82,13 +82,15 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
 
                 <Button 
                   className="w-full group-hover:shadow-soft transition-all"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('🔥🔥🔥 ROUTE CLICK! Route ID:', route.id);
+                  onClick={() => {
+                    console.log('🚀 BUTTON CLICKED! Route:', route.title, 'ID:', route.id);
+                    
+                    // Test direct window navigation first
                     const targetPath = `/rutas/${route.id}`;
-                    console.log('🔥🔥🔥 Navigating to route:', targetPath);
-                    navigate(targetPath);
+                    console.log('🚀 Attempting navigation to:', targetPath);
+                    
+                    // Use window.location for immediate testing
+                    window.location.href = targetPath;
                   }}
                 >
                   <Route className="w-4 h-4 mr-2" />
