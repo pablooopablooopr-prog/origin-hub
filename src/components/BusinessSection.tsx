@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Check, Building, Users, TrendingUp, Shield } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const BusinessSection = () => {
+  const navigate = useNavigate();
+
   const benefits = [
     {
       icon: Users,
@@ -76,7 +79,7 @@ const BusinessSection = () => {
 
             {/* CTA */}
             <div className="space-y-4">
-              <Button size="lg" className="shadow-earth">
+              <Button size="lg" className="shadow-earth" onClick={() => navigate('/soy-empresa')}>
                 <Building className="w-5 h-5 mr-2" />
                 Solicita tu espacio
               </Button>
