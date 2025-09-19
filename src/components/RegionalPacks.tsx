@@ -19,13 +19,13 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
   }));
 
   const handlePackClick = (packId: string) => {
-    console.log('Button clicked! Pack ID:', packId);
-    console.log('About to navigate to:', `/packs/${packId}`);
+    console.log('🔥 Button clicked! Pack ID:', packId);
+    console.log('🔥 About to navigate to:', `/packs/${packId}`);
     try {
       navigate(`/packs/${packId}`);
-      console.log('Navigation called successfully');
+      console.log('🔥 Navigation called successfully');
     } catch (error) {
-      console.error('Navigation error:', error);
+      console.error('🔥 Navigation error:', error);
     }
   };
 
