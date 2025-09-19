@@ -19,13 +19,18 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
   }));
 
   const handlePackClick = (packId: string) => {
-    console.log('🔥 Button clicked! Pack ID:', packId);
-    console.log('🔥 About to navigate to:', `/packs/${packId}`);
+    console.log('🔥🔥🔥 handlePackClick called with:', packId);
+    const targetPath = `/packs/${packId}`;
+    console.log('🔥🔥🔥 Navigating to:', targetPath);
+    
+    // Force navigation
     try {
-      navigate(`/packs/${packId}`);
-      console.log('🔥 Navigation called successfully');
+      navigate(targetPath);
+      console.log('🔥🔥🔥 Navigate called successfully');
     } catch (error) {
-      console.error('🔥 Navigation error:', error);
+      console.error('🔥🔥🔥 Navigation failed:', error);
+      // Fallback to window location if navigate fails
+      window.location.href = targetPath;
     }
   };
 
@@ -85,7 +90,7 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('Button clicked! Event:', e);
+                    console.log('🔥🔥🔥 CLICK DETECTED! Pack ID:', pack.id);
                     handlePackClick(pack.id);
                   }}
                 >

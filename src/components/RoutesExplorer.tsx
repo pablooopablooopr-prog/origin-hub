@@ -3,9 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Route, Star, Users, Clock, MapPin } from "lucide-react";
 import { routesData } from "@/data/routes";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
+  const navigate = useNavigate();
 
   return (
     <section className="py-20 bg-gradient-warm enso-watermark relative" id="rutas">
@@ -79,12 +80,20 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
                   </p>
                 </div>
 
-                <Link to={`/rutas/${route.id}`} className="w-full">
-                  <Button className="w-full group-hover:shadow-soft transition-all">
-                    <Route className="w-4 h-4 mr-2" />
-                    Explorar ruta
-                  </Button>
-                </Link>
+                <Button 
+                  className="w-full group-hover:shadow-soft transition-all"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🔥🔥🔥 ROUTE CLICK! Route ID:', route.id);
+                    const targetPath = `/rutas/${route.id}`;
+                    console.log('🔥🔥🔥 Navigating to route:', targetPath);
+                    navigate(targetPath);
+                  }}
+                >
+                  <Route className="w-4 h-4 mr-2" />
+                  Explorar ruta
+                </Button>
               </CardContent>
             </Card>
           ))}
@@ -100,18 +109,23 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
             y ayuda a otros a encontrar negocios auténticos.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/crear-ruta">
-              <Button size="lg" className="shadow-earth">
-                <Route className="w-5 h-5 mr-2" />
-                Crear mi ruta
-              </Button>
-            </Link>
-            <Link to="/rutas">
-              <Button variant="secondary" size="lg" className="shadow-moss">
-                <MapPin className="w-5 h-5 mr-2" />
-                Ver todas las rutas
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              className="shadow-earth"
+              onClick={() => navigate('/crear-ruta')}
+            >
+              <Route className="w-5 h-5 mr-2" />
+              Crear mi ruta
+            </Button>
+            <Button 
+              variant="secondary" 
+              size="lg" 
+              className="shadow-moss"
+              onClick={() => navigate('/rutas')}
+            >
+              <MapPin className="w-5 h-5 mr-2" />
+              Ver todas las rutas
+            </Button>
           </div>
         </div>
       </div>
