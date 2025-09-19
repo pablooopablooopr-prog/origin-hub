@@ -87,15 +87,12 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
                 <Button 
                   variant={pack.highlighted ? "default" : "outline"} 
                   className="w-full group-hover:shadow-soft transition-all hover:scale-[1.02] active:scale-[0.98] hover:bg-secondary/80 active:bg-secondary"
-                  onClick={() => {
-                    console.log('🚀 PACK CLICKED! Pack:', pack.title, 'ID:', pack.id);
-                    
-                    // Test direct window navigation first
-                    const targetPath = `/packs/${pack.id}`;
-                    console.log('🚀 Attempting pack navigation to:', targetPath);
-                    
-                    // Use window.location for immediate testing
-                    window.location.href = targetPath;
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🚀🚀🚀 PACK BUTTON CLICKED!', pack.title);
+                    alert(`Navigating to: /packs/${pack.id}`);
+                    window.location.href = `/packs/${pack.id}`;
                   }}
                 >
                   <Package className="w-4 h-4 mr-2" />
