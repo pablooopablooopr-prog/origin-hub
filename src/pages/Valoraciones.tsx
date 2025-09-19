@@ -96,7 +96,7 @@ const Valoraciones = () => {
               sobre negocios que mantienen viva nuestra tradición gastronómica.
             </p>
             <div className="flex justify-center gap-4 mb-8">
-              <Button size="lg" className="shadow-earth">
+              <Button size="lg" className="shadow-earth" onClick={() => window.location.href = '/escribir-valoracion'}>
                 <MessageCircle className="w-5 h-5 mr-2" />
                 Escribir valoración
               </Button>
@@ -150,7 +150,7 @@ const Valoraciones = () => {
               ¿Has visitado algún negocio auténtico? Tu valoración puede ayudar a otros 
               a descubrir lugares especiales y apoyar a empresas con alma.
             </p>
-            <Button size="lg" className="shadow-earth">
+            <Button size="lg" className="shadow-earth" onClick={() => window.location.href = '/escribir-valoracion'}>
               <MessageCircle className="w-5 h-5 mr-2" />
               Escribir tu valoración
             </Button>
