@@ -14,6 +14,7 @@ import SoyEmpresa from "./pages/SoyEmpresa";
 import BusinessDetail from "./pages/BusinessDetail";
 import CreateRoute from "./pages/CreateRoute";
 import PackDetail from "./pages/PackDetail";
+import Valoraciones from "./pages/Valoraciones";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/mi-zona" element={<MiZona />} />
           <Route path="/soy-empresa" element={<SoyEmpresa />} />
+          <Route path="/valoraciones" element={<Valoraciones />} />
           <Route path="/negocio/:id" element={<BusinessDetail />} />
           <Route path="/crear-ruta" element={<CreateRoute />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
