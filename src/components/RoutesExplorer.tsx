@@ -80,13 +80,24 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
                   </p>
                 </div>
 
-                <Button 
-                  className="w-full group-hover:shadow-soft transition-all"
-                  onClick={() => navigate(`/rutas/${route.id}`)}
-                >
-                  <Route className="w-4 h-4 mr-2" />
-                  Explorar ruta
-                </Button>
+                <div className="flex flex-col gap-3">
+                  <Button 
+                    className="w-full group-hover:shadow-soft transition-all"
+                    onClick={() => navigate(`/rutas/${route.id}`)}
+                  >
+                    <Route className="w-4 h-4 mr-2" />
+                    Explorar ruta
+                  </Button>
+                  
+                  <Button 
+                    variant="outline"
+                    className="w-full transition-all hover:bg-primary/10"
+                    onClick={() => navigate('/rutas')}
+                  >
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Ver todas las rutas
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))}
