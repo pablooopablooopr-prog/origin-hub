@@ -72,7 +72,7 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
                   {pack.businesses} negocios locales
                 </CardDescription>
               </CardHeader>
-              <CardContent className="text-center">
+              <CardContent className="text-center relative z-20">{/* Asegurar que el contenido esté por encima */}
                 <p className="text-muted-foreground mb-4 leading-relaxed text-sm">
                   {pack.description}
                 </p>
@@ -86,8 +86,13 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
                 </div>
                 <Button 
                   variant={pack.highlighted ? "default" : "outline"} 
-                  className="w-full group-hover:shadow-soft transition-all hover:scale-[1.02] active:scale-[0.98] hover:bg-secondary/80 active:bg-secondary"
-                  onClick={() => navigate(`/packs/${pack.id}`)}
+                  className="w-full group-hover:shadow-soft transition-all hover:scale-[1.02] active:scale-[0.98] hover:bg-secondary/80 active:bg-secondary relative z-40"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🚀 PACK BUTTON CLICKED! Navigating to:', `/packs/${pack.id}`);
+                    navigate(`/packs/${pack.id}`);
+                  }}
                 >
                   <Package className="w-4 h-4 mr-2" />
                   Ver más
