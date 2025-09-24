@@ -82,13 +82,7 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
 
                 <Button 
                   className="w-full group-hover:shadow-soft transition-all"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('🚀🚀🚀 ROUTE BUTTON CLICKED!', route.title);
-                    alert(`Navigating to: /rutas/${route.id}`);
-                    window.location.href = `/rutas/${route.id}`;
-                  }}
+                  onClick={() => navigate(`/rutas/${route.id}`)}
                 >
                   <Route className="w-4 h-4 mr-2" />
                   Explorar ruta
