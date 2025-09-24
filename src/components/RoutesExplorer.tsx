@@ -48,7 +48,7 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
                   {route.description}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 relative z-20">{/* Asegurar que el contenido esté por encima */}
                 {/* Métricas de la ruta */}
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex items-center space-x-2">
@@ -80,10 +80,15 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 relative z-30">
                   <Button 
-                    className="w-full group-hover:shadow-soft transition-all"
-                    onClick={() => navigate(`/rutas/${route.id}`)}
+                    className="w-full group-hover:shadow-soft transition-all relative z-40"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('🚀 BUTTON CLICKED! Navigating to:', `/rutas/${route.id}`);
+                      navigate(`/rutas/${route.id}`);
+                    }}
                   >
                     <Route className="w-4 h-4 mr-2" />
                     Explorar ruta
@@ -91,8 +96,13 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
                   
                   <Button 
                     variant="outline"
-                    className="w-full transition-all hover:bg-primary/10"
-                    onClick={() => navigate('/rutas')}
+                    className="w-full transition-all hover:bg-primary/10 relative z-40"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('🚀 BUTTON CLICKED! Navigating to: /rutas');
+                      navigate('/rutas');
+                    }}
                   >
                     <MapPin className="w-4 h-4 mr-2" />
                     Ver todas las rutas
