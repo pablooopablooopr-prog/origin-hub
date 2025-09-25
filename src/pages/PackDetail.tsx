@@ -9,10 +9,9 @@ import { MapPin, Package, Star, Truck, Shield, Clock, Users, ShoppingCart, Heart
 import { getPackById, Product } from "@/data/products";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import PackRouteMap from "@/components/PackRouteMap";
 import RegionalProductFilters from "@/components/RegionalProductFilters";
 import ConsumptionStyleSelector from "@/components/ConsumptionStyleSelector";
-import PackPracticalInfo from "@/components/PackPracticalInfo";
+import { generateDynamicPack } from "@/data/products";
 
 const PackDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +19,7 @@ const PackDetail = () => {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [consumptionStyle, setConsumptionStyle] = useState<'cazador' | 'tribu' | 'sabio' | undefined>();
   const [additionalProducts, setAdditionalProducts] = useState<Product[]>([]);
+  const [dynamicProducts, setDynamicProducts] = useState<Product[]>([]);
   
   if (!id) {
     return <Navigate to="/packs" replace />;
@@ -72,7 +72,17 @@ const PackDetail = () => {
     });
   };
 
-  const allProducts = [...pack.products, ...additionalProducts];
+  const handleStyleChange = (style: 'cazador' | 'tribu' | 'sabio') => {
+    setConsumptionStyle(style);
+    if (pack.category === 'regional') {
+      const newDynamicProducts = generateDynamicPack(pack.region, style);
+      setDynamicProducts(newDynamicProducts);
+    }
+  };
+
+  const allProducts = pack.category === 'regional' && consumptionStyle 
+    ? [...dynamicProducts, ...additionalProducts]
+    : [...pack.products, ...additionalProducts];
 
   const handleShare = async () => {
     const shareData = {
@@ -161,61 +171,19 @@ const PackDetail = () => {
       <main className="container mx-auto px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           
-          {/* Left Content - Experience */}
+          {/* Left Content */}
           <div className="lg:col-span-3 space-y-8">
             
-            {/* Route Map */}
-            <PackRouteMap region={pack.region} />
-            
-            {/* Experience Description */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl font-bold text-primary">
-                  La Experiencia
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed mb-6">
-                  {pack.region === 'León' && 
-                    "León es tierra de montaña y tradición, donde cada producto cuenta una historia centenaria. En esta ruta descubrirás los sabores que han alimentado a generaciones de leoneses: desde la cecina ahumada en las antiguas secaderos hasta el queso azul que madura en las cuevas de los Picos de Europa. Una experiencia que conecta directamente con los maestros artesanos que mantienen vivo el patrimonio gastronómico de Castilla y León."
-                  }
-                  {pack.region === 'Granada' && 
-                    "Granada combina la herencia andalusí con la tradición artesana de montaña. Desde los olivares centenarios que producen el mejor AOVE Picual hasta las alturas de Trevélez donde el jamón se cura de forma natural. La Alpujarra aporta la dulzura de sus mieles de montaña, completando una experiencia gastronómica única entre el Mediterráneo y Sierra Nevada."
-                  }
-                  {pack.region === 'Galicia' && 
-                    "Galicia es mar y tierra, donde las conservas artesanas conviven con quesos ahumados únicos y licores de hierbas que guardan secretos centenarios. Una experiencia que va del Atlántico a los valles interiores, descubriendo productores que mantienen vivas las tradiciones más auténticas del noroeste peninsular."
-                  }
-                  {pack.category === 'budget' &&
-                    `El Pack ${pack.title} está diseñado para ${pack.budgetType === 'cazador' ? 'descubrir' : pack.budgetType === 'tribu' ? 'compartir' : 'disfrutar al máximo'} la gastronomía artesana española. ${pack.description}`
-                  }
-                  {pack.category === 'theme' &&
-                    `Una selección especializada para los verdaderos amantes ${pack.themeType === 'quesos' ? 'del queso' : 'de la tradición'}. ${pack.description}`
-                  }
-                </p>
+            {/* Consumption Style Selector for regional packs */}
+            {pack.category === 'regional' && (
+              <ConsumptionStyleSelector 
+                onStyleChange={handleStyleChange}
+                currentStyle={consumptionStyle}
+              />
+            )}
 
-                {/* Consumption Style Selector for budget and theme packs */}
-                {(pack.category === 'budget' || pack.category === 'theme') && (
-                  <ConsumptionStyleSelector 
-                    onStyleChange={setConsumptionStyle}
-                    currentStyle={consumptionStyle}
-                  />
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Route Stops / Products */}
+            {/* Products */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl font-bold text-primary">
-                  {pack.category === 'regional' ? 'Paradas de la Ruta' : 'Productos incluidos'}
-                </CardTitle>
-                <p className="text-muted-foreground">
-                  {pack.category === 'regional' 
-                    ? 'Cada parada ha sido seleccionada por su valor gastronómico y cultural único.'
-                    : 'Cada producto ha sido cuidadosamente seleccionado por su calidad y autenticidad.'
-                  }
-                </p>
-              </CardHeader>
               <CardContent>
                 <div className="space-y-6">
                   {allProducts.map((product, index) => (
@@ -379,68 +347,6 @@ const PackDetail = () => {
 
           {/* Right Sidebar */}
           <div className="space-y-6">
-            
-            {/* Daily Recommendations - Only for regional packs */}
-            {pack.category === 'regional' && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recomendaciones del Día</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
-                      1
-                    </div>
-                    <div className="text-sm">
-                      <span className="text-muted-foreground">
-                        {pack.region === 'León' ? 'Comienza temprano (9:00) en Cecinas Pablo para ver el proceso de elaboración matutino' :
-                         pack.region === 'Granada' ? 'Visita el olivar al amanecer para la mejor experiencia fotográfica' :
-                         'Consulta las mareas para la mejor experiencia en las conserveras'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
-                      2
-                    </div>
-                    <div className="text-sm">
-                      <span className="text-muted-foreground">
-                        {pack.region === 'León' ? 'Llega a la quesería entre 11:00-12:00 para ver el queso recién desmoldado' :
-                         pack.region === 'Granada' ? 'Reserva la visita a Trevélez con antelación (temporada alta muy demandada)' :
-                         'Reserva con antelación en temporada alta (julio-agosto)'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
-                      3
-                    </div>
-                    <div className="text-sm">
-                      <span className="text-muted-foreground">
-                        {pack.region === 'León' ? 'Reserva mesa en Casa Pepe para almorzar el botillo caliente (13:30h ideal)' :
-                         pack.region === 'Granada' ? 'Lleva ropa cómoda y abrigo (las cuevas están a 8°C)' :
-                         'Lleva chubasquero (el clima gallego es impredecible)'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
-                      4
-                    </div>
-                    <div className="text-sm">
-                      <span className="text-muted-foreground">
-                        {pack.region === 'León' ? 'Lleva una cesta térmica para conservar los productos comprados' :
-                         pack.region === 'Granada' ? 'Pregunta por descuentos grupales en compras superiores a €150' :
-                         'Pregunta por catas guiadas del licor de hierbas'}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Practical Information */}
-            <PackPracticalInfo pack={pack} onShare={handleShare} />
 
             {/* Price Summary */}
             <Card>

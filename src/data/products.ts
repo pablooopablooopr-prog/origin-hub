@@ -258,97 +258,6 @@ export const packsData: ProductPack[] = [
     totalProducts: 3,
     estimatedDelivery: "2-3 días laborables",
     freeShippingFrom: 45
-  },
-  {
-    id: "cazador",
-    title: "Pack Cazador",
-    region: "Nacional",
-    description: "Descubre España con productos seleccionados de diferentes regiones. Perfecto para iniciarse en los sabores auténticos.",
-    image: "/lovable-uploads/clean-enso-symbol.png",
-    priceRange: {
-      min: 25.00,
-      max: 30.00
-    },
-    category: 'budget',
-    budgetType: 'cazador',
-    products: [
-      {
-        ...productsData.find(p => p.id === "miel-alpujarra")!,
-        price: 12.80
-      },
-      {
-        ...productsData.find(p => p.id === "aceite-picual")!,
-        price: 16.50
-      }
-    ],
-    customizable: false,
-    highlighted: false,
-    totalProducts: 2,
-    estimatedDelivery: "2-3 días laborables"
-  },
-  {
-    id: "tribu",
-    title: "Pack Tribu",
-    region: "Nacional",
-    description: "Selección intermedia con productos premium de diferentes regiones. Ideal para compartir en familia.",
-    image: "/lovable-uploads/clean-enso-symbol.png",
-    priceRange: {
-      min: 45.00,
-      max: 50.00
-    },
-    category: 'budget',
-    budgetType: 'tribu',
-    products: [
-      productsData.find(p => p.id === "cecina-pablo")!,
-      productsData.find(p => p.id === "queso-san-simon")!
-    ],
-    customizable: false,
-    highlighted: false,
-    totalProducts: 2,
-    estimatedDelivery: "2-3 días laborables"
-  },
-  {
-    id: "sabio",
-    title: "Pack Sabio",
-    region: "Nacional",
-    description: "Experiencia gastronómica completa con los mejores productos artesanos de España. Para los paladares más exigentes.",
-    image: "/lovable-uploads/clean-enso-symbol.png",
-    priceRange: {
-      min: 85.00,
-      max: 100.00
-    },
-    category: 'budget',
-    budgetType: 'sabio',
-    products: [
-      productsData.find(p => p.id === "jamon-trevelez")!,
-      productsData.find(p => p.id === "queso-valdeon")!
-    ],
-    customizable: true,
-    highlighted: false,
-    totalProducts: 2,
-    estimatedDelivery: "3-4 días laborables",
-    freeShippingFrom: 75
-  },
-  {
-    id: "quesos",
-    title: "Pack Amante del Queso",
-    region: "Nacional",
-    description: "Los mejores quesos artesanos de España: Valdeón DOP y San Simón ahumado. Para los verdaderos cheese lovers.",
-    image: "/lovable-uploads/clean-enso-symbol.png",
-    priceRange: {
-      min: 38.00,
-      max: 45.00
-    },
-    category: 'theme',
-    themeType: 'quesos',
-    products: [
-      productsData.find(p => p.id === "queso-valdeon")!,
-      productsData.find(p => p.id === "queso-san-simon")!
-    ],
-    customizable: true,
-    highlighted: false,
-    totalProducts: 2,
-    estimatedDelivery: "2-3 días laborables"
   }
 ];
 
@@ -364,4 +273,45 @@ export const getProductsByRegion = (region: string): Product[] => {
   return productsData.filter(product => 
     product.producer.location.toLowerCase().includes(region.toLowerCase())
   );
+};
+
+export const generateDynamicPack = (region: string, style: 'tribu' | 'cazador' | 'sabio'): Product[] => {
+  const budgetLimits = {
+    tribu: 35,
+    cazador: 60,
+    sabio: 90
+  };
+  
+  const regionalProducts = getProductsByRegion(region);
+  const budget = budgetLimits[style];
+  
+  // Sort products by price to optimize selection
+  const sortedProducts = [...regionalProducts].sort((a, b) => a.price - b.price);
+  
+  const selectedProducts: Product[] = [];
+  let currentTotal = 0;
+  
+  // Select products that fit within budget, prioritizing variety
+  const categories = new Set<string>();
+  
+  for (const product of sortedProducts) {
+    if (currentTotal + product.price <= budget && !categories.has(product.category)) {
+      selectedProducts.push(product);
+      currentTotal += product.price;
+      categories.add(product.category);
+    }
+  }
+  
+  // If we still have budget and less than 3 products, add more from any category
+  if (selectedProducts.length < 3) {
+    for (const product of sortedProducts) {
+      if (currentTotal + product.price <= budget && !selectedProducts.find(p => p.id === product.id)) {
+        selectedProducts.push(product);
+        currentTotal += product.price;
+        if (selectedProducts.length >= 3) break;
+      }
+    }
+  }
+  
+  return selectedProducts;
 };
