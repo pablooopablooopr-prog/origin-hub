@@ -99,17 +99,6 @@ const RutaDetalle = () => {
                 </div>
               </div>
 
-              {/* Action buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button onClick={handleShare} variant="secondary" size="lg">
-                  <Share2 className="w-5 h-5 mr-2" />
-                  Compartir ruta
-                </Button>
-                <Button onClick={handlePrint} variant="outline" size="lg">
-                  <Printer className="w-5 h-5 mr-2" />
-                  Imprimir
-                </Button>
-              </div>
             </div>
           </div>
         </section>
@@ -201,21 +190,42 @@ const RutaDetalle = () => {
                 </div>
               </section>
               
-              {/* Rating Section */}
-              <section>
-                <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-8 text-center">
-                  <div className="flex items-center justify-center space-x-2 mb-4">
-                    <Star className="w-6 h-6 text-secondary fill-current" />
-                    <h3 className="text-xl font-semibold text-primary">Valoración de la ruta</h3>
+              {/* Bottom sections - Rating and Actions */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Rating Section */}
+                <section>
+                  <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-8 text-center h-full">
+                    <div className="flex items-center justify-center space-x-2 mb-4">
+                      <Star className="w-6 h-6 text-secondary fill-current" />
+                      <h3 className="text-xl font-semibold text-primary">Valoración de la ruta</h3>
+                    </div>
+                    <p className="text-lg italic text-muted-foreground mb-4">
+                      "{route.rating}"
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Valoración de {route.participants} personas que han realizado esta ruta
+                    </p>
                   </div>
-                  <p className="text-lg italic text-muted-foreground mb-4">
-                    "{route.rating}"
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Valoración de {route.participants} personas que han realizado esta ruta
-                  </p>
-                </div>
-              </section>
+                </section>
+
+                {/* Action Buttons Section */}
+                <section>
+                  <div className="bg-card rounded-lg p-8 border h-full flex flex-col justify-center space-y-4">
+                    <Button onClick={handleShare} variant="outline" size="lg" className="w-full">
+                      <Share2 className="w-5 h-5 mr-2" />
+                      Compartir Ruta
+                    </Button>
+                    <Button onClick={handlePrint} variant="outline" size="lg" className="w-full">
+                      <Printer className="w-5 h-5 mr-2" />
+                      Imprimir Ruta
+                    </Button>
+                    <Button variant="default" size="lg" className="w-full">
+                      <ExternalLink className="w-5 h-5 mr-2" />
+                      Personalizar Ruta
+                    </Button>
+                  </div>
+                </section>
+              </div>
             </div>
 
             {/* Right Sidebar */}
