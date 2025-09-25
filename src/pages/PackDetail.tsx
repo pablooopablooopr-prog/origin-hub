@@ -5,21 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { MapPin, Package, Star, Truck, Shield, Clock, Users, ShoppingCart, Heart, Share2 } from "lucide-react";
-import { getPackById, Product } from "@/data/products";
+import { MapPin, Package, Star, Truck, Shield, Clock, Users, ShoppingCart, Heart, Share2, Award, Leaf, Gift } from "lucide-react";
+import { getPackById } from "@/data/companyPacks";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import RegionalProductFilters from "@/components/RegionalProductFilters";
-import ConsumptionStyleSelector from "@/components/ConsumptionStyleSelector";
-import { generateDynamicPack } from "@/data/products";
 
 const PackDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
-  const [consumptionStyle, setConsumptionStyle] = useState<'cazador' | 'tribu' | 'sabio' | undefined>();
-  const [additionalProducts, setAdditionalProducts] = useState<Product[]>([]);
-  const [dynamicProducts, setDynamicProducts] = useState<Product[]>([]);
   
   if (!id) {
     return <Navigate to="/packs" replace />;
@@ -43,69 +36,9 @@ const PackDetail = () => {
     );
   }
 
-  const handleQuantityChange = (productId: string, quantity: number) => {
-    setQuantities(prev => ({
-      ...prev,
-      [productId]: Math.max(0, quantity)
-    }));
-  };
-
-  const getTotalPrice = () => {
-    const baseProducts = pack.products.reduce((total, product) => {
-      const quantity = quantities[product.id] || 1;
-      return total + (product.price * quantity);
-    }, 0);
-    
-    const additionalPrice = additionalProducts.reduce((total, product) => {
-      const quantity = quantities[product.id] || 1;
-      return total + (product.price * quantity);
-    }, 0);
-    
-    return baseProducts + additionalPrice;
-  };
-
-  const handleAddProduct = (product: Product) => {
-    if (consumptionStyle) {
-      const styles = [
-        { id: 'cazador', budgetLimit: 35 },
-        { id: 'tribu', budgetLimit: 60 },
-        { id: 'sabio', budgetLimit: 90 }
-      ];
-      const budgetLimit = styles.find(s => s.id === consumptionStyle)?.budgetLimit || 0;
-      const currentTotal = getTotalPrice();
-      
-      if (currentTotal + product.price > budgetLimit) {
-        toast({
-          title: "Presupuesto excedido",
-          description: `Este producto excedería tu presupuesto del estilo ${consumptionStyle}`,
-          variant: "destructive"
-        });
-        return;
-      }
-    }
-    
-    setAdditionalProducts(prev => [...prev, product]);
-    toast({
-      title: "Producto añadido",
-      description: `${product.name} ha sido añadido al pack`,
-    });
-  };
-
-  const handleStyleChange = (style: 'cazador' | 'tribu' | 'sabio') => {
-    setConsumptionStyle(style);
-    if (pack.category === 'regional') {
-      const newDynamicProducts = generateDynamicPack(pack.region, style);
-      setDynamicProducts(newDynamicProducts);
-    }
-  };
-
-  const allProducts = pack.category === 'regional' && consumptionStyle 
-    ? [...dynamicProducts, ...additionalProducts]
-    : [...pack.products, ...additionalProducts];
-
   const handleShare = async () => {
     const shareData = {
-      title: pack.title,
+      title: pack.name,
       text: pack.description,
       url: window.location.href,
     };
@@ -128,8 +61,34 @@ const PackDetail = () => {
   const handleAddToCart = () => {
     toast({
       title: "Añadido al carrito",
-      description: `${pack.title} ha sido añadido a tu carrito`,
+      description: `${pack.name} ha sido añadido a tu carrito`,
     });
+  };
+
+  const getPackTypeColor = (type: string) => {
+    switch (type) {
+      case 'raiz':
+        return 'bg-amber-100 text-amber-700 border-amber-200';
+      case 'esencia':
+        return 'bg-orange-100 text-orange-700 border-orange-200';
+      case 'gourmet':
+        return 'bg-purple-100 text-purple-700 border-purple-200';
+      default:
+        return 'bg-gray-100 text-gray-700 border-gray-200';
+    }
+  };
+
+  const getFeaturedBadge = (featured: string | undefined) => {
+    switch (featured) {
+      case 'recommended':
+        return <Badge className="bg-green-100 text-green-700 border-green-200">⭐ Recomendado por Origen</Badge>;
+      case 'bestseller':
+        return <Badge className="bg-blue-100 text-blue-700 border-blue-200">📈 Más vendido</Badge>;
+      case 'new':
+        return <Badge className="bg-purple-100 text-purple-700 border-purple-200">🆕 Novedad</Badge>;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -141,26 +100,29 @@ const PackDetail = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-background/60 to-background/90 z-10" />
         <img 
           src={pack.image} 
-          alt={pack.title}
+          alt={pack.name}
           className="w-full h-96 object-cover"
         />
         <div className="absolute inset-0 z-20 flex items-center">
           <div className="container mx-auto px-6">
             <div className="max-w-2xl">
               <div className="flex items-center gap-2 mb-4">
-                <Badge variant="secondary" className="bg-primary/20 text-primary">
-                  {pack.category === 'regional' ? pack.region : 
-                   pack.category === 'budget' ? `Hasta €${pack.priceRange.max}` :
-                   'Temático'}
+                <Badge variant="secondary" className={getPackTypeColor(pack.type)}>
+                  {pack.name}
                 </Badge>
-                {pack.highlighted && (
-                  <Badge variant="default" className="bg-secondary text-secondary-foreground">
-                    ⭐ Destacado
+                <Badge variant="outline" className="text-xs">
+                  {pack.region}
+                </Badge>
+                {getFeaturedBadge(pack.featured)}
+                {pack.qualitySeal && (
+                  <Badge className="bg-primary/20 text-primary border-primary/30">
+                    <Award className="w-3 h-3 mr-1" />
+                    Sello Origen
                   </Badge>
                 )}
               </div>
               <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">
-                {pack.title}
+                {pack.name}
               </h1>
               <p className="text-xl text-muted-foreground mb-6">
                 {pack.description}
@@ -168,16 +130,16 @@ const PackDetail = () => {
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <Package className="w-4 h-4" />
-                  {pack.totalProducts} productos
+                  {pack.products.length} productos
                 </span>
                 <span className="flex items-center gap-1">
-                  <Truck className="w-4 h-4" />
-                  {pack.estimatedDelivery}
+                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  {pack.rating} ({pack.reviews} valoraciones)
                 </span>
-                {pack.freeShippingFrom && (
+                {pack.fastShipping && (
                   <span className="flex items-center gap-1">
-                    <Shield className="w-4 h-4" />
-                    Envío gratis desde €{pack.freeShippingFrom}
+                    <Truck className="w-4 h-4 text-green-600" />
+                    Envío rápido
                   </span>
                 )}
               </div>
@@ -193,157 +155,78 @@ const PackDetail = () => {
           {/* Left Content */}
           <div className="lg:col-span-3 space-y-8">
             
-            {/* Consumption Style Selector for regional packs */}
-            {pack.category === 'regional' && (
-              <ConsumptionStyleSelector 
-                onStyleChange={handleStyleChange}
-                currentStyle={consumptionStyle}
-              />
-            )}
+            {/* Company Info */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <img 
+                    src={pack.company.logo} 
+                    alt={pack.company.name}
+                    className="w-12 h-12 object-contain rounded-lg border"
+                  />
+                  <div>
+                    <h2 className="text-xl">{pack.company.name}</h2>
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                      <MapPin className="w-4 h-4" />
+                      {pack.company.location}
+                    </p>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed">
+                  {pack.expandedDescription}
+                </p>
+              </CardContent>
+            </Card>
 
             {/* Products */}
             <Card>
+              <CardHeader>
+                <CardTitle>Productos incluidos</CardTitle>
+                <CardDescription>
+                  Todos los productos están incluidos en el precio final de {pack.price}€
+                </CardDescription>
+              </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  {allProducts.map((product, index) => (
-                    <div key={product.id} className="space-y-4">
-                      {pack.category === 'regional' && (
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
-                            {index + 1}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Heart className="w-4 h-4 text-red-500" />
-                            <h3 className="text-xl font-semibold text-primary">{product.producer.name}</h3>
-                            <Badge variant="outline" className="text-xs">
-                              {product.category === 'carnes' ? 'Carnicería' : 
-                               product.category === 'queso' ? 'Quesería' : 
-                               product.category === 'conservas' ? 'Conservera' :
-                               product.category === 'aceites' ? 'Almazara' :
-                               'Productor'}
-                            </Badge>
-                          </div>
-                        </div>
-                      )}
-                      
-                      <Card className="overflow-hidden">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+                  {pack.products.map((product, index) => (
+                    <div key={`${product.name}-${index}`} className="space-y-4">
+                      <Card className="overflow-hidden border-l-4 border-l-primary/30">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-0">
                           {/* Product Image */}
                           <div className="relative">
                             <img 
-                              src={product.image} 
+                              src={product.companyLogo} 
                               alt={product.name}
-                              className="w-full h-48 md:h-full object-cover"
+                              className="w-full h-32 md:h-full object-cover bg-muted"
                             />
-                            <div className="absolute top-3 left-3 flex flex-wrap gap-1">
-                              {product.badges.map((badge) => (
-                                <Badge 
-                                  key={badge} 
-                                  variant="secondary" 
-                                  className="text-xs bg-background/90 text-foreground"
-                                >
-                                  {badge}
-                                </Badge>
-                              ))}
+                            <div className="absolute bottom-2 left-2">
+                              <Badge variant="secondary" className="text-xs bg-background/90">
+                                {product.company}
+                              </Badge>
                             </div>
                           </div>
                           
                           {/* Product Info */}
-                          <div className="md:col-span-2 p-6">
+                          <div className="md:col-span-3 p-6">
                             <div className="flex justify-between items-start mb-3">
-                              <div>
+                              <div className="flex-1">
                                 <h4 className="text-lg font-semibold text-primary mb-1">
                                   {product.name}
                                 </h4>
-                                <div className="flex items-center text-sm text-muted-foreground mb-2">
-                                  <MapPin className="w-4 h-4 mr-1" />
-                                  {product.producer.name} - {product.producer.location}
-                                  {product.producer.distance && (
-                                    <Badge variant="outline" className="ml-2 text-xs">
-                                      {product.producer.distance}
-                                    </Badge>
-                                  )}
+                                <p className="text-muted-foreground text-sm leading-relaxed mb-2">
+                                  {product.description}
+                                </p>
+                                <div className="flex items-center text-sm text-muted-foreground">
+                                  <img 
+                                    src={product.companyLogo} 
+                                    alt={product.company}
+                                    className="w-4 h-4 object-contain mr-2"
+                                  />
+                                  Producido por {product.company}
                                 </div>
                               </div>
-                              <div className="text-right">
-                                <div className="text-xl font-bold text-primary">
-                                  €{product.price.toFixed(2)}
-                                </div>
-                                {product.originalPrice && (
-                                  <div className="text-sm text-muted-foreground line-through">
-                                    €{product.originalPrice.toFixed(2)}
-                                  </div>
-                                )}
-                                {product.weight && (
-                                  <div className="text-xs text-muted-foreground">
-                                    {product.weight}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            
-                            <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
-                              {product.description}
-                            </p>
-
-                            {pack.category === 'regional' && (
-                              <div className="mb-4">
-                                <h5 className="font-medium mb-2">Qué puedes hacer:</h5>
-                                <div className="grid grid-cols-2 gap-2">
-                                  <span className="text-sm text-muted-foreground flex items-center gap-1">
-                                    • Degustación de {product.category === 'carnes' ? 'cecina recién cortada' : product.category === 'queso' ? 'queso recién curado' : 'productos selectos'}
-                                  </span>
-                                  <span className="text-sm text-muted-foreground flex items-center gap-1">
-                                    • Visita al {product.category === 'carnes' ? 'secadero' : product.category === 'queso' ? 'proceso de maduración' : 'taller artesano'}
-                                  </span>
-                                </div>
-                              </div>
-                            )}
-                            
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                {product.available ? (
-                                  <Badge variant="outline" className="text-green-600 border-green-600">
-                                    ✓ Disponible
-                                  </Badge>
-                                ) : (
-                                  <Badge variant="outline" className="text-red-600 border-red-600">
-                                    ✗ Agotado
-                                  </Badge>
-                                )}
-                                {product.stock && product.stock < 10 && (
-                                  <Badge variant="outline" className="text-orange-600 border-orange-600">
-                                    ¡Últimas {product.stock} unidades!
-                                  </Badge>
-                                )}
-                              </div>
-                              
-                              {pack.customizable && (
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm text-muted-foreground">Cantidad:</span>
-                                  <div className="flex items-center gap-1">
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="w-8 h-8 p-0"
-                                      onClick={() => handleQuantityChange(product.id, (quantities[product.id] || 1) - 1)}
-                                    >
-                                      -
-                                    </Button>
-                                    <span className="w-8 text-center text-sm">
-                                      {quantities[product.id] || 1}
-                                    </span>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="w-8 h-8 p-0"
-                                      onClick={() => handleQuantityChange(product.id, (quantities[product.id] || 1) + 1)}
-                                    >
-                                      +
-                                    </Button>
-                                  </div>
-                                </div>
-                              )}
                             </div>
                           </div>
                         </div>
@@ -354,15 +237,28 @@ const PackDetail = () => {
               </CardContent>
             </Card>
 
-            {/* Regional Product Filters - Only for regional packs */}
-            {pack.category === 'regional' && (
-              <RegionalProductFilters 
-                region={pack.region}
-                currentProducts={allProducts}
-                onAddProduct={handleAddProduct}
-                consumptionStyle={consumptionStyle}
-                currentTotal={getTotalPrice()}
-              />
+            {/* Added Value */}
+            {pack.addedValue && pack.addedValue.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Gift className="w-5 h-5 text-primary" />
+                    Valor añadido
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {pack.addedValue.map((value, index) => (
+                      <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+                        <div className="w-8 h-8 bg-primary/20 text-primary rounded-full flex items-center justify-center">
+                          <Gift className="w-4 h-4" />
+                        </div>
+                        <span className="text-sm font-medium">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             )}
           </div>
 
@@ -378,91 +274,105 @@ const PackDetail = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {consumptionStyle && (
-                    <div className="p-3 bg-muted/30 rounded-lg mb-4">
-                      <div className="flex justify-between text-sm">
-                        <span>Estilo: {consumptionStyle}</span>
-                        <span className="font-medium">
-                          Límite: €{consumptionStyle === 'cazador' ? '35' : consumptionStyle === 'tribu' ? '60' : '90'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm mt-1">
-                        <span>Gastado:</span>
-                        <span className={`font-medium ${getTotalPrice() > (consumptionStyle === 'cazador' ? 35 : consumptionStyle === 'tribu' ? 60 : 90) ? 'text-red-600' : 'text-green-600'}`}>
-                          €{getTotalPrice().toFixed(2)}
-                        </span>
-                      </div>
+                <div className="space-y-4">
+                  <div className="text-center p-4 bg-muted/30 rounded-lg">
+                    <div className="text-3xl font-bold text-primary mb-1">
+                      {pack.price}€
                     </div>
-                  )}
-                  
-                  {allProducts.map((product) => (
-                    <div key={product.id} className="flex justify-between text-sm">
-                      <span className="flex-1 truncate">
-                        {product.name} 
-                        {pack.customizable && quantities[product.id] > 1 && (
-                          <span className="text-muted-foreground"> x{quantities[product.id] || 1}</span>
-                        )}
-                      </span>
-                      <span className="font-medium">
-                        €{(product.price * (quantities[product.id] || 1)).toFixed(2)}
-                      </span>
+                    <div className="text-sm text-muted-foreground">
+                      Envío incluido
                     </div>
-                  ))}
-                  <Separator />
-                  <div className="flex justify-between font-bold text-lg">
-                    <span>Total</span>
-                    <span className="text-primary">€{getTotalPrice().toFixed(2)}</span>
                   </div>
-                  {pack.freeShippingFrom && getTotalPrice() >= pack.freeShippingFrom && (
-                    <div className="text-green-600 text-sm flex items-center gap-1">
-                      <Truck className="w-4 h-4" />
-                      ¡Envío gratuito incluido!
+                  
+                  <Separator />
+                  
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Productos incluidos:</span>
+                      <span className="font-medium">{pack.products.length}</span>
                     </div>
-                  )}
-                </div>
-                
-                <div className="mt-6 space-y-3">
+                    <div className="flex justify-between">
+                      <span>Región:</span>
+                      <span className="font-medium">{pack.region}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Categoría:</span>
+                      <span className="font-medium">{pack.category}</span>
+                    </div>
+                  </div>
+                  
+                  <Separator />
+                  
                   <Button 
-                    className="w-full" 
-                    size="lg"
                     onClick={handleAddToCart}
+                    className="w-full"
+                    size="lg"
                   >
                     <ShoppingCart className="w-4 h-4 mr-2" />
-                    Añadir al Carrito
+                    Añadir al carrito
                   </Button>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">
-                      <Heart className="w-4 h-4 mr-1" />
-                      Favoritos
-                    </Button>
-                    <Button variant="outline" size="sm" className="flex-1" onClick={handleShare}>
-                      <Share2 className="w-4 h-4 mr-1" />
-                      Compartir
-                    </Button>
+                  
+                  <Button 
+                    onClick={handleShare}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    <Share2 className="w-4 h-4 mr-2" />
+                    Compartir pack
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quality Features */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Garantías de calidad</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {pack.qualitySeal && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <Award className="w-5 h-5 text-primary" />
+                      <span>Sello Origen verificado</span>
+                    </div>
+                  )}
+                  {pack.fastShipping && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <Truck className="w-5 h-5 text-green-600" />
+                      <span>Envío rápido garantizado</span>
+                    </div>
+                  )}
+                  {pack.sustainablePackaging && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <Leaf className="w-5 h-5 text-green-600" />
+                      <span>Embalaje sostenible</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-3 text-sm">
+                    <Star className="w-5 h-5 text-yellow-500" />
+                    <span>{pack.rating}/5 basado en {pack.reviews} valoraciones</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Producer Info */}
+            {/* Loyalty Program */}
             <Card>
               <CardHeader>
-                <CardTitle>Nuestros Productores</CardTitle>
+                <CardTitle className="text-sm">🎯 Programa de Fidelización</CardTitle>
               </CardHeader>
-              <CardContent className="text-sm space-y-2">
-                <p className="text-muted-foreground mb-3">
-                  Trabajamos directamente con artesanos locales para garantizar la máxima calidad y autenticidad.
-                </p>
-                {allProducts.map((product) => (
-                  <div key={product.id} className="flex items-center gap-2 p-2 bg-muted/20 rounded">
-                    <MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                    <div>
-                      <div className="font-medium">{product.producer.name}</div>
-                      <div className="text-muted-foreground">{product.producer.location}</div>
-                    </div>
+              <CardContent>
+                <div className="space-y-2 text-xs">
+                  <p className="text-muted-foreground">
+                    Gana <strong>{Math.round(pack.price * 0.1)} puntos</strong> con esta compra
+                  </p>
+                  <div className="space-y-1">
+                    <div>🚚 1000 puntos = Envío gratis</div>
+                    <div>🧴 1500 puntos = Producto regalo</div>
+                    <div>💸 2000 puntos = 10% descuento</div>
                   </div>
-                ))}
+                </div>
               </CardContent>
             </Card>
           </div>
