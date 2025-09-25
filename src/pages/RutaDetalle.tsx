@@ -116,12 +116,21 @@ const RutaDetalle = () => {
 
         {/* Content */}
         <div className="container mx-auto px-6 py-12">
-          <div className="max-w-4xl mx-auto space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             
-            {/* Route Stops */}
-            <section>
-              <div className="space-y-6">
-                {route.stops.map((stop, index) => (
+            {/* Main Content - Left Side */}
+            <div className="lg:col-span-2 space-y-8">
+              
+              {/* Route Experience */}
+              <section className="bg-card rounded-lg p-6 border">
+                <h2 className="text-2xl font-bold text-primary mb-4">La Experiencia</h2>
+                <p className="text-muted-foreground leading-relaxed">{route.narrative}</p>
+              </section>
+              
+              {/* Route Stops */}
+              <section>
+                <div className="space-y-6">
+                  {route.stops.map((stop, index) => (
                   <div key={stop.id} className="bg-white border border-gray-200 rounded-lg p-6 relative shadow-sm">
                     {/* Stop number badge */}
                     <div className="flex items-start justify-between mb-4">
@@ -188,39 +197,43 @@ const RutaDetalle = () => {
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Route Map */}
-            <RouteMap routeTitle={route.title} />
-
-            {/* Daily Recommendations */}
-            <RouteDayRecommendations recommendations={route.dailyRecommendations} />
-
-            {/* Practical Information */}
-            <RoutePracticalInfo 
-              practicalInfo={route.practicalInfo} 
-              difficulty={route.difficulty}
-              onShare={handleShare}
-              onPrint={handlePrint}
-            />
-
-            {/* Rating Section */}
-            <section>
-              <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-8 text-center">
-                <div className="flex items-center justify-center space-x-2 mb-4">
-                  <Star className="w-6 h-6 text-secondary fill-current" />
-                  <h3 className="text-xl font-semibold text-primary">Valoración destacada</h3>
+                  ))}
                 </div>
-                <p className="text-lg italic text-muted-foreground mb-4">
-                  "{route.rating}"
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Valoración de {route.participants} personas que han realizado esta ruta
-                </p>
-              </div>
-            </section>
+              </section>
+              
+              {/* Rating Section */}
+              <section>
+                <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-8 text-center">
+                  <div className="flex items-center justify-center space-x-2 mb-4">
+                    <Star className="w-6 h-6 text-secondary fill-current" />
+                    <h3 className="text-xl font-semibold text-primary">Valoración de la ruta</h3>
+                  </div>
+                  <p className="text-lg italic text-muted-foreground mb-4">
+                    "{route.rating}"
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Valoración de {route.participants} personas que han realizado esta ruta
+                  </p>
+                </div>
+              </section>
+            </div>
+
+            {/* Right Sidebar */}
+            <div className="lg:col-span-1 space-y-6">
+              {/* Route Map */}
+              <RouteMap routeTitle={route.title} />
+
+              {/* Daily Recommendations */}
+              <RouteDayRecommendations recommendations={route.dailyRecommendations} />
+
+              {/* Practical Information */}
+              <RoutePracticalInfo 
+                practicalInfo={route.practicalInfo} 
+                difficulty={route.difficulty}
+                onShare={handleShare}
+                onPrint={handlePrint}
+              />
+            </div>
 
           </div>
         </div>
