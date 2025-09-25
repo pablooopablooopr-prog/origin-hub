@@ -120,91 +120,87 @@ const RutaDetalle = () => {
         <div className="container mx-auto px-6 py-12">
           <div className="max-w-4xl mx-auto space-y-12">
             
-            {/* Narrative Description */}
-            <section>
-              <h2 className="text-3xl font-bold text-primary mb-6">La experiencia</h2>
-              <div className="bg-card rounded-lg p-8 shadow-soft">
-                <p className="text-lg leading-relaxed text-muted-foreground">
-                  {route.narrative}
-                </p>
-              </div>
-            </section>
+            {/* Route Map */}
+            <RouteMap routeTitle={route.title} />
 
             {/* Route Stops */}
             <section>
-              <h2 className="text-3xl font-bold text-primary mb-6">Paradas de la ruta</h2>
               <div className="space-y-6">
                 {route.stops.map((stop, index) => (
-                  <Card key={stop.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                    <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="text-3xl">{stop.typeIcon}</div>
-                          <div>
-                            <CardTitle className="text-xl text-primary">{stop.name}</CardTitle>
-                            <CardDescription className="text-base font-medium text-secondary">
-                              {stop.type}
-                            </CardDescription>
-                          </div>
-                        </div>
-                        <Badge variant="secondary" className="text-sm">
-                          Parada {index + 1}
-                        </Badge>
-                      </div>
-                    </CardHeader>
+                  <Card key={stop.id} className="overflow-hidden">
                     <CardContent className="p-6">
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-4">
-                          <div>
-                            <h4 className="font-semibold text-primary mb-2">Qué puedes hacer</h4>
-                            <ul className="space-y-1">
-                              {stop.whatToDo.map((activity, idx) => (
-                                <li key={idx} className="text-sm text-muted-foreground flex items-center">
-                                  <div className="w-1.5 h-1.5 bg-secondary rounded-full mr-2 flex-shrink-0" />
-                                  {activity}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                          
-                          <div>
-                            <h4 className="font-semibold text-primary mb-2">Información práctica</h4>
-                            <div className="space-y-2 text-sm text-muted-foreground">
-                              <div className="flex items-start space-x-2">
-                                <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                                <span>{stop.address}</span>
-                              </div>
-                              <div className="flex items-start space-x-2">
-                                <Clock className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                                <span>{stop.recommendedHours}</span>
-                              </div>
-                              {stop.externalLink && (
-                                <div className="flex items-start space-x-2">
-                                  <ExternalLink className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                                  <a 
-                                    href={stop.externalLink} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="text-primary hover:underline"
-                                  >
-                                    Sitio web
-                                  </a>
-                                </div>
-                              )}
+                      <div className="flex items-start space-x-4 mb-4">
+                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-2xl">{stop.typeIcon}</span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-start justify-between mb-2">
+                            <div>
+                              <h3 className="text-xl font-bold text-primary">{stop.name}</h3>
+                              <p className="text-secondary font-medium">{stop.type}</p>
+                            </div>
+                            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                              <span className="text-white text-sm font-bold">{index + 1}</span>
                             </div>
                           </div>
-                        </div>
-                        
-                        <div className="space-y-4">
-                          <div>
-                            <h4 className="font-semibold text-primary mb-2">Destacados</h4>
-                            <div className="space-y-2">
-                              {stop.highlights.map((highlight, idx) => (
-                                <div key={idx} className="flex items-center space-x-2">
-                                  <Star className="w-4 h-4 text-secondary fill-current flex-shrink-0" />
-                                  <span className="text-sm text-muted-foreground">{highlight}</span>
+                          <p className="text-muted-foreground mb-6">{stop.description}</p>
+                          
+                          <div className="grid md:grid-cols-2 gap-6">
+                            <div>
+                              <h4 className="font-semibold text-primary mb-3">Qué puedes hacer:</h4>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                {stop.whatToDo.map((activity, idx) => (
+                                  <div key={idx} className="flex items-start space-x-2">
+                                    <div className="w-1.5 h-1.5 bg-secondary rounded-full mt-2 flex-shrink-0" />
+                                    <span className="text-sm text-muted-foreground">{activity}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <h4 className="font-semibold text-primary mb-3">Destacados:</h4>
+                              <div className="space-y-2">
+                                {stop.highlights.map((highlight, idx) => (
+                                  <div key={idx} className="flex items-center space-x-2">
+                                    <Star className="w-4 h-4 text-secondary fill-current flex-shrink-0" />
+                                    <span className="text-sm text-muted-foreground">{highlight}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="grid md:grid-cols-2 gap-6 mt-6">
+                            <div>
+                              <h4 className="font-semibold text-primary mb-2 flex items-center">
+                                <MapPin className="w-4 h-4 mr-2" />
+                                Dirección
+                              </h4>
+                              <p className="text-sm text-muted-foreground">{stop.address}</p>
+                            </div>
+                            
+                            <div>
+                              <h4 className="font-semibold text-primary mb-2 flex items-center">
+                                <Clock className="w-4 h-4 mr-2" />
+                                Horarios
+                              </h4>
+                              <p className="text-sm text-muted-foreground">{stop.schedule}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-6">
+                            <h4 className="font-semibold text-primary mb-3">Reseñas destacadas:</h4>
+                            <div className="bg-muted/30 border-l-4 border-secondary p-4 rounded-r-lg">
+                              <div className="flex items-center space-x-2 mb-2">
+                                <div className="flex">
+                                  {[...Array(stop.featuredReview.rating)].map((_, i) => (
+                                    <Star key={i} className="w-4 h-4 text-secondary fill-current" />
+                                  ))}
                                 </div>
-                              ))}
+                                <span className="font-medium text-primary">{stop.featuredReview.author}</span>
+                              </div>
+                              <p className="text-sm italic text-muted-foreground">"{stop.featuredReview.comment}"</p>
                             </div>
                           </div>
                         </div>
@@ -214,9 +210,6 @@ const RutaDetalle = () => {
                 ))}
               </div>
             </section>
-
-            {/* Route Map */}
-            <RouteMap routeTitle={route.title} />
 
             {/* Daily Recommendations */}
             <RouteDayRecommendations recommendations={route.dailyRecommendations} />

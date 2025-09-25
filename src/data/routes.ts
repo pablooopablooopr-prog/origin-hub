@@ -7,13 +7,19 @@ export interface RouteStop {
   name: string;
   type: string;
   typeIcon: string;
+  description: string;
   whatToDo: string[];
   address: string;
-  recommendedHours: string;
+  schedule: string;
   coordinates: [number, number];
   images: string[];
   externalLink?: string;
   highlights: string[];
+  featuredReview: {
+    author: string;
+    rating: number;
+    comment: string;
+  };
 }
 
 export interface RouteDetail {
@@ -48,264 +54,249 @@ export const routesData: RouteDetail[] = [
     participants: 42,
     image: oliveOilBottle,
     difficulty: "Fácil",
-    narrative: "Adéntrate en los viñedos menos conocidos de La Rioja, donde pequeñas bodegas familiares crean vinos excepcionales lejos de las rutas turísticas masivas. Esta ruta exclusiva te llevará por cavas centenarias, viñedos ecológicos y encuentros íntimos con enólogos que mantienen vivas tradiciones ancestrales de elaboración.",
+    narrative: "Sumérgete en los secretos mejor guardados de La Rioja. Esta ruta te llevará por bodegas familiares centenarias donde el tiempo parece haberse detenido. Conocerás a maestros bodegueros que han heredado técnicas ancestrales y que aún hoy elaboran vinos de forma artesanal. Cada parada es una ventana al alma vinícola riojana, donde podrás degustar caldos únicos mientras escuchas historias transmitidas de generación en generación.",
     stops: [
       {
-        id: "bodega-el-secreto",
-        name: "Bodega El Secreto",
+        id: "bodega-1",
+        name: "Bodega El Rincón Secreto",
         type: "Bodega familiar",
         typeIcon: "🍷",
-        whatToDo: ["Cata de vinos únicos", "Visita a cavas del s. XVIII", "Charla con el enólogo", "Comprar botellas exclusivas"],
-        address: "Camino del Viñedo, 15, Haro, La Rioja",
-        recommendedHours: "10:00 - 12:00 (cata matutina)",
-        coordinates: [-2.8452, 42.5840],
+        description: "Bodega familiar centenaria donde el vino se elabora como hace 100 años",
+        whatToDo: [
+          "Visita guiada por los viñedos centenarios",
+          "Cata de 5 vinos de la cosecha actual",
+          "Charla con el enólogo sobre técnicas tradicionales",
+          "Compra directa de botellas exclusivas"
+        ],
+        address: "Camino de las Viñas, 15, Haro",
+        schedule: "Lunes a Domingo: 10:00-18:00",
+        coordinates: [-2.8449, 42.5836],
         images: [oliveOilBottle],
-        externalLink: "https://bodega-secreto.com",
-        highlights: ["Vinos de parcelas únicas", "Método tradicional familiar", "Cata en barricas centenarias"]
+        externalLink: "https://bodegaelrinconscreto.com",
+        highlights: [
+          "Barricas de roble francés centenarias",
+          "Método de fermentación tradicional",
+          "Vista panorámica de La Rioja Alta"
+        ],
+        featuredReview: {
+          author: "Ana Martínez",
+          rating: 5,
+          comment: "Una experiencia única. El vino artesano y el trato familiar hacen de esta visita algo inolvidable."
+        }
       },
       {
-        id: "vinedo-ecologico",
-        name: "Viñedo Ecológico Los Terruños",
-        type: "Viñedo biodinámico",
+        id: "bodega-2",
+        name: "Viñedos del Abuelo",
+        type: "Viñedo tradicional",
         typeIcon: "🍇",
-        whatToDo: ["Paseo entre viñas", "Aprender viticultura ecológica", "Degustación al aire libre", "Fotografiar paisajes"],
-        address: "Colina de Briones, La Rioja",
-        recommendedHours: "12:30 - 14:00 (luz perfecta)",
-        coordinates: [-2.7756, 42.5234],
-        images: [oliveOilBottle],
-        highlights: ["Certificación ecológica", "Vistas panorámicas", "Filosofía biodinámica"]
-      },
-      {
-        id: "taberna-vinatera",
-        name: "Taberna La Vinatera",
-        type: "Taberna tradicional",
-        typeIcon: "🍴",
-        whatToDo: ["Almuerzo riojano auténtico", "Maridaje con vinos locales", "Tapas de la región", "Ambiente local"],
-        address: "Plaza Mayor, 8, Labastida",
-        recommendedHours: "14:00 - 16:00 (almuerzo tradicional)",
-        coordinates: [-2.7892, 42.5678],
-        images: [oliveOilBottle],
-        highlights: ["Chuletillas al sarmiento", "Patatas a la riojana", "Vinos de la casa"]
-      },
-      {
-        id: "museo-vino-cultura",
-        name: "Museo del Vino y la Cultura",
-        type: "Centro cultural",
-        typeIcon: "🏛️",
-        whatToDo: ["Historia vitivinícola", "Herramientas antiguas", "Cata educativa", "Talleres temáticos"],
-        address: "Calle Cultura, 22, Laguardia",
-        recommendedHours: "16:30 - 18:00 (visita cultural)",
-        coordinates: [-2.5834, 42.5567],
-        images: [oliveOilBottle],
-        highlights: ["Colección histórica única", "Cata didáctica", "Arquitectura medieval"]
+        description: "Viñedos de más de 80 años con cepas autóctonas únicas en la región",
+        whatToDo: [
+          "Paseo entre viñas centenarias",
+          "Explicación sobre variedades autóctonas",
+          "Degustación de uvas según temporada",
+          "Fotografía en los paisajes vinícolas"
+        ],
+        address: "Carretera del Vino km 3, Briones",
+        schedule: "Martes a Domingo: 9:00-17:00",
+        coordinates: [-2.7721, 42.5478],
+        images: [cheeseWheel],
+        highlights: [
+          "Cepas de más de 80 años",
+          "Variedades autóctonas recuperadas",
+          "Paisajes únicos de La Rioja"
+        ],
+        featuredReview: {
+          author: "Miguel Santos",
+          rating: 5,
+          comment: "Impresionante pasear entre viñas tan antiguas. El conocimiento del guía sobre las variedades locales es excepcional."
+        }
       }
     ],
     dailyRecommendations: [
-      "Comienza temprano en la bodega familiar para disfrutar de la cata sin prisas y conocer la historia familiar.",
-      "El viñedo ecológico es perfecto al mediodía para fotografías con la mejor luz natural.",
-      "Termina en el museo para consolidar todo lo aprendido sobre la cultura vinícola riojana."
+      "Empieza temprano en Bodega El Rincón Secreto (10:00) para disfrutar de la cata completa",
+      "Almuerzo tradicional en el pueblo de Haro con maridaje local",
+      "Tarde en los Viñedos del Abuelo cuando la luz es perfecta para fotografías",
+      "Reserva con antelación, especialmente durante la época de vendimia"
     ],
     practicalInfo: {
-      level: "Fácil - Apto para amantes del vino",
-      duration: "8 horas (día completo)",
+      level: "Fácil",
+      duration: "Día completo (8-10 horas)",
       recommendedPeople: "2-8 personas",
       localTips: [
-        "Designa un conductor responsable o contrata transporte",
-        "Lleva ropa cómoda para caminar entre viñas",
-        "Pregunta por las añadas especiales disponibles solo en bodega",
-        "La mejor época es vendimia (septiembre) o primavera (mayo-junio)"
+        "Coche imprescindible (distancias considerables)",
+        "Ropa cómoda para caminar por el campo", 
+        "Conductor designado para las catas de vino",
+        "Mejor época: primavera y otoño para el Rioja"
       ]
     }
   },
   {
     id: "panaderia-dulce-tradicion",
     title: "Panadería y Dulce Tradición",
-    description: "Hornos centenarios y repostería de convento",
-    duration: "Weekend",
-    businesses: 6,
-    rating: "Dulzura pura y auténtica",
+    description: "Hornos centenarios y dulces artesanos de Castilla",
+    duration: "Medio día",
+    businesses: 3,
+    rating: "El sabor auténtico de nuestros ancestros",
     participants: 28,
     image: cheeseWheel,
-    difficulty: "Moderada",
-    narrative: "Sumérgete en el mundo aromático de los hornos tradicionales y la repostería conventual, donde recetas secretas pasan de generación en generación. Esta ruta de fin de semana te lleva por panaderías centenarias, conventos donde las monjas elaboran dulces únicos, y obradores donde aún se trabaja como antaño.",
+    difficulty: "Fácil",
+    narrative: "Despierta todos tus sentidos en una ruta que te transportará a la esencia más pura de la repostería tradicional castellana. Visitarás hornos de leña que llevan generaciones encendidos, donde maestros panaderos elaboran cada pieza con la misma pasión que sus antepasados. El aroma del pan recién horneado y los dulces conventuales te acompañarán en este viaje gastronómico único.",
     stops: [
       {
-        id: "horno-san-nicolas",
-        name: "Horno de San Nicolás",
-        type: "Panadería histórica",
-        typeIcon: "🥖",
-        whatToDo: ["Ver proceso de amasado", "Hornear tu propio pan", "Degustación de masas madre", "Comprar pan artesano"],
-        address: "Calle del Horno, 5, Toledo",
-        recommendedHours: "07:00 - 09:00 (amasado matutino)",
-        coordinates: [-4.0273, 39.8628],
-        images: [cheeseWheel],
-        highlights: ["Horno de leña del s. XVI", "Pan de masa madre centenaria", "Técnicas tradicionales"]
+        id: "panaderia-1",
+        name: "Horno de Leña San Miguel",
+        type: "Panadería tradicional",
+        typeIcon: "🍞",
+        description: "Horno de leña centenario donde aún se cuece el pan como antaño",
+        whatToDo: [
+          "Demostración de amasado tradicional",
+          "Horneado en horno de leña centenario",
+          "Degustación de panes artesanos",
+          "Taller de elaboración de hogaza"
+        ],
+        address: "Plaza del Horno, 7, Medina del Campo",
+        schedule: "Lunes a Sábado: 6:00-14:00 y 17:00-20:00",
+        coordinates: [-4.9154, 41.3069],
+        images: [seafoodDisplay],
+        highlights: [
+          "Horno de leña del siglo XVIII",
+          "Técnicas de amasado ancestrales",
+          "Pan de centeno tradicional"
+        ],
+        featuredReview: {
+          author: "Carmen López",
+          rating: 5,
+          comment: "Ver cómo hacen el pan igual que hace 200 años es emocionante. El sabor es incomparable."
+        }
       },
       {
-        id: "convento-santa-clara",
+        id: "convento-1",
         name: "Convento de Santa Clara",
         type: "Repostería conventual",
         typeIcon: "🍰",
-        whatToDo: ["Comprar dulces de monja", "Conocer recetas secretas", "Degustación exclusiva", "Historia conventual"],
-        address: "Plaza del Convento, 3, Tordesillas",
-        recommendedHours: "10:00 - 12:00 (venta matutina)",
-        coordinates: [-5.0068, 41.5009],
-        images: [cheeseWheel],
-        highlights: ["Yemas de Santa Teresa", "Recetas del s. XVII", "Venta tradicional por torno"]
-      },
-      {
-        id: "obrador-miel-artesana",
-        name: "Obrador de Miel Artesana",
-        type: "Taller de repostería",
-        typeIcon: "🍯",
-        whatToDo: ["Elaborar dulces con miel", "Conocer tipos de miel", "Taller práctico", "Cata de mieles"],
-        address: "Camino de las Colmenas, 12, El Escorial",
-        recommendedHours: "15:00 - 17:00 (taller de tarde)",
-        coordinates: [-4.1479, 40.5897],
-        images: [cheeseWheel],
-        highlights: ["Miel de montaña pura", "Taller interactivo", "Dulces sin azúcar añadido"]
-      },
-      {
-        id: "pasteleria-francesa",
-        name: "Pastelería La Francesa",
-        type: "Pastelería clásica",
-        typeIcon: "🥐",
-        whatToDo: ["Ver técnica de hojaldre", "Degustación de croissants", "Café y dulces", "Comprar productos frescos"],
-        address: "Calle Mayor, 45, Segovia",
-        recommendedHours: "08:00 - 10:00 (productos recién hechos)",
-        coordinates: [-4.1171, 40.9429],
-        images: [cheeseWheel],
-        highlights: ["Croissants mantecosos", "Técnica francesa auténtica", "Café de especialidad"]
-      },
-      {
-        id: "chocolateria-artesana",
-        name: "Chocolatería Artesana Cacao",
-        type: "Taller de chocolate",
-        typeIcon: "🍫",
-        whatToDo: ["Elaborar chocolates", "Degustación de cacaos", "Taller de bombones", "Historia del chocolate"],
-        address: "Calle del Cacao, 8, Astorga",
-        recommendedHours: "11:00 - 13:00 (taller matutino)",
-        coordinates: [-6.0679, 42.4571],
-        images: [cheeseWheel],
-        highlights: ["Cacao bean to bar", "Chocolates únicos", "Taller interactivo"]
-      },
-      {
-        id: "cafe-tostaduria",
-        name: "Café y Tostaduria Origen",
-        type: "Tostaduria artesana",
-        typeIcon: "☕",
-        whatToDo: ["Ver proceso de tostado", "Cata de cafés", "Maridaje café-dulce", "Comprar café en grano"],
-        address: "Plaza del Mercado, 15, Salamanca",
-        recommendedHours: "16:30 - 18:00 (tostado de tarde)",
-        coordinates: [-5.6640, 40.9701],
-        images: [cheeseWheel],
-        highlights: ["Tostado en pequeños lotes", "Cafés de origen único", "Cata profesional"]
+        description: "Dulces elaborados por las monjas siguiendo recetas centenarias",
+        whatToDo: [
+          "Compra de dulces conventuales",
+          "Historia de la repostería monacal",
+          "Degustación de especialidades del convento",
+          "Visita guiada por las instalaciones históricas"
+        ],
+        address: "Calle Convento, 12, Tordesillas",
+        schedule: "Lunes a Viernes: 9:30-13:00 y 16:00-18:30",
+        coordinates: [-5.0024, 41.5019],
+        images: [oliveOilBottle],
+        highlights: [
+          "Recetas conventuales del siglo XVI",
+          "Yemas de Santa Teresa artesanas",
+          "Tradición repostera ininterrumpida"
+        ],
+        featuredReview: {
+          author: "José Ramón",
+          rating: 5,
+          comment: "Los dulces más auténticos que he probado. La tradición se siente en cada bocado."
+        }
       }
     ],
     dailyRecommendations: [
-      "Sábado: Comienza muy temprano en el horno para ver todo el proceso, luego el convento y termina en el obrador de miel.",
-      "Domingo: Desayuno en la pastelería francesa, chocolatería a media mañana y café de especialidad por la tarde.",
-      "Lleva recipientes herméticos para conservar todo lo que compres durante la ruta."
+      "Visita matutina al horno (7:00) para ver el proceso completo de horneado",
+      "Media mañana en el convento para la compra de dulces frescos", 
+      "Almuerzo tradicional castellano con pan artesano",
+      "Lleva una cesta para transportar tus compras gastronómicas"
     ],
     practicalInfo: {
-      level: "Moderada - Incluye talleres prácticos",
-      duration: "2 días intensivos",
-      recommendedPeople: "4-10 personas (ideal para grupos)",
+      level: "Fácil",
+      duration: "Medio día (4-5 horas)",
+      recommendedPeople: "2-6 personas",
       localTips: [
-        "Reserva los talleres prácticos con una semana de antelación",
-        "Lleva ropa que pueda mancharse para los talleres",
-        "Desayuna ligero, ¡probarás mucho durante el día!",
-        "La mejor época es otoño-invierno (temporada de dulces navideños)"
+        "Madruga para ver el proceso de horneado completo",
+        "Lleva efectivo para las compras en el convento",
+        "Los dulces conventuales tienen horarios limitados",
+        "Mejor época: cualquier momento del año"
       ]
     }
   },
   {
     id: "mercados-temporada",
     title: "Mercados de Temporada",
-    description: "Productos frescos y productores de kilómetro 0",
-    duration: "2 días",
+    description: "Productos frescos y de proximidad en mercados tradicionales",
+    duration: "Mañana",
     businesses: 5,
-    rating: "Conecta con la tierra y sus frutos",
-    participants: 35,
+    rating: "La frescura y calidad que buscaba",
+    participants: 65,
     image: seafoodDisplay,
     difficulty: "Fácil",
-    narrative: "Descubre la magia de los mercados tradicionales donde los productores locales venden directamente los frutos de su trabajo. Esta ruta te conecta con la agricultura de temporada, los hortelanos que mantienen variedades autóctonas y los mercados que son el corazón social de cada pueblo. Una experiencia auténtica de producto kilómetro 0.",
+    narrative: "Descubre la autenticidad de los mercados tradicionales donde los productores locales ofrecen lo mejor de cada temporada. Esta ruta te conectará con el ritmo natural de la tierra, donde cada producto tiene su momento y cada vendedor conoce la historia de lo que ofrece. Una experiencia sensorial completa que despertará tu amor por los productos de proximidad.",
     stops: [
       {
-        id: "mercado-central-abastos",
-        name: "Mercado Central de Abastos",
+        id: "mercado-1",
+        name: "Mercado de San Miguel",
         type: "Mercado tradicional",
-        typeIcon: "🥬",
-        whatToDo: ["Comprar productos frescos", "Conocer productores locales", "Degustación de temporada", "Desayuno de mercado"],
-        address: "Plaza del Mercado, 1, Valencia",
-        recommendedHours: "08:00 - 10:00 (productos más frescos)",
-        coordinates: [-0.3774, 39.4739],
+        typeIcon: "🥕",
+        description: "Mercado centenario con productores locales de toda la comarca",
+        whatToDo: [
+          "Recorrido por puestos de productores locales",
+          "Degustación de productos de temporada",
+          "Charlas con agricultores sobre cultivos tradicionales",
+          "Compra directa de productos frescos"
+        ],
+        address: "Plaza del Mercado, s/n, Salamanca",
+        schedule: "Martes, Jueves y Sábados: 8:00-14:00",
+        coordinates: [-5.6640, 40.9701],
         images: [seafoodDisplay],
-        highlights: ["Productos de la huerta valenciana", "Arquitectura modernista", "Ambiente social auténtico"]
+        highlights: [
+          "Productos certificados de proximidad",
+          "Variedades autóctonas recuperadas", 
+          "Trato directo con productores"
+        ],
+        featuredReview: {
+          author: "Isabel Martín",
+          rating: 5,
+          comment: "Productos fresquísimos y trato personalizado. Cada puesto cuenta una historia diferente."
+        }
       },
       {
-        id: "huerta-ecologica",
-        name: "Huerta Ecológica La Verde",
-        type: "Explotación agrícola",
+        id: "finca-1",
+        name: "Huerta Ecológica El Bancal",
+        type: "Huerta ecológica",
         typeIcon: "🌱",
-        whatToDo: ["Visitar cultivos ecológicos", "Recoger productos", "Charla sobre agricultura sostenible", "Compra directa"],
-        address: "Camino de la Huerta, km 3, Murcia",
-        recommendedHours: "09:30 - 11:30 (recogida matutina)",
-        coordinates: [-1.1307, 37.9922],
-        images: [seafoodDisplay],
-        highlights: ["Agricultura biodinámica", "Variedades autóctonas", "Experiencia de recolección"]
-      },
-      {
-        id: "queseria-cabras-sierra",
-        name: "Quesería de Cabras de Sierra",
-        type: "Granja quesera",
-        typeIcon: "🐐",
-        whatToDo: ["Ver proceso de elaboración", "Conocer a las cabras", "Degustar quesos frescos", "Paseo por la sierra"],
-        address: "Sierra de Cazorla, Jaén",
-        recommendedHours: "12:00 - 14:00 (ordeño y elaboración)",
-        coordinates: [-2.9274, 37.9274],
-        images: [seafoodDisplay],
-        highlights: ["Queso fresco de cabra", "Entorno natural único", "Proceso artesanal"]
-      },
-      {
-        id: "cooperativa-olivarera",
-        name: "Cooperativa Olivarera Local",
-        type: "Cooperativa agrícola",
-        typeIcon: "🫒",
-        whatToDo: ["Proceso de prensado", "Cata de aceites nuevos", "Compra directa", "Charla con olivareros"],
-        address: "Calle Cooperativa, 25, Baeza",
-        recommendedHours: "15:00 - 17:00 (proceso de tarde)",
-        coordinates: [-3.4631, 37.9932],
-        images: [seafoodDisplay],
-        highlights: ["Aceite recién prensado", "Precios de cooperativa", "Variedades locales"]
-      },
-      {
-        id: "restaurante-producto-local",
-        name: "Restaurante Producto Local",
-        type: "Restaurante km 0",
-        typeIcon: "🍽️",
-        whatToDo: ["Comida con productos de la ruta", "Conocer al chef", "Maridaje con vinos locales", "Menú de temporada"],
-        address: "Plaza de los Productos, 3, Úbeda",
-        recommendedHours: "20:00 - 22:00 (cena con productos del día)",
-        coordinates: [-3.3706, 38.0138],
-        images: [seafoodDisplay],
-        highlights: ["Carta de temporada", "Productos de la ruta", "Cocina de autor local"]
+        description: "Producción ecológica familiar con más de 30 variedades de hortalizas",
+        whatToDo: [
+          "Visita guiada por los cultivos ecológicos",
+          "Recolección de verduras de temporada",
+          "Taller de compostaje natural",
+          "Degustación de productos recién cosechados"
+        ],
+        address: "Camino de la Huerta, km 2, Béjar",
+        schedule: "Todos los días: 10:00-18:00",
+        coordinates: [-5.7767, 40.3853],
+        images: [cheeseWheel],
+        highlights: [
+          "Certificación ecológica oficial",
+          "30 variedades de hortalizas",
+          "Método de cultivo biodinámico"
+        ],
+        featuredReview: {
+          author: "Antonio García",
+          rating: 5,
+          comment: "Increíble ver cómo se cultiva de forma tan respetuosa. Los sabores son intensos y puros."
+        }
       }
     ],
     dailyRecommendations: [
-      "Día 1: Madruga para el mercado, visita la huerta por la mañana y la quesería antes del almuerzo.",
-      "Día 2: Cooperativa por la tarde seguida de una cena especial con todos los productos descubiertos.",
-      "Pregunta siempre por la temporada actual y qué productos están en su mejor momento."
+      "Comienza en el mercado temprano (8:30) para encontrar la mejor selección",
+      "Visita la huerta a media mañana para ver los cultivos en plena actividad",
+      "Lleva una nevera portátil para mantener productos frescos",
+      "Pregunta por las variedades de temporada en cada puesto"
     ],
     practicalInfo: {
-      level: "Fácil - Ideal para familias",
-      duration: "2 días relajados",
-      recommendedPeople: "2-6 personas",
+      level: "Fácil", 
+      duration: "Media jornada (3-4 horas)",
+      recommendedPeople: "2-4 personas",
       localTips: [
-        "Lleva bolsas de tela para las compras en mercados",
-        "Madruga para encontrar los mejores productos",
-        "Pregunta por recetas tradicionales a los productores",
-        "La mejor época depende de la temporada que quieras descubrir"
+        "Madruga para encontrar la mejor selección",
+        "Lleva bolsas reutilizables para las compras",
+        "Los mercados tradicionales solo abren días específicos",
+        "Pregunta siempre por el origen de los productos"
       ]
     }
   }
