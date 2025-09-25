@@ -65,6 +65,25 @@ const PackDetail = () => {
   };
 
   const handleAddProduct = (product: Product) => {
+    if (consumptionStyle) {
+      const styles = [
+        { id: 'cazador', budgetLimit: 35 },
+        { id: 'tribu', budgetLimit: 60 },
+        { id: 'sabio', budgetLimit: 90 }
+      ];
+      const budgetLimit = styles.find(s => s.id === consumptionStyle)?.budgetLimit || 0;
+      const currentTotal = getTotalPrice();
+      
+      if (currentTotal + product.price > budgetLimit) {
+        toast({
+          title: "Presupuesto excedido",
+          description: `Este producto excedería tu presupuesto del estilo ${consumptionStyle}`,
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+    
     setAdditionalProducts(prev => [...prev, product]);
     toast({
       title: "Producto añadido",
@@ -341,6 +360,8 @@ const PackDetail = () => {
                 region={pack.region}
                 currentProducts={allProducts}
                 onAddProduct={handleAddProduct}
+                consumptionStyle={consumptionStyle}
+                currentTotal={getTotalPrice()}
               />
             )}
           </div>
@@ -358,6 +379,23 @@ const PackDetail = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
+                  {consumptionStyle && (
+                    <div className="p-3 bg-muted/30 rounded-lg mb-4">
+                      <div className="flex justify-between text-sm">
+                        <span>Estilo: {consumptionStyle}</span>
+                        <span className="font-medium">
+                          Límite: €{consumptionStyle === 'cazador' ? '35' : consumptionStyle === 'tribu' ? '60' : '90'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm mt-1">
+                        <span>Gastado:</span>
+                        <span className={`font-medium ${getTotalPrice() > (consumptionStyle === 'cazador' ? 35 : consumptionStyle === 'tribu' ? 60 : 90) ? 'text-red-600' : 'text-green-600'}`}>
+                          €{getTotalPrice().toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  
                   {allProducts.map((product) => (
                     <div key={product.id} className="flex justify-between text-sm">
                       <span className="flex-1 truncate">

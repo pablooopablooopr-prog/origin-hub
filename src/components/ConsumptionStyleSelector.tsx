@@ -16,7 +16,8 @@ const styles = [
     description: 'Descubre España paso a paso',
     icon: Target,
     color: 'bg-green-100 text-green-700 border-green-200',
-    priceRange: '€25-30',
+    priceRange: 'Hasta €35',
+    budgetLimit: 35,
     characteristics: ['Productos de iniciación', 'Calidad garantizada', 'Precio accesible']
   },
   {
@@ -25,7 +26,8 @@ const styles = [
     description: 'Comparte experiencias únicas',
     icon: Users,
     color: 'bg-blue-100 text-blue-700 border-blue-200',
-    priceRange: '€45-50',
+    priceRange: 'Hasta €60',
+    budgetLimit: 60,
     characteristics: ['Ideal para familias', 'Productos premium', 'Experiencia compartida']
   },
   {
@@ -34,10 +36,13 @@ const styles = [
     description: 'Los mejores productos artesanos',
     icon: Crown,
     color: 'bg-amber-100 text-amber-700 border-amber-200',
-    priceRange: '€85-100',
+    priceRange: 'Hasta €90',
+    budgetLimit: 90,
     characteristics: ['Máxima calidad', 'Productos exclusivos', 'Para expertos']
   }
 ];
+
+export { styles };
 
 const ConsumptionStyleSelector = ({ onStyleChange, currentStyle }: ConsumptionStyleSelectorProps) => {
   return (
