@@ -190,42 +190,44 @@ const RutaDetalle = () => {
                 </div>
               </section>
               
-              {/* Bottom sections - Rating and Actions */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Rating Section */}
-                <section>
-                  <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-8 text-center h-full">
-                    <div className="flex items-center justify-center space-x-2 mb-4">
-                      <Star className="w-6 h-6 text-secondary fill-current" />
-                      <h3 className="text-xl font-semibold text-primary">Valoración de la ruta</h3>
+              {/* Rating Section with Action Buttons */}
+              <section>
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                  {/* Rating Section - Takes 3 columns */}
+                  <div className="lg:col-span-3">
+                    <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-8 text-center h-full">
+                      <div className="flex items-center justify-center space-x-2 mb-4">
+                        <Star className="w-6 h-6 text-secondary fill-current" />
+                        <h3 className="text-xl font-semibold text-primary">Valoración de la ruta</h3>
+                      </div>
+                      <p className="text-lg italic text-muted-foreground mb-4">
+                        "{route.rating}"
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Valoración de {route.participants} personas que han realizado esta ruta
+                      </p>
                     </div>
-                    <p className="text-lg italic text-muted-foreground mb-4">
-                      "{route.rating}"
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Valoración de {route.participants} personas que han realizado esta ruta
-                    </p>
                   </div>
-                </section>
 
-                {/* Action Buttons Section */}
-                <section>
-                  <div className="bg-card rounded-lg p-8 border h-full flex flex-col justify-center space-y-4">
-                    <Button onClick={handleShare} variant="outline" size="lg" className="w-full">
-                      <Share2 className="w-5 h-5 mr-2" />
-                      Compartir Ruta
-                    </Button>
-                    <Button onClick={handlePrint} variant="outline" size="lg" className="w-full">
-                      <Printer className="w-5 h-5 mr-2" />
-                      Imprimir Ruta
-                    </Button>
-                    <Button variant="default" size="lg" className="w-full">
-                      <ExternalLink className="w-5 h-5 mr-2" />
-                      Personalizar Ruta
-                    </Button>
+                  {/* Action Buttons Section - Takes 1 column */}
+                  <div className="lg:col-span-1">
+                    <div className="bg-card rounded-lg p-4 border h-full flex flex-col justify-center space-y-3">
+                      <Button onClick={handleShare} variant="outline" size="sm" className="w-full">
+                        <Share2 className="w-4 h-4 mr-2" />
+                        Compartir Ruta
+                      </Button>
+                      <Button onClick={handlePrint} variant="outline" size="sm" className="w-full">
+                        <Printer className="w-4 h-4 mr-2" />
+                        Imprimir Ruta
+                      </Button>
+                      <Button variant="default" size="sm" className="w-full">
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Personalizar Ruta
+                      </Button>
+                    </div>
                   </div>
-                </section>
-              </div>
+                </div>
+              </section>
             </div>
 
             {/* Right Sidebar */}
@@ -240,8 +242,6 @@ const RutaDetalle = () => {
               <RoutePracticalInfo 
                 practicalInfo={route.practicalInfo} 
                 difficulty={route.difficulty}
-                onShare={handleShare}
-                onPrint={handlePrint}
               />
             </div>
 
