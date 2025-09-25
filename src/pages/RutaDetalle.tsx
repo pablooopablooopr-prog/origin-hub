@@ -4,9 +4,7 @@ import Footer from "@/components/Footer";
 import RouteMap from "@/components/RouteMap";
 import RouteDayRecommendations from "@/components/RouteDayRecommendations";
 import RoutePracticalInfo from "@/components/RoutePracticalInfo";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { getRouteById } from "@/data/routes";
 import { 
   Clock, 
@@ -118,98 +116,84 @@ const RutaDetalle = () => {
 
         {/* Content */}
         <div className="container mx-auto px-6 py-12">
-          <div className="max-w-4xl mx-auto space-y-12">
+          <div className="max-w-4xl mx-auto space-y-8">
             
-            {/* Route Map */}
-            <RouteMap routeTitle={route.title} />
-
             {/* Route Stops */}
             <section>
               <div className="space-y-6">
                 {route.stops.map((stop, index) => (
-                  <Card key={stop.id} className="overflow-hidden">
-                    <CardContent className="p-6">
-                      <div className="flex items-start space-x-4 mb-4">
-                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-2xl">{stop.typeIcon}</span>
+                  <div key={stop.id} className="bg-card border border-border rounded-xl p-6 relative">
+                    {/* Stop number badge */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-start space-x-4">
+                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0 text-white text-sm font-bold">
+                          {index + 1}
                         </div>
                         <div className="flex-1">
                           <div className="flex items-start justify-between mb-2">
                             <div>
-                              <h3 className="text-xl font-bold text-primary">{stop.name}</h3>
-                              <p className="text-secondary font-medium">{stop.type}</p>
-                            </div>
-                            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                              <span className="text-white text-sm font-bold">{index + 1}</span>
-                            </div>
-                          </div>
-                          <p className="text-muted-foreground mb-6">{stop.description}</p>
-                          
-                          <div className="grid md:grid-cols-2 gap-6">
-                            <div>
-                              <h4 className="font-semibold text-primary mb-3">Qué puedes hacer:</h4>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                {stop.whatToDo.map((activity, idx) => (
-                                  <div key={idx} className="flex items-start space-x-2">
-                                    <div className="w-1.5 h-1.5 bg-secondary rounded-full mt-2 flex-shrink-0" />
-                                    <span className="text-sm text-muted-foreground">{activity}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                            
-                            <div>
-                              <h4 className="font-semibold text-primary mb-3">Destacados:</h4>
-                              <div className="space-y-2">
-                                {stop.highlights.map((highlight, idx) => (
-                                  <div key={idx} className="flex items-center space-x-2">
-                                    <Star className="w-4 h-4 text-secondary fill-current flex-shrink-0" />
-                                    <span className="text-sm text-muted-foreground">{highlight}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div className="grid md:grid-cols-2 gap-6 mt-6">
-                            <div>
-                              <h4 className="font-semibold text-primary mb-2 flex items-center">
-                                <MapPin className="w-4 h-4 mr-2" />
-                                Dirección
-                              </h4>
-                              <p className="text-sm text-muted-foreground">{stop.address}</p>
-                            </div>
-                            
-                            <div>
-                              <h4 className="font-semibold text-primary mb-2 flex items-center">
-                                <Clock className="w-4 h-4 mr-2" />
-                                Horarios
-                              </h4>
-                              <p className="text-sm text-muted-foreground">{stop.schedule}</p>
-                            </div>
-                          </div>
-                          
-                          <div className="mt-6">
-                            <h4 className="font-semibold text-primary mb-3">Reseñas destacadas:</h4>
-                            <div className="bg-muted/30 border-l-4 border-secondary p-4 rounded-r-lg">
-                              <div className="flex items-center space-x-2 mb-2">
-                                <div className="flex">
-                                  {[...Array(stop.featuredReview.rating)].map((_, i) => (
-                                    <Star key={i} className="w-4 h-4 text-secondary fill-current" />
-                                  ))}
-                                </div>
-                                <span className="font-medium text-primary">{stop.featuredReview.author}</span>
-                              </div>
-                              <p className="text-sm italic text-muted-foreground">"{stop.featuredReview.comment}"</p>
+                              <h3 className="text-xl font-bold text-foreground mb-1">{stop.name}</h3>
+                              <p className="text-muted-foreground text-sm">{stop.type}</p>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                      <ExternalLink className="w-5 h-5 text-muted-foreground" />
+                    </div>
+
+                    <p className="text-muted-foreground mb-6 leading-relaxed">{stop.description}</p>
+
+                    <div className="mb-6">
+                      <h4 className="font-semibold text-foreground mb-3">Qué puedes hacer:</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        {stop.whatToDo.map((activity, idx) => (
+                          <div key={idx} className="flex items-start space-x-2">
+                            <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0" />
+                            <span className="text-sm text-muted-foreground">{activity}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6 mb-6">
+                      <div>
+                        <h4 className="font-medium text-foreground mb-2 flex items-center">
+                          <MapPin className="w-4 h-4 mr-2" />
+                          Dirección
+                        </h4>
+                        <p className="text-sm text-muted-foreground">{stop.address}</p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="font-medium text-foreground mb-2 flex items-center">
+                          <Clock className="w-4 h-4 mr-2" />
+                          Horarios
+                        </h4>
+                        <p className="text-sm text-muted-foreground">{stop.schedule}</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="font-medium text-foreground mb-3">Reseñas destacadas:</h4>
+                      <div className="bg-muted/30 border-l-4 border-primary/30 p-4 rounded-r-lg">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <div className="flex">
+                            {[...Array(stop.featuredReview.rating)].map((_, i) => (
+                              <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                            ))}
+                          </div>
+                          <span className="font-medium text-foreground">{stop.featuredReview.author}</span>
+                        </div>
+                        <p className="text-sm italic text-muted-foreground">"{stop.featuredReview.comment}"</p>
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
             </section>
+
+            {/* Route Map */}
+            <RouteMap routeTitle={route.title} />
 
             {/* Daily Recommendations */}
             <RouteDayRecommendations recommendations={route.dailyRecommendations} />
@@ -218,6 +202,8 @@ const RutaDetalle = () => {
             <RoutePracticalInfo 
               practicalInfo={route.practicalInfo} 
               difficulty={route.difficulty}
+              onShare={handleShare}
+              onPrint={handlePrint}
             />
 
             {/* Rating Section */}
