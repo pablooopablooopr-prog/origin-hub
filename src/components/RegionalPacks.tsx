@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Package, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { packsData } from "@/data/packs";
+import { packsData } from "@/data/products";
 
 const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
   const navigate = useNavigate();
@@ -11,11 +11,12 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
     id: pack.id,
     title: pack.title,
     region: pack.region,
-    description: pack.shortDescription,
-    products: pack.stops.map(stop => stop.name).slice(0, 4),
-    businesses: pack.businesses,
+    description: pack.description,
+    products: pack.products.map(product => product.name).slice(0, 4),
+    businesses: pack.totalProducts,
     image: pack.image,
-    highlighted: pack.highlighted
+    highlighted: pack.highlighted,
+    priceRange: pack.priceRange
   }));
 
   const handlePackClick = (packId: string) => {
@@ -69,7 +70,7 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
               <CardHeader className="text-center relative z-10">
                 <CardTitle className="text-xl text-primary">{pack.title}</CardTitle>
                 <CardDescription className="text-sm text-muted-foreground">
-                  {pack.businesses} negocios locales
+                  {pack.businesses} productos • €{pack.priceRange.min}-€{pack.priceRange.max}
                 </CardDescription>
               </CardHeader>
               <CardContent className="text-center relative z-20">{/* Asegurar que el contenido esté por encima */}
@@ -106,7 +107,7 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
         {/* CTA central */}
         <div className="text-center">
           <p className="text-sm text-muted-foreground">
-            Próximamente: Packs nacionales Cazador, Tribu y Sabio
+            También disponibles: Packs Cazador (€25-30), Tribu (€45-50), Sabio (€85-100) y temáticos
           </p>
         </div>
       </div>
