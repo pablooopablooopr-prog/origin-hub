@@ -1,10 +1,12 @@
 import { useParams, Navigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import RouteMap from "@/components/RouteMap";
+import RouteDayRecommendations from "@/components/RouteDayRecommendations";
+import RoutePracticalInfo from "@/components/RoutePracticalInfo";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { getRouteById } from "@/data/routes";
 import { 
   Clock, 
@@ -14,9 +16,7 @@ import {
   Star, 
   ExternalLink, 
   Share2, 
-  Printer, 
-  Calendar,
-  AlertCircle
+  Printer
 } from "lucide-react";
 
 const RutaDetalle = () => {
@@ -130,27 +130,6 @@ const RutaDetalle = () => {
               </div>
             </section>
 
-            {/* Daily Recommendations */}
-            <section>
-              <h2 className="text-3xl font-bold text-primary mb-6">Recomendaciones del día</h2>
-              <div className="bg-moss-light/10 rounded-lg p-6 border border-moss-light/20">
-                <div className="flex items-center space-x-2 mb-4">
-                  <Calendar className="w-6 h-6 text-moss-dark" />
-                  <h3 className="text-lg font-semibold text-moss-dark">Planifica tu visita</h3>
-                </div>
-                <ul className="space-y-3">
-                  {route.dailyRecommendations.map((recommendation, index) => (
-                    <li key={index} className="flex items-start space-x-3">
-                      <div className="w-6 h-6 bg-moss-medium rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-white text-sm font-bold">{index + 1}</span>
-                      </div>
-                      <p className="text-muted-foreground">{recommendation}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </section>
-
             {/* Route Stops */}
             <section>
               <h2 className="text-3xl font-bold text-primary mb-6">Paradas de la ruta</h2>
@@ -236,53 +215,17 @@ const RutaDetalle = () => {
               </div>
             </section>
 
+            {/* Route Map */}
+            <RouteMap routeTitle={route.title} />
+
+            {/* Daily Recommendations */}
+            <RouteDayRecommendations recommendations={route.dailyRecommendations} />
+
             {/* Practical Information */}
-            <section>
-              <h2 className="text-3xl font-bold text-primary mb-6">Información práctica</h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <AlertCircle className="w-5 h-5 text-primary" />
-                      <span>Detalles de la ruta</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div>
-                      <span className="font-medium text-primary">Nivel: </span>
-                      <span className="text-muted-foreground">{route.practicalInfo.level}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-primary">Duración: </span>
-                      <span className="text-muted-foreground">{route.practicalInfo.duration}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-primary">Grupo recomendado: </span>
-                      <span className="text-muted-foreground">{route.practicalInfo.recommendedPeople}</span>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <Star className="w-5 h-5 text-secondary fill-current" />
-                      <span>Consejos locales</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {route.practicalInfo.localTips.map((tip, index) => (
-                        <li key={index} className="text-sm text-muted-foreground flex items-start">
-                          <div className="w-1.5 h-1.5 bg-secondary rounded-full mr-2 mt-2 flex-shrink-0" />
-                          {tip}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </div>
-            </section>
+            <RoutePracticalInfo 
+              practicalInfo={route.practicalInfo} 
+              difficulty={route.difficulty}
+            />
 
             {/* Rating Section */}
             <section>
