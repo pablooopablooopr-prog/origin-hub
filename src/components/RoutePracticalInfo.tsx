@@ -20,13 +20,13 @@ const RoutePracticalInfo = ({ practicalInfo, difficulty, onShare, onPrint }: Rou
   const getDifficultyColor = (level: string) => {
     switch (level.toLowerCase()) {
       case 'fácil':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-600 text-white';
       case 'moderado':
-        return 'bg-amber-100 text-amber-800';
+        return 'bg-amber-700 text-white';
       case 'difícil':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-600 text-white';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-600 text-white';
     }
   };
 
@@ -38,13 +38,13 @@ const RoutePracticalInfo = ({ practicalInfo, difficulty, onShare, onPrint }: Rou
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-6 pb-4">
           <div>
             <div className="flex items-center space-x-2 mb-2">
-              <span className="font-medium text-foreground">Dificultad:</span>
+              <span className="font-medium text-gray-900">Dificultad:</span>
               <Badge 
                 variant="secondary" 
-                className={`${getDifficultyColor(difficulty)} border-0`}
+                className={`${getDifficultyColor(difficulty)} border-0 rounded-full px-3 py-1`}
               >
                 {difficulty}
               </Badge>
@@ -53,19 +53,19 @@ const RoutePracticalInfo = ({ practicalInfo, difficulty, onShare, onPrint }: Rou
           
           <div>
             <div className="flex items-center space-x-2 mb-2">
-              <span className="font-medium text-foreground">Duración:</span>
-              <span className="text-muted-foreground">{practicalInfo.duration}</span>
+              <span className="font-medium text-gray-900">Duración:</span>
+              <span className="text-gray-600">{practicalInfo.duration}</span>
             </div>
           </div>
         </div>
 
-        <div>
-          <h4 className="font-medium text-foreground mb-3">Consejos locales:</h4>
+        <div className="border-t pt-4">
+          <h4 className="font-medium text-gray-900 mb-3">Consejos locales:</h4>
           <div className="space-y-2">
             {practicalInfo.localTips.map((tip, index) => (
               <div key={index} className="flex items-start space-x-2">
-                <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0" />
-                <span className="text-sm text-muted-foreground">{tip}</span>
+                <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0" />
+                <span className="text-sm text-gray-600">{tip}</span>
               </div>
             ))}
           </div>

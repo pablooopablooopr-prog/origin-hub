@@ -110,6 +110,60 @@ export const routesData: RouteDetail[] = [
           rating: 5,
           comment: "Impresionante pasear entre viñas tan antiguas. El conocimiento del guía sobre las variedades locales es excepcional."
         }
+      },
+      {
+        id: "bodega-3",
+        name: "Celler Tradición",
+        type: "Cava artesano",
+        typeIcon: "🥂",
+        description: "Elaboración tradicional de cavas con método champenoise desde 1920",
+        whatToDo: [
+          "Descenso a las cavas subterráneas",
+          "Proceso de segunda fermentación en botella",
+          "Cata de cavas de diferentes añadas",
+          "Maridaje con productos locales"
+        ],
+        address: "Plaza de la Bodega, 8, Santo Domingo de la Calzada",
+        schedule: "Miércoles a Domingo: 11:00-19:00",
+        coordinates: [-2.9521, 42.4387],
+        images: [seafoodDisplay],
+        highlights: [
+          "Cavas subterráneas del siglo XIX",
+          "Método champenoise tradicional",
+          "Colección de añadas históricas"
+        ],
+        featuredReview: {
+          author: "Carlos Mendez",
+          rating: 5,
+          comment: "Las cavas subterráneas son espectaculares. El cava artesano no tiene comparación con los industriales."
+        }
+      },
+      {
+        id: "bodega-4",
+        name: "Finca La Esperanza",
+        type: "Enoturismo",
+        typeIcon: "🍾",
+        description: "Experiencia completa de enoturismo en finca familiar con alojamiento rural",
+        whatToDo: [
+          "Tour completo por viñedos y bodega",
+          "Almuerzo maridaje en viñedos",
+          "Taller de enología práctica",
+          "Compra de vinos exclusivos de la finca"
+        ],
+        address: "Finca La Esperanza, Km 7, Laguardia",
+        schedule: "Todos los días: 10:00-20:00 (previa reserva)",
+        coordinates: [-2.6089, 42.5521],
+        images: [oliveOilBottle],
+        highlights: [
+          "Experiencia enoturística completa",
+          "Viñedos con certificación ecológica",
+          "Vinos premiados internacionalmente"
+        ],
+        featuredReview: {
+          author: "María González",
+          rating: 5,
+          comment: "La mejor experiencia enoturística que he vivido. Pablo nos explicó todo el proceso con una pasión increíble."
+        }
       }
     ],
     dailyRecommendations: [
@@ -195,6 +249,33 @@ export const routesData: RouteDetail[] = [
           rating: 5,
           comment: "Los dulces más auténticos que he probado. La tradición se siente en cada bocado."
         }
+      },
+      {
+        id: "pasteleria-1",
+        name: "Cecinas Pablo",
+        type: "Cecina artesana",
+        typeIcon: "🥓",
+        description: "Secadero tradicional familiar donde la cecina se elabora como hace 150 años",
+        whatToDo: [
+          "Degustación de cecina recién cortada",
+          "Charla con el maestro cecinero",
+          "Visita al secadero",
+          "Compra de productos artesanos"
+        ],
+        address: "Calle Mayor, 23, Astorga, León",
+        schedule: "Lunes a Sábado: 9:00-14:00 y 17:00-20:00",
+        coordinates: [-6.0645, 42.4578],
+        images: [cheeseWheel],
+        highlights: [
+          "Proceso artesano tradicional",
+          "Cecina de denominación de origen",
+          "Secadero natural centenario"
+        ],
+        featuredReview: {
+          author: "María González",
+          rating: 5,
+          comment: "La mejor cecina que he probado en mi vida. Pablo nos explicó todo el proceso con una pasión increíble."
+        }
       }
     ],
     dailyRecommendations: [
@@ -279,6 +360,87 @@ export const routesData: RouteDetail[] = [
           author: "Antonio García",
           rating: 5,
           comment: "Increíble ver cómo se cultiva de forma tan respetuosa. Los sabores son intensos y puros."
+        }
+      },
+      {
+        id: "queseria-1",
+        name: "Quesería Artesana Los Picos",
+        type: "Quesería",
+        typeIcon: "🧀",
+        description: "Elaboración artesana de quesos con leche de cabras autóctonas",
+        whatToDo: [
+          "Visita a las instalaciones queseras",
+          "Proceso de elaboración tradicional",
+          "Degustación de quesos curados",
+          "Encuentro con las cabras en el pasto"
+        ],
+        address: "Carretera de Candelario, km 4, Béjar",
+        schedule: "Lunes a Domingo: 9:30-18:00",
+        coordinates: [-5.7624, 40.3721],
+        images: [oliveOilBottle],
+        highlights: [
+          "Quesos premiados nacional e internacionalmente",
+          "Cabras de raza autóctona",
+          "Proceso de maduración en cuevas naturales"
+        ],
+        featuredReview: {
+          author: "Pedro Sánchez",
+          rating: 5,
+          comment: "Quesos espectaculares con sabores únicos. La visita a las cabras fue muy divertida para los niños."
+        }
+      },
+      {
+        id: "cooperativa-1",
+        name: "Cooperativa de Aceite Virgen",
+        type: "Almazara",
+        typeIcon: "🫒",
+        description: "Almazara cooperativa con más de 200 socios olivicultores locales",
+        whatToDo: [
+          "Visita a la almazara moderna",
+          "Proceso de extracción en frío",
+          "Cata de aceites de diferentes variedades",
+          "Compra directa de aceite virgen extra"
+        ],
+        address: "Polígono Industrial, Calle Olivo, 12, Jaén",
+        schedule: "Lunes a Viernes: 8:00-15:00",
+        coordinates: [-3.7882, 37.7749],
+        images: [seafoodDisplay],
+        highlights: [
+          "Aceite virgen extra de primera extracción",
+          "Variedades picual y arbequina",
+          "Proceso completamente sostenible"
+        ],
+        featuredReview: {
+          author: "Carmen Ruiz",
+          rating: 5,
+          comment: "El aceite más fresco que he probado. Ver todo el proceso desde la aceituna hasta la botella es fascinante."
+        }
+      },
+      {
+        id: "granja-1",
+        name: "Granja Ecológica San Francisco",
+        type: "Granja ecológica",
+        typeIcon: "🐄",
+        description: "Granja familiar ecológica con producción de lácteos y huevos camperos",
+        whatToDo: [
+          "Visita a los animales en libertad",
+          "Ordeño tradicional de vacas",
+          "Recolección de huevos camperos",
+          "Degustación de productos lácteos frescos"
+        ],
+        address: "Finca San Francisco, km 8, Ávila",
+        schedule: "Todos los días: 10:00-17:00",
+        coordinates: [-4.7245, 40.6567],
+        images: [cheeseWheel],
+        highlights: [
+          "Certificación ecológica completa",
+          "Animales en pastoreo libre",
+          "Productos lácteos sin aditivos"
+        ],
+        featuredReview: {
+          author: "Ana Martínez",
+          rating: 5,
+          comment: "Una experiencia única. El vino artesano y el trato familiar hacen de esta visita algo inolvidable."
         }
       }
     ],

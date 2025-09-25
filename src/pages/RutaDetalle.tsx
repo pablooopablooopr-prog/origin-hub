@@ -122,7 +122,7 @@ const RutaDetalle = () => {
             <section>
               <div className="space-y-6">
                 {route.stops.map((stop, index) => (
-                  <div key={stop.id} className="bg-card border border-border rounded-xl p-6 relative">
+                  <div key={stop.id} className="bg-white border border-gray-200 rounded-lg p-6 relative shadow-sm">
                     {/* Stop number badge */}
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-start space-x-4">
@@ -132,24 +132,24 @@ const RutaDetalle = () => {
                         <div className="flex-1">
                           <div className="flex items-start justify-between mb-2">
                             <div>
-                              <h3 className="text-xl font-bold text-foreground mb-1">{stop.name}</h3>
-                              <p className="text-muted-foreground text-sm">{stop.type}</p>
+                              <h3 className="text-xl font-bold text-gray-900 mb-1">{stop.name}</h3>
+                              <p className="text-gray-500 text-sm">{stop.type}</p>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <ExternalLink className="w-5 h-5 text-muted-foreground" />
+                      <ExternalLink className="w-5 h-5 text-gray-400" />
                     </div>
 
-                    <p className="text-muted-foreground mb-6 leading-relaxed">{stop.description}</p>
+                    <p className="text-gray-600 mb-6 leading-relaxed">{stop.description}</p>
 
                     <div className="mb-6">
-                      <h4 className="font-semibold text-foreground mb-3">Qué puedes hacer:</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">Qué puedes hacer:</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         {stop.whatToDo.map((activity, idx) => (
                           <div key={idx} className="flex items-start space-x-2">
-                            <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0" />
-                            <span className="text-sm text-muted-foreground">{activity}</span>
+                            <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0" />
+                            <span className="text-sm text-gray-600">{activity}</span>
                           </div>
                         ))}
                       </div>
@@ -157,34 +157,34 @@ const RutaDetalle = () => {
 
                     <div className="grid md:grid-cols-2 gap-6 mb-6">
                       <div>
-                        <h4 className="font-medium text-foreground mb-2 flex items-center">
-                          <MapPin className="w-4 h-4 mr-2" />
+                        <h4 className="font-medium text-amber-800 mb-2 flex items-center">
+                          <MapPin className="w-4 h-4 mr-2 text-amber-700" />
                           Dirección
                         </h4>
-                        <p className="text-sm text-muted-foreground">{stop.address}</p>
+                        <p className="text-sm text-amber-700">{stop.address}</p>
                       </div>
                       
                       <div>
-                        <h4 className="font-medium text-foreground mb-2 flex items-center">
-                          <Clock className="w-4 h-4 mr-2" />
+                        <h4 className="font-medium text-amber-800 mb-2 flex items-center">
+                          <Clock className="w-4 h-4 mr-2 text-amber-700" />
                           Horarios
                         </h4>
-                        <p className="text-sm text-muted-foreground">{stop.schedule}</p>
+                        <p className="text-sm text-amber-700">{stop.schedule}</p>
                       </div>
                     </div>
 
                     <div>
-                      <h4 className="font-medium text-foreground mb-3">Reseñas destacadas:</h4>
-                      <div className="bg-muted/30 border-l-4 border-primary/30 p-4 rounded-r-lg">
+                      <h4 className="font-medium text-gray-900 mb-3">Reseñas destacadas:</h4>
+                      <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg">
                         <div className="flex items-center space-x-2 mb-2">
                           <div className="flex">
                             {[...Array(stop.featuredReview.rating)].map((_, i) => (
                               <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
                             ))}
                           </div>
-                          <span className="font-medium text-foreground">{stop.featuredReview.author}</span>
+                          <span className="font-medium text-gray-900">{stop.featuredReview.author}</span>
                         </div>
-                        <p className="text-sm italic text-muted-foreground">"{stop.featuredReview.comment}"</p>
+                        <p className="text-sm italic text-gray-700">"{stop.featuredReview.comment}"</p>
                       </div>
                     </div>
                   </div>
