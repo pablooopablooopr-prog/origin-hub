@@ -99,7 +99,7 @@ const PackDetail = () => {
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-b from-background/60 to-background/90 z-10" />
         <img 
-          src={pack.image} 
+          src={pack.company.logo} 
           alt={pack.name}
           className="w-full h-96 object-cover"
         />
@@ -296,9 +296,9 @@ const PackDetail = () => {
                       <span className="font-medium">{pack.region}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Categoría:</span>
-                      <span className="font-medium">{pack.category}</span>
-                    </div>
+                       <span>Categorías:</span>
+                       <span className="font-medium">{pack.categories.join(', ')}</span>
+                     </div>
                   </div>
                   
                   <Separator />

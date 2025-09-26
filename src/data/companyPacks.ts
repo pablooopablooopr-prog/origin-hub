@@ -11,8 +11,9 @@ export interface CompanyPack {
     location: string;
   };
   region: string;
-  category: string;
-  image: string;
+  autonomousCommunity: string;
+  categories: string[];
+  image?: string;
   products: {
     name: string;
     description: string;
@@ -26,6 +27,7 @@ export interface CompanyPack {
   reviews: number;
   fastShipping: boolean;
   sustainablePackaging: boolean;
+  loyaltyPoints: number;
 }
 
 export const companyPacks: CompanyPack[] = [
@@ -42,8 +44,8 @@ export const companyPacks: CompanyPack[] = [
       location: "León"
     },
     region: "León",
-    category: "Embutidos",
-    image: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png",
+    autonomousCommunity: "Castilla y León",
+    categories: ["Embutidos", "Quesos"],
     products: [
       {
         name: "Cecina de León IGP",
@@ -70,10 +72,11 @@ export const companyPacks: CompanyPack[] = [
     rating: 4.8,
     reviews: 156,
     fastShipping: true,
-    sustainablePackaging: true
+    sustainablePackaging: true,
+    loyaltyPoints: 4
   },
   {
-    id: "pack-esencia-granada",
+    id: "pack-esencia-granada", 
     name: "Pack Esencia",
     type: "esencia",
     price: 60,
@@ -85,8 +88,8 @@ export const companyPacks: CompanyPack[] = [
       location: "Granada"
     },
     region: "Granada",
-    category: "Aceites",
-    image: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png",
+    autonomousCommunity: "Andalucía",
+    categories: ["Aceites", "Embutidos", "Miel", "Dulces"],
     products: [
       {
         name: "Aceite Picual Premium",
@@ -119,7 +122,8 @@ export const companyPacks: CompanyPack[] = [
     rating: 4.9,
     reviews: 203,
     fastShipping: true,
-    sustainablePackaging: true
+    sustainablePackaging: true,
+    loyaltyPoints: 6
   },
   {
     id: "pack-gourmet-galicia",
@@ -134,8 +138,8 @@ export const companyPacks: CompanyPack[] = [
       location: "Galicia"
     },
     region: "Galicia",
-    category: "Conservas",
-    image: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png",
+    autonomousCommunity: "Galicia",
+    categories: ["Conservas", "Quesos", "Vinos", "Dulces"],
     products: [
       {
         name: "Conservas Premium Variadas",
@@ -174,7 +178,8 @@ export const companyPacks: CompanyPack[] = [
     rating: 5.0,
     reviews: 89,
     fastShipping: true,
-    sustainablePackaging: true
+    sustainablePackaging: true,
+    loyaltyPoints: 9
   }
 ];
 
@@ -187,11 +192,69 @@ export const getPacksByRegion = (region: string): CompanyPack[] => {
 };
 
 export const getPacksByCategory = (category: string): CompanyPack[] => {
-  return companyPacks.filter(pack => pack.category.toLowerCase() === category.toLowerCase());
+  return companyPacks.filter(pack => 
+    pack.categories.some(cat => cat.toLowerCase() === category.toLowerCase())
+  );
 };
 
 export const getFeaturedPacks = (): CompanyPack[] => {
   return companyPacks.filter(pack => pack.featured);
+};
+
+export const filterPacks = (
+  packs: CompanyPack[],
+  filters: {
+    location?: string;
+    categories?: string[];
+    packType?: string;
+    addedValue?: string[];
+    priceRange?: string;
+  }
+): CompanyPack[] => {
+  return packs.filter(pack => {
+    // Location filter
+    if (filters.location && pack.autonomousCommunity !== filters.location) {
+      return false;
+    }
+
+    // Categories filter
+    if (filters.categories && filters.categories.length > 0) {
+      const hasMatchingCategory = filters.categories.some(category =>
+        pack.categories.some(packCategory => 
+          packCategory.toLowerCase() === category.toLowerCase()
+        )
+      );
+      if (!hasMatchingCategory) return false;
+    }
+
+    // Pack type filter
+    if (filters.packType && pack.type !== filters.packType) {
+      return false;
+    }
+
+    // Added value filter
+    if (filters.addedValue && filters.addedValue.length > 0) {
+      const hasMatchingValue = filters.addedValue.some(value =>
+        pack.addedValue?.some(packValue => 
+          packValue.toLowerCase().includes(value.toLowerCase())
+        )
+      );
+      if (!hasMatchingValue) return false;
+    }
+
+    // Price range filter
+    if (filters.priceRange) {
+      const [min, max] = filters.priceRange.split('-').map(p => parseInt(p));
+      if (max && (pack.price < min || pack.price > max)) {
+        return false;
+      }
+      if (!max && pack.price < min) {
+        return false;
+      }
+    }
+
+    return true;
+  });
 };
 
 export const regions = ["León", "Granada", "Galicia"];
