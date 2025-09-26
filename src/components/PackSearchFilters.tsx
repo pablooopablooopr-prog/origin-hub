@@ -184,20 +184,6 @@ const PackSearchFilters = ({ onFiltersChange }: PackSearchFiltersProps) => {
               </div>
             </div>
 
-            {/* Price Range */}
-            <div className="space-y-3">
-              <Label className="text-sm font-medium">Rango de precio</Label>
-              <Select value={filters.priceRange} onValueChange={(value) => updateFilters({ priceRange: value })}>
-                <SelectTrigger className="md:w-1/2">
-                  <SelectValue placeholder="Cualquier precio..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="0-40">Menos de 40€</SelectItem>
-                  <SelectItem value="40-70">40€ - 70€</SelectItem>
-                  <SelectItem value="70-100">Más de 70€</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
 
             {/* Clear filters */}
             {hasActiveFilters && (

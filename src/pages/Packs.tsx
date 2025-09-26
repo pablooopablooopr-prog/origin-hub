@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PackSearchFilters from "@/components/PackSearchFilters";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +19,7 @@ interface SearchFilters {
 }
 
 const Packs = () => {
+  const navigate = useNavigate();
   const [filteredPacks, setFilteredPacks] = useState<CompanyPack[]>(companyPacks);
 
   const handleFiltersChange = (filters: SearchFilters) => {
@@ -98,7 +100,11 @@ const Packs = () => {
                     )}
                   </div>
 
-                  <Button className="w-full" size="sm">
+                  <Button 
+                    className="w-full" 
+                    size="sm"
+                    onClick={() => navigate(`/packs/${pack.id}`)}
+                  >
                     Ver más
                   </Button>
                 </CardContent>
