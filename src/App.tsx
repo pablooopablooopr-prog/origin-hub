@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Mapa from "./pages/Mapa";
 import Packs from "./pages/Packs";
+import PacksBuscar from "./pages/PacksBuscar";
 import Rutas from "./pages/Rutas";
 import RutaDetalle from "./pages/RutaDetalle";
 import Contacto from "./pages/Contacto";
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/mapa" element={<Mapa />} />
           <Route path="/packs" element={<Packs />} />
+          <Route path="/packs/buscar" element={<PacksBuscar />} />
           <Route path="/packs/:id" element={<PackDetail />} />
           <Route path="/rutas" element={<Rutas />} />
           <Route path="/rutas/:id" element={<RutaDetalle />} />

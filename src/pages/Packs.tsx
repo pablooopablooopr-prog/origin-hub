@@ -1,15 +1,14 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import RegionalPacks from "@/components/RegionalPacks";
 import PackTypeCards from "@/components/PackTypeCards";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const Packs = () => {
-  const scrollToSearch = () => {
-    const searchSection = document.getElementById('buscador');
-    if (searchSection) {
-      searchSection.scrollIntoView({ behavior: 'smooth' });
-    }
+  const navigate = useNavigate();
+
+  const handleSearchPacks = () => {
+    navigate('/packs/buscar');
   };
 
   return (
@@ -34,18 +33,13 @@ const Packs = () => {
           {/* CTA Button */}
           <div className="text-center mb-16">
             <Button 
-              onClick={scrollToSearch}
+              onClick={handleSearchPacks}
               size="lg"
               className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
             >
               Buscar Packs Disponibles
             </Button>
           </div>
-        </div>
-
-        {/* Search and Results Section */}
-        <div id="buscador">
-          <RegionalPacks showTitle={false} />
         </div>
       </main>
       <Footer />

@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import RegionalPacks from "@/components/RegionalPacks";
 import InteractiveMap from "@/components/InteractiveMap";
 import RoutesExplorer from "@/components/RoutesExplorer";
 import HumanRatings from "@/components/HumanRatings";
@@ -16,7 +15,6 @@ const Index = () => {
       <main>
         <Hero />
         <InteractiveMap />
-        <RegionalPacks />
         <RoutesExplorer />
         <BusinessSection />
         <HumanRatings />
