@@ -135,8 +135,8 @@ const PackSearchFilters = ({ onFiltersChange }: PackSearchFiltersProps) => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="raiz">Raíz (hasta 35€)</SelectItem>
-                <SelectItem value="esencia">Esencia (hasta 60€)</SelectItem>
-                <SelectItem value="gourmet">Gourmet (hasta 90€)</SelectItem>
+                <SelectItem value="esencia">Esencia (hasta 55€)</SelectItem>
+                <SelectItem value="gourmet">Gourmet (hasta 100€)</SelectItem>
               </SelectContent>
             </Select>
           </div>
