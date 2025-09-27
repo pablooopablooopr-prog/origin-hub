@@ -19,6 +19,8 @@ export interface CompanyPack {
     description: string;
     company: string;
     companyLogo: string;
+    seasonal?: boolean;
+    limitedEdition?: boolean;
   }[];
   addedValue?: string[];
   qualitySeal?: boolean;
@@ -28,6 +30,7 @@ export interface CompanyPack {
   fastShipping: boolean;
   sustainablePackaging: boolean;
   loyaltyPoints: number;
+  seasonal?: boolean;
 }
 
 export const companyPacks: CompanyPack[] = [
@@ -61,7 +64,7 @@ export const companyPacks: CompanyPack[] = [
         companyLogo: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png"
       }
     ],
-    addedValue: ["Degustación incluida", "Recetario tradicional"],
+    addedValue: ["Cata guiada de aceites", "Libro de recetas tradicionales de Granada"],
     qualitySeal: true,
     featured: "recommended",
     rating: 4.6,
@@ -90,7 +93,8 @@ export const companyPacks: CompanyPack[] = [
         name: "Aceite Picual Premium",
         description: "Aceite de oliva virgen extra ecológico",
         company: "Olivar de la Sierra",
-        companyLogo: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png"
+        companyLogo: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png",
+        limitedEdition: true
       },
       {
         name: "Jamón Serrano de Trevélez DOP",

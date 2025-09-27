@@ -170,6 +170,12 @@ const PackDetail = () => {
                   <Badge variant="secondary" className={getPackTypeColor(pack.type)}>
                     {pack.type === 'raiz' ? 'Pack Raíz' : pack.type === 'esencia' ? 'Pack Esencia' : 'Pack Gourmet'}
                   </Badge>
+                  {pack.seasonal && (
+                    <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                      <Calendar className="w-3 h-3 mr-1" />
+                      Temporada
+                    </Badge>
+                  )}
                   <Badge variant="outline">
                     <MapPin className="w-3 h-3 mr-1" />
                     {pack.region}
@@ -241,7 +247,7 @@ const PackDetail = () => {
                     size="lg"
                   >
                     <ShoppingCart className="w-5 h-5 mr-2" />
-                    🛒 Añadir al carrito
+                    Añadir al carrito
                   </Button>
                   <Button 
                     onClick={handleShare}
@@ -254,11 +260,6 @@ const PackDetail = () => {
                   </Button>
                 </div>
 
-                <div className="bg-primary/10 rounded-lg p-4">
-                  <p className="text-sm font-medium text-primary">
-                    🎯 Ganas <strong>{Math.round(pack.price * 0.1)} puntos</strong> con esta compra
-                  </p>
-                </div>
               </div>
 
               {/* Pack Image */}
@@ -285,7 +286,7 @@ const PackDetail = () => {
           <section className="mb-12">
             <Card>
               <CardHeader>
-                <CardTitle className="text-2xl">📝 Descripción del Pack</CardTitle>
+                <CardTitle className="text-2xl">Descripción del Pack</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-lg leading-relaxed text-muted-foreground">
@@ -304,7 +305,8 @@ const PackDetail = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-2xl">
-                    📦 Productos Incluidos
+                    <Package className="w-6 h-6" />
+                    Productos Incluidos
                   </CardTitle>
                   <CardDescription>
                     Cada producto ha sido seleccionado cuidadosamente por su calidad y representatividad regional
@@ -324,11 +326,23 @@ const PackDetail = () => {
                           </div>
                           <div className="md:col-span-3 p-6">
                             <div className="space-y-3">
-                              <h4 className="text-lg font-semibold text-primary">
-                                🧀 {product.name}
-                              </h4>
+                              <div className="flex items-center gap-2">
+                                <h4 className="text-lg font-semibold text-primary">
+                                  {product.name}
+                                </h4>
+                                {product.seasonal && (
+                                  <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 text-xs">
+                                    Temporada
+                                  </Badge>
+                                )}
+                                {product.limitedEdition && (
+                                  <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 text-xs">
+                                    Edición Limitada
+                                  </Badge>
+                                )}
+                              </div>
                               <p className="text-muted-foreground leading-relaxed">
-                                ✍️ {product.description}
+                                {product.description}
                               </p>
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2 text-sm">
@@ -337,11 +351,11 @@ const PackDetail = () => {
                                     alt={product.company}
                                     className="w-5 h-5 object-contain rounded"
                                   />
-                                  <span className="font-medium">🏷 {product.company}</span>
+                                  <span className="font-medium">{product.company}</span>
                                 </div>
                                 <div className="flex gap-2">
-                                  <Badge variant="outline" className="text-xs">🏅 Artesanal</Badge>
-                                  <Badge variant="outline" className="text-xs">📍 {pack.region}</Badge>
+                                  <Badge variant="outline" className="text-xs">Artesanal</Badge>
+                                  <Badge variant="outline" className="text-xs">{pack.region}</Badge>
                                 </div>
                               </div>
                             </div>
@@ -358,7 +372,8 @@ const PackDetail = () => {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-2xl">
-                      🎁 Valor Añadido del Pack
+                      <Gift className="w-6 h-6" />
+                      Valor Añadido del Pack
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -368,7 +383,7 @@ const PackDetail = () => {
                           <div className="w-8 h-8 bg-primary/20 text-primary rounded-full flex items-center justify-center flex-shrink-0">
                             <CheckCircle className="w-4 h-4" />
                           </div>
-                          <span className="font-medium">✅ {value}</span>
+                          <span className="font-medium">{value}</span>
                         </div>
                       ))}
                     </div>
@@ -380,7 +395,8 @@ const PackDetail = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-2xl">
-                    🧑‍🌾 Información del Productor
+                    <User className="w-6 h-6" />
+                    Información del Productor
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -394,7 +410,8 @@ const PackDetail = () => {
                       <div>
                         <h3 className="text-xl font-semibold">{pack.company.name}</h3>
                         <p className="text-muted-foreground flex items-center gap-1">
-                          📍 {pack.company.location}
+                          <MapPin className="w-4 h-4" />
+                          {pack.company.location}
                         </p>
                       </div>
                       <p className="text-muted-foreground italic leading-relaxed">
@@ -413,7 +430,8 @@ const PackDetail = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-2xl">
-                    💬 Opiniones de otros clientes
+                    <MessageCircle className="w-6 h-6" />
+                    Opiniones de otros clientes
                   </CardTitle>
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
@@ -482,29 +500,29 @@ const PackDetail = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    📦 Detalles Técnicos
+                    Detalles Técnicos
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
-                      <span>🛒 Productos incluidos:</span>
+                      <span>Productos incluidos:</span>
                       <span className="font-medium">{pack.products.length}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>💸 Precio total:</span>
+                      <span>Precio total:</span>
                       <span className="font-medium">{pack.price}€</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>📦 Tipo de empaque:</span>
+                      <span>Tipo de empaque:</span>
                       <span className="font-medium">Sostenible</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>📅 Envío estimado:</span>
+                      <span>Envío estimado:</span>
                       <span className="font-medium">2-3 días</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>📍 Origen:</span>
+                      <span>Origen:</span>
                       <span className="font-medium">{pack.autonomousCommunity}</span>
                     </div>
                   </div>
@@ -515,12 +533,14 @@ const PackDetail = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    🎁 Opción de Regalo
+                    <Gift className="w-5 h-5" />
+                    Opción de Regalo
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Button variant="outline" className="w-full mb-4">
-                    🎁 Regalar este pack
+                    <Gift className="w-4 h-4 mr-2" />
+                    Regalar este pack
                   </Button>
                   <div className="text-xs text-muted-foreground space-y-1">
                     <p>• Personaliza la tarjeta de regalo</p>
@@ -530,32 +550,11 @@ const PackDetail = () => {
                 </CardContent>
               </Card>
 
-              {/* Loyalty Program */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">🪙 Puntos y Gamificación</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3 text-sm">
-                    <div className="bg-primary/10 rounded-lg p-3 text-center">
-                      <p className="font-semibold">🪙 Con esta compra ganas {Math.round(pack.price * 0.1)} puntos</p>
-                    </div>
-                    <div className="space-y-2 text-xs">
-                      <p className="font-medium">Canjéalos por:</p>
-                      <div className="space-y-1">
-                        <div>🎁 500 pts = Producto regalo</div>
-                        <div>🚚 750 pts = Envío gratuito</div>
-                        <div>💸 1000 pts = 10% descuento</div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
 
               {/* Quality Guarantees */}
               <Card>
                 <CardHeader>
-                  <CardTitle>🎖 Garantías de Calidad</CardTitle>
+                  <CardTitle>Garantías de Calidad</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -588,7 +587,7 @@ const PackDetail = () => {
             <section className="mt-12">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-2xl">🧠 Packs Relacionados</CardTitle>
+                  <CardTitle className="text-2xl">Packs Relacionados</CardTitle>
                   <CardDescription>
                     Otros packs similares que podrían interesarte
                   </CardDescription>
