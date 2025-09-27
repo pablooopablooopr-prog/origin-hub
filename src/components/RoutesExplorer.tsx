@@ -2,11 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Route, Star, Users, Clock, MapPin } from "lucide-react";
-import { routesData } from "@/data/routes";
+import { routesData, RouteDetail } from "@/data/routes";
 import { useNavigate } from "react-router-dom";
 
-const RoutesExplorer = ({ showTitle = true, showCTA = true }: { showTitle?: boolean; showCTA?: boolean }) => {
+const RoutesExplorer = ({ showTitle = true, showCTA = true, customRoutes }: { showTitle?: boolean; showCTA?: boolean; customRoutes?: RouteDetail[] }) => {
   const navigate = useNavigate();
+  const displayRoutes = customRoutes || routesData;
 
   return (
     <section className="py-20 bg-gradient-warm enso-watermark relative" id="rutas">
@@ -25,7 +26,7 @@ const RoutesExplorer = ({ showTitle = true, showCTA = true }: { showTitle?: bool
 
         {/* Rutas destacadas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          {routesData.map((route, index) => (
+          {displayRoutes.map((route, index) => (
             <Card key={route.title} className="group hover:shadow-earth transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
               {/* Imagen de fondo con transparencia */}
               <div className="absolute inset-0 opacity-5">
