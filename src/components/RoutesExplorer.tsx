@@ -5,7 +5,7 @@ import { Route, Star, Users, Clock, MapPin } from "lucide-react";
 import { routesData } from "@/data/routes";
 import { useNavigate } from "react-router-dom";
 
-const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
+const RoutesExplorer = ({ showTitle = true, showCTA = true }: { showTitle?: boolean; showCTA?: boolean }) => {
   const navigate = useNavigate();
 
   return (
@@ -99,35 +99,37 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
           ))}
         </div>
 
-        {/* CTA para crear ruta */}
-        <div className="text-center bg-card rounded-lg p-8 shadow-soft">
-          <h3 className="text-2xl font-semibold text-primary mb-4">
-            ¿Tienes tu propia ruta?
-          </h3>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Comparte tus descubrimientos con la comunidad. Marca los lugares que has visitado 
-            y ayuda a otros a encontrar negocios auténticos.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              className="shadow-earth"
-              onClick={() => navigate('/crear-ruta')}
-            >
-              <Route className="w-5 h-5 mr-2" />
-              Crear mi ruta
-            </Button>
-            <Button 
-              variant="secondary" 
-              size="lg" 
-              className="shadow-moss"
-              onClick={() => navigate('/rutas')}
-            >
-              <MapPin className="w-5 h-5 mr-2" />
-              Ver todas las rutas
-            </Button>
+        {/* CTA para crear ruta - solo mostrar si showCTA es true */}
+        {showCTA && (
+          <div className="text-center bg-card rounded-lg p-8 shadow-soft">
+            <h3 className="text-2xl font-semibold text-primary mb-4">
+              ¿Tienes tu propia ruta?
+            </h3>
+            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+              Comparte tus descubrimientos con la comunidad. Marca los lugares que has visitado 
+              y ayuda a otros a encontrar negocios auténticos.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                size="lg" 
+                className="shadow-earth"
+                onClick={() => navigate('/crear-ruta')}
+              >
+                <Route className="w-5 h-5 mr-2" />
+                Crear mi ruta
+              </Button>
+              <Button 
+                variant="secondary" 
+                size="lg" 
+                className="shadow-moss"
+                onClick={() => navigate('/rutas')}
+              >
+                <MapPin className="w-5 h-5 mr-2" />
+                Ver todas las rutas
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

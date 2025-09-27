@@ -23,7 +23,7 @@ const Rutas = () => {
             </p>
           </div>
         </div>
-        <RoutesExplorer showTitle={false} />
+        <RoutesExplorer showTitle={false} showCTA={false} />
       </main>
       <Footer />
     </div>
