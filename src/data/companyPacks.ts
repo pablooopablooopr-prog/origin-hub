@@ -31,57 +31,52 @@ export interface CompanyPack {
 }
 
 export const companyPacks: CompanyPack[] = [
+  // ===== ANDALUCÍA =====
   {
-    id: "pack-raiz-leon",
-    name: "Pack Raíz",
+    id: "pack-raiz-olivar-sierra",
+    name: "Pack Raíz - Olivar de la Sierra",
     type: "raiz",
     price: 35,
-    description: "Lo esencial de la tierra. Un pack sencillo, auténtico y asequible con los sabores más representativos de cada región.",
-    expandedDescription: "El Pack Raíz es la puerta de entrada a los sabores locales. Ideal para quienes quieren conocer lo básico y verdadero de cada tierra sin gastar mucho. Productos de proximidad, directos del productor, perfectos para una primera inmersión en el alma gastronómica de cada zona.",
+    description: "Lo esencial de la tierra andaluza. Productos artesanos que capturan la esencia del sur.",
+    expandedDescription: "Una selección auténtica y asequible que captura los sabores más representativos de Andalucía. Ideal para descubrir lo esencial de la región sin gastar mucho.",
     company: {
-      name: "Cecinas Pablo",
-      logo: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png",
-      location: "León"
+      name: "Olivar de la Sierra",
+      logo: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png",
+      location: "Granada"
     },
-    region: "León",
-    autonomousCommunity: "Castilla y León",
-    categories: ["Embutidos", "Quesos"],
+    region: "Granada",
+    autonomousCommunity: "Andalucía",
+    categories: ["Aceites", "Dulces"],
     products: [
       {
-        name: "Cecina de León IGP",
-        description: "Cecina artesana curada al aire de montaña",
-        company: "Cecinas Pablo",
-        companyLogo: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png"
+        name: "Aceite de Oliva Virgen Extra",
+        description: "Aceite artesano de primera prensada en frío",
+        company: "Olivar de la Sierra",
+        companyLogo: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png"
       },
       {
-        name: "Queso de Valdeón DOP",
-        description: "Queso azul curado en cuevas naturales",
-        company: "Quesería Los Picos",
-        companyLogo: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png"
-      },
-      {
-        name: "Botillo del Bierzo",
-        description: "Embutido tradicional leonés",
-        company: "Casa Pepe",
-        companyLogo: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png"
+        name: "Almendras Garrapiñadas",
+        description: "Dulce tradicional andaluz",
+        company: "Olivar de la Sierra",
+        companyLogo: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png"
       }
     ],
     addedValue: ["Degustación incluida", "Recetario tradicional"],
     qualitySeal: true,
     featured: "recommended",
-    rating: 4.8,
-    reviews: 156,
+    rating: 4.6,
+    reviews: 89,
     fastShipping: true,
     sustainablePackaging: true,
-    loyaltyPoints: 4
+    loyaltyPoints: 35
   },
   {
-    id: "pack-esencia-granada", 
-    name: "Pack Esencia",
+    id: "pack-esencia-olivar-sierra",
+    name: "Pack Esencia - Olivar de la Sierra",
     type: "esencia",
     price: 60,
-    description: "Selección equilibrada con carácter. Productos con personalidad que definen la esencia de una región.",
-    expandedDescription: "El Pack Esencia recoge una cuidada combinación de alimentos artesanales que representan la tradición, calidad y diversidad de cada comunidad. Para quienes quieren regalarse o regalar un viaje gastronómico más completo, sin llegar al extremo gourmet. Equilibrio entre sabor, origen y valor.",
+    description: "Selección equilibrada con carácter andaluz. La esencia de nuestra tierra.",
+    expandedDescription: "El Pack Esencia recoge una cuidada combinación de alimentos artesanales que representan la tradición y calidad andaluza. Un viaje gastronómico más completo por los sabores del sur.",
     company: {
       name: "Olivar de la Sierra",
       logo: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png",
@@ -108,36 +103,232 @@ export const companyPacks: CompanyPack[] = [
         description: "Miel artesana de la Alpujarra",
         company: "Colmenas del Valle",
         companyLogo: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png"
-      },
-      {
-        name: "Almendras Garrapiñadas",
-        description: "Dulce tradicional andaluz",
-        company: "Dulces Granada",
-        companyLogo: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png"
       }
     ],
-    addedValue: ["Visita guiada a almazara", "Cata de aceites", "Desayuno molinero"],
+    addedValue: ["Visita guiada a almazara", "Cata de aceites"],
     qualitySeal: true,
     featured: "bestseller",
     rating: 4.9,
     reviews: 203,
     fastShipping: true,
     sustainablePackaging: true,
-    loyaltyPoints: 6
+    loyaltyPoints: 60
   },
   {
-    id: "pack-gourmet-galicia",
-    name: "Pack Gourmet",
-    type: "gourmet",
-    price: 90,
-    description: "Para los paladares exigentes. Alta calidad, máxima expresión del producto local.",
-    expandedDescription: "El Pack Gourmet es una experiencia sensorial completa. Incluye productos premium seleccionados, algunos de edición limitada o con D.O., pensados para sibaritas, amantes del buen comer y de lo auténtico. Una muestra exclusiva del saber hacer de cada productor. Incluye detalles únicos, sorpresas y en muchos casos, opciones de degustación o visita.",
+    id: "pack-raiz-sabor-serrano",
+    name: "Pack Raíz - Sabor Serrano",
+    type: "raiz",
+    price: 35,
+    description: "Tradición serrana en cada bocado. Lo auténtico de la montaña andaluza.",
+    expandedDescription: "Descubre los sabores tradicionales de la sierra andaluza con productos artesanos seleccionados de pequeños productores locales.",
+    company: {
+      name: "Sabor Serrano",
+      logo: "/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png",
+      location: "Jaén"
+    },
+    region: "Jaén",
+    autonomousCommunity: "Andalucía",
+    categories: ["Embutidos", "Quesos"],
+    products: [
+      {
+        name: "Chorizo Serrano",
+        description: "Chorizo artesano curado al aire de montaña",
+        company: "Sabor Serrano",
+        companyLogo: "/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png"
+      },
+      {
+        name: "Queso de Cabra Curado",
+        description: "Queso artesano de cabra payoya",
+        company: "Quesería El Castillo",
+        companyLogo: "/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png"
+      }
+    ],
+    addedValue: ["Envío gratuito"],
+    qualitySeal: false,
+    rating: 4.4,
+    reviews: 76,
+    fastShipping: true,
+    sustainablePackaging: false,
+    loyaltyPoints: 35
+  },
+  {
+    id: "pack-esencia-sabor-serrano",
+    name: "Pack Esencia - Sabor Serrano",
+    type: "esencia",
+    price: 60,
+    description: "La esencia de la sierra andaluza. Productos con historia y sabor.",
+    expandedDescription: "Una cuidada selección que captura el alma de la sierra andaluza, con productos que llevan generaciones elaborándose de la misma forma tradicional.",
+    company: {
+      name: "Sabor Serrano",
+      logo: "/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png",
+      location: "Jaén"
+    },
+    region: "Jaén",
+    autonomousCommunity: "Andalucía",
+    categories: ["Embutidos", "Quesos", "Aceites"],
+    products: [
+      {
+        name: "Lomo Embuchado Ibérico",
+        description: "Lomo curado artesanalmente",
+        company: "Sabor Serrano",
+        companyLogo: "/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png"
+      },
+      {
+        name: "Queso Semicurado de Oveja",
+        description: "Queso tradicional de oveja segureña",
+        company: "Quesería El Castillo",
+        companyLogo: "/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png"
+      },
+      {
+        name: "Aceite Premium Picual",
+        description: "Aceite de primera calidad",
+        company: "Molino Los Olivos",
+        companyLogo: "/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png"
+      }
+    ],
+    addedValue: ["Incluye degustación", "Pack exclusivo de temporada"],
+    qualitySeal: true,
+    rating: 4.7,
+    reviews: 134,
+    fastShipping: true,
+    sustainablePackaging: true,
+    loyaltyPoints: 60
+  },
+
+  // ===== CASTILLA Y LEÓN =====
+  {
+    id: "pack-raiz-cecinas-pablo",
+    name: "Pack Raíz - Cecinas Pablo",
+    type: "raiz",
+    price: 35,
+    description: "Lo esencial de Castilla y León. Productos tradicionales de la meseta.",
+    expandedDescription: "El Pack Raíz de Cecinas Pablo te acerca a los sabores más auténticos de León, con productos elaborados siguiendo métodos centenarios.",
+    company: {
+      name: "Cecinas Pablo",
+      logo: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png",
+      location: "León"
+    },
+    region: "León",
+    autonomousCommunity: "Castilla y León",
+    categories: ["Embutidos", "Quesos"],
+    products: [
+      {
+        name: "Cecina de León IGP",
+        description: "Cecina artesana curada al aire de montaña",
+        company: "Cecinas Pablo",
+        companyLogo: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png"
+      },
+      {
+        name: "Queso de Valdeón DOP",
+        description: "Queso azul curado en cuevas naturales",
+        company: "Quesería Los Picos",
+        companyLogo: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png"
+      }
+    ],
+    addedValue: ["Degustación incluida", "Recetario tradicional"],
+    qualitySeal: true,
+    featured: "recommended",
+    rating: 4.8,
+    reviews: 156,
+    fastShipping: true,
+    sustainablePackaging: true,
+    loyaltyPoints: 35
+  },
+  {
+    id: "pack-esencia-cecinas-pablo",
+    name: "Pack Esencia - Cecinas Pablo",
+    type: "esencia",
+    price: 60,
+    description: "La esencia de Castilla y León. Tradición centenaria en cada producto.",
+    expandedDescription: "Una selección que representa la mejor tradición chacinera leonesa, con productos que han pasado de generación en generación.",
+    company: {
+      name: "Cecinas Pablo",
+      logo: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png",
+      location: "León"
+    },
+    region: "León",
+    autonomousCommunity: "Castilla y León",
+    categories: ["Embutidos", "Quesos", "Conservas"],
+    products: [
+      {
+        name: "Cecina de León IGP Premium",
+        description: "Cecina de máxima calidad curada 24 meses",
+        company: "Cecinas Pablo",
+        companyLogo: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png"
+      },
+      {
+        name: "Botillo del Bierzo IGP",
+        description: "Embutido tradicional leonés",
+        company: "Cecinas Pablo",
+        companyLogo: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png"
+      },
+      {
+        name: "Queso Zamorano DOP",
+        description: "Queso curado de oveja churra",
+        company: "Quesería Castilla",
+        companyLogo: "/lovable-uploads/3300b4e5-f593-466b-a789-16c6237a5b84.png"
+      }
+    ],
+    addedValue: ["Visita a secadero tradicional", "Cata dirigida"],
+    qualitySeal: true,
+    rating: 4.9,
+    reviews: 187,
+    fastShipping: true,
+    sustainablePackaging: true,
+    loyaltyPoints: 60
+  },
+
+  // ===== GALICIA =====
+  {
+    id: "pack-raiz-conservas-ortega",
+    name: "Pack Raíz - Conservas Ortega",
+    type: "raiz",
+    price: 35,
+    description: "El sabor auténtico del mar gallego. Tradición conservera familiar.",
+    expandedDescription: "Descubre la esencia de la costa gallega con conservas artesanas elaboradas por una familia que lleva cuatro generaciones dedicada al mar.",
     company: {
       name: "Conservas Ortega",
       logo: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png",
-      location: "Galicia"
+      location: "Vigo"
     },
-    region: "Galicia",
+    region: "Vigo",
+    autonomousCommunity: "Galicia",
+    categories: ["Conservas", "Dulces"],
+    products: [
+      {
+        name: "Sardinas en Aceite de Oliva",
+        description: "Sardinas gallegas conservadas artesanalmente",
+        company: "Conservas Ortega",
+        companyLogo: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png"
+      },
+      {
+        name: "Tarta de Santiago Mini",
+        description: "Dulce tradicional gallego",
+        company: "Repostería Compostela",
+        companyLogo: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png"
+      }
+    ],
+    addedValue: ["Envío gratuito"],
+    qualitySeal: false,
+    rating: 4.5,
+    reviews: 98,
+    fastShipping: true,
+    sustainablePackaging: true,
+    loyaltyPoints: 35
+  },
+  {
+    id: "pack-gourmet-conservas-ortega",
+    name: "Pack Gourmet - Conservas Ortega",
+    type: "gourmet",
+    price: 90,
+    description: "Para los paladares exigentes. La máxima expresión del mar gallego.",
+    expandedDescription: "El Pack Gourmet de Conservas Ortega es una experiencia sensorial completa del mejor marisco y pescado gallego, con productos premium y de temporada.",
+    company: {
+      name: "Conservas Ortega",
+      logo: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png",
+      location: "Vigo"
+    },
+    region: "Vigo",
     autonomousCommunity: "Galicia",
     categories: ["Conservas", "Quesos", "Vinos", "Dulces"],
     products: [
@@ -164,22 +355,16 @@ export const companyPacks: CompanyPack[] = [
         description: "Pulpo gallego cocido tradicionalmente",
         company: "Mariscos Rías",
         companyLogo: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png"
-      },
-      {
-        name: "Tarta de Santiago Artesana",
-        description: "Dulce tradicional con almendra marcona",
-        company: "Repostería Compostela",
-        companyLogo: "/lovable-uploads/83f11de4-7868-48bc-bcf0-9c5fd4e36abe.png"
       }
     ],
-    addedValue: ["Experiencia en conservera", "Cata de licores", "Maridaje con vinos gallegos", "Recetario del chef"],
+    addedValue: ["Experiencia en conservera", "Cata de licores", "Maridaje con vinos gallegos", "Recomendado por ORIGEN"],
     qualitySeal: true,
     featured: "new",
     rating: 5.0,
     reviews: 89,
     fastShipping: true,
     sustainablePackaging: true,
-    loyaltyPoints: 9
+    loyaltyPoints: 90
   }
 ];
 
@@ -234,11 +419,24 @@ export const filterPacks = (
 
     // Added value filter
     if (filters.addedValue && filters.addedValue.length > 0) {
-      const hasMatchingValue = filters.addedValue.some(value =>
-        pack.addedValue?.some(packValue => 
-          packValue.toLowerCase().includes(value.toLowerCase())
-        )
-      );
+      const hasMatchingValue = filters.addedValue.some(value => {
+        if (!pack.addedValue) return false;
+        
+        // Handle specific mappings
+        const valueMapping: { [key: string]: string[] } = {
+          "Incluye degustación": ["Degustación incluida", "Incluye degustación", "Cata dirigida", "Cata de aceites", "Cata de licores"],
+          "Envío gratuito": ["Envío gratuito"],
+          "Pack exclusivo de temporada": ["Pack exclusivo de temporada"],
+          "Recomendado por ORIGEN": ["Recomendado por ORIGEN"]
+        };
+        
+        const mappedValues = valueMapping[value] || [value];
+        return mappedValues.some(mappedValue => 
+          pack.addedValue!.some(packValue => 
+            packValue.toLowerCase() === mappedValue.toLowerCase()
+          )
+        );
+      });
       if (!hasMatchingValue) return false;
     }
 
@@ -257,5 +455,14 @@ export const filterPacks = (
   });
 };
 
-export const regions = ["León", "Granada", "Galicia"];
-export const categories = ["Embutidos", "Aceites", "Conservas", "Quesos", "Mieles", "Vinos", "Dulces"];
+export const regions = [
+  "Castilla y León", "Andalucía", "Galicia", "Aragón", "Cataluña", 
+  "Valencia", "Madrid", "País Vasco", "Asturias", "Cantabria",
+  "Navarra", "Extremadura", "Murcia", "La Rioja", "Castilla-La Mancha"
+];
+
+export const categories = [
+  "Quesos", "Carnes", "Embutidos", "Lácteos", "Miel", "Vinos", 
+  "Dulces", "Panes", "Conservas", "Aceites", "Frutas y verduras",
+  "Productos sin gluten", "Ecológicos / Bio", "Otros artesanales"
+];
