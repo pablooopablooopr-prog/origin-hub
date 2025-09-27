@@ -3,7 +3,6 @@ import { Card, CardContent } from "@/components/ui/card";
 const PackTypeCards = () => {
   const packTypes = [
     {
-      emoji: "🌱",
       name: "Pack Raíz",
       price: "35€",
       products: "3 productos aprox.",
@@ -12,7 +11,6 @@ const PackTypeCards = () => {
       gradient: "bg-gradient-to-br from-amber-50 to-amber-100"
     },
     {
-      emoji: "🌿", 
       name: "Pack Esencia",
       price: "60€",
       products: "4 productos aprox.",
@@ -21,7 +19,6 @@ const PackTypeCards = () => {
       gradient: "bg-gradient-to-br from-emerald-50 to-emerald-100"
     },
     {
-      emoji: "👑",
       name: "Pack Gourmet", 
       price: "90€",
       products: "5 productos aprox.",
@@ -36,8 +33,7 @@ const PackTypeCards = () => {
       {packTypes.map((pack) => (
         <Card key={pack.name} className={`${pack.gradient} border-0 shadow-md`}>
           <CardContent className="p-6 text-center">
-            <div className="text-4xl mb-3">{pack.emoji}</div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">{pack.name}</h3>
+            <h3 className="text-xl font-bold text-gray-800 mb-4">{pack.name}</h3>
             <div className="text-2xl font-bold text-primary mb-2">
               {pack.price}
               <span className="text-sm font-normal text-muted-foreground ml-1">(envío incluido)</span>

@@ -93,20 +93,6 @@ const RoutesExplorer = ({ showTitle = true }: { showTitle?: boolean }) => {
                     <Route className="w-4 h-4 mr-2" />
                     Explorar ruta
                   </Button>
-                  
-                  <Button 
-                    variant="outline"
-                    className="w-full transition-all hover:bg-primary/10 relative z-40"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      console.log('🚀 BUTTON CLICKED! Navigating to: /rutas');
-                      navigate('/rutas');
-                    }}
-                  >
-                    <MapPin className="w-4 h-4 mr-2" />
-                    Ver todas las rutas
-                  </Button>
                 </div>
               </CardContent>
             </Card>
