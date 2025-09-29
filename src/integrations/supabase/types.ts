@@ -119,6 +119,132 @@ export type Database = {
           },
         ]
       }
+      customers: {
+        Row: {
+          address: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      favorites: {
+        Row: {
+          created_at: string
+          customer_id: string
+          id: string
+          pack_id: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          id?: string
+          pack_id: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          id?: string
+          pack_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "favorites_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          customer_id: string
+          estimated_delivery: string | null
+          id: string
+          order_date: string
+          pack_id: string | null
+          shipping_address: string
+          status: string
+          total_amount: number
+          tracking_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          estimated_delivery?: string | null
+          id?: string
+          order_date?: string
+          pack_id?: string | null
+          shipping_address: string
+          status?: string
+          total_amount: number
+          tracking_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          estimated_delivery?: string | null
+          id?: string
+          order_date?: string
+          pack_id?: string | null
+          shipping_address?: string
+          status?: string
+          total_amount?: number
+          tracking_number?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pack_analytics: {
         Row: {
           clicks: number | null

@@ -26,6 +26,10 @@ All colors MUST be HSL.
     --secondary: 100 25% 45%;
     --secondary-foreground: 35 20% 96%;
 
+    /* Cliente green (vibrant green for customer zone) */
+    --cliente: 130 45% 45%;
+    --cliente-foreground: 0 0% 100%;
+
     /* Muted earth tones */
     --muted: 30 15% 88%;
     --muted-foreground: 25 12% 55%;
@@ -97,6 +101,10 @@ All colors MUST be HSL.
 
     --secondary: 100 20% 35%;
     --secondary-foreground: 35 20% 90%;
+
+    /* Dark mode cliente green */
+    --cliente: 130 45% 50%;
+    --cliente-foreground: 0 0% 100%;
 
     --muted: 25 12% 15%;
     --muted-foreground: 30 15% 65%;

@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Search, Filter, Star, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const MiZona = () => {
+const SoyCliente = () => {
   const nearbyBusinesses = [
     {
       name: "Panadería El Horno",
@@ -67,7 +67,10 @@ const MiZona = () => {
                   className="pl-10"
                 />
               </div>
-              <Button variant="outline" className="flex items-center gap-2">
+              <Button 
+                className="flex items-center gap-2"
+                style={{ backgroundColor: "hsl(var(--cliente))", color: "hsl(var(--cliente-foreground))" }}
+              >
                 <Filter className="w-4 h-4" />
                 Filtros
               </Button>
@@ -156,4 +159,4 @@ const MiZona = () => {
   );
 };
 
-export default MiZona;
+export default SoyCliente;

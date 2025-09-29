@@ -40,7 +40,15 @@ const Header = () => {
           <div className="hidden md:flex items-center space-x-4">
             <Link to="/soy-empresa">
               <Button variant="default" size="sm">
-                Soy empresa
+                Soy Empresa
+              </Button>
+            </Link>
+            <Link to="/customer-auth">
+              <Button 
+                size="sm"
+                style={{ backgroundColor: "hsl(var(--cliente))", color: "hsl(var(--cliente-foreground))" }}
+              >
+                Soy Cliente
               </Button>
             </Link>
           </div>
@@ -69,7 +77,16 @@ const Header = () => {
               <div className="flex flex-col space-y-2 pt-4">
                 <Link to="/soy-empresa" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="default" size="sm" className="w-full">
-                    Soy empresa
+                    Soy Empresa
+                  </Button>
+                </Link>
+                <Link to="/customer-auth" onClick={() => setIsMenuOpen(false)}>
+                  <Button 
+                    size="sm" 
+                    className="w-full"
+                    style={{ backgroundColor: "hsl(var(--cliente))", color: "hsl(var(--cliente-foreground))" }}
+                  >
+                    Soy Cliente
                   </Button>
                 </Link>
               </div>

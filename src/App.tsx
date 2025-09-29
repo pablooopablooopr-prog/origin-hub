@@ -10,7 +10,7 @@ import PacksBuscar from "./pages/PacksBuscar";
 import Rutas from "./pages/Rutas";
 import RutaDetalle from "./pages/RutaDetalle";
 import Contacto from "./pages/Contacto";
-import MiZona from "./pages/MiZona";
+import SoyCliente from "./pages/SoyCliente";
 import SoyEmpresa from "./pages/SoyEmpresa";
 import BusinessDetail from "./pages/BusinessDetail";
 import CreateRoute from "./pages/CreateRoute";
@@ -20,6 +20,8 @@ import EscribirValoracion from "./pages/EscribirValoracion";
 import CompanyAuth from "./pages/CompanyAuth";
 import CompanyDashboard from "./pages/CompanyDashboard";
 import PackBuilder from "./pages/PackBuilder";
+import CustomerAuth from "./pages/CustomerAuth";
+import CustomerDashboard from "./pages/CustomerDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,7 +41,7 @@ const App = () => (
           <Route path="/rutas" element={<Rutas />} />
           <Route path="/rutas/:id" element={<RutaDetalle />} />
           <Route path="/contacto" element={<Contacto />} />
-          <Route path="/mi-zona" element={<MiZona />} />
+          <Route path="/soy-cliente" element={<SoyCliente />} />
           <Route path="/soy-empresa" element={<SoyEmpresa />} />
           <Route path="/valoraciones" element={<Valoraciones />} />
           <Route path="/escribir-valoracion" element={<EscribirValoracion />} />
@@ -49,6 +51,8 @@ const App = () => (
           <Route path="/company-dashboard" element={<CompanyDashboard />} />
           <Route path="/pack-builder" element={<PackBuilder />} />
           <Route path="/pack-builder/:packId" element={<PackBuilder />} />
+          <Route path="/customer-auth" element={<CustomerAuth />} />
+          <Route path="/soy-cliente" element={<CustomerDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
