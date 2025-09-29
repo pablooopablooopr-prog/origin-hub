@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Check, Building, Users, Globe, Phone, Mail, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const SoyEmpresa = () => {
   const benefits = [
@@ -164,14 +165,15 @@ const SoyEmpresa = () => {
                   />
                 </div>
 
-                <div className="text-center">
+                <div className="text-center space-y-4">
                   <Button size="lg" className="px-8 shadow-earth">
                     <Building className="w-5 h-5 mr-2" />
                     Enviar solicitud
                   </Button>
-                  <p className="text-sm text-muted-foreground mt-4">
-                    Te contactaremos en menos de 48 horas para verificar y activar tu perfil
-                  </p>
+                  <div className="text-sm text-muted-foreground">
+                    <p>Te contactaremos en menos de 48 horas para verificar y activar tu perfil</p>
+                    <p className="mt-2">¿Ya tienes cuenta? <Link to="/company-auth" className="text-primary hover:underline">Inicia sesión aquí</Link></p>
+                  </div>
                 </div>
               </CardContent>
             </Card>

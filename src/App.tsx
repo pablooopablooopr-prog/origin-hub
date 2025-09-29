@@ -17,6 +17,9 @@ import CreateRoute from "./pages/CreateRoute";
 import PackDetail from "./pages/PackDetail";
 import Valoraciones from "./pages/Valoraciones";
 import EscribirValoracion from "./pages/EscribirValoracion";
+import CompanyAuth from "./pages/CompanyAuth";
+import CompanyDashboard from "./pages/CompanyDashboard";
+import PackBuilder from "./pages/PackBuilder";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +45,10 @@ const App = () => (
           <Route path="/escribir-valoracion" element={<EscribirValoracion />} />
           <Route path="/negocio/:id" element={<BusinessDetail />} />
           <Route path="/crear-ruta" element={<CreateRoute />} />
+          <Route path="/company-auth" element={<CompanyAuth />} />
+          <Route path="/company-dashboard" element={<CompanyDashboard />} />
+          <Route path="/pack-builder" element={<PackBuilder />} />
+          <Route path="/pack-builder/:packId" element={<PackBuilder />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
