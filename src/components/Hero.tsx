@@ -44,29 +44,16 @@ const Hero = () => {
             </Button>
           </Link>
           
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link to="/soy-empresa">
-              <Button 
-                variant="secondary" 
-                size="lg" 
-                className="px-8 py-4 text-lg shadow-moss"
-              >
-                <Building className="w-5 h-5 mr-3" />
-                Soy Empresa
-              </Button>
-            </Link>
-            
-            <Link to="/customer-auth">
-              <Button 
-                size="lg" 
-                className="px-8 py-4 text-lg"
-                style={{ backgroundColor: "hsl(var(--cliente))", color: "hsl(var(--cliente-foreground))" }}
-              >
-                <Building className="w-5 h-5 mr-3" />
-                Soy Cliente
-              </Button>
-            </Link>
-          </div>
+          <Link to="/company-auth">
+            <Button 
+              variant="secondary" 
+              size="lg" 
+              className="px-8 py-4 text-lg shadow-moss"
+            >
+              <Building className="w-5 h-5 mr-3" />
+              Soy Empresa
+            </Button>
+          </Link>
         </div>
 
         {/* Indicadores sutiles */}
