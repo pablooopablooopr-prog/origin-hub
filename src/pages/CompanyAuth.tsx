@@ -9,6 +9,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { Building } from "lucide-react";
 
 export default function CompanyAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -134,8 +137,10 @@ export default function CompanyAuth() {
 
   if (user && !loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 flex items-center justify-center p-4">
-        <Card className="w-full max-w-2xl">
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto px-6 py-16">
+          <Card className="w-full max-w-2xl mx-auto">
           <CardHeader>
             <CardTitle>Registro de Empresa</CardTitle>
             <CardDescription>
@@ -213,13 +218,26 @@ export default function CompanyAuth() {
             </form>
           </CardContent>
         </Card>
+        </main>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 container mx-auto px-6 py-16">
+        <div className="max-w-md mx-auto">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style={{ backgroundColor: "hsl(var(--secondary))" }}>
+              <Building className="w-8 h-8" style={{ color: "hsl(var(--secondary-foreground))" }} />
+            </div>
+            <h1 className="text-3xl font-bold mb-2">Zona de Empresa</h1>
+            <p className="text-muted-foreground">Accede a tu cuenta o regístrate</p>
+          </div>
+
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>Acceso Empresas</CardTitle>
           <CardDescription>
@@ -291,6 +309,9 @@ export default function CompanyAuth() {
           </Tabs>
         </CardContent>
       </Card>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }
