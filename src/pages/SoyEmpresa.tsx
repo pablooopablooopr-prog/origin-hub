@@ -50,9 +50,15 @@ const SoyEmpresa = () => {
               />
               <span>y Empresa</span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
               Únete a la red de negocios auténticos que están transformando el comercio local
             </p>
+            <Link to="/company-auth">
+              <Button size="lg" variant="secondary" className="shadow-moss">
+                <Building className="w-5 h-5 mr-2" />
+                Acceder a mi zona de empresa
+              </Button>
+            </Link>
           </div>
         </div>
 

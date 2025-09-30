@@ -44,7 +44,7 @@ const Hero = () => {
             </Button>
           </Link>
           
-          <Link to="/company-auth">
+          <Link to="/soy-empresa">
             <Button 
               variant="secondary" 
               size="lg" 
