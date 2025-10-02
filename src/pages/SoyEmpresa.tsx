@@ -44,7 +44,7 @@ const SoyEmpresa = () => {
             <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4 flex items-center justify-center">
               <span>S</span>
               <img 
-                src="/lovable-uploads/clean-enso-symbol.png" 
+                src="/lovable-uploads/enso-transparent.png" 
                 alt="Ensō"
                 className="w-8 h-8 md:w-10 md:h-10 object-contain mx-1"
               />

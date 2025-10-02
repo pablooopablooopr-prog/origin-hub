@@ -11,10 +11,9 @@ const Header = () => {
           <div className="flex items-center space-x-3">
             <Link to="/" className="text-2xl font-bold tracking-tight text-primary flex items-center">
               <img 
-                src="/lovable-uploads/new-enso-symbol.png" 
+                src="/lovable-uploads/enso-transparent.png" 
                 alt="Ensō"
-                className="w-6 h-6 object-contain mx-0 -ml-4" 
-                style={{ backgroundColor: 'transparent' }}
+                className="w-6 h-6 object-contain mx-0 -ml-4"
               />
               <span>RIGEN</span>
             </Link>
