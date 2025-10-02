@@ -38,37 +38,6 @@ const Testimonials = () => {
     location: "Santiago",
     avatar: "RM"
   }];
-  
-  return (
-    <section className="py-16 bg-muted/30">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-primary mb-4">Lo que dicen nuestros usuarios</h2>
-          <p className="text-muted-foreground">Historias reales de personas que han vuelto al origen</p>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardContent className="pt-6">
-                <Quote className="w-8 h-8 text-primary/20 mb-4" />
-                <p className="text-muted-foreground mb-6 italic">{testimonial.quote}</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                    {testimonial.avatar}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-foreground">{testimonial.author}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.role} • {testimonial.location}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  return;
 };
-
 export default Testimonials;
