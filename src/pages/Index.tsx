@@ -4,7 +4,6 @@ import InteractiveMap from "@/components/InteractiveMap";
 import RoutesExplorer from "@/components/RoutesExplorer";
 import HumanRatings from "@/components/HumanRatings";
 import BusinessSection from "@/components/BusinessSection";
-import Testimonials from "@/components/Testimonials";
 import Footer from "@/components/Footer";
 import PackTypeCards from "@/components/PackTypeCards";
 import { Button } from "@/components/ui/button";
@@ -56,7 +55,6 @@ const Index = () => {
         <RoutesExplorer />
         <BusinessSection />
         <HumanRatings />
-        <Testimonials />
       </main>
       <Footer />
     </div>
