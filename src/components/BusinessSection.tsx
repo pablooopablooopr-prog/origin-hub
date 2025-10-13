@@ -25,7 +25,7 @@ const BusinessSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-earth enso-watermark" id="empresas">
+    <section className="py-20 bg-gradient-earth" id="empresas">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Contenido principal */}
