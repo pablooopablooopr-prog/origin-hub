@@ -22,8 +22,8 @@ const Hero = () => {
         </p>
 
         {/* Descripción adicional */}
-        <p className="text-muted-foreground mb-16 max-w-2xl mx-auto opacity-90 text-lg font-medium font-sans text-center">
-          Conectamos sin intermediarios consumidores conscientes con productores artesanos que cuidan de tu alimentación y de su tierra, packs y experiencias rurales de toda España                                                                                                                                                                                              
+        <p className="text-muted-foreground mb-16 max-w-2xl mx-auto opacity-90 text-lg font-normal font-sans text-center">
+          Conectamos sin intermediarios consumidores conscientes con productores artesanos que cuidan de tu alimentación y de su tierra, packs y experiencias rurales de toda España                                                                                                                                                                                              
         </p>
 
         {/* Botones de acción */}
@@ -33,6 +33,12 @@ const Hero = () => {
               <Map className="w-5 h-5 mr-3" />
               Explora el mapa
               <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
+          
+          <Link to="/packs">
+            <Button variant="outline" size="lg" className="px-8 py-4 text-lg border-2 border-earth-dark hover:bg-earth-dark hover:text-white transition-colors">
+              Descubrir packs
             </Button>
           </Link>
           
