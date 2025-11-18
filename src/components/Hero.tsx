@@ -47,12 +47,6 @@ const Hero = () => {
               Soy empresa
             </Button>
           </Link>
-          
-          <Link to="/soy-cliente">
-            <Button size="lg" className="px-8 py-4 text-lg shadow-earth">
-              Entrar
-            </Button>
-          </Link>
         </div>
 
         {/* Indicadores sutiles */}
