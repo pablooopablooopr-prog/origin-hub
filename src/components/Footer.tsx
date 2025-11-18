@@ -42,18 +42,7 @@ const Footer = () => {
               <Link to="/rutas" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Rutas ORIGEN
               </Link>
-              <a href="#empresas" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                  Soy Empresa
-
-
-
-
-
-
-
-
-
-              </a>
+              <a href="#empresas" className="text-primary-foreground/80 hover:text-secondary transition-colors">Soy Empresa</a>
             </nav>
           </div>
 
