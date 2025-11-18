@@ -24,13 +24,12 @@ const Hero = () => {
 
         {/* Subtítulo */}
         <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
-          Negocios de siempre. Salud real. Comunidad local.
+          Productos artesanos. Calidad real. Comunidad nacional.
         </p>
 
         {/* Descripción adicional */}
         <p className="text-lg text-muted-foreground mb-16 max-w-2xl mx-auto opacity-90">
-          Conectamos consumidores conscientes con pequeñas y medianas empresas que trabajan 
-          con productos auténticos, naturales y sin refinamiento.
+          Conectamos sin intermediarios consumidores conscientes con productores artesanos, packs y experiencias rurales de toda España que cuidan de tu alimentación y de su tierra.
         </p>
 
         {/* Botones de acción */}
@@ -43,14 +42,13 @@ const Hero = () => {
             </Button>
           </Link>
           
-          <Link to="/soy-empresa">
+          <Link to="/soy-cliente">
             <Button 
               variant="secondary" 
               size="lg" 
               className="px-8 py-4 text-lg shadow-moss"
             >
-              <Building className="w-5 h-5 mr-3" />
-              Soy Empresa
+              Entrar
             </Button>
           </Link>
         </div>
