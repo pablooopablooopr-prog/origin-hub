@@ -37,9 +37,7 @@ const Index = () => {
 
             {/* CTA Button */}
             <div className="text-center">
-              <Button onClick={handleSearchPacks} size="lg" className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
-                Buscar Packs Disponibles
-              </Button>
+              <Button onClick={handleSearchPacks} size="lg" className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">Descubrir Packs Disponibles</Button>
             </div>
           </div>
         </section>
