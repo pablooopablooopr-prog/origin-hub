@@ -124,9 +124,7 @@ const HumanRatings = () => {
           <h3 className="text-2xl font-semibold text-primary mb-4">
             Comparte tu experiencia
           </h3>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Ayuda a la comunidad compartiendo valoraciones auténticas sobre los negocios que has visitado. Cada reseña cuenta una historia real y ayuda a .
-          </p>
+          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">Ayuda a la comunidad compartiendo valoraciones auténticas sobre los negocios que has visitado. Cada reseña cuenta una historia real y contribuye al crecimiento.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="shadow-earth" onClick={() => navigate('/escribir-valoracion')}>
               <MessageCircle className="w-5 h-5 mr-2" />
