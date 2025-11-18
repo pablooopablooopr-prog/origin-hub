@@ -34,15 +34,15 @@ const Header = () => {
           {/* Botones de acción */}
           <div className="hidden md:flex items-center space-x-4">
             <Link to="/company-auth">
-              <Button variant="default" size="sm">
+              <Button size="sm" style={{
+              backgroundColor: "hsl(var(--cliente))",
+              color: "hsl(var(--cliente-foreground))"
+            }}>
                 Soy Empresa
               </Button>
             </Link>
             <Link to="/customer-auth">
-              <Button size="sm" style={{
-              backgroundColor: "hsl(var(--cliente))",
-              color: "hsl(var(--cliente-foreground))"
-            }}>​Log in</Button>
+              <Button variant="default" size="sm">Log in</Button>
             </Link>
           </div>
 
@@ -69,16 +69,16 @@ const Header = () => {
               </Link>
               <div className="flex flex-col space-y-2 pt-4">
                 <Link to="/company-auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="default" size="sm" className="w-full">
-                    Soy Empresa
-                  </Button>
-                </Link>
-                <Link to="/customer-auth" onClick={() => setIsMenuOpen(false)}>
                   <Button size="sm" className="w-full" style={{
                 backgroundColor: "hsl(var(--cliente))",
                 color: "hsl(var(--cliente-foreground))"
               }}>
-                    Soy Cliente
+                    Soy Empresa
+                  </Button>
+                </Link>
+                <Link to="/customer-auth" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="default" size="sm" className="w-full">
+                    Log in
                   </Button>
                 </Link>
               </div>
