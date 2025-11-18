@@ -22,8 +22,13 @@ const Hero = () => {
         </p>
 
         {/* Descripción adicional */}
-        <p className="text-muted-foreground mb-16 max-w-2xl mx-auto opacity-90 text-lg font-normal font-sans text-center">
+        <p className="text-muted-foreground mb-8 max-w-2xl mx-auto opacity-90 text-lg font-normal font-sans text-center">
           Conectamos sin intermediarios consumidores conscientes con productores artesanos que cuidan de tu alimentación y de su tierra, packs y experiencias rurales de toda España                                                                                                                                                                                              
+        </p>
+
+        {/* Cómo funciona */}
+        <p className="text-muted-foreground/70 mb-16 max-w-3xl mx-auto text-base font-normal text-center">
+          Así funciona ORIGEN: eliges productos, packs o rutas · conoces al productor · lo disfrutas en casa apoyando el comercio local.
         </p>
 
         {/* Botones de acción */}
