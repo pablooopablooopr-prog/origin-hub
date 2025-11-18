@@ -1,10 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Map, Building } from "lucide-react";
 import { Link } from "react-router-dom";
-
 const Hero = () => {
-  return (
-    <section className="min-h-screen bg-gradient-warm enso-watermark flex items-center justify-center relative overflow-hidden pt-16">
+  return <section className="min-h-screen bg-gradient-warm enso-watermark flex items-center justify-center relative overflow-hidden pt-16">
       {/* Fondo sutil con textura */}
       <div className="absolute inset-0 bg-gradient-to-br from-earth-light/20 via-transparent to-moss-light/20"></div>
       
@@ -13,11 +11,7 @@ const Hero = () => {
         <h1 className="text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1">
           <span>Vuelve al</span>
           <span className="inline-flex items-center">
-            <img 
-              src="/lovable-uploads/enso-transparent.png" 
-              alt="Ensō"
-              className="w-12 h-12 md:w-20 md:h-20 object-contain mx-0"
-            />
+            <img src="/lovable-uploads/enso-transparent.png" alt="Ensō" className="w-12 h-12 md:w-20 md:h-20 object-contain mx-0" />
             <span>rigen</span>
           </span>
         </h1>
@@ -29,7 +23,7 @@ const Hero = () => {
 
         {/* Descripción adicional */}
         <p className="text-lg text-muted-foreground mb-16 max-w-2xl mx-auto opacity-90">
-          Conectamos sin intermediarios consumidores conscientes con productores artesanos, packs y experiencias rurales de toda España que cuidan de tu alimentación y de su tierra.
+          Conectamos sin intermediarios consumidores conscientes con productores artesanos que cuidan de tu alimentación y de su tierra , packs y experiencias rurales de toda España que    
         </p>
 
         {/* Botones de acción */}
@@ -43,11 +37,7 @@ const Hero = () => {
           </Link>
           
           <Link to="/soy-cliente">
-            <Button 
-              variant="secondary" 
-              size="lg" 
-              className="px-8 py-4 text-lg shadow-moss"
-            >
+            <Button variant="secondary" size="lg" className="px-8 py-4 text-lg shadow-moss">
               Entrar
             </Button>
           </Link>
@@ -69,8 +59,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;
