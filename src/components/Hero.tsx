@@ -27,7 +27,7 @@ const Hero = () => {
         </p>
 
         {/* Botones de acción */}
-        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-4xl mx-auto">
           <Link to="/mapa">
             <Button size="lg" className="group px-8 py-4 text-lg shadow-earth">
               <Map className="w-5 h-5 mr-3" />
@@ -37,13 +37,21 @@ const Hero = () => {
           </Link>
           
           <Link to="/packs">
-            <Button variant="outline" size="lg" className="px-8 py-4 text-lg border-2 border-earth-dark hover:bg-earth-dark hover:text-white transition-colors">
+            <Button size="lg" className="px-8 py-4 text-lg bg-earth-dark text-white hover:bg-earth-dark/90 transition-colors">
               Descubrir packs
             </Button>
           </Link>
           
+          <Link to="/soy-empresa">
+            <Button variant="secondary" size="lg" className="px-8 py-4 text-lg shadow-moss">
+              Soy empresa
+            </Button>
+          </Link>
+          
           <Link to="/soy-cliente">
-            <Button variant="secondary" size="lg" className="px-8 py-4 text-lg shadow-moss">Soy empresa</Button>
+            <Button size="lg" className="px-8 py-4 text-lg shadow-earth">
+              Entrar
+            </Button>
           </Link>
         </div>
 
