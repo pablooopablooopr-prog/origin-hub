@@ -22,9 +22,7 @@ const RoutesExplorer = ({
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
               Rutas ORIGEN
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Marca y comparte rutas visitando negocios locales. Sube valoraciones y reseñas de cada lugar que descubras en tu camino y compártela con.
-            </p>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">Marca y comparte rutas visitando negocios locales. Sube valoraciones y reseñas de cada lugar que descubras en tu camino y compártela con los demás</p>
           </div>}
 
         {/* Rutas destacadas */}
