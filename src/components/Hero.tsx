@@ -17,13 +17,13 @@ const Hero = () => {
         </h1>
 
         {/* Subtítulo */}
-        <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
           Productos artesanos. Calidad real. Comunidad nacional.
         </p>
 
         {/* Descripción adicional */}
-        <p className="text-lg text-muted-foreground mb-16 max-w-2xl mx-auto opacity-90">
-          Conectamos sin intermediarios consumidores conscientes con productores artesanos que cuidan de tu alimentación y de su tierra , packs y experiencias rurales de toda España que    
+        <p className="text-muted-foreground mb-16 max-w-2xl mx-auto opacity-90 text-lg font-medium font-sans text-center">
+          Conectamos sin intermediarios consumidores conscientes con productores artesanos que cuidan de tu alimentación y de su tierra, packs y experiencias rurales de toda España                                                                                                                                                                                              
         </p>
 
         {/* Botones de acción */}
@@ -37,9 +37,7 @@ const Hero = () => {
           </Link>
           
           <Link to="/soy-cliente">
-            <Button variant="secondary" size="lg" className="px-8 py-4 text-lg shadow-moss">
-              Entrar
-            </Button>
+            <Button variant="secondary" size="lg" className="px-8 py-4 text-lg shadow-moss">Soy empresa</Button>
           </Link>
         </div>
 

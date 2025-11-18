@@ -8,16 +8,12 @@ import Footer from "@/components/Footer";
 import PackTypeCards from "@/components/PackTypeCards";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-
 const Index = () => {
   const navigate = useNavigate();
-
   const handleSearchPacks = () => {
     navigate('/packs');
   };
-
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       <Header />
       <main>
         <Hero />
@@ -32,7 +28,7 @@ const Index = () => {
               </h2>
               <p className="text-lg text-muted-foreground max-w-4xl mx-auto leading-relaxed">
                 Descubre lo mejor de cada tierra en packs cuidadosamente seleccionados por productores locales.<br />
-                <span className="font-medium">Sencillos, equilibrados o gourmet: tú eliges cómo saborear el origen.</span>
+                <span className="font-medium">Sencillos, equilibrados o gourmet: tú eliges cómo saborear el ORIGEN.</span>
               </p>
             </div>
 
@@ -41,11 +37,7 @@ const Index = () => {
 
             {/* CTA Button */}
             <div className="text-center">
-              <Button 
-                onClick={handleSearchPacks}
-                size="lg"
-                className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-              >
+              <Button onClick={handleSearchPacks} size="lg" className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
                 Buscar Packs Disponibles
               </Button>
             </div>
@@ -57,8 +49,6 @@ const Index = () => {
         <HumanRatings />
       </main>
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
