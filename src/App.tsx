@@ -55,6 +55,7 @@ const App = () => (
           <Route path="/pack-builder/:packId" element={<PackBuilder />} />
           <Route path="/customer-auth" element={<CustomerAuth />} />
           <Route path="/soy-cliente" element={<CustomerDashboard />} />
+          <Route path="/mi-cuenta" element={<CustomerDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
