@@ -57,6 +57,14 @@ All colors MUST be HSL.
     --bone: 35 20% 96%;
     --warm-white: 35 15% 98%;
     
+    /* Pack type colors - Warm, natural tones */
+    --pack-raiz: 40 43% 93%;        /* #F7F3E9 - arena suave */
+    --pack-raiz-alt: 40 50% 92%;    /* #F4EAD2 - arena dorada */
+    --pack-esencia: 90 35% 92%;     /* #E8F0E1 - verde oliva clarísimo */
+    --pack-esencia-alt: 75 30% 91%; /* #E3E9D7 - verde suave */
+    --pack-gourmet: 30 40% 91%;     /* #EFE3DA - arcilla premium */
+    --pack-gourmet-alt: 30 35% 88%; /* #E6D5C8 - terracota suave */
+    
     /* Gradients */
     --gradient-earth: linear-gradient(135deg, hsl(30 25% 75%), hsl(25 30% 50%));
     --gradient-moss: linear-gradient(135deg, hsl(100 20% 70%), hsl(100 25% 45%));

@@ -27,6 +27,36 @@ const Packs = () => {
     setFilteredPacks(filtered);
   };
 
+  const getPackTypeColor = (type: string) => {
+    switch (type) {
+      case 'raiz':
+        return 'bg-pack-raiz border-pack-raiz-alt';
+      case 'esencia':
+        return 'bg-pack-esencia border-pack-esencia-alt';
+      case 'gourmet':
+        return 'bg-pack-gourmet border-pack-gourmet-alt';
+      default:
+        return 'bg-card border-border';
+    }
+  };
+
+  const getPackTypeName = (type: string) => {
+    switch (type) {
+      case 'raiz':
+        return 'Pack Raíz';
+      case 'esencia':
+        return 'Pack Esencia';
+      case 'gourmet':
+        return 'Pack Gourmet';
+      default:
+        return '';
+    }
+  };
+
+  const getPackSpecificName = (fullName: string) => {
+    return fullName.replace(/^Pack (Raíz|Esencia|Gourmet) - /, '');
+  };
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -54,12 +84,13 @@ const Packs = () => {
           {/* Pack Results Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPacks.map((pack) => (
-              <Card key={pack.id} className="group hover:shadow-lg transition-all duration-300 cursor-pointer">
+              <Card key={pack.id} className={`group hover:shadow-lg transition-all duration-300 cursor-pointer ${getPackTypeColor(pack.type)}`}>
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="text-lg font-semibold text-primary group-hover:text-primary/80 transition-colors">
-                        {pack.name}
+                      <div className="text-sm font-bold text-primary mb-1">{getPackTypeName(pack.type)}</div>
+                      <h3 className="text-lg font-semibold text-foreground group-hover:text-foreground/80 transition-colors">
+                        {getPackSpecificName(pack.name)}
                       </h3>
                       <div className="flex items-center gap-1 mt-1">
                         <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />

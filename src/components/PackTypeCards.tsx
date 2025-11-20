@@ -8,7 +8,7 @@ const PackTypeCards = () => {
       products: "3 productos aprox.",
       level: "Nivel básico / Intro",
       description: "Ideal para una primera aproximación a los sabores locales.",
-      gradient: "bg-gradient-to-br from-amber-50 to-amber-100"
+      bgColor: "bg-pack-raiz"
     },
     {
       name: "Pack Esencia",
@@ -16,7 +16,7 @@ const PackTypeCards = () => {
       products: "4 productos aprox.",
       level: "Selección media / equilibrada",
       description: "Perfecto para quienes quieren conocer la esencia gastronómica de una zona.",
-      gradient: "bg-gradient-to-br from-emerald-50 to-emerald-100"
+      bgColor: "bg-pack-esencia"
     },
     {
       name: "Pack Gourmet", 
@@ -24,23 +24,23 @@ const PackTypeCards = () => {
       products: "5 productos aprox.",
       level: "Premium / Degustación",
       description: "Para los paladares más exigentes que buscan lo mejor del producto local.",
-      gradient: "bg-gradient-to-br from-purple-50 to-purple-100"
+      bgColor: "bg-pack-gourmet"
     }
   ];
 
   return (
     <div className="grid md:grid-cols-3 gap-6 mb-12">
       {packTypes.map((pack) => (
-        <Card key={pack.name} className={`${pack.gradient} border-0 shadow-md`}>
+        <Card key={pack.name} className={`${pack.bgColor} border-0 shadow-md`}>
           <CardContent className="p-6 text-center">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">{pack.name}</h3>
+            <h3 className="text-xl font-bold text-primary mb-4">{pack.name}</h3>
             <div className="text-2xl font-bold text-primary mb-2">
               {pack.price}
               <span className="text-sm font-normal text-muted-foreground ml-1">(envío incluido)</span>
             </div>
             <p className="text-sm text-muted-foreground mb-2">{pack.products}</p>
-            <p className="text-sm font-medium text-gray-700 mb-3">{pack.level}</p>
-            <p className="text-sm text-gray-600">{pack.description}</p>
+            <p className="text-sm font-medium text-foreground mb-3">{pack.level}</p>
+            <p className="text-sm text-muted-foreground">{pack.description}</p>
           </CardContent>
         </Card>
       ))}
