@@ -15,6 +15,7 @@ import SoyEmpresa from "./pages/SoyEmpresa";
 import BusinessDetail from "./pages/BusinessDetail";
 import CreateRoute from "./pages/CreateRoute";
 import PackDetail from "./pages/PackDetail";
+import Cart from "./pages/Cart";
 import Valoraciones from "./pages/Valoraciones";
 import EscribirValoracion from "./pages/EscribirValoracion";
 import CompanyAuth from "./pages/CompanyAuth";
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/packs" element={<Packs />} />
           <Route path="/packs/buscar" element={<PacksBuscar />} />
           <Route path="/packs/:id" element={<PackDetail />} />
+          <Route path="/carrito" element={<Cart />} />
           <Route path="/rutas" element={<Rutas />} />
           <Route path="/rutas/:id" element={<RutaDetalle />} />
           <Route path="/contacto" element={<Contacto />} />

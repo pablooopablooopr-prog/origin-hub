@@ -202,8 +202,8 @@ const PackDetail = () => {
         
         {/* Hero Section - Tarjeta principal con color por categoría */}
         <section className="w-full" style={{ backgroundColor: getPackTypeDarkColor(pack.type) }}>
-          <div className="container mx-auto px-6 py-10 max-w-5xl">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div className="container mx-auto px-6 py-12 max-w-6xl">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               
               {/* Pack Info */}
               <div className="space-y-5">
@@ -340,14 +340,14 @@ const PackDetail = () => {
         {/* Main Content */}
         <main className="container mx-auto px-6 py-12">
           
-          {/* Pack Description - Reducido padding */}
-          <section className="mb-10">
+          {/* Pack Description - Más compacto */}
+          <section className="mb-8">
             <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-2xl">Descripción del Pack</CardTitle>
+              <CardHeader className="pb-1">
+                <CardTitle className="text-xl">Descripción del Pack</CardTitle>
               </CardHeader>
-              <CardContent className="pb-4">
-                <p className="text-lg leading-relaxed text-muted-foreground">
+              <CardContent className="pb-3">
+                <p className="text-base leading-relaxed text-muted-foreground">
                   {pack.expandedDescription}
                 </p>
               </CardContent>
@@ -425,12 +425,12 @@ const PackDetail = () => {
                                       {product.company}
                                     </Link>
                                   </div>
-                                  <Link 
-                                    to={`/packs?company=${product.company.toLowerCase().replace(/\s+/g, '-')}`}
-                                    className="text-xs text-primary hover:underline flex items-center gap-1"
-                                  >
-                                    Ver todos sus packs →
-                                  </Link>
+                                     <Link 
+                                       to={`/negocio/${product.company.toLowerCase().replace(/\s+/g, '-')}`}
+                                       className="text-xs text-primary hover:underline flex items-center gap-1"
+                                     >
+                                       Ver todos sus packs →
+                                     </Link>
                                 </div>
                                 <div className="flex gap-2">
                                   <Badge variant="outline" className="text-xs">Artesanal</Badge>
@@ -470,35 +470,47 @@ const PackDetail = () => {
                 </Card>
               )}
 
-              {/* Producer Information */}
+              {/* Producer Information - Más compacto */}
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-2xl">
-                    <User className="w-6 h-6" />
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <User className="w-5 h-5" />
                     Información del Productor
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex items-start gap-6">
-                    <img 
-                      src={pack.company.logo} 
-                      alt={pack.company.name}
-                      className="w-20 h-20 object-cover rounded-lg border-2 border-primary/20"
-                    />
-                    <div className="flex-1 space-y-4">
+                <CardContent className="pb-4">
+                  <div className="flex items-start gap-4">
+                    <Link 
+                      to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
+                      className="hover:opacity-80 transition-opacity"
+                    >
+                      <img 
+                        src={pack.company.logo} 
+                        alt={pack.company.name}
+                        className="w-16 h-16 object-cover rounded-lg border-2 border-primary/20"
+                      />
+                    </Link>
+                    <div className="flex-1 space-y-2">
                       <div>
-                        <h3 className="text-xl font-semibold">{pack.company.name}</h3>
-                        <p className="text-muted-foreground flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
+                        <Link 
+                          to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
+                          className="hover:underline"
+                        >
+                          <h3 className="text-lg font-semibold">{pack.company.name}</h3>
+                        </Link>
+                        <p className="text-sm text-muted-foreground flex items-center gap-1">
+                          <MapPin className="w-3 h-3" />
                           {pack.company.location}
                         </p>
                       </div>
-                      <p className="text-muted-foreground italic leading-relaxed">
+                      <p className="text-sm text-muted-foreground italic leading-relaxed">
                         "Elaboramos estos productos con el mismo mimo que pusieron nuestros abuelos. 
                         Cada elaboración conserva la esencia tradicional de {pack.region}."
                       </p>
-                      <Button variant="outline">
-                        Ver todos sus packs
+                      <Button asChild variant="outline" size="sm">
+                        <Link to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}>
+                          Ver todos sus packs →
+                        </Link>
                       </Button>
                     </div>
                   </div>
@@ -614,16 +626,18 @@ const PackDetail = () => {
 
               {/* Gift Option */}
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Gift className="w-5 h-5" />
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Gift className="w-4 h-4" />
                     Opción de Regalo
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <Button variant="outline" className="w-full mb-4">
-                    <Gift className="w-4 h-4 mr-2" />
-                    Regalar este pack
+                <CardContent className="pb-4">
+                  <Button asChild variant="outline" className="w-full mb-3">
+                    <Link to="/carrito">
+                      <Gift className="w-4 h-4 mr-2" />
+                      Regalar este pack
+                    </Link>
                   </Button>
                   <div className="text-xs text-muted-foreground space-y-1">
                     <p>• Personaliza la tarjeta de regalo</p>
