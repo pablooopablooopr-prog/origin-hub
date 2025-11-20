@@ -143,14 +143,14 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
               )}
               
               <CardHeader className="text-center pb-4">
-                <div className="mb-2">
-                  <Link to={`/packs?packType=${pack.type}`}>
-                    <div className="text-sm font-bold text-primary mb-1 cursor-pointer hover:underline transition-all">
-                      {getPackTypeName(pack.type)}
-                    </div>
-                  </Link>
-                  <CardTitle className="text-lg font-semibold text-foreground">{getPackSpecificName(pack.name)}</CardTitle>
-                </div>
+                <Link to={`/packs?packType=${pack.type}`} className="mb-2 block">
+                  <div className="text-sm font-bold text-primary mb-1 cursor-pointer hover:underline transition-all">
+                    {getPackTypeName(pack.type)}
+                  </div>
+                  <CardTitle className="text-lg font-semibold text-foreground cursor-pointer hover:underline transition-all">
+                    {getPackSpecificName(pack.name)}
+                  </CardTitle>
+                </Link>
                 
                 {/* Rating */}
                 <div className="flex items-center justify-center gap-1 mb-3">
