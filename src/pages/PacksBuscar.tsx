@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, Truck, Leaf } from "lucide-react";
+import { Star, Truck, Leaf, PackageX } from "lucide-react";
 import { companyPacks, filterPacks } from "@/data/companyPacks";
 import type { CompanyPack } from "@/data/companyPacks";
 
@@ -25,6 +25,19 @@ const PacksBuscar = () => {
   const handleFiltersChange = (filters: SearchFilters) => {
     const filtered = filterPacks(companyPacks, filters);
     setFilteredPacks(filtered);
+  };
+
+  const handleClearFilters = () => {
+    const emptyFilters: SearchFilters = {
+      location: "",
+      categories: [],
+      packType: "",
+      addedValue: [],
+      priceRange: ""
+    };
+    handleFiltersChange(emptyFilters);
+    // Force re-render of filters component
+    window.location.reload();
   };
 
   const getPackTypeColor = (type: string) => {
@@ -75,73 +88,90 @@ const PacksBuscar = () => {
           <PackSearchFilters onFiltersChange={handleFiltersChange} />
 
           {/* Results */}
-          <div className="mb-6">
-            <p className="text-sm text-muted-foreground">
-              {filteredPacks.length} packs encontrados
-            </p>
-          </div>
+          {filteredPacks.length > 0 && (
+            <div className="mb-6">
+              <p className="text-sm text-muted-foreground">
+                {filteredPacks.length} packs encontrados
+              </p>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {filteredPacks.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16 px-4">
+              <PackageX className="w-16 h-16 text-muted-foreground/50 mb-4" />
+              <p className="text-lg text-muted-foreground text-center mb-6 max-w-md">
+                No hemos encontrado packs con estos filtros. Prueba a cambiar la región o la categoría.
+              </p>
+              <Button variant="outline" size="sm" onClick={handleClearFilters}>
+                Limpiar filtros
+              </Button>
+            </div>
+          )}
 
           {/* Pack Results Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPacks.map((pack) => (
-              <Card key={pack.id} className={`group hover:shadow-lg transition-all duration-300 cursor-pointer ${getPackTypeColor(pack.type)}`}>
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="text-sm font-bold text-primary mb-1">{getPackTypeName(pack.type)}</div>
-                      <h3 className="text-lg font-semibold text-foreground group-hover:text-foreground/80 transition-colors">
-                        {getPackSpecificName(pack.name)}
-                      </h3>
-                      <div className="flex items-center gap-1 mt-1">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm text-muted-foreground">{pack.rating}</span>
+          {filteredPacks.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredPacks.map((pack) => (
+                <Card key={pack.id} className={`group hover:shadow-lg transition-all duration-300 cursor-pointer ${getPackTypeColor(pack.type)}`}>
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <div className="text-sm font-bold text-primary mb-1">{getPackTypeName(pack.type)}</div>
+                        <h3 className="text-lg font-semibold text-foreground group-hover:text-foreground/80 transition-colors">
+                          {getPackSpecificName(pack.name)}
+                        </h3>
+                        <div className="flex items-center gap-1 mt-1">
+                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          <span className="text-sm text-muted-foreground">{pack.rating}</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-primary">{pack.price}€</p>
+                        <p className="text-xs text-muted-foreground">envío incluido</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-primary">{pack.price}€</p>
-                      <p className="text-xs text-muted-foreground">envío incluido</p>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                    {pack.description}
-                  </p>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {pack.description}
+                    </p>
 
-                  {pack.addedValue && (
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {pack.addedValue.map((value, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {value}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
-                    <div className="flex items-center gap-1">
-                      <Truck className="w-3 h-3" />
-                      <span>{pack.fastShipping ? "Envío rápido" : "Envío estándar"}</span>
-                    </div>
-                    {pack.sustainablePackaging && (
-                      <div className="flex items-center gap-1">
-                        <Leaf className="w-3 h-3 text-green-600" />
-                        <span>Sostenible</span>
+                    {pack.addedValue && (
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {pack.addedValue.map((value, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs">
+                            {value}
+                          </Badge>
+                        ))}
                       </div>
                     )}
-                  </div>
 
-                  <Button 
-                    className="w-full" 
-                    size="sm"
-                    onClick={() => navigate(`/packs/${pack.id}`)}
-                  >
-                    Ver más
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
+                      <div className="flex items-center gap-1">
+                        <Truck className="w-3 h-3" />
+                        <span>{pack.fastShipping ? "Envío rápido" : "Envío estándar"}</span>
+                      </div>
+                      {pack.sustainablePackaging && (
+                        <div className="flex items-center gap-1">
+                          <Leaf className="w-3 h-3 text-green-600" />
+                          <span>Sostenible</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <Button 
+                      className="w-full" 
+                      size="sm"
+                      onClick={() => navigate(`/packs/${pack.id}`)}
+                    >
+                      Ver más
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </main>
       <Footer />

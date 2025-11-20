@@ -60,8 +60,8 @@ All colors MUST be HSL.
     /* Pack type colors - Warm, natural tones */
     --pack-raiz: 40 43% 93%;        /* #F7F3E9 - arena suave */
     --pack-raiz-alt: 40 50% 92%;    /* #F4EAD2 - arena dorada */
-    --pack-esencia: 90 35% 92%;     /* #E8F0E1 - verde oliva clarísimo */
-    --pack-esencia-alt: 75 30% 91%; /* #E3E9D7 - verde suave */
+    --pack-esencia: 93 36% 91%;     /* #E3ECD7 - verde suave natural */
+    --pack-esencia-alt: 93 36% 94%; /* verde suave claro */
     --pack-gourmet: 23 34% 77%;     /* #D9C1B2 - arcilla profunda natural */
     --pack-gourmet-alt: 23 34% 82%; /* arcilla natural clara */
     
