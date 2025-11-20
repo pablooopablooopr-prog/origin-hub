@@ -1,4 +1,5 @@
 import { useParams, Navigate, Link } from "react-router-dom";
+import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +16,11 @@ import { useToast } from "@/hooks/use-toast";
 const PackDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
+
+  // Auto scroll to top when pack changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [id]);
   
   if (!id) {
     return <Navigate to="/packs" replace />;
@@ -195,9 +201,9 @@ const PackDetail = () => {
         </section>
         
         {/* Hero Section - Tarjeta principal con color por categoría */}
-        <section className="relative">
-          <div className={`container mx-auto px-6 py-12 max-w-6xl ${getPackTypeColor(pack.type)}`}>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <section className="w-full" style={{ backgroundColor: getPackTypeDarkColor(pack.type) }}>
+          <div className="container mx-auto px-6 py-10 max-w-5xl">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
               
               {/* Pack Info */}
               <div className="space-y-5">
@@ -266,7 +272,9 @@ const PackDetail = () => {
                       ))}
                     </div>
                     <span className="text-sm font-medium">{pack.rating}</span>
-                    <span className="text-sm text-muted-foreground">({pack.reviews} valoraciones)</span>
+                    <Link to="/valoraciones" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                      ({pack.reviews} valoraciones)
+                    </Link>
                   </div>
                 </div>
 
@@ -302,7 +310,8 @@ const PackDetail = () => {
                     onClick={handleShare}
                     variant="outline"
                     size="lg"
-                    className="py-6"
+                    className="py-6 border-2"
+                    style={{ borderColor: '#8B6F47' }}
                   >
                     <Share2 className="w-5 h-5 mr-2" />
                     Compartir
@@ -334,10 +343,10 @@ const PackDetail = () => {
           {/* Pack Description - Reducido padding */}
           <section className="mb-10">
             <Card>
-              <CardHeader className="pb-3">
+              <CardHeader className="pb-2">
                 <CardTitle className="text-2xl">Descripción del Pack</CardTitle>
               </CardHeader>
-              <CardContent className="pb-5">
+              <CardContent className="pb-4">
                 <p className="text-lg leading-relaxed text-muted-foreground">
                   {pack.expandedDescription}
                 </p>
@@ -514,7 +523,9 @@ const PackDetail = () => {
                         ))}
                       </div>
                       <span className="font-semibold">{pack.rating}/5</span>
-                      <span className="text-muted-foreground">({pack.reviews} valoraciones)</span>
+                      <Link to="/valoraciones" className="text-muted-foreground hover:text-primary transition-colors">
+                        ({pack.reviews} valoraciones)
+                      </Link>
                     </div>
                   </div>
                 </CardHeader>
@@ -555,8 +566,10 @@ const PackDetail = () => {
                         <p className="text-muted-foreground">{review.comment}</p>
                       </div>
                     ))}
-                    <Button variant="outline" className="w-full">
-                      Ver todas las valoraciones
+                    <Button asChild variant="outline" className="w-full">
+                      <Link to="/valoraciones">
+                        Ver todas las valoraciones
+                      </Link>
                     </Button>
                   </div>
                 </CardContent>
@@ -687,7 +700,7 @@ const PackDetail = () => {
                             </Badge>
                           </div>
                           <CardContent className="p-4">
-                            <h3 className="font-semibold text-base mb-2">{relatedPack.name} - {relatedPack.autonomousCommunity}</h3>
+                            <h3 className="font-semibold text-sm mb-2">{relatedPack.name} - {relatedPack.autonomousCommunity}</h3>
                             <div className="flex items-center justify-between">
                               <span className="text-lg font-bold text-primary">{relatedPack.price}€</span>
                               <Button asChild size="sm">
