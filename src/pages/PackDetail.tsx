@@ -140,35 +140,40 @@ const PackDetail = () => {
         <Header />
         
         {/* Breadcrumb Navigation */}
-        <section className="bg-muted/30 border-b">
+        <section style={{ backgroundColor: '#B08968' }} className="border-b">
           <div className="container mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
               <Breadcrumb>
-                <BreadcrumbList>
+                <BreadcrumbList className="text-white">
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                      <Link to="/">Inicio</Link>
+                      <Link to="/" className="text-white hover:text-white/80">Inicio</Link>
                     </BreadcrumbLink>
                   </BreadcrumbItem>
-                  <BreadcrumbSeparator />
+                  <BreadcrumbSeparator className="text-white/70" />
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                      <Link to="/packs">Packs</Link>
+                      <Link to="/packs" className="text-white hover:text-white/80">Packs</Link>
                     </BreadcrumbLink>
                   </BreadcrumbItem>
-                  <BreadcrumbSeparator />
+                  <BreadcrumbSeparator className="text-white/70" />
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                      <Link to="/packs">{pack.autonomousCommunity}</Link>
+                      <Link to="/packs" className="text-white hover:text-white/80">{pack.autonomousCommunity}</Link>
                     </BreadcrumbLink>
                   </BreadcrumbItem>
-                  <BreadcrumbSeparator />
+                  <BreadcrumbSeparator className="text-white/70" />
                   <BreadcrumbItem>
-                    <BreadcrumbPage>{getPackTypeName(pack.type)} - {getPackSpecificName(pack.name)}</BreadcrumbPage>
+                    <BreadcrumbPage className="text-white">{getPackTypeName(pack.type)} - {getPackSpecificName(pack.name)}</BreadcrumbPage>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
-              <Button variant="outline" size="sm" onClick={() => window.history.back()}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => window.history.back()}
+                className="bg-white/90 hover:bg-white text-[#B08968] border-white/20"
+              >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Volver
               </Button>
@@ -184,9 +189,11 @@ const PackDetail = () => {
               {/* Pack Info */}
               <div className="space-y-6">
                 <div className="flex flex-wrap items-center gap-2 mb-4">
-                  <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
-                    {getPackTypeName(pack.type)}
-                  </Badge>
+                  <Link to={`/packs?packType=${pack.type}`}>
+                    <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 cursor-pointer hover:bg-primary/20 transition-colors">
+                      {getPackTypeName(pack.type)}
+                    </Badge>
+                  </Link>
                   {pack.seasonal && (
                     <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
                       <Calendar className="w-3 h-3 mr-1" />
@@ -217,7 +224,13 @@ const PackDetail = () => {
                   {getPackTypeName(pack.type)}
                 </h1>
                 <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
-                  {getPackSpecificName(pack.name)} – {pack.autonomousCommunity}
+                  <Link 
+                    to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
+                    className="hover:underline hover:text-primary transition-colors"
+                  >
+                    {getPackSpecificName(pack.name)}
+                  </Link>
+                  {' – '}{pack.autonomousCommunity}
                 </h2>
                 
                 <div className="flex items-center gap-6">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -18,18 +18,28 @@ export interface SearchFilters {
 
 interface PackSearchFiltersProps {
   onFiltersChange: (filters: SearchFilters) => void;
+  initialFilters?: SearchFilters | null;
 }
 
-const PackSearchFilters = ({ onFiltersChange }: PackSearchFiltersProps) => {
-  const [filters, setFilters] = useState<SearchFilters>({
-    location: "",
-    categories: [],
-    packType: "",
-    addedValue: [],
-    priceRange: ""
-  });
+const PackSearchFilters = ({ onFiltersChange, initialFilters }: PackSearchFiltersProps) => {
+  const [filters, setFilters] = useState<SearchFilters>(
+    initialFilters || {
+      location: "",
+      categories: [],
+      packType: "",
+      addedValue: [],
+      priceRange: ""
+    }
+  );
 
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Update filters when initialFilters change
+  useEffect(() => {
+    if (initialFilters) {
+      setFilters(initialFilters);
+    }
+  }, [initialFilters]);
 
   const regions = [
     "Castilla y León", "Andalucía", "Galicia", "Aragón", "Cataluña", 
