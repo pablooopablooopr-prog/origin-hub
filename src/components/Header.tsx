@@ -1,9 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { MapPin, Menu, X } from "lucide-react";
+import { MapPin, Menu, X, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // Mock cart items count - en producción vendría del estado global/context
+  const cartItemsCount = 1;
+
   return <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
@@ -33,6 +38,16 @@ const Header = () => {
 
           {/* Botones de acción */}
           <div className="hidden md:flex items-center space-x-4">
+            {cartItemsCount > 0 && (
+              <Link to="/carrito" className="relative">
+                <Button variant="outline" size="sm" className="relative">
+                  <ShoppingCart className="w-4 h-4" />
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                    {cartItemsCount}
+                  </Badge>
+                </Button>
+              </Link>
+            )}
             <Link to="/soy-empresa">
               <Button variant="secondary" size="sm">
                 Soy Empresa
@@ -65,6 +80,14 @@ const Header = () => {
                 Contacto
               </Link>
               <div className="flex flex-col space-y-2 pt-4">
+                {cartItemsCount > 0 && (
+                  <Link to="/carrito" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="outline" size="sm" className="w-full relative">
+                      <ShoppingCart className="w-4 h-4 mr-2" />
+                      Carrito ({cartItemsCount})
+                    </Button>
+                  </Link>
+                )}
                 <Link to="/soy-empresa" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="secondary" size="sm" className="w-full">
                     Soy Empresa
