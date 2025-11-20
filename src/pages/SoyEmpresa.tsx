@@ -110,15 +110,15 @@ const SoyEmpresa = () => {
                   <ol className="space-y-3 text-left flex flex-col items-center">
                     <li className="flex gap-2 max-w-[260px]">
                       <span className="font-semibold">1.</span>
-                      <span>"Rellena este formulario."</span>
+                      <span>Rellena este formulario.</span>
                     </li>
                     <li className="flex gap-2 max-w-[400px]">
                       <span className="font-semibold">2.</span>
-                      <span>"Revisamos tu negocio en menos de 48 horas."</span>
+                      <span>Revisamos tu negocio en menos de 48 horas.</span>
                     </li>
                     <li className="flex gap-2 max-w-[650px]">
                       <span className="font-semibold">3.</span>
-                      <span>"Te damos acceso a tu panel privado para crear tu ficha y empezar a vender en ORIGEN."</span>
+                      <span>Te damos acceso a tu panel privado para crear tu ficha y empezar a vender en ORIGEN.</span>
                     </li>
                   </ol>
                 </CardDescription>
