@@ -234,9 +234,11 @@ const PackDetail = () => {
                   )}
                 </div>
                 
-                <h1 className="text-4xl md:text-5xl font-bold text-primary mb-2">
-                  {getPackTypeName(pack.type)}
-                </h1>
+                <Link to={`/packs?packType=${pack.type}`}>
+                  <h1 className="text-4xl md:text-5xl font-bold text-primary mb-2 cursor-pointer hover:underline transition-all">
+                    {getPackTypeName(pack.type)}
+                  </h1>
+                </Link>
                 <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
                   <Link 
                     to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
