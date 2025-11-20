@@ -30,14 +30,31 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
   const getPackTypeColor = (type: string) => {
     switch (type) {
       case 'raiz':
-        return 'bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200';
+        return 'bg-pack-raiz border-pack-raiz-alt';
       case 'esencia':
-        return 'bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200';
+        return 'bg-pack-esencia border-pack-esencia-alt';
       case 'gourmet':
-        return 'bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200';
+        return 'bg-pack-gourmet border-pack-gourmet-alt';
       default:
         return 'bg-card border-border';
     }
+  };
+
+  const getPackTypeName = (type: string) => {
+    switch (type) {
+      case 'raiz':
+        return 'Pack Raíz';
+      case 'esencia':
+        return 'Pack Esencia';
+      case 'gourmet':
+        return 'Pack Gourmet';
+      default:
+        return '';
+    }
+  };
+
+  const getPackSpecificName = (fullName: string) => {
+    return fullName.replace(/^Pack (Raíz|Esencia|Gourmet) - /, '');
   };
 
   const getFeaturedBadge = (featured: string | undefined) => {
@@ -66,34 +83,34 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
               <h2 className="text-2xl font-bold text-primary mb-4">¿Cuántos Packs Hay?</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-              <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200">
+              <Card className="bg-pack-raiz border-pack-raiz-alt">
                 <CardContent className="p-4 text-center">
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <span className="text-2xl">🌱</span>
-                    <h3 className="font-bold text-amber-800">Pack Raíz</h3>
+                    <h3 className="font-bold text-primary">Pack Raíz</h3>
                   </div>
-                  <p className="text-sm text-amber-700 mb-1">35€ (envío incluido)</p>
-                  <p className="text-xs text-amber-600">3 productos aprox • Básico / Intro</p>
+                  <p className="text-sm text-muted-foreground mb-1">35€ (envío incluido)</p>
+                  <p className="text-xs text-muted-foreground">3 productos aprox • Básico / Intro</p>
                 </CardContent>
               </Card>
-              <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
+              <Card className="bg-pack-esencia border-pack-esencia-alt">
                 <CardContent className="p-4 text-center">
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <span className="text-2xl">🌿</span>
-                    <h3 className="font-bold text-emerald-800">Pack Esencia</h3>
+                    <h3 className="font-bold text-primary">Pack Esencia</h3>
                   </div>
-                  <p className="text-sm text-emerald-700 mb-1">60€ (envío incluido)</p>
-                  <p className="text-xs text-emerald-600">4 productos aprox • Medio / Equilibrado</p>
+                  <p className="text-sm text-muted-foreground mb-1">60€ (envío incluido)</p>
+                  <p className="text-xs text-muted-foreground">4 productos aprox • Medio / Equilibrado</p>
                 </CardContent>
               </Card>
-              <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+              <Card className="bg-pack-gourmet border-pack-gourmet-alt">
                 <CardContent className="p-4 text-center">
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <span className="text-2xl">👑</span>
-                    <h3 className="font-bold text-purple-800">Pack Gourmet</h3>
+                    <h3 className="font-bold text-primary">Pack Gourmet</h3>
                   </div>
-                  <p className="text-sm text-purple-700 mb-1">90€ (envío incluido)</p>
-                  <p className="text-xs text-purple-600">5 productos aprox • Premium / Degustación</p>
+                  <p className="text-sm text-muted-foreground mb-1">90€ (envío incluido)</p>
+                  <p className="text-xs text-muted-foreground">5 productos aprox • Premium / Degustación</p>
                 </CardContent>
               </Card>
             </div>
@@ -126,7 +143,10 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
               )}
               
               <CardHeader className="text-center pb-4">
-                <CardTitle className="text-xl font-bold text-primary mb-2">{pack.name}</CardTitle>
+                <div className="mb-2">
+                  <div className="text-sm font-bold text-primary mb-1">{getPackTypeName(pack.type)}</div>
+                  <CardTitle className="text-lg font-semibold text-foreground">{getPackSpecificName(pack.name)}</CardTitle>
+                </div>
                 
                 {/* Rating */}
                 <div className="flex items-center justify-center gap-1 mb-3">

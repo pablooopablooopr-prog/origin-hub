@@ -70,14 +70,31 @@ const PackDetail = () => {
   const getPackTypeColor = (type: string) => {
     switch (type) {
       case 'raiz':
-        return 'bg-amber-100 text-amber-700 border-amber-200';
+        return 'bg-pack-raiz';
       case 'esencia':
-        return 'bg-orange-100 text-orange-700 border-orange-200';
+        return 'bg-pack-esencia';
       case 'gourmet':
-        return 'bg-purple-100 text-purple-700 border-purple-200';
+        return 'bg-pack-gourmet';
       default:
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+        return 'bg-background';
     }
+  };
+
+  const getPackTypeName = (type: string) => {
+    switch (type) {
+      case 'raiz':
+        return 'Pack Raíz';
+      case 'esencia':
+        return 'Pack Esencia';
+      case 'gourmet':
+        return 'Pack Gourmet';
+      default:
+        return '';
+    }
+  };
+
+  const getPackSpecificName = (fullName: string) => {
+    return fullName.replace(/^Pack (Raíz|Esencia|Gourmet) - /, '');
   };
 
   const getFeaturedBadge = (featured: string | undefined) => {
@@ -119,7 +136,7 @@ const PackDetail = () => {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen">
+      <div className={`min-h-screen ${getPackTypeColor(pack.type)}`}>
         <Header />
         
         {/* Breadcrumb Navigation */}
@@ -147,7 +164,7 @@ const PackDetail = () => {
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
-                    <BreadcrumbPage>{pack.name}</BreadcrumbPage>
+                    <BreadcrumbPage>{getPackTypeName(pack.type)} - {getPackSpecificName(pack.name)}</BreadcrumbPage>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
@@ -160,15 +177,15 @@ const PackDetail = () => {
         </section>
         
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-primary/10 via-background to-muted/20">
+        <section className="relative">
           <div className="container mx-auto px-6 py-16">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               
               {/* Pack Info */}
               <div className="space-y-6">
                 <div className="flex flex-wrap items-center gap-2 mb-4">
-                  <Badge variant="secondary" className={getPackTypeColor(pack.type)}>
-                    {pack.type === 'raiz' ? 'Pack Raíz' : pack.type === 'esencia' ? 'Pack Esencia' : 'Pack Gourmet'}
+                  <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                    {getPackTypeName(pack.type)}
                   </Badge>
                   {pack.seasonal && (
                     <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
@@ -196,9 +213,12 @@ const PackDetail = () => {
                   )}
                 </div>
                 
-                <h1 className="text-4xl md:text-5xl font-bold text-primary">
-                  {pack.name} – {pack.autonomousCommunity}
+                <h1 className="text-4xl md:text-5xl font-bold text-primary mb-2">
+                  {getPackTypeName(pack.type)}
                 </h1>
+                <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
+                  {getPackSpecificName(pack.name)} – {pack.autonomousCommunity}
+                </h2>
                 
                 <div className="flex items-center gap-6">
                   <div className="text-4xl font-bold text-primary">

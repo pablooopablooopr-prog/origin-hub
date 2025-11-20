@@ -74,7 +74,14 @@ export default {
 					dark: 'hsl(var(--moss-dark))'
 				},
 				bone: 'hsl(var(--bone))',
-				'warm-white': 'hsl(var(--warm-white))'
+				'warm-white': 'hsl(var(--warm-white))',
+				// Pack type colors
+				'pack-raiz': 'hsl(var(--pack-raiz))',
+				'pack-raiz-alt': 'hsl(var(--pack-raiz-alt))',
+				'pack-esencia': 'hsl(var(--pack-esencia))',
+				'pack-esencia-alt': 'hsl(var(--pack-esencia-alt))',
+				'pack-gourmet': 'hsl(var(--pack-gourmet))',
+				'pack-gourmet-alt': 'hsl(var(--pack-gourmet-alt))'
 			},
 			fontFamily: {
 				heading: 'var(--font-heading)',
