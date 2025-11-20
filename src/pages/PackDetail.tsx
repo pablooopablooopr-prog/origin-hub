@@ -75,13 +75,26 @@ const PackDetail = () => {
   const getPackTypeDarkColor = (type: string) => {
     switch (type) {
       case 'raiz':
-        return 'hsl(30, 25%, 70%)'; // Pack Raíz - marrón tierra más oscuro
+        return 'hsl(40, 43%, 93%)'; // Pack Raíz - arena suave (color original de tarjeta)
       case 'esencia':
-        return 'hsl(100, 35%, 82%)'; // Pack Esencia - verde natural más intenso
+        return 'hsl(93, 36%, 91%)'; // Pack Esencia - verde suave natural (color original de tarjeta)
       case 'gourmet':
-        return 'hsl(23, 34%, 77%)'; // Pack Gourmet - arcilla profunda natural (mantener igual)
+        return 'hsl(23, 34%, 77%)'; // Pack Gourmet - arcilla profunda natural (color original de tarjeta)
       default:
         return 'hsl(var(--background))';
+    }
+  };
+
+  const getMiniHeroColor = (type: string) => {
+    switch (type) {
+      case 'raiz':
+        return 'hsl(30, 25%, 70%)'; // Pack Raíz - marrón tierra más oscuro para mini-hero
+      case 'esencia':
+        return 'hsl(100, 35%, 75%)'; // Pack Esencia - verde más intenso para mini-hero
+      case 'gourmet':
+        return 'hsl(23, 34%, 65%)'; // Pack Gourmet - arcilla más oscura para mini-hero
+      default:
+        return '#C6B08C';
     }
   };
 
@@ -144,8 +157,8 @@ const PackDetail = () => {
       <div className="min-h-screen bg-[#FAF6F0]">
         <Header />
         
-        {/* Breadcrumb Navigation - Mini-hero con altura reducida y color café fijo */}
-        <section style={{ backgroundColor: '#C6B08C' }} className="border-b">
+        {/* Breadcrumb Navigation - Mini-hero con altura reducida y color por tipo de pack */}
+        <section style={{ backgroundColor: getMiniHeroColor(pack.type) }} className="border-b">
           <div className="container mx-auto px-6 py-3">
             <div className="flex items-center justify-between">
               <Breadcrumb>
