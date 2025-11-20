@@ -43,7 +43,8 @@ const Hero = () => {
           </Link>
           
           <Link to="/soy-empresa">
-            <Button variant="secondary" size="lg" className="px-8 py-4 text-lg shadow-moss">
+            <Button variant="secondary" size="lg" className="shadow-moss">
+              <Building className="w-5 h-5 mr-2" />
               Soy empresa
             </Button>
           </Link>
