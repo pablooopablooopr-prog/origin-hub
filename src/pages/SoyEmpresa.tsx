@@ -21,7 +21,7 @@ const SoyEmpresa = () => {
     title: "Venta directa",
     description: "Sin intermediarios. Relación directa con tus clientes"
   }];
-  const criteria = ["Productos artesanos o tradicionales", "Sin aditivos químicos innecesarios", "Métodos de producción auténticos", "Compromiso con la calidad sobre la cantidad", "Negocio familiar o local establecido", "Respeto por el entorno y territorio"];
+  const criteria = ["Productos artesanos o tradicionales", "Sin aditivos químicos innecesarios", "Métodos de producción auténticos", "Compromiso con la calidad sobre la cantidad", "Negocio familiar o local establecido", "Respeto por el entorno y el territorio"];
   return <div className="min-h-screen">
       <Header />
       <main className="pt-6">
