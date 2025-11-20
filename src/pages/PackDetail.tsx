@@ -80,6 +80,19 @@ const PackDetail = () => {
     }
   };
 
+  const getPackTypeDarkColor = (type: string) => {
+    switch (type) {
+      case 'raiz':
+        return 'hsl(40, 25%, 60%)';
+      case 'esencia':
+        return 'hsl(93, 36%, 71%)';
+      case 'gourmet':
+        return 'hsl(23, 34%, 57%)';
+      default:
+        return 'hsl(var(--background))';
+    }
+  };
+
   const getPackTypeName = (type: string) => {
     switch (type) {
       case 'raiz':
@@ -140,7 +153,7 @@ const PackDetail = () => {
         <Header />
         
         {/* Breadcrumb Navigation */}
-        <section style={{ backgroundColor: '#B08968' }} className="border-b">
+        <section style={{ backgroundColor: getPackTypeDarkColor(pack.type) }} className="border-b">
           <div className="container mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
               <Breadcrumb>
@@ -172,7 +185,8 @@ const PackDetail = () => {
                 variant="outline" 
                 size="sm" 
                 onClick={() => window.history.back()}
-                className="bg-white/90 hover:bg-white text-[#B08968] border-white/20"
+                className="bg-white/90 hover:bg-white border-white/20"
+                style={{ color: getPackTypeDarkColor(pack.type) }}
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Volver
