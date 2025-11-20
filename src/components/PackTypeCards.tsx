@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 const PackTypeCards = () => {
   const packTypes = [
@@ -8,7 +9,8 @@ const PackTypeCards = () => {
       products: "3 productos aprox.",
       level: "Nivel básico / Intro",
       description: "Ideal para una primera aproximación a los sabores locales.",
-      bgColor: "bg-pack-raiz"
+      bgColor: "bg-pack-raiz",
+      filterType: "raiz"
     },
     {
       name: "Pack Esencia",
@@ -16,7 +18,8 @@ const PackTypeCards = () => {
       products: "4 productos aprox.",
       level: "Selección media / equilibrada",
       description: "Perfecto para quienes quieren conocer la esencia gastronómica de una zona.",
-      bgColor: "bg-pack-esencia"
+      bgColor: "bg-pack-esencia",
+      filterType: "esencia"
     },
     {
       name: "Pack Gourmet", 
@@ -24,7 +27,8 @@ const PackTypeCards = () => {
       products: "5 productos aprox.",
       level: "Premium / Degustación",
       description: "Para los paladares más exigentes que buscan lo mejor del producto local.",
-      bgColor: "bg-pack-gourmet"
+      bgColor: "bg-pack-gourmet",
+      filterType: "gourmet"
     }
   ];
 
@@ -33,7 +37,11 @@ const PackTypeCards = () => {
       {packTypes.map((pack) => (
         <Card key={pack.name} className={`${pack.bgColor} border-0 shadow-md`}>
           <CardContent className="p-6 text-center">
-            <h3 className="text-xl font-bold text-primary mb-4">{pack.name}</h3>
+            <Link to={`/packs?packType=${pack.filterType}`}>
+              <h3 className="text-xl font-bold text-primary mb-4 cursor-pointer hover:underline transition-all">
+                {pack.name}
+              </h3>
+            </Link>
             <div className="text-2xl font-bold text-primary mb-2">
               {pack.price}
               <span className="text-sm font-normal text-muted-foreground ml-1">(envío incluido)</span>

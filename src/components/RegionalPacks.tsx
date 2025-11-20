@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Package, ArrowRight, Star, Award, Truck, Leaf, Gift, ShoppingCart } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { companyPacks, filterPacks } from "@/data/companyPacks";
 import PackSearchFilters, { SearchFilters } from "./PackSearchFilters";
 
@@ -144,7 +144,11 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
               
               <CardHeader className="text-center pb-4">
                 <div className="mb-2">
-                  <div className="text-sm font-bold text-primary mb-1">{getPackTypeName(pack.type)}</div>
+                  <Link to={`/packs?packType=${pack.type}`}>
+                    <div className="text-sm font-bold text-primary mb-1 cursor-pointer hover:underline transition-all">
+                      {getPackTypeName(pack.type)}
+                    </div>
+                  </Link>
                   <CardTitle className="text-lg font-semibold text-foreground">{getPackSpecificName(pack.name)}</CardTitle>
                 </div>
                 
