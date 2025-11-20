@@ -182,7 +182,7 @@ const CustomerDashboard = () => {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="profile">
               <User className="w-4 h-4 mr-2" />
               Perfil
@@ -194,6 +194,10 @@ const CustomerDashboard = () => {
             <TabsTrigger value="favorites">
               <Heart className="w-4 h-4 mr-2" />
               Favoritos
+            </TabsTrigger>
+            <TabsTrigger value="share">
+              <Truck className="w-4 h-4 mr-2" />
+              Compartir
             </TabsTrigger>
           </TabsList>
 
@@ -339,6 +343,77 @@ const CustomerDashboard = () => {
                 ))
               )}
             </div>
+          </TabsContent>
+
+          <TabsContent value="share">
+            <Card>
+              <CardHeader>
+                <CardTitle>Compartir y Recomendar</CardTitle>
+                <CardDescription>
+                  Comparte tus descubrimientos de Origen con tus amigos
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-lg border">
+                  <h3 className="font-semibold text-lg mb-2">Tu Código de Referido</h3>
+                  <div className="flex items-center gap-4">
+                    <code className="flex-1 bg-background px-4 py-3 rounded-md font-mono text-lg">
+                      {customer?.full_name?.toUpperCase().replace(/\s+/g, '')}2024
+                    </code>
+                    <Button onClick={() => {
+                      navigator.clipboard.writeText(`${customer?.full_name?.toUpperCase().replace(/\s+/g, '')}2024`);
+                      toast({ title: "Código copiado", description: "El código ha sido copiado al portapapeles" });
+                    }}>
+                      Copiar
+                    </Button>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-4">
+                    Comparte este código con tus amigos y obtén beneficios cuando realicen su primera compra.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-lg mb-4">Compartir en Redes Sociales</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Button 
+                      variant="outline" 
+                      className="h-auto py-4 flex-col gap-2"
+                      onClick={() => window.open(`https://facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.origin)}`, '_blank')}
+                    >
+                      <MapPin className="h-6 w-6" />
+                      <span>Facebook</span>
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="h-auto py-4 flex-col gap-2"
+                      onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.origin)}&text=Descubre productos locales auténticos en Origen`, '_blank')}
+                    >
+                      <MapPin className="h-6 w-6" />
+                      <span>Twitter</span>
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="h-auto py-4 flex-col gap-2"
+                      onClick={() => {
+                        navigator.clipboard.writeText(window.location.origin);
+                        toast({ title: "Enlace copiado", description: "Compártelo en Instagram" });
+                      }}
+                    >
+                      <MapPin className="h-6 w-6" />
+                      <span>Instagram</span>
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="h-auto py-4 flex-col gap-2"
+                      onClick={() => window.open(`https://wa.me/?text=Descubre productos locales auténticos en ${encodeURIComponent(window.location.origin)}`, '_blank')}
+                    >
+                      <MapPin className="h-6 w-6" />
+                      <span>WhatsApp</span>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </main>

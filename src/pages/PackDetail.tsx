@@ -44,26 +44,12 @@ const PackDetail = () => {
     );
   }
 
-  const handleShare = async () => {
-    const shareData = {
-      title: pack.name,
-      text: pack.description,
-      url: window.location.href,
-    };
+  const handleShare = () => {
+    window.location.href = '/mi-cuenta';
+  };
 
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(window.location.href);
-        toast({
-          title: "Enlace copiado",
-          description: "El enlace ha sido copiado al portapapeles",
-        });
-      }
-    } catch (error) {
-      console.error('Error sharing:', error);
-    }
+  const handleFavorite = () => {
+    window.location.href = '/mi-cuenta';
   };
 
   const handleAddToCart = () => {
@@ -119,11 +105,11 @@ const PackDetail = () => {
   const getFeaturedBadge = (featured: string | undefined) => {
     switch (featured) {
       case 'recommended':
-        return <Badge className="bg-green-100 text-green-700 border-green-200">⭐ Recomendado por Origen</Badge>;
+        return <Badge className="bg-green-100 text-green-700 border-green-200">Recomendado por Origen</Badge>;
       case 'bestseller':
-        return <Badge className="bg-blue-100 text-blue-700 border-blue-200">📈 Más vendido</Badge>;
+        return <Badge className="bg-blue-100 text-blue-700 border-blue-200">Más vendido</Badge>;
       case 'new':
-        return <Badge className="bg-purple-100 text-purple-700 border-purple-200">🆕 Novedad</Badge>;
+        return <Badge className="bg-purple-100 text-purple-700 border-purple-200">Novedad</Badge>;
       default:
         return null;
     }
@@ -209,26 +195,23 @@ const PackDetail = () => {
               <div className="space-y-5">
                 <div className="flex flex-wrap items-center gap-2 mb-4">
                   <Link to={`/packs?packType=${pack.type}`}>
-                    <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 cursor-pointer hover:bg-primary/20 transition-colors">
+                    <Badge variant="secondary" className="bg-[#8B6F47] text-white border-[#8B6F47]/30 cursor-pointer hover:brightness-110 transition-all">
                       {getPackTypeName(pack.type)}
                     </Badge>
                   </Link>
                   {pack.seasonal && (
-                    <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
-                      <Calendar className="w-3 h-3 mr-1" />
+                    <Badge variant="outline" className="bg-[#8B6F47] text-white border-[#8B6F47]/30">
                       Temporada
                     </Badge>
                   )}
-                  <Badge variant="outline" className="text-xs">
-                    <MapPin className="w-3 h-3 mr-1" />
+                  <Badge variant="outline" className="text-xs bg-[#8B6F47] text-white border-[#8B6F47]/30">
                     {pack.region}
                   </Badge>
                   {getFeaturedBadge(pack.featured)}
                   {pack.qualitySeal && (
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Badge className="bg-primary/20 text-primary border-primary/30">
-                          <Award className="w-3 h-3 mr-1" />
+                        <Badge className="bg-[#8B6F47] text-white border-[#8B6F47]/30">
                           Sello Origen
                         </Badge>
                       </TooltipTrigger>
@@ -328,7 +311,12 @@ const PackDetail = () => {
                   className="w-full h-96 object-cover rounded-xl shadow-2xl"
                 />
                 <div className="absolute top-4 right-4">
-                  <Button variant="outline" size="icon" className="bg-background/80 backdrop-blur">
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="bg-background/80 backdrop-blur"
+                    onClick={handleFavorite}
+                  >
                     <Heart className="w-4 h-4" />
                   </Button>
                 </div>
