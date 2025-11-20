@@ -75,11 +75,11 @@ const PackDetail = () => {
   const getPackTypeDarkColor = (type: string) => {
     switch (type) {
       case 'raiz':
-        return 'hsl(40, 43%, 93%)'; // Pack Raíz - arena suave (exacto de PackTypeCards)
+        return 'hsl(30, 25%, 70%)'; // Pack Raíz - marrón tierra más oscuro
       case 'esencia':
-        return 'hsl(93, 36%, 91%)'; // Pack Esencia - verde suave natural (exacto de PackTypeCards)
+        return 'hsl(100, 35%, 82%)'; // Pack Esencia - verde natural más intenso
       case 'gourmet':
-        return 'hsl(23, 34%, 77%)'; // Pack Gourmet - arcilla profunda natural (exacto de PackTypeCards)
+        return 'hsl(23, 34%, 77%)'; // Pack Gourmet - arcilla profunda natural (mantener igual)
       default:
         return 'hsl(var(--background))';
     }
@@ -188,7 +188,7 @@ const PackDetail = () => {
         
         {/* Hero Section - Tarjeta principal con color por categoría */}
         <section className="w-full" style={{ backgroundColor: getPackTypeDarkColor(pack.type) }}>
-          <div className="container mx-auto px-6 py-12 max-w-6xl">
+          <div className="container mx-auto px-6 py-8 max-w-6xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               
               {/* Pack Info */}
@@ -331,10 +331,10 @@ const PackDetail = () => {
           {/* Pack Description - MUCHO más compacto */}
           <section className="mb-6">
             <Card>
-              <CardHeader className="pb-1 pt-3">
+              <CardHeader className="pb-0 pt-3">
                 <CardTitle className="text-lg">Descripción del Pack</CardTitle>
               </CardHeader>
-              <CardContent className="pb-2 pt-2">
+              <CardContent className="pb-2 pt-1">
                 <p className="text-sm leading-relaxed text-muted-foreground">
                   {pack.expandedDescription}
                 </p>
