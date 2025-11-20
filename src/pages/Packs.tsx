@@ -1,8 +1,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PackSearchFilters from "@/components/PackSearchFilters";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +20,25 @@ interface SearchFilters {
 
 const Packs = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [filteredPacks, setFilteredPacks] = useState<CompanyPack[]>(companyPacks);
+  const [initialFilters, setInitialFilters] = useState<SearchFilters | null>(null);
+
+  useEffect(() => {
+    const packType = searchParams.get('packType');
+    if (packType) {
+      const filters: SearchFilters = {
+        location: "",
+        categories: [],
+        packType: packType,
+        addedValue: [],
+        priceRange: ""
+      };
+      setInitialFilters(filters);
+      const filtered = filterPacks(companyPacks, filters);
+      setFilteredPacks(filtered);
+    }
+  }, [searchParams]);
 
   const handleFiltersChange = (filters: SearchFilters) => {
     const filtered = filterPacks(companyPacks, filters);
@@ -85,7 +103,7 @@ const Packs = () => {
           </div>
 
           {/* Search Filters */}
-          <PackSearchFilters onFiltersChange={handleFiltersChange} />
+          <PackSearchFilters onFiltersChange={handleFiltersChange} initialFilters={initialFilters} />
 
           {/* Results */}
           {filteredPacks.length > 0 && (
