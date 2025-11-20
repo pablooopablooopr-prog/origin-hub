@@ -149,12 +149,12 @@ const PackDetail = () => {
 
   return (
     <TooltipProvider>
-      <div className={`min-h-screen ${getPackTypeColor(pack.type)}`}>
+      <div className="min-h-screen bg-[#FAF6F0]">
         <Header />
         
-        {/* Breadcrumb Navigation */}
-        <section style={{ backgroundColor: getPackTypeDarkColor(pack.type) }} className="border-b">
-          <div className="container mx-auto px-6 py-4">
+        {/* Breadcrumb Navigation - Mini-hero con altura reducida y color café fijo */}
+        <section style={{ backgroundColor: '#C6B08C' }} className="border-b">
+          <div className="container mx-auto px-6 py-3">
             <div className="flex items-center justify-between">
               <Breadcrumb>
                 <BreadcrumbList className="text-white">
@@ -185,8 +185,7 @@ const PackDetail = () => {
                 variant="outline" 
                 size="sm" 
                 onClick={() => window.history.back()}
-                className="bg-white/90 hover:bg-white border-white/20"
-                style={{ color: getPackTypeDarkColor(pack.type) }}
+                className="bg-white/90 hover:bg-white border-white/20 text-[#C6B08C]"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Volver
@@ -195,13 +194,13 @@ const PackDetail = () => {
           </div>
         </section>
         
-        {/* Hero Section */}
+        {/* Hero Section - Tarjeta principal con color por categoría */}
         <section className="relative">
-          <div className="container mx-auto px-6 py-16">
+          <div className={`container mx-auto px-6 py-12 max-w-6xl ${getPackTypeColor(pack.type)}`}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               
               {/* Pack Info */}
-              <div className="space-y-6">
+              <div className="space-y-5">
                 <div className="flex flex-wrap items-center gap-2 mb-4">
                   <Link to={`/packs?packType=${pack.type}`}>
                     <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 cursor-pointer hover:bg-primary/20 transition-colors">
@@ -214,7 +213,7 @@ const PackDetail = () => {
                       Temporada
                     </Badge>
                   )}
-                  <Badge variant="outline">
+                  <Badge variant="outline" className="text-xs">
                     <MapPin className="w-3 h-3 mr-1" />
                     {pack.region}
                   </Badge>
@@ -239,14 +238,15 @@ const PackDetail = () => {
                     {getPackTypeName(pack.type)}
                   </h1>
                 </Link>
-                <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
+                <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-3">
                   <Link 
                     to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
                     className="hover:underline hover:text-primary transition-colors"
                   >
                     {getPackSpecificName(pack.name)}
                   </Link>
-                  {' – '}{pack.autonomousCommunity}
+                  {' – '}
+                  <span className="text-2xl md:text-3xl font-normal text-muted-foreground">{pack.autonomousCommunity}</span>
                 </h2>
                 
                 <div className="flex items-center gap-6">
@@ -331,13 +331,13 @@ const PackDetail = () => {
         {/* Main Content */}
         <main className="container mx-auto px-6 py-12">
           
-          {/* Pack Description */}
-          <section className="mb-12">
+          {/* Pack Description - Reducido padding */}
+          <section className="mb-10">
             <Card>
-              <CardHeader>
+              <CardHeader className="pb-3">
                 <CardTitle className="text-2xl">Descripción del Pack</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pb-5">
                 <p className="text-lg leading-relaxed text-muted-foreground">
                   {pack.expandedDescription}
                 </p>
@@ -350,9 +350,9 @@ const PackDetail = () => {
             {/* Left Content - 2 columns */}
             <div className="lg:col-span-2 space-y-8">
               
-              {/* Products Included */}
+              {/* Products Included - Reducido padding */}
               <Card>
-                <CardHeader>
+                <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-2xl">
                     <Package className="w-6 h-6" />
                     Productos Incluidos
@@ -361,20 +361,23 @@ const PackDetail = () => {
                     Cada producto ha sido seleccionado cuidadosamente por su calidad y representatividad regional
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
+                <CardContent className="pb-5">
+                  <div className="space-y-5">
                     {pack.products.map((product, index) => (
                       <Card key={`${product.name}-${index}`} className="overflow-hidden border-l-4 border-l-primary/30">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-0">
-                          <div className="relative">
+                          <Link 
+                            to={`/negocio/${product.company.toLowerCase().replace(/\s+/g, '-')}`}
+                            className="relative cursor-pointer hover:opacity-80 transition-opacity"
+                          >
                             <img 
                               src={product.companyLogo} 
                               alt={product.name}
                               className="w-full h-32 md:h-full object-cover bg-muted"
                             />
-                          </div>
-                          <div className="md:col-span-3 p-6">
-                            <div className="space-y-3">
+                          </Link>
+                          <div className="md:col-span-3 p-5">
+                            <div className="space-y-2.5">
                               <div className="flex items-center gap-2">
                                 <h4 className="text-lg font-semibold text-primary">
                                   {product.name}
@@ -394,13 +397,31 @@ const PackDetail = () => {
                                 {product.description}
                               </p>
                               <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2 text-sm">
-                                  <img 
-                                    src={product.companyLogo} 
-                                    alt={product.company}
-                                    className="w-5 h-5 object-contain rounded"
-                                  />
-                                  <span className="font-medium">{product.company}</span>
+                                <div className="flex flex-col gap-1.5">
+                                  <div className="flex items-center gap-2 text-sm">
+                                    <Link 
+                                      to={`/negocio/${product.company.toLowerCase().replace(/\s+/g, '-')}`}
+                                      className="cursor-pointer hover:opacity-80 transition-opacity"
+                                    >
+                                      <img 
+                                        src={product.companyLogo} 
+                                        alt={product.company}
+                                        className="w-5 h-5 object-contain rounded"
+                                      />
+                                    </Link>
+                                    <Link 
+                                      to={`/negocio/${product.company.toLowerCase().replace(/\s+/g, '-')}`}
+                                      className="font-medium hover:underline hover:text-primary transition-colors"
+                                    >
+                                      {product.company}
+                                    </Link>
+                                  </div>
+                                  <Link 
+                                    to={`/packs?company=${product.company.toLowerCase().replace(/\s+/g, '-')}`}
+                                    className="text-xs text-primary hover:underline flex items-center gap-1"
+                                  >
+                                    Ver todos sus packs →
+                                  </Link>
                                 </div>
                                 <div className="flex gap-2">
                                   <Badge variant="outline" className="text-xs">Artesanal</Badge>
@@ -631,7 +652,7 @@ const PackDetail = () => {
             </div>
           </div>
 
-          {/* Related Packs */}
+          {/* Related Packs - Nombres más pequeños y hover con sombra */}
           {relatedPacks.length > 0 && (
             <section className="mt-12">
               <Card>
@@ -643,35 +664,43 @@ const PackDetail = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {relatedPacks.map((relatedPack) => (
-                      <Card key={relatedPack.id} className="hover:shadow-lg transition-shadow">
-                        <div className="relative">
-                          <img 
-                            src={relatedPack.company.logo} 
-                            alt={relatedPack.name}
-                            className="w-full h-32 object-cover rounded-t-lg"
-                          />
-                          <Badge 
-                            variant="secondary" 
-                            className={`absolute top-2 left-2 ${getPackTypeColor(relatedPack.type)}`}
-                          >
-                            {relatedPack.name}
-                          </Badge>
-                        </div>
-                        <CardContent className="p-4">
-                          <h3 className="font-semibold mb-2">{relatedPack.name} - {relatedPack.autonomousCommunity}</h3>
-                          <div className="flex items-center justify-between">
-                            <span className="text-lg font-bold text-primary">{relatedPack.price}€</span>
-                            <Button asChild size="sm">
-                              <Link to={`/packs/${relatedPack.id}`}>
-                                <Eye className="w-4 h-4 mr-1" />
-                                Ver más
-                              </Link>
-                            </Button>
+                    {relatedPacks.map((relatedPack) => {
+                      const lighterColor = relatedPack.type === 'raiz' 
+                        ? 'bg-[#D4C5A0]' 
+                        : relatedPack.type === 'esencia' 
+                        ? 'bg-[#C8D9B8]' 
+                        : 'bg-[#D9B89A]';
+                      
+                      return (
+                        <Card key={relatedPack.id} className="hover:shadow-xl transition-all duration-300">
+                          <div className="relative">
+                            <img 
+                              src={relatedPack.company.logo} 
+                              alt={relatedPack.name}
+                              className="w-full h-32 object-cover rounded-t-lg"
+                            />
+                            <Badge 
+                              variant="secondary" 
+                              className={`absolute top-2 left-2 ${lighterColor}`}
+                            >
+                              {getPackTypeName(relatedPack.type)}
+                            </Badge>
                           </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                          <CardContent className="p-4">
+                            <h3 className="font-semibold text-base mb-2">{relatedPack.name} - {relatedPack.autonomousCommunity}</h3>
+                            <div className="flex items-center justify-between">
+                              <span className="text-lg font-bold text-primary">{relatedPack.price}€</span>
+                              <Button asChild size="sm">
+                                <Link to={`/packs/${relatedPack.id}`}>
+                                  <Eye className="w-4 h-4 mr-1" />
+                                  Ver más
+                                </Link>
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
