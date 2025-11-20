@@ -53,12 +53,28 @@ const SoyEmpresa = () => {
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
               Únete a la red de negocios auténticos que están transformando el comercio local
             </p>
-            <Link to="/company-auth">
-              <Button size="lg" variant="secondary" className="shadow-moss">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link to="/company-auth">
+                <Button size="lg" variant="secondary" className="shadow-moss">
+                  <Building className="w-5 h-5 mr-2" />
+                  Acceder a mi zona de empresa
+                </Button>
+              </Link>
+              <Button 
+                size="lg" 
+                variant="default" 
+                className="shadow-earth"
+                onClick={() => {
+                  document.getElementById('solicita-form')?.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                  });
+                }}
+              >
                 <Building className="w-5 h-5 mr-2" />
-                Acceder a mi zona de empresa
+                Unirme a ORIGEN
               </Button>
-            </Link>
+            </div>
           </div>
         </div>
 
@@ -112,7 +128,7 @@ const SoyEmpresa = () => {
           </div>
 
           {/* Formulario */}
-          <div className="max-w-2xl mx-auto">
+          <div id="solicita-form" className="max-w-2xl mx-auto">
             <Card>
               <CardHeader>
                 <CardTitle className="text-2xl text-center text-primary">
