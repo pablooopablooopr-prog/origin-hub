@@ -105,8 +105,22 @@ const SoyEmpresa = () => {
                 <CardTitle className="text-2xl text-center text-primary">
                   Solicita tu espacio
                 </CardTitle>
-                <CardDescription className="text-center text-muted-foreground">
-                  Proceso de verificación gratuito. Comenzamos contigo en 48h.
+                <CardDescription className="text-muted-foreground">
+                  <p className="text-center mb-4">Proceso de verificación gratuito. Así funciona:</p>
+                  <ol className="space-y-2 text-left max-w-xl mx-auto">
+                    <li className="flex gap-2">
+                      <span className="font-semibold">1.</span>
+                      <span>"Rellena este formulario."</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="font-semibold">2.</span>
+                      <span>"Revisamos tu negocio en menos de 48 horas."</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="font-semibold">3.</span>
+                      <span>"Te damos acceso a tu panel privado para crear tu ficha y empezar a vender en ORIGEN."</span>
+                    </li>
+                  </ol>
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -158,7 +172,7 @@ const SoyEmpresa = () => {
                     Enviar solicitud
                   </Button>
                   <div className="text-sm text-muted-foreground">
-                    <p>Te contactaremos en menos de 48 horas para verificar y activar tu perfil</p>
+                    <p>Te contactaremos en menos de 48 horas para verificar y activar tu perfil.</p>
                     <p className="mt-2">¿Ya tienes cuenta? <Link to="/company-auth" className="text-primary hover:underline">Inicia sesión aquí</Link></p>
                   </div>
                 </div>
