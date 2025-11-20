@@ -62,8 +62,8 @@ All colors MUST be HSL.
     --pack-raiz-alt: 40 50% 92%;    /* #F4EAD2 - arena dorada */
     --pack-esencia: 90 35% 92%;     /* #E8F0E1 - verde oliva clarísimo */
     --pack-esencia-alt: 75 30% 91%; /* #E3E9D7 - verde suave */
-    --pack-gourmet: 21 35% 67%;     /* #C9A38E - terracota rojiza */
-    --pack-gourmet-alt: 21 35% 75%; /* terracota clara */
+    --pack-gourmet: 23 34% 77%;     /* #D9C1B2 - arcilla profunda natural */
+    --pack-gourmet-alt: 23 34% 82%; /* arcilla natural clara */
     
     /* Gradients */
     --gradient-earth: linear-gradient(135deg, hsl(30 25% 75%), hsl(25 30% 50%));
