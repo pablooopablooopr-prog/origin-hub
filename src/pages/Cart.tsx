@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +7,18 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ShoppingCart, Trash2, Plus, Minus, Gift, Package, ArrowRight, Tag } from "lucide-react";
+import { toast } from "sonner";
+
+interface CartItem {
+  id: string;
+  name: string;
+  type: string;
+  price: number;
+  quantity: number;
+  image: string;
+  company: string;
+  region: string;
+}
 
 const Cart = () => {
   // Auto scroll to top when page loads
@@ -14,8 +26,8 @@ const Cart = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  // Mock cart items - en producción vendría del estado global/context
-  const cartItems = [
+  // Cart state management
+  const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: "pack-esencia-olivar-sierra",
       name: "Pack Esencia - Olivar de la Sierra",
@@ -26,7 +38,47 @@ const Cart = () => {
       company: "Olivar de la Sierra",
       region: "Andalucía"
     }
-  ];
+  ]);
+
+  const [isGift, setIsGift] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+
+  // Cart operations
+  const updateQuantity = (id: string, change: number) => {
+    setCartItems(items => 
+      items.map(item => 
+        item.id === id 
+          ? { ...item, quantity: Math.max(1, item.quantity + change) }
+          : item
+      )
+    );
+  };
+
+  const removeItem = (id: string) => {
+    setCartItems(items => items.filter(item => item.id !== id));
+    toast.success("Producto eliminado del carrito");
+  };
+
+  const applyPromoCode = () => {
+    if (promoCode.trim()) {
+      toast.error("Código promocional no válido");
+    } else {
+      toast.error("Por favor introduce un código");
+    }
+  };
+
+  const proceedToCheckout = () => {
+    if (cartItems.length === 0) {
+      toast.error("Tu carrito está vacío");
+      return;
+    }
+    // Redirect to payment gateway
+    toast.success("Redirigiendo a la pasarela de pago...");
+    // Here you would integrate with actual payment gateway
+    setTimeout(() => {
+      window.location.href = "https://checkout.stripe.com/test"; // Example
+    }, 1000);
+  };
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const shipping = 0; // Envío incluido
@@ -63,57 +115,83 @@ const Cart = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {cartItems.map((item) => (
-                  <Card key={item.id} className="overflow-hidden">
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-4">
-                      {/* Image */}
-                      <div className="md:col-span-1">
-                        <img 
-                          src={item.image} 
-                          alt={item.name}
-                          className="w-full h-24 object-cover rounded-lg"
-                        />
-                      </div>
-                      
-                      {/* Info */}
-                      <div className="md:col-span-3 space-y-2">
-                        <Link 
-                          to={`/packs/${item.id}`}
-                          className="font-semibold text-primary hover:underline"
-                        >
-                          {item.name}
-                        </Link>
-                        <p className="text-sm text-muted-foreground">
-                          {item.company} • {item.region}
-                        </p>
-                        <Badge variant="outline" className="text-xs">
-                          {item.type === 'esencia' ? 'Pack Esencia' : 
-                           item.type === 'raiz' ? 'Pack Raíz' : 'Pack Gourmet'}
-                        </Badge>
-                      </div>
-                      
-                      {/* Actions */}
-                      <div className="md:col-span-1 flex flex-col items-end justify-between">
-                        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                {cartItems.length === 0 ? (
+                  <div className="text-center py-12">
+                    <ShoppingCart className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-lg text-muted-foreground mb-4">Tu carrito está vacío</p>
+                    <Button asChild>
+                      <Link to="/packs">Explorar Packs</Link>
+                    </Button>
+                  </div>
+                ) : (
+                  cartItems.map((item) => (
+                    <Card key={item.id} className="overflow-hidden">
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-4">
+                        {/* Image */}
+                        <div className="md:col-span-1">
+                          <img 
+                            src={item.image} 
+                            alt={item.name}
+                            className="w-full h-24 object-cover rounded-lg"
+                          />
+                        </div>
                         
-                        <div className="space-y-2 text-right">
-                          <p className="text-xl font-bold text-primary">{item.price}€</p>
-                          <div className="flex items-center gap-2 justify-end">
-                            <Button variant="outline" size="icon" className="h-7 w-7">
-                              <Minus className="w-3 h-3" />
-                            </Button>
-                            <span className="w-8 text-center font-medium">{item.quantity}</span>
-                            <Button variant="outline" size="icon" className="h-7 w-7">
-                              <Plus className="w-3 h-3" />
-                            </Button>
+                        {/* Info */}
+                        <div className="md:col-span-3 space-y-2">
+                          <Link 
+                            to={`/packs/${item.id}`}
+                            className="font-semibold text-primary hover:underline"
+                          >
+                            {item.name}
+                          </Link>
+                          <p className="text-sm text-muted-foreground">
+                            {item.company} • {item.region}
+                          </p>
+                          <Badge variant="outline" className="text-xs">
+                            {item.type === 'esencia' ? 'Pack Esencia' : 
+                             item.type === 'raiz' ? 'Pack Raíz' : 'Pack Gourmet'}
+                          </Badge>
+                        </div>
+                        
+                        {/* Actions */}
+                        <div className="md:col-span-1 flex flex-col items-end justify-between">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => removeItem(item.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                          
+                          <div className="space-y-2 text-right">
+                            <p className="text-xl font-bold text-primary">{item.price * item.quantity}€</p>
+                            <div className="flex items-center gap-2 justify-end">
+                              <Button 
+                                variant="outline" 
+                                size="icon" 
+                                className="h-7 w-7"
+                                onClick={() => updateQuantity(item.id, -1)}
+                                disabled={item.quantity <= 1}
+                              >
+                                <Minus className="w-3 h-3" />
+                              </Button>
+                              <span className="w-8 text-center font-medium">{item.quantity}</span>
+                              <Button 
+                                variant="outline" 
+                                size="icon" 
+                                className="h-7 w-7"
+                                onClick={() => updateQuantity(item.id, 1)}
+                              >
+                                <Plus className="w-3 h-3" />
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </Card>
-                ))}
+                    </Card>
+                  ))
+                )}
               </CardContent>
             </Card>
 
@@ -130,7 +208,9 @@ const Cart = () => {
                   <input 
                     type="checkbox" 
                     id="is-gift" 
-                    className="mt-1"
+                    className="mt-1 cursor-pointer"
+                    checked={isGift}
+                    onChange={(e) => setIsGift(e.target.checked)}
                   />
                   <div className="flex-1">
                     <label htmlFor="is-gift" className="font-medium cursor-pointer">
@@ -158,8 +238,10 @@ const Cart = () => {
                     type="text" 
                     placeholder="Introduce tu código" 
                     className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value)}
                   />
-                  <Button variant="outline">Aplicar</Button>
+                  <Button variant="outline" onClick={applyPromoCode}>Aplicar</Button>
                 </div>
               </CardContent>
             </Card>
@@ -188,7 +270,12 @@ const Cart = () => {
                   </div>
                 </div>
 
-                <Button className="w-full" size="lg">
+                <Button 
+                  className="w-full" 
+                  size="lg"
+                  onClick={proceedToCheckout}
+                  disabled={cartItems.length === 0}
+                >
                   Proceder al Pago
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
