@@ -33,11 +33,8 @@ const Header = () => {
 
           {/* Botones de acción */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link to="/company-auth">
-              <Button size="sm" style={{
-              backgroundColor: "hsl(var(--cliente))",
-              color: "hsl(var(--cliente-foreground))"
-            }}>
+            <Link to="/soy-empresa">
+              <Button variant="secondary" size="sm">
                 Soy Empresa
               </Button>
             </Link>
@@ -68,11 +65,8 @@ const Header = () => {
                 Contacto
               </Link>
               <div className="flex flex-col space-y-2 pt-4">
-                <Link to="/company-auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button size="sm" className="w-full" style={{
-                backgroundColor: "hsl(var(--cliente))",
-                color: "hsl(var(--cliente-foreground))"
-              }}>
+                <Link to="/soy-empresa" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="secondary" size="sm" className="w-full">
                     Soy Empresa
                   </Button>
                 </Link>
