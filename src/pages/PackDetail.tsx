@@ -159,7 +159,7 @@ const PackDetail = () => {
         
         {/* Breadcrumb Navigation - Mini-hero con altura reducida y color por tipo de pack */}
         <section style={{ backgroundColor: getMiniHeroColor(pack.type) }} className="border-b">
-          <div className="container mx-auto px-6 py-3">
+          <div className="max-w-6xl mx-auto px-6 py-3">
             <div className="flex items-center justify-between">
               <Breadcrumb>
                 <BreadcrumbList className="text-white">
@@ -190,7 +190,8 @@ const PackDetail = () => {
                 variant="outline" 
                 size="sm" 
                 onClick={() => window.history.back()}
-                className="bg-white/90 hover:bg-white border-white/20 text-[#C6B08C]"
+                className="bg-white/90 hover:bg-white border-white/20"
+                style={{ color: getMiniHeroColor(pack.type) }}
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Volver
