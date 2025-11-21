@@ -467,17 +467,19 @@ const PackDetail = () => {
                         <User className="w-4 h-4 text-primary" />
                         <span className="text-xs uppercase tracking-wider font-semibold text-primary">Información del Productor</span>
                       </div>
-                      <Link 
-                        to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
-                        className="hover:underline block"
-                      >
-                        <h3 className="text-xl font-bold text-primary leading-tight">{pack.company.name}</h3>
-                      </Link>
-                      <div className="flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
-                        <p className="text-sm font-medium text-muted-foreground">{pack.company.location}</p>
+                      <div className="flex items-center justify-between">
+                        <Link 
+                          to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
+                          className="hover:underline"
+                        >
+                          <h3 className="text-xl font-bold text-primary leading-tight">{pack.company.name}</h3>
+                        </Link>
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+                          <p className="text-sm font-medium text-muted-foreground">{pack.company.location}</p>
+                        </div>
                       </div>
-                      <blockquote className="border-l-3 border-primary pl-3 py-1.5 bg-background/50 rounded-r">
+                      <blockquote className="border-l-4 border-primary pl-3 py-1.5 bg-background/50 rounded-r">
                         <p className="text-sm text-foreground italic leading-relaxed">
                           "Elaboramos estos productos con el mismo mimo que pusieron nuestros abuelos. 
                           Cada elaboración conserva la esencia tradicional de {pack.region}."
