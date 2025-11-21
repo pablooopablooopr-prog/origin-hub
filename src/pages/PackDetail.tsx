@@ -446,15 +446,16 @@ const PackDetail = () => {
                 </CardContent>
               </Card>
 
-              {/* Producer Information - Improved with better structure */}
-              <Card className="overflow-hidden bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/20">
+              {/* Producer Information - Completely redesigned with unique color */}
+              <Card className="overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-200">
                 <CardContent className="p-5">
-                  <div className="flex items-start gap-5">
+                  {/* Top row: Image on left, Title on right */}
+                  <div className="flex items-start gap-4 mb-4">
                     <Link 
                       to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
                       className="hover:scale-105 transition-transform flex-shrink-0"
                     >
-                      <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-background shadow-lg">
+                      <div className="w-16 h-16 rounded-lg overflow-hidden border-3 border-slate-300 shadow-md">
                         <img 
                           src={pack.company.logo} 
                           alt={pack.company.name}
@@ -462,37 +463,49 @@ const PackDetail = () => {
                         />
                       </div>
                     </Link>
-                    <div className="flex-1 space-y-2.5">
-                      <div className="flex items-center gap-2 mb-1">
-                        <User className="w-4 h-4 text-primary" />
-                        <span className="text-xs uppercase tracking-wider font-semibold text-primary">Información del Productor</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Link 
-                          to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
-                          className="hover:underline"
-                        >
-                          <h3 className="text-xl font-bold text-primary leading-tight">{pack.company.name}</h3>
-                        </Link>
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
-                          <p className="text-sm font-medium text-muted-foreground">{pack.company.location}</p>
-                        </div>
-                      </div>
-                      <blockquote className="border-l-4 border-primary pl-3 py-1.5 bg-background/50 rounded-r">
-                        <p className="text-sm text-foreground italic leading-relaxed">
-                          "Elaboramos estos productos con el mismo mimo que pusieron nuestros abuelos. 
-                          Cada elaboración conserva la esencia tradicional de {pack.region}."
-                        </p>
-                      </blockquote>
-                      <Button asChild variant="default" size="sm" className="mt-1.5">
-                        <Link to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}>
-                          <ChevronRight className="w-4 h-4 mr-1" />
-                          Ver todos sus packs
-                        </Link>
-                      </Button>
+                    <div className="flex items-center gap-2 pt-1">
+                      <User className="w-4 h-4 text-slate-600" />
+                      <span className="text-xs uppercase tracking-wider font-semibold text-slate-600">Información del Productor</span>
                     </div>
                   </div>
+
+                  {/* Company name and location */}
+                  <div className="flex items-baseline justify-between mb-3">
+                    <Link 
+                      to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
+                      className="hover:underline"
+                    >
+                      <h3 className="text-xl font-bold text-slate-800">{pack.company.name}</h3>
+                    </Link>
+                    <div className="flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-slate-500" />
+                      <p className="text-sm font-medium text-slate-600">{pack.company.location}</p>
+                    </div>
+                  </div>
+
+                  {/* Quote with torn effect border */}
+                  <div className="relative mb-4">
+                    <div 
+                      className="absolute left-0 top-0 bottom-0 w-1 bg-slate-400"
+                      style={{
+                        clipPath: 'polygon(0 0, 100% 2%, 100% 8%, 0 10%, 0 15%, 100% 18%, 100% 25%, 0 27%, 0 33%, 100% 36%, 100% 42%, 0 45%, 0 52%, 100% 54%, 100% 62%, 0 65%, 0 72%, 100% 75%, 100% 82%, 0 85%, 0 92%, 100% 95%, 100% 100%, 0 100%)'
+                      }}
+                    />
+                    <blockquote className="pl-5 py-2 bg-white/60 rounded-r">
+                      <p className="text-sm text-slate-700 italic leading-relaxed">
+                        "Elaboramos estos productos con el mismo mimo que pusieron nuestros abuelos. 
+                        Cada elaboración conserva la esencia tradicional de {pack.region}."
+                      </p>
+                    </blockquote>
+                  </div>
+
+                  {/* Button */}
+                  <Button asChild variant="default" size="sm" className="w-full bg-slate-700 hover:bg-slate-800 text-white">
+                    <Link to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}>
+                      <ChevronRight className="w-4 h-4 mr-1" />
+                      Ver todos sus packs
+                    </Link>
+                  </Button>
                 </CardContent>
               </Card>
 
