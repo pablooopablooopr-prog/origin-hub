@@ -159,7 +159,7 @@ const PackDetail = () => {
         
         {/* Breadcrumb Navigation - Mini-hero con altura reducida y color por tipo de pack */}
         <section style={{ backgroundColor: getMiniHeroColor(pack.type) }} className="border-b">
-          <div className="max-w-6xl mx-auto px-6 py-3">
+          <div className="max-w-3xl mx-auto px-6 py-3">
             <div className="flex items-center justify-between">
               <Breadcrumb>
                 <BreadcrumbList className="text-white">
