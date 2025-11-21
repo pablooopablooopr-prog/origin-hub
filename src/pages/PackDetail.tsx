@@ -449,14 +449,14 @@ const PackDetail = () => {
               {/* Producer Information - Matches mini-hero color */}
               <Card className="overflow-hidden" style={{ backgroundColor: getMiniHeroColor(pack.type) }}>
                 <CardContent className="p-4">
-                  {/* Top section: Image on left (half width), Title on right */}
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    {/* Company Image - Left half */}
+                  {/* Top section: Image on left, Title on right */}
+                  <div className="flex gap-3 mb-3">
+                    {/* Company Image - Small on left */}
                     <Link 
                       to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
-                      className="hover:opacity-90 transition-opacity"
+                      className="hover:opacity-90 transition-opacity flex-shrink-0"
                     >
-                      <div className="w-full aspect-square rounded-lg overflow-hidden border-2 border-white/40 shadow-lg">
+                      <div className="w-20 h-20 rounded-lg overflow-hidden border-2 border-white/40 shadow-lg">
                         <img 
                           src={pack.company.logo} 
                           alt={pack.company.name}
@@ -465,11 +465,11 @@ const PackDetail = () => {
                       </div>
                     </Link>
                     
-                    {/* Title - Right half */}
-                    <div className="flex items-center">
+                    {/* Title on right */}
+                    <div className="flex items-center pt-1">
                       <div className="flex items-center gap-2">
-                        <User className="w-5 h-5 text-white" />
-                        <h3 className="text-base font-semibold text-white leading-tight">Información del Productor</h3>
+                        <User className="w-4 h-4 text-white" />
+                        <h3 className="text-sm font-semibold text-white leading-tight">Información del Productor</h3>
                       </div>
                     </div>
                   </div>
@@ -481,17 +481,17 @@ const PackDetail = () => {
                         to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
                         className="hover:underline"
                       >
-                        <h4 className="text-lg font-bold text-white">{pack.company.name}</h4>
+                        <h4 className="text-base font-bold text-white">{pack.company.name}</h4>
                       </Link>
                       <div className="flex items-center gap-1">
-                        <MapPin className="w-4 h-4 text-white/90" />
-                        <span className="text-sm font-medium text-white/90">{pack.company.location}</span>
+                        <MapPin className="w-3.5 h-3.5 text-white/90" />
+                        <span className="text-xs font-medium text-white/90">{pack.company.location}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Quote with decorative border */}
-                  <div className="relative mb-4">
+                  <div className="relative mb-3">
                     <div 
                       className="absolute left-0 top-0 bottom-0 w-1 bg-white/80 shadow-sm"
                       style={{
@@ -499,8 +499,8 @@ const PackDetail = () => {
                         filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))'
                       }}
                     />
-                    <blockquote className="pl-5 py-3 bg-white/20 backdrop-blur-sm rounded-r border-r border-white/30">
-                      <p className="text-sm text-white leading-relaxed italic">
+                    <blockquote className="pl-4 py-2 bg-white/20 backdrop-blur-sm rounded-r border-r border-white/30">
+                      <p className="text-xs text-white leading-relaxed italic">
                         "Elaboramos estos productos con el mismo mimo que pusieron nuestros abuelos. 
                         Cada elaboración conserva la esencia tradicional de {pack.region}."
                       </p>
@@ -508,7 +508,7 @@ const PackDetail = () => {
                   </div>
 
                   {/* Button */}
-                  <Button asChild variant="secondary" size="sm" className="w-full bg-white/90 hover:bg-white text-primary font-semibold">
+                  <Button asChild variant="secondary" size="sm" className="w-full bg-white/90 hover:bg-white font-semibold" style={{ color: getMiniHeroColor(pack.type) }}>
                     <Link to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}>
                       <ChevronRight className="w-4 h-4 mr-1" />
                       Ver todos sus packs
