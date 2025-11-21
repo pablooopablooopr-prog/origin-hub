@@ -446,53 +446,15 @@ const PackDetail = () => {
                 </CardContent>
               </Card>
 
-              {/* Quality Guarantees - Moved from sidebar */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-2xl">
-                    <Award className="w-6 h-6" />
-                    Garantías de Calidad
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {pack.qualitySeal && (
-                      <div className="flex items-center gap-3 p-4 rounded-lg bg-primary/5 border border-primary/10">
-                        <div className="w-10 h-10 bg-primary/20 text-primary rounded-full flex items-center justify-center flex-shrink-0">
-                          <Award className="w-5 h-5" />
-                        </div>
-                        <span className="font-medium">Sello Origen verificado</span>
-                      </div>
-                    )}
-                    {pack.fastShipping && (
-                      <div className="flex items-center gap-3 p-4 rounded-lg bg-green-50 border border-green-200">
-                        <div className="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                          <Truck className="w-5 h-5" />
-                        </div>
-                        <span className="font-medium">Envío rápido garantizado</span>
-                      </div>
-                    )}
-                    {pack.sustainablePackaging && (
-                      <div className="flex items-center gap-3 p-4 rounded-lg bg-green-50 border border-green-200">
-                        <div className="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                          <Leaf className="w-5 h-5" />
-                        </div>
-                        <span className="font-medium">Embalaje sostenible</span>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Producer Information - Redesigned with original format */}
+              {/* Producer Information - Improved with better structure */}
               <Card className="overflow-hidden bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/20">
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-6">
+                <CardContent className="p-5">
+                  <div className="flex items-start gap-5">
                     <Link 
                       to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
-                      className="hover:scale-105 transition-transform"
+                      className="hover:scale-105 transition-transform flex-shrink-0"
                     >
-                      <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-background shadow-lg">
+                      <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-background shadow-lg">
                         <img 
                           src={pack.company.logo} 
                           alt={pack.company.name}
@@ -500,30 +462,28 @@ const PackDetail = () => {
                         />
                       </div>
                     </Link>
-                    <div className="flex-1 space-y-3">
-                      <div className="flex items-center gap-2">
-                        <User className="w-5 h-5 text-primary" />
+                    <div className="flex-1 space-y-2.5">
+                      <div className="flex items-center gap-2 mb-1">
+                        <User className="w-4 h-4 text-primary" />
                         <span className="text-xs uppercase tracking-wider font-semibold text-primary">Información del Productor</span>
                       </div>
-                      <div>
-                        <Link 
-                          to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
-                          className="hover:underline"
-                        >
-                          <h3 className="text-2xl font-bold text-primary">{pack.company.name}</h3>
-                        </Link>
-                        <div className="flex items-center gap-2 mt-1">
-                          <MapPin className="w-4 h-4 text-muted-foreground" />
-                          <p className="text-sm font-medium text-muted-foreground">{pack.company.location}</p>
-                        </div>
+                      <Link 
+                        to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
+                        className="hover:underline block"
+                      >
+                        <h3 className="text-xl font-bold text-primary leading-tight">{pack.company.name}</h3>
+                      </Link>
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+                        <p className="text-sm font-medium text-muted-foreground">{pack.company.location}</p>
                       </div>
-                      <blockquote className="border-l-4 border-primary pl-4 py-2 bg-background/50 rounded-r">
+                      <blockquote className="border-l-3 border-primary pl-3 py-1.5 bg-background/50 rounded-r">
                         <p className="text-sm text-foreground italic leading-relaxed">
                           "Elaboramos estos productos con el mismo mimo que pusieron nuestros abuelos. 
                           Cada elaboración conserva la esencia tradicional de {pack.region}."
                         </p>
                       </blockquote>
-                      <Button asChild variant="default" size="sm" className="mt-2">
+                      <Button asChild variant="default" size="sm" className="mt-1.5">
                         <Link to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}>
                           <ChevronRight className="w-4 h-4 mr-1" />
                           Ver todos sus packs
@@ -664,6 +624,29 @@ const PackDetail = () => {
                 </CardContent>
               </Card>
 
+              {/* Added Value - Moved to sidebar */}
+              {pack.addedValue && pack.addedValue.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Gift className="w-5 h-5" />
+                      Valor Añadido
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {pack.addedValue.map((value, index) => (
+                        <div key={index} className="flex items-start gap-2.5 p-3 rounded-lg bg-primary/5 border border-primary/10">
+                          <div className="w-5 h-5 bg-primary/20 text-primary rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <CheckCircle className="w-3 h-3" />
+                          </div>
+                          <span className="text-sm font-medium leading-snug">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
             </div>
           </div>
