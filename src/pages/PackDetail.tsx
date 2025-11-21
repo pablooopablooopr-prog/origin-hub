@@ -315,26 +315,14 @@ const PackDetail = () => {
                   </Button>
                 </div>
 
-                {/* Pack Description - Moved here from below */}
-                <Card className="mt-4">
-                  <CardHeader className="pb-0 pt-3">
-                    <CardTitle className="text-lg">Descripción del Pack</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pb-2 pt-1">
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      {pack.expandedDescription}
-                    </p>
-                  </CardContent>
-                </Card>
-
               </div>
 
-              {/* Pack Image - Reduced height */}
+              {/* Pack Image - Restored to original height */}
               <div className="relative">
                 <img 
                   src={pack.company.logo} 
                   alt={pack.name}
-                  className="w-full h-64 object-cover rounded-xl shadow-2xl"
+                  className="w-full h-96 object-cover rounded-xl shadow-2xl"
                 />
                 <div className="absolute top-4 right-4">
                   <Button 
@@ -348,6 +336,18 @@ const PackDetail = () => {
                 </div>
               </div>
             </div>
+
+            {/* Pack Description - Full width below hero */}
+            <Card className="mt-6">
+              <CardHeader className="pb-0 pt-3">
+                <CardTitle className="text-lg">Descripción del Pack</CardTitle>
+              </CardHeader>
+              <CardContent className="pb-2 pt-1">
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  {pack.expandedDescription}
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
