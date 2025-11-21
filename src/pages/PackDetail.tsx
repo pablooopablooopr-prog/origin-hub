@@ -446,16 +446,17 @@ const PackDetail = () => {
                 </CardContent>
               </Card>
 
-              {/* Producer Information - Completely redesigned with unique color */}
-              <Card className="overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-200">
-                <CardContent className="p-5">
-                  {/* Top row: Image on left, Title on right */}
-                  <div className="flex items-start gap-4 mb-4">
+              {/* Producer Information - Matches mini-hero color */}
+              <Card className="overflow-hidden" style={{ backgroundColor: getMiniHeroColor(pack.type) }}>
+                <CardContent className="p-4">
+                  {/* Top section: Image on left (half width), Title on right */}
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    {/* Company Image - Left half */}
                     <Link 
                       to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
-                      className="hover:scale-105 transition-transform flex-shrink-0"
+                      className="hover:opacity-90 transition-opacity"
                     >
-                      <div className="w-16 h-16 rounded-lg overflow-hidden border-3 border-slate-300 shadow-md">
+                      <div className="w-full aspect-square rounded-lg overflow-hidden border-2 border-white/40 shadow-lg">
                         <img 
                           src={pack.company.logo} 
                           alt={pack.company.name}
@@ -463,36 +464,43 @@ const PackDetail = () => {
                         />
                       </div>
                     </Link>
-                    <div className="flex items-center gap-2 pt-1">
-                      <User className="w-4 h-4 text-slate-600" />
-                      <span className="text-xs uppercase tracking-wider font-semibold text-slate-600">Información del Productor</span>
+                    
+                    {/* Title - Right half */}
+                    <div className="flex items-center">
+                      <div className="flex items-center gap-2">
+                        <User className="w-5 h-5 text-white" />
+                        <h3 className="text-base font-semibold text-white leading-tight">Información del Productor</h3>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Company name and location */}
-                  <div className="flex items-baseline justify-between mb-3">
-                    <Link 
-                      to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
-                      className="hover:underline"
-                    >
-                      <h3 className="text-xl font-bold text-slate-800">{pack.company.name}</h3>
-                    </Link>
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                      <p className="text-sm font-medium text-slate-600">{pack.company.location}</p>
+                  {/* Company name and location - directly attached */}
+                  <div className="mb-3">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Link 
+                        to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
+                        className="hover:underline"
+                      >
+                        <h4 className="text-lg font-bold text-white">{pack.company.name}</h4>
+                      </Link>
+                      <div className="flex items-center gap-1">
+                        <MapPin className="w-4 h-4 text-white/90" />
+                        <span className="text-sm font-medium text-white/90">{pack.company.location}</span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Quote with torn effect border */}
+                  {/* Quote with decorative border */}
                   <div className="relative mb-4">
                     <div 
-                      className="absolute left-0 top-0 bottom-0 w-1 bg-slate-400"
+                      className="absolute left-0 top-0 bottom-0 w-1 bg-white/80 shadow-sm"
                       style={{
-                        clipPath: 'polygon(0 0, 100% 2%, 100% 8%, 0 10%, 0 15%, 100% 18%, 100% 25%, 0 27%, 0 33%, 100% 36%, 100% 42%, 0 45%, 0 52%, 100% 54%, 100% 62%, 0 65%, 0 72%, 100% 75%, 100% 82%, 0 85%, 0 92%, 100% 95%, 100% 100%, 0 100%)'
+                        clipPath: 'polygon(0 0, 100% 1%, 90% 4%, 100% 7%, 85% 11%, 100% 15%, 90% 19%, 100% 23%, 80% 28%, 100% 33%, 85% 38%, 100% 43%, 90% 48%, 100% 53%, 85% 58%, 100% 63%, 90% 68%, 100% 73%, 80% 78%, 100% 83%, 85% 88%, 100% 93%, 90% 97%, 100% 100%, 0 100%)',
+                        filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))'
                       }}
                     />
-                    <blockquote className="pl-5 py-2 bg-white/60 rounded-r">
-                      <p className="text-sm text-slate-700 italic leading-relaxed">
+                    <blockquote className="pl-5 py-3 bg-white/20 backdrop-blur-sm rounded-r border-r border-white/30">
+                      <p className="text-sm text-white leading-relaxed italic">
                         "Elaboramos estos productos con el mismo mimo que pusieron nuestros abuelos. 
                         Cada elaboración conserva la esencia tradicional de {pack.region}."
                       </p>
@@ -500,7 +508,7 @@ const PackDetail = () => {
                   </div>
 
                   {/* Button */}
-                  <Button asChild variant="default" size="sm" className="w-full bg-slate-700 hover:bg-slate-800 text-white">
+                  <Button asChild variant="secondary" size="sm" className="w-full bg-white/90 hover:bg-white text-primary font-semibold">
                     <Link to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}>
                       <ChevronRight className="w-4 h-4 mr-1" />
                       Ver todos sus packs
