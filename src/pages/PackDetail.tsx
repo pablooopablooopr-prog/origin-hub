@@ -202,11 +202,11 @@ const PackDetail = () => {
         
         {/* Hero Section - Tarjeta principal con color por categoría */}
         <section className="w-full" style={{ backgroundColor: getPackTypeDarkColor(pack.type) }}>
-          <div className="container mx-auto px-6 py-8 max-w-6xl">
+          <div className="container mx-auto px-6 py-6 max-w-6xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               
               {/* Pack Info */}
-              <div className="space-y-5">
+              <div className="space-y-3">
                 <div className="flex flex-wrap items-center gap-2 mb-4">
                   <Link to={`/packs?packType=${pack.type}`}>
                     <Badge variant="secondary" className="bg-[#8B6F47] text-white border-[#8B6F47]/30 cursor-pointer hover:brightness-110 transition-all">
@@ -317,12 +317,12 @@ const PackDetail = () => {
 
               </div>
 
-              {/* Pack Image - Restored to original height */}
+              {/* Pack Image - Reduced height for better fit */}
               <div className="relative">
                 <img 
                   src={pack.company.logo} 
                   alt={pack.name}
-                  className="w-full h-96 object-cover rounded-xl shadow-2xl"
+                  className="w-full h-72 object-cover rounded-xl shadow-2xl"
                 />
                 <div className="absolute top-4 right-4">
                   <Button 
@@ -338,11 +338,11 @@ const PackDetail = () => {
             </div>
 
             {/* Pack Description - Full width below hero */}
-            <Card className="mt-6">
+            <Card className="mt-4">
               <CardHeader className="pb-0 pt-3">
                 <CardTitle className="text-lg">Descripción del Pack</CardTitle>
               </CardHeader>
-              <CardContent className="pb-2 pt-1">
+              <CardContent className="pb-3 pt-1">
                 <p className="text-sm leading-relaxed text-muted-foreground">
                   {pack.expandedDescription}
                 </p>
@@ -352,7 +352,7 @@ const PackDetail = () => {
         </section>
 
         {/* Main Content */}
-        <main className="container mx-auto px-6 py-12">
+        <main className="container mx-auto px-6 py-8">
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
