@@ -95,53 +95,53 @@ const RutaDetalle = () => {
       <Header />
       <main className="pt-6">
         {/* Hero Section */}
-        <section className="py-8 bg-gradient-warm enso-watermark relative">
+        <section className="py-4 bg-gradient-warm enso-watermark relative">
           <div className="container mx-auto px-6">
             <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full overflow-hidden bg-card/80 flex items-center justify-center">
+              <div className="text-center mb-4">
+                <div className="w-14 h-14 mx-auto mb-3 rounded-full overflow-hidden bg-card/80 flex items-center justify-center">
                   <img 
                     src={route.image} 
                     alt={route.title}
-                    className="w-12 h-12 object-contain"
+                    className="w-10 h-10 object-contain"
                   />
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-primary mb-3">
+                <h1 className="text-2xl md:text-3xl font-bold text-primary mb-2">
                   {route.title}
                 </h1>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                <p className="text-base text-muted-foreground max-w-2xl mx-auto">
                   {route.description}
                 </p>
               </div>
               
               {/* Quick metrics */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                <div className="bg-card/80 rounded-lg p-3">
-                  <Clock className="w-5 h-5 text-primary mx-auto mb-1" />
-                  <p className="text-xs text-muted-foreground">Duración</p>
-                  <p className="font-semibold text-sm">{route.duration}</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
+                <div className="bg-card/80 rounded-lg p-2.5 border-2 border-primary/30">
+                  <Clock className="w-4 h-4 text-primary mx-auto mb-1" />
+                  <p className="text-[10px] text-muted-foreground">Duración</p>
+                  <p className="font-semibold text-xs">{route.duration}</p>
                 </div>
-                <div className="bg-card/80 rounded-lg p-3">
-                  <MapPin className="w-5 h-5 text-primary mx-auto mb-1" />
-                  <p className="text-xs text-muted-foreground">Paradas</p>
-                  <p className="font-semibold text-sm">{route.businesses} lugares</p>
+                <div className="bg-card/80 rounded-lg p-2.5 border-2 border-primary/30">
+                  <MapPin className="w-4 h-4 text-primary mx-auto mb-1" />
+                  <p className="text-[10px] text-muted-foreground">Paradas</p>
+                  <p className="font-semibold text-xs">{route.businesses} lugares</p>
                 </div>
-                <div className="bg-card/80 rounded-lg p-3">
-                  <Route className="w-5 h-5 text-primary mx-auto mb-1" />
-                  <p className="text-xs text-muted-foreground">Dificultad</p>
-                  <p className="font-semibold text-sm">{route.difficulty}</p>
+                <div className="bg-card/80 rounded-lg p-2.5 border-2 border-primary/30">
+                  <Route className="w-4 h-4 text-primary mx-auto mb-1" />
+                  <p className="text-[10px] text-muted-foreground">Dificultad</p>
+                  <p className="font-semibold text-xs">{route.difficulty}</p>
                 </div>
-                <div className="bg-card/80 rounded-lg p-3">
-                  <Users className="w-5 h-5 text-primary mx-auto mb-1" />
-                  <p className="text-xs text-muted-foreground">Han ido</p>
-                  <p className="font-semibold text-sm">{route.participants} personas</p>
+                <div className="bg-card/80 rounded-lg p-2.5 border-2 border-primary/30">
+                  <Users className="w-4 h-4 text-primary mx-auto mb-1" />
+                  <p className="text-[10px] text-muted-foreground">Han ido</p>
+                  <p className="font-semibold text-xs">{route.participants} personas</p>
                 </div>
               </div>
 
               {/* Route Experience - Moved here */}
-              <div className="bg-card rounded-lg p-4 border">
-                <h2 className="text-lg font-bold text-primary mb-2">La Experiencia</h2>
-                <p className="text-muted-foreground leading-relaxed text-sm">{route.narrative}</p>
+              <div className="bg-card rounded-lg p-3 border-2 border-primary/30">
+                <h2 className="text-base font-bold text-primary mb-1.5">La Experiencia</h2>
+                <p className="text-muted-foreground leading-relaxed text-xs">{route.narrative}</p>
               </div>
             </div>
           </div>
@@ -258,20 +258,20 @@ const RutaDetalle = () => {
               
               {/* Rating Section - Compact */}
               <section>
-                <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-3 border border-primary/10">
+                <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-4 border border-primary/10">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex flex-col items-start space-y-2">
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 text-secondary fill-current" />
+                          <Star key={i} className="w-5 h-5 text-secondary fill-current" />
                         ))}
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-primary">4.8/5</p>
+                        <p className="text-lg font-bold text-primary">4.8/5</p>
                         <p className="text-xs text-muted-foreground">{route.participants} valoraciones</p>
                       </div>
                     </div>
-                    <Button size="sm" className="bg-primary hover:bg-primary/90 text-white h-7 text-xs px-3">
+                    <Button size="sm" className="bg-primary hover:bg-primary/90 text-white h-8 text-xs px-4">
                       Valorar ruta
                     </Button>
                   </div>
@@ -281,8 +281,8 @@ const RutaDetalle = () => {
               {/* Related Routes Section */}
               <section className="mt-8 pt-6 border-t">
                 <h2 className="text-2xl font-bold text-primary mb-6">Otras rutas que te pueden gustar</h2>
-                <div className="relative">
-                  <Carousel className="w-full px-16">
+                <div className="relative px-20">
+                  <Carousel className="w-full">
                     <CarouselContent className="-ml-4">
                       {relatedRoutes.map((relatedRoute) => (
                         <CarouselItem key={relatedRoute.id} className="pl-4 md:basis-1/2 lg:basis-1/2">
@@ -314,8 +314,8 @@ const RutaDetalle = () => {
                         </CarouselItem>
                       ))}
                     </CarouselContent>
-                    <CarouselPrevious className="absolute -left-2 top-1/2 -translate-y-1/2 w-14 h-14 bg-primary text-white hover:bg-primary/90 shadow-2xl border-4 border-background rounded-full" />
-                    <CarouselNext className="absolute -right-2 top-1/2 -translate-y-1/2 w-14 h-14 bg-primary text-white hover:bg-primary/90 shadow-2xl border-4 border-background rounded-full" />
+                    <CarouselPrevious className="absolute -left-6 top-1/2 -translate-y-1/2 w-14 h-14 bg-primary/80 text-white hover:bg-primary shadow-2xl border-4 border-background rounded-full transition-all" />
+                    <CarouselNext className="absolute -right-6 top-1/2 -translate-y-1/2 w-14 h-14 bg-primary/80 text-white hover:bg-primary shadow-2xl border-4 border-background rounded-full transition-all" />
                   </Carousel>
                 </div>
               </section>
