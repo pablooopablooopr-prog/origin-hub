@@ -53,7 +53,7 @@ const RutaDetalle = () => {
 
   // Get related routes
   const allRoutes = getAllRoutes();
-  const relatedRoutes = allRoutes.filter(r => r.id !== route.id).slice(0, 6);
+  const relatedRoutes = allRoutes.filter(r => r.id !== route.id);
 
   const handleShare = async () => {
     const shareData = {
@@ -182,9 +182,6 @@ const RutaDetalle = () => {
                           </div>
                         </div>
                       </div>
-                      <Link to="/mi-zona/negocio/1">
-                        <ExternalLink className="w-5 h-5 text-gray-400 hover:text-primary transition-colors" />
-                      </Link>
                     </div>
 
                     {/* Mini Gallery */}
@@ -234,13 +231,8 @@ const RutaDetalle = () => {
                     </div>
 
                     <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900 text-[15px]">Reseñas destacadas:</h4>
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white h-7 text-xs px-3">
-                          Ver más
-                        </Button>
-                      </div>
-                      <div className="bg-green-50 border-l-4 border-green-400 p-3 rounded-r-lg">
+                      <h4 className="font-medium text-gray-900 mb-2 text-[15px]">Reseñas destacadas:</h4>
+                      <div className="bg-green-50 border-l-4 border-green-400 p-3 rounded-r-lg relative">
                         <div className="flex items-center space-x-2 mb-1.5">
                           <div className="flex">
                             {[...Array(stop.featuredReview.rating)].map((_, i) => (
@@ -250,6 +242,9 @@ const RutaDetalle = () => {
                           <span className="font-medium text-gray-900 text-sm">{stop.featuredReview.author}</span>
                         </div>
                         <p className="text-sm italic text-gray-700 leading-snug">"{stop.featuredReview.comment}"</p>
+                        <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white h-7 text-xs px-3 mt-2">
+                          Ver más
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -257,42 +252,22 @@ const RutaDetalle = () => {
                 </div>
               </section>
               
-              {/* Rating Section with Action Buttons */}
+              {/* Rating Section */}
               <section>
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-                  {/* Rating Section - Takes 3 columns */}
-                  <div className="lg:col-span-3">
-                    <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-5 text-center h-full">
-                      <div className="flex items-center justify-center space-x-2 mb-2">
-                        <Star className="w-5 h-5 text-secondary fill-current" />
-                        <h3 className="text-lg font-semibold text-primary">Valoración de la ruta</h3>
-                      </div>
-                      <p className="text-base italic text-muted-foreground mb-2">
-                        "{route.rating}"
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Basado en {route.participants} opiniones
-                      </p>
-                    </div>
+                <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-4 text-center">
+                  <div className="flex items-center justify-center space-x-2 mb-2">
+                    <Star className="w-4 h-4 text-secondary fill-current" />
+                    <h3 className="text-base font-semibold text-primary">Valoración de la ruta</h3>
                   </div>
-
-                  {/* Action Buttons Section - Takes 1 column */}
-                  <div className="lg:col-span-1">
-                    <div className="bg-card rounded-lg p-3 border h-full flex flex-col justify-center space-y-2">
-                      <Button onClick={handleShare} variant="outline" size="sm" className="w-full text-xs h-8">
-                        <Share2 className="w-3.5 h-3.5 mr-1.5" />
-                        Compartir Ruta
-                      </Button>
-                      <Button onClick={handlePrint} variant="outline" size="sm" className="w-full text-xs h-8">
-                        <Printer className="w-3.5 h-3.5 mr-1.5" />
-                        Imprimir Ruta
-                      </Button>
-                      <Button variant="default" size="sm" className="w-full text-xs h-8">
-                        <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
-                        Personalizar
-                      </Button>
-                    </div>
-                  </div>
+                  <p className="text-sm italic text-muted-foreground mb-2">
+                    "{route.rating}"
+                  </p>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Basado en {route.participants} opiniones
+                  </p>
+                  <Button size="sm" className="bg-primary hover:bg-primary/90 text-white h-8 text-xs">
+                    Valorar esta ruta
+                  </Button>
                 </div>
               </section>
               
@@ -332,8 +307,8 @@ const RutaDetalle = () => {
                         </CarouselItem>
                       ))}
                     </CarouselContent>
-                    <CarouselPrevious className="absolute left-0 -translate-x-0 w-14 h-14 bg-primary text-white hover:bg-primary/90 shadow-2xl border-4 border-background" />
-                    <CarouselNext className="absolute right-0 translate-x-0 w-14 h-14 bg-primary text-white hover:bg-primary/90 shadow-2xl border-4 border-background" />
+                    <CarouselPrevious className="absolute left-0 -translate-x-0 w-14 h-14 bg-primary text-white hover:bg-primary/90 shadow-2xl border-4 border-background rounded-full" />
+                    <CarouselNext className="absolute right-0 translate-x-0 w-14 h-14 bg-primary text-white hover:bg-primary/90 shadow-2xl border-4 border-background rounded-full" />
                   </Carousel>
                 </div>
               </section>
@@ -352,6 +327,24 @@ const RutaDetalle = () => {
                 practicalInfo={route.practicalInfo} 
                 difficulty={route.difficulty}
               />
+
+              {/* Action Buttons Section */}
+              <div className="bg-card rounded-lg p-3 border space-y-2">
+                <Button onClick={handleShare} variant="outline" size="sm" className="w-full text-xs h-8">
+                  <Share2 className="w-3.5 h-3.5 mr-1.5" />
+                  Compartir Ruta
+                </Button>
+                <Button onClick={handlePrint} variant="outline" size="sm" className="w-full text-xs h-8">
+                  <Printer className="w-3.5 h-3.5 mr-1.5" />
+                  Imprimir Ruta
+                </Button>
+                <Link to="/crear-ruta">
+                  <Button variant="default" size="sm" className="w-full text-xs h-8">
+                    <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
+                    Personalizar
+                  </Button>
+                </Link>
+              </div>
             </div>
 
           </div>
@@ -361,10 +354,10 @@ const RutaDetalle = () => {
         {showScrollTop && (
           <button
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 z-50 bg-primary text-white rounded-full p-4 shadow-2xl hover:bg-primary/90 transition-all hover:scale-110"
+            className="fixed bottom-6 right-6 z-50 bg-primary text-white rounded-md p-3 shadow-xl hover:bg-primary/90 transition-all hover:scale-105"
             aria-label="Volver arriba"
           >
-            <ArrowUp className="w-6 h-6" />
+            <ArrowUp className="w-5 h-5" />
           </button>
         )}
       </main>
