@@ -682,7 +682,7 @@ const PackDetail = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="relative">
+                  <div className="relative px-16">
                     <div className="overflow-hidden">
                       <div 
                         className="flex gap-6 transition-transform duration-500 ease-in-out"
@@ -728,25 +728,25 @@ const PackDetail = () => {
                       </div>
                     </div>
                     
-                    {/* Navigation Arrows - Always visible */}
+                    {/* Navigation Arrows - Outside cards, always visible */}
                     <>
                       <Button
-                        variant="ghost"
+                        variant="default"
                         size="icon"
-                        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-primary hover:bg-primary/90 shadow-lg rounded-full w-12 h-12 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                        className="absolute left-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
                         onClick={() => setRelatedPacksIndex(Math.max(0, relatedPacksIndex - 1))}
                         disabled={relatedPacksIndex === 0}
                       >
-                        <ChevronRight className="w-6 h-6 text-white rotate-180" />
+                        <ChevronRight className="w-7 h-7 text-white rotate-180" />
                       </Button>
                       <Button
-                        variant="ghost"
+                        variant="default"
                         size="icon"
-                        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-primary hover:bg-primary/90 shadow-lg rounded-full w-12 h-12 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
                         onClick={() => setRelatedPacksIndex(Math.min(relatedPacks.length - 3, relatedPacksIndex + 1))}
                         disabled={relatedPacksIndex >= relatedPacks.length - 3}
                       >
-                        <ChevronRight className="w-6 h-6 text-white" />
+                        <ChevronRight className="w-7 h-7 text-white" />
                       </Button>
                     </>
                   </div>
