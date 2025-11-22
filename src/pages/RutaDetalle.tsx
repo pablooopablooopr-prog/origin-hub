@@ -274,28 +274,28 @@ const RutaDetalle = () => {
               
               {/* Related Routes Section */}
               {relatedRoutes.length > 0 && (
-                <section className="mt-8">
+                <section className="mt-4">
                   <Card>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg">Otras rutas que te pueden gustar</CardTitle>
-                      <CardDescription className="text-xs">
+                    <CardHeader className="pb-1.5">
+                      <CardTitle className="text-sm">Otras rutas que te pueden gustar</CardTitle>
+                      <CardDescription className="text-[10px]">
                         Rutas similares que podrían interesarte
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="pb-4">
-                      <div className="relative px-16">
+                    <CardContent className="pb-2">
+                      <div className="relative px-8">
                         <div className="overflow-hidden">
                           <div
-                            className="flex gap-3 transition-transform duration-500 ease-in-out"
+                            className="flex gap-1.5 transition-transform duration-500 ease-in-out"
                             style={{ transform: `translateX(-${relatedRoutesIndex * (100 / 4)}%)` }}
                           >
                             {relatedRoutes.map((relatedRoute) => (
                               <Link
                                 key={relatedRoute.id}
                                 to={`/rutas/${relatedRoute.id}`}
-                                className="min-w-[calc(25%-0.75rem)] flex-shrink-0"
+                                className="min-w-[calc(25%-0.375rem)] flex-shrink-0"
                               >
-                                <Card className="hover:shadow-lg transition-all duration-300 h-full">
+                                <Card className="hover:shadow-md transition-all duration-300 h-full">
                                   <div className="aspect-video relative overflow-hidden bg-muted">
                                     <img
                                       src={relatedRoute.image}
@@ -303,16 +303,16 @@ const RutaDetalle = () => {
                                       className="object-cover w-full h-full"
                                     />
                                   </div>
-                                  <div className="p-2.5">
-                                    <h3 className="font-semibold text-xs mb-1 line-clamp-1">{relatedRoute.title}</h3>
-                                    <p className="text-[10px] text-muted-foreground mb-2 line-clamp-2">{relatedRoute.description}</p>
-                                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                                  <div className="p-1.5">
+                                    <h3 className="font-semibold text-[10px] mb-0.5 line-clamp-1">{relatedRoute.title}</h3>
+                                    <p className="text-[8px] text-muted-foreground mb-1 line-clamp-2">{relatedRoute.description}</p>
+                                    <div className="flex items-center gap-1.5 text-[8px] text-muted-foreground">
                                       <div className="flex items-center gap-0.5">
-                                        <Clock className="w-3 h-3" />
+                                        <Clock className="w-2.5 h-2.5" />
                                         <span>{relatedRoute.duration}</span>
                                       </div>
                                       <div className="flex items-center gap-0.5">
-                                        <MapPin className="w-3 h-3" />
+                                        <MapPin className="w-2.5 h-2.5" />
                                         <span>{relatedRoute.businesses} lugares</span>
                                       </div>
                                     </div>
@@ -328,20 +328,20 @@ const RutaDetalle = () => {
                           <Button
                             variant="default"
                             size="icon"
-                            className="absolute left-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
+                            className="absolute left-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-xl rounded-full w-7 h-7 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-2 border-background"
                             onClick={() => setRelatedRoutesIndex(Math.max(0, relatedRoutesIndex - 1))}
                             disabled={relatedRoutesIndex === 0}
                           >
-                            <ChevronRight className="w-7 h-7 text-white rotate-180" />
+                            <ChevronRight className="w-3.5 h-3.5 text-white rotate-180" />
                           </Button>
                           <Button
                             variant="default"
                             size="icon"
-                            className="absolute right-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
+                            className="absolute right-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-xl rounded-full w-7 h-7 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-2 border-background"
                             onClick={() => setRelatedRoutesIndex(Math.min(Math.max(0, relatedRoutes.length - 4), relatedRoutesIndex + 1))}
                             disabled={relatedRoutesIndex >= Math.max(0, relatedRoutes.length - 4)}
                           >
-                            <ChevronRight className="w-7 h-7 text-white" />
+                            <ChevronRight className="w-3.5 h-3.5 text-white" />
                           </Button>
                         </>
                       </div>
