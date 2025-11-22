@@ -467,3 +467,7 @@ export const routesData: RouteDetail[] = [
 export const getRouteById = (id: string): RouteDetail | undefined => {
   return routesData.find(route => route.id === id);
 };
+
+export const getAllRoutes = (): RouteDetail[] => {
+  return routesData;
+};
