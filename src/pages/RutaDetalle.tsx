@@ -280,13 +280,13 @@ const RutaDetalle = () => {
                     <div className="overflow-hidden">
                       <div
                         className="flex gap-6 transition-transform duration-500 ease-in-out"
-                        style={{ transform: `translateX(-${relatedRoutesIndex * (100 / 2)}%)` }}
+                        style={{ transform: `translateX(-${relatedRoutesIndex * (100 / 3)}%)` }}
                       >
                         {relatedRoutes.map((relatedRoute) => (
                           <Link
                             key={relatedRoute.id}
                             to={`/rutas/${relatedRoute.id}`}
-                            className="min-w-[calc(50%-0.75rem)] flex-shrink-0"
+                            className="min-w-[calc(33.333%-1rem)] flex-shrink-0"
                           >
                             <Card className="hover:shadow-xl transition-all duration-300 h-full">
                               <div className="aspect-video relative overflow-hidden bg-muted">
@@ -330,8 +330,8 @@ const RutaDetalle = () => {
                       variant="default"
                       size="icon"
                       className="absolute -right-6 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
-                      onClick={() => setRelatedRoutesIndex(Math.min(relatedRoutes.length - 2, relatedRoutesIndex + 1))}
-                      disabled={relatedRoutesIndex >= relatedRoutes.length - 2}
+                      onClick={() => setRelatedRoutesIndex(Math.min(Math.max(0, relatedRoutes.length - 3), relatedRoutesIndex + 1))}
+                      disabled={relatedRoutesIndex >= Math.max(0, relatedRoutes.length - 3)}
                     >
                       <ChevronRight className="w-7 h-7 text-primary-foreground" />
                     </Button>
