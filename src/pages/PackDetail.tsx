@@ -151,7 +151,7 @@ const PackDetail = () => {
   const relatedPacks = companyPacks.filter(p => 
     p.id !== pack.id && 
     (p.autonomousCommunity === pack.autonomousCommunity || p.type === pack.type)
-  ).slice(0, 3);
+  );
 
   return (
     <TooltipProvider>
