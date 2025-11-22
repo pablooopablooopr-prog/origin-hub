@@ -20,7 +20,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -273,71 +273,82 @@ const RutaDetalle = () => {
               </section>
               
               {/* Related Routes Section */}
-              <section className="mt-8 pt-6 border-t">
-                <h2 className="text-2xl font-bold text-primary mb-6">Otras rutas que te pueden gustar</h2>
-                {relatedRoutes.length > 0 && (
-                  <div className="relative px-20">
-                    <div className="overflow-hidden">
-                      <div
-                        className="flex gap-6 transition-transform duration-500 ease-in-out"
-                        style={{ transform: `translateX(-${relatedRoutesIndex * (100 / 3)}%)` }}
-                      >
-                        {relatedRoutes.map((relatedRoute) => (
-                          <Link
-                            key={relatedRoute.id}
-                            to={`/rutas/${relatedRoute.id}`}
-                            className="min-w-[calc(33.333%-1rem)] flex-shrink-0"
+              {relatedRoutes.length > 0 && (
+                <section className="mt-12">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-2xl">Otras rutas que te pueden gustar</CardTitle>
+                      <CardDescription>
+                        Otras rutas similares que podrían interesarte
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="relative px-16">
+                        <div className="overflow-hidden">
+                          <div
+                            className="flex gap-6 transition-transform duration-500 ease-in-out"
+                            style={{ transform: `translateX(-${relatedRoutesIndex * (100 / 3)}%)` }}
                           >
-                            <Card className="hover:shadow-xl transition-all duration-300 h-full">
-                              <div className="aspect-video relative overflow-hidden bg-muted">
-                                <img
-                                  src={relatedRoute.image}
-                                  alt={relatedRoute.title}
-                                  className="object-cover w-full h-full"
-                                />
-                              </div>
-                              <div className="p-4">
-                                <h3 className="font-semibold text-base mb-2 line-clamp-1">{relatedRoute.title}</h3>
-                                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{relatedRoute.description}</p>
-                                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                                  <div className="flex items-center gap-1">
-                                    <Clock className="w-3.5 h-3.5" />
-                                    <span>{relatedRoute.duration}</span>
+                            {relatedRoutes.map((relatedRoute) => (
+                              <Link
+                                key={relatedRoute.id}
+                                to={`/rutas/${relatedRoute.id}`}
+                                className="min-w-[calc(33.333%-1rem)] flex-shrink-0"
+                              >
+                                <Card className="hover:shadow-xl transition-all duration-300 h-full">
+                                  <div className="aspect-video relative overflow-hidden bg-muted">
+                                    <img
+                                      src={relatedRoute.image}
+                                      alt={relatedRoute.title}
+                                      className="object-cover w-full h-full"
+                                    />
                                   </div>
-                                  <div className="flex items-center gap-1">
-                                    <MapPin className="w-3.5 h-3.5" />
-                                    <span>{relatedRoute.businesses} lugares</span>
+                                  <div className="p-4">
+                                    <h3 className="font-semibold text-base mb-2 line-clamp-1">{relatedRoute.title}</h3>
+                                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{relatedRoute.description}</p>
+                                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                      <div className="flex items-center gap-1">
+                                        <Clock className="w-3.5 h-3.5" />
+                                        <span>{relatedRoute.duration}</span>
+                                      </div>
+                                      <div className="flex items-center gap-1">
+                                        <MapPin className="w-3.5 h-3.5" />
+                                        <span>{relatedRoute.businesses} lugares</span>
+                                      </div>
+                                    </div>
                                   </div>
-                                </div>
-                              </div>
-                            </Card>
-                          </Link>
-                        ))}
+                                </Card>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        {/* Navigation Arrows - Outside cards, always visible */}
+                        <>
+                          <Button
+                            variant="default"
+                            size="icon"
+                            className="absolute left-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
+                            onClick={() => setRelatedRoutesIndex(Math.max(0, relatedRoutesIndex - 1))}
+                            disabled={relatedRoutesIndex === 0}
+                          >
+                            <ChevronRight className="w-7 h-7 text-white rotate-180" />
+                          </Button>
+                          <Button
+                            variant="default"
+                            size="icon"
+                            className="absolute right-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
+                            onClick={() => setRelatedRoutesIndex(Math.min(relatedRoutes.length - 3, relatedRoutesIndex + 1))}
+                            disabled={relatedRoutesIndex >= relatedRoutes.length - 3}
+                          >
+                            <ChevronRight className="w-7 h-7 text-white" />
+                          </Button>
+                        </>
                       </div>
-                    </div>
-
-                    {/* Navigation Arrows - same exact style as packs */}
-                    <Button
-                      variant="default"
-                      size="icon"
-                      className="absolute -left-6 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
-                      onClick={() => setRelatedRoutesIndex(Math.max(0, relatedRoutesIndex - 1))}
-                      disabled={relatedRoutesIndex === 0}
-                    >
-                      <ChevronRight className="w-7 h-7 text-primary-foreground rotate-180" />
-                    </Button>
-                    <Button
-                      variant="default"
-                      size="icon"
-                      className="absolute -right-6 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
-                      onClick={() => setRelatedRoutesIndex(Math.min(Math.max(0, relatedRoutes.length - 3), relatedRoutesIndex + 1))}
-                      disabled={relatedRoutesIndex >= Math.max(0, relatedRoutes.length - 3)}
-                    >
-                      <ChevronRight className="w-7 h-7 text-primary-foreground" />
-                    </Button>
-                  </div>
-                )}
-              </section>
+                    </CardContent>
+                  </Card>
+                </section>
+              )}
             </div>
 
             {/* Right Sidebar */}
