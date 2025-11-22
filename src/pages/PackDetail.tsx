@@ -728,29 +728,27 @@ const PackDetail = () => {
                       </div>
                     </div>
                     
-                    {/* Navigation Arrows */}
-                    {relatedPacks.length > 3 && (
-                      <>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white/90 hover:bg-white shadow-lg rounded-full"
-                          onClick={() => setRelatedPacksIndex(Math.max(0, relatedPacksIndex - 1))}
-                          disabled={relatedPacksIndex === 0}
-                        >
-                          <ChevronRight className="w-6 h-6 rotate-180" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white/90 hover:bg-white shadow-lg rounded-full"
-                          onClick={() => setRelatedPacksIndex(Math.min(relatedPacks.length - 3, relatedPacksIndex + 1))}
-                          disabled={relatedPacksIndex >= relatedPacks.length - 3}
-                        >
-                          <ChevronRight className="w-6 h-6" />
-                        </Button>
-                      </>
-                    )}
+                    {/* Navigation Arrows - Always visible */}
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-primary hover:bg-primary/90 shadow-lg rounded-full w-12 h-12 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                        onClick={() => setRelatedPacksIndex(Math.max(0, relatedPacksIndex - 1))}
+                        disabled={relatedPacksIndex === 0}
+                      >
+                        <ChevronRight className="w-6 h-6 text-white rotate-180" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-primary hover:bg-primary/90 shadow-lg rounded-full w-12 h-12 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                        onClick={() => setRelatedPacksIndex(Math.min(relatedPacks.length - 3, relatedPacksIndex + 1))}
+                        disabled={relatedPacksIndex >= relatedPacks.length - 3}
+                      >
+                        <ChevronRight className="w-6 h-6 text-white" />
+                      </Button>
+                    </>
                   </div>
                 </CardContent>
               </Card>
