@@ -32,6 +32,7 @@ import {
 const RutaDetalle = () => {
   const { id } = useParams<{ id: string }>();
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [relatedRoutesIndex, setRelatedRoutesIndex] = useState(0);
   
   if (!id) {
     return <Navigate to="/rutas" replace />;
@@ -99,17 +100,10 @@ const RutaDetalle = () => {
           <div className="container mx-auto px-6">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-4">
-                <div className="w-14 h-14 mx-auto mb-3 rounded-full overflow-hidden bg-card/80 flex items-center justify-center">
-                  <img 
-                    src={route.image} 
-                    alt={route.title}
-                    className="w-10 h-10 object-contain"
-                  />
-                </div>
-                <h1 className="text-2xl md:text-3xl font-bold text-primary mb-2">
+                <h1 className="text-2xl md:text-3xl font-bold text-primary mb-1">
                   {route.title}
                 </h1>
-                <p className="text-base text-muted-foreground max-w-2xl mx-auto">
+                <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
                   {route.description}
                 </p>
               </div>
@@ -281,13 +275,20 @@ const RutaDetalle = () => {
               {/* Related Routes Section */}
               <section className="mt-8 pt-6 border-t">
                 <h2 className="text-2xl font-bold text-primary mb-6">Otras rutas que te pueden gustar</h2>
-                <div className="relative">
-                  <Carousel className="w-full max-w-5xl mx-auto px-16">
-                    <CarouselContent className="-ml-4">
-                      {relatedRoutes.map((relatedRoute) => (
-                        <CarouselItem key={relatedRoute.id} className="pl-4 md:basis-1/2 lg:basis-1/2">
-                          <Link to={`/rutas/${relatedRoute.id}`}>
-                            <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full">
+                {relatedRoutes.length > 0 && (
+                  <div className="relative px-16">
+                    <div className="overflow-hidden">
+                      <div
+                        className="flex gap-6 transition-transform duration-500 ease-in-out"
+                        style={{ transform: `translateX(-${relatedRoutesIndex * (100 / 2)}%)` }}
+                      >
+                        {relatedRoutes.map((relatedRoute) => (
+                          <Link
+                            key={relatedRoute.id}
+                            to={`/rutas/${relatedRoute.id}`}
+                            className="min-w-[calc(50%-0.75rem)] flex-shrink-0"
+                          >
+                            <Card className="hover:shadow-xl transition-all duration-300 h-full">
                               <div className="aspect-video relative overflow-hidden bg-muted">
                                 <img
                                   src={relatedRoute.image}
@@ -311,13 +312,33 @@ const RutaDetalle = () => {
                               </div>
                             </Card>
                           </Link>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="absolute -left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-primary/90 hover:bg-primary text-white border-none shadow-lg transition-colors" />
-                    <CarouselNext className="absolute -right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-primary/90 hover:bg-primary text-white border-none shadow-lg transition-colors" />
-                  </Carousel>
-                </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Navigation Arrows - same style as packs */}
+                    <>
+                      <Button
+                        variant="default"
+                        size="icon"
+                        className="absolute left-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
+                        onClick={() => setRelatedRoutesIndex(Math.max(0, relatedRoutesIndex - 1))}
+                        disabled={relatedRoutesIndex === 0}
+                      >
+                        <ChevronRight className="w-7 h-7 text-primary-foreground rotate-180" />
+                      </Button>
+                      <Button
+                        variant="default"
+                        size="icon"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
+                        onClick={() => setRelatedRoutesIndex(Math.min(relatedRoutes.length - 2, relatedRoutesIndex + 1))}
+                        disabled={relatedRoutesIndex >= relatedRoutes.length - 2}
+                      >
+                        <ChevronRight className="w-7 h-7 text-primary-foreground" />
+                      </Button>
+                    </>
+                  </div>
+                )}
               </section>
             </div>
 
