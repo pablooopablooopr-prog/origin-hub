@@ -95,63 +95,64 @@ const RutaDetalle = () => {
       <Header />
       <main className="pt-6">
         {/* Hero Section */}
-        <section className="py-12 bg-gradient-warm enso-watermark relative">
+        <section className="py-8 bg-gradient-warm enso-watermark relative">
           <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full overflow-hidden bg-card/80 flex items-center justify-center">
-                <img 
-                  src={route.image} 
-                  alt={route.title}
-                  className="w-16 h-16 object-contain"
-                />
+            <div className="max-w-5xl mx-auto">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full overflow-hidden bg-card/80 flex items-center justify-center">
+                  <img 
+                    src={route.image} 
+                    alt={route.title}
+                    className="w-12 h-12 object-contain"
+                  />
+                </div>
+                <h1 className="text-3xl md:text-4xl font-bold text-primary mb-3">
+                  {route.title}
+                </h1>
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                  {route.description}
+                </p>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">
-                {route.title}
-              </h1>
-              <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-                {route.description}
-              </p>
               
               {/* Quick metrics */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div className="bg-card/80 rounded-lg p-4">
-                  <Clock className="w-6 h-6 text-primary mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">Duración</p>
-                  <p className="font-semibold">{route.duration}</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                <div className="bg-card/80 rounded-lg p-3">
+                  <Clock className="w-5 h-5 text-primary mx-auto mb-1" />
+                  <p className="text-xs text-muted-foreground">Duración</p>
+                  <p className="font-semibold text-sm">{route.duration}</p>
                 </div>
-                <div className="bg-card/80 rounded-lg p-4">
-                  <MapPin className="w-6 h-6 text-primary mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">Paradas</p>
-                  <p className="font-semibold">{route.businesses} lugares</p>
+                <div className="bg-card/80 rounded-lg p-3">
+                  <MapPin className="w-5 h-5 text-primary mx-auto mb-1" />
+                  <p className="text-xs text-muted-foreground">Paradas</p>
+                  <p className="font-semibold text-sm">{route.businesses} lugares</p>
                 </div>
-                <div className="bg-card/80 rounded-lg p-4">
-                  <Route className="w-6 h-6 text-primary mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">Dificultad</p>
-                  <p className="font-semibold">{route.difficulty}</p>
+                <div className="bg-card/80 rounded-lg p-3">
+                  <Route className="w-5 h-5 text-primary mx-auto mb-1" />
+                  <p className="text-xs text-muted-foreground">Dificultad</p>
+                  <p className="font-semibold text-sm">{route.difficulty}</p>
                 </div>
-                <div className="bg-card/80 rounded-lg p-4">
-                  <Users className="w-6 h-6 text-primary mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">Han ido</p>
-                  <p className="font-semibold">{route.participants} personas</p>
+                <div className="bg-card/80 rounded-lg p-3">
+                  <Users className="w-5 h-5 text-primary mx-auto mb-1" />
+                  <p className="text-xs text-muted-foreground">Han ido</p>
+                  <p className="font-semibold text-sm">{route.participants} personas</p>
                 </div>
               </div>
 
+              {/* Route Experience - Moved here */}
+              <div className="bg-card rounded-lg p-4 border">
+                <h2 className="text-lg font-bold text-primary mb-2">La Experiencia</h2>
+                <p className="text-muted-foreground leading-relaxed text-sm">{route.narrative}</p>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Content */}
-        <div className="container mx-auto px-6 py-12">
+        <div className="container mx-auto px-6 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             
             {/* Main Content - Left Side */}
-            <div className="lg:col-span-2 space-y-8">
-              
-              {/* Route Experience */}
-              <section className="bg-card rounded-lg p-4 border">
-                <h2 className="text-xl font-bold text-primary mb-3">La Experiencia</h2>
-                <p className="text-muted-foreground leading-relaxed text-[15px]">{route.narrative}</p>
-              </section>
+            <div className="lg:col-span-2 space-y-6">
               
               {/* Route Stops */}
               <section>
@@ -233,7 +234,13 @@ const RutaDetalle = () => {
                     <div>
                       <h4 className="font-medium text-gray-900 mb-2 text-[15px]">Reseñas destacadas:</h4>
                       <div className="bg-green-50 border-l-4 border-green-400 p-3 rounded-r-lg relative">
-                        <div className="flex items-center space-x-2 mb-1.5">
+                        <Button 
+                          size="sm" 
+                          className="absolute top-2 right-2 bg-green-600 hover:bg-green-700 text-white h-6 text-xs px-2"
+                        >
+                          Ver más
+                        </Button>
+                        <div className="flex items-center space-x-2 mb-1.5 pr-16">
                           <div className="flex">
                             {[...Array(stop.featuredReview.rating)].map((_, i) => (
                               <Star key={i} className="w-3.5 h-3.5 text-yellow-400 fill-current" />
@@ -241,10 +248,7 @@ const RutaDetalle = () => {
                           </div>
                           <span className="font-medium text-gray-900 text-sm">{stop.featuredReview.author}</span>
                         </div>
-                        <p className="text-sm italic text-gray-700 leading-snug">"{stop.featuredReview.comment}"</p>
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white h-7 text-xs px-3 mt-2">
-                          Ver más
-                        </Button>
+                        <p className="text-sm italic text-gray-700 leading-snug pr-16">"{stop.featuredReview.comment}"</p>
                       </div>
                     </div>
                   </div>
@@ -252,33 +256,36 @@ const RutaDetalle = () => {
                 </div>
               </section>
               
-              {/* Rating Section */}
+              {/* Rating Section - Compact */}
               <section>
-                <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-4 text-center">
-                  <div className="flex items-center justify-center space-x-2 mb-2">
-                    <Star className="w-4 h-4 text-secondary fill-current" />
-                    <h3 className="text-base font-semibold text-primary">Valoración de la ruta</h3>
+                <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-3 border border-primary/10">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 text-secondary fill-current" />
+                        ))}
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-primary">4.8/5</p>
+                        <p className="text-xs text-muted-foreground">{route.participants} valoraciones</p>
+                      </div>
+                    </div>
+                    <Button size="sm" className="bg-primary hover:bg-primary/90 text-white h-7 text-xs px-3">
+                      Valorar ruta
+                    </Button>
                   </div>
-                  <p className="text-sm italic text-muted-foreground mb-2">
-                    "{route.rating}"
-                  </p>
-                  <p className="text-xs text-muted-foreground mb-3">
-                    Basado en {route.participants} opiniones
-                  </p>
-                  <Button size="sm" className="bg-primary hover:bg-primary/90 text-white h-8 text-xs">
-                    Valorar esta ruta
-                  </Button>
                 </div>
               </section>
               
               {/* Related Routes Section */}
-              <section className="mt-12 pt-8 border-t">
+              <section className="mt-8 pt-6 border-t">
                 <h2 className="text-2xl font-bold text-primary mb-6">Otras rutas que te pueden gustar</h2>
-                <div className="relative px-16">
-                  <Carousel className="w-full">
+                <div className="relative">
+                  <Carousel className="w-full px-16">
                     <CarouselContent className="-ml-4">
                       {relatedRoutes.map((relatedRoute) => (
-                        <CarouselItem key={relatedRoute.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                        <CarouselItem key={relatedRoute.id} className="pl-4 md:basis-1/2 lg:basis-1/2">
                           <Link to={`/rutas/${relatedRoute.id}`}>
                             <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full">
                               <div className="aspect-video relative overflow-hidden bg-muted">
@@ -307,8 +314,8 @@ const RutaDetalle = () => {
                         </CarouselItem>
                       ))}
                     </CarouselContent>
-                    <CarouselPrevious className="absolute left-0 -translate-x-0 w-14 h-14 bg-primary text-white hover:bg-primary/90 shadow-2xl border-4 border-background rounded-full" />
-                    <CarouselNext className="absolute right-0 translate-x-0 w-14 h-14 bg-primary text-white hover:bg-primary/90 shadow-2xl border-4 border-background rounded-full" />
+                    <CarouselPrevious className="absolute -left-2 top-1/2 -translate-y-1/2 w-14 h-14 bg-primary text-white hover:bg-primary/90 shadow-2xl border-4 border-background rounded-full" />
+                    <CarouselNext className="absolute -right-2 top-1/2 -translate-y-1/2 w-14 h-14 bg-primary text-white hover:bg-primary/90 shadow-2xl border-4 border-background rounded-full" />
                   </Carousel>
                 </div>
               </section>
@@ -354,10 +361,10 @@ const RutaDetalle = () => {
         {showScrollTop && (
           <button
             onClick={scrollToTop}
-            className="fixed bottom-6 right-6 z-50 bg-primary text-white rounded-md p-3 shadow-xl hover:bg-primary/90 transition-all hover:scale-105"
+            className="fixed bottom-6 right-6 z-50 bg-primary text-white rounded-md p-2.5 shadow-xl hover:bg-primary/90 transition-all hover:scale-105"
             aria-label="Volver arriba"
           >
-            <ArrowUp className="w-5 h-5" />
+            <ArrowUp className="w-4 h-4" />
           </button>
         )}
       </main>
