@@ -93,9 +93,9 @@ const RutaDetalle = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="pt-6">
+      <main className="pt-0">
         {/* Hero Section */}
-        <section className="py-4 bg-gradient-warm enso-watermark relative">
+        <section className="py-6 bg-gradient-warm enso-watermark relative">
           <div className="container mx-auto px-6">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-4">
@@ -115,33 +115,33 @@ const RutaDetalle = () => {
               </div>
               
               {/* Quick metrics */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
-                <div className="bg-card/80 rounded-lg p-2.5 border-2 border-primary/30">
-                  <Clock className="w-4 h-4 text-primary mx-auto mb-1" />
-                  <p className="text-[10px] text-muted-foreground">Duración</p>
-                  <p className="font-semibold text-xs">{route.duration}</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                <div className="bg-card rounded-lg p-3.5 shadow-sm hover:shadow-md transition-shadow">
+                  <Clock className="w-5 h-5 text-primary mx-auto mb-1.5" />
+                  <p className="text-[11px] text-muted-foreground">Duración</p>
+                  <p className="font-semibold text-sm">{route.duration}</p>
                 </div>
-                <div className="bg-card/80 rounded-lg p-2.5 border-2 border-primary/30">
-                  <MapPin className="w-4 h-4 text-primary mx-auto mb-1" />
-                  <p className="text-[10px] text-muted-foreground">Paradas</p>
-                  <p className="font-semibold text-xs">{route.businesses} lugares</p>
+                <div className="bg-card rounded-lg p-3.5 shadow-sm hover:shadow-md transition-shadow">
+                  <MapPin className="w-5 h-5 text-primary mx-auto mb-1.5" />
+                  <p className="text-[11px] text-muted-foreground">Paradas</p>
+                  <p className="font-semibold text-sm">{route.businesses} lugares</p>
                 </div>
-                <div className="bg-card/80 rounded-lg p-2.5 border-2 border-primary/30">
-                  <Route className="w-4 h-4 text-primary mx-auto mb-1" />
-                  <p className="text-[10px] text-muted-foreground">Dificultad</p>
-                  <p className="font-semibold text-xs">{route.difficulty}</p>
+                <div className="bg-card rounded-lg p-3.5 shadow-sm hover:shadow-md transition-shadow">
+                  <Route className="w-5 h-5 text-primary mx-auto mb-1.5" />
+                  <p className="text-[11px] text-muted-foreground">Dificultad</p>
+                  <p className="font-semibold text-sm">{route.difficulty}</p>
                 </div>
-                <div className="bg-card/80 rounded-lg p-2.5 border-2 border-primary/30">
-                  <Users className="w-4 h-4 text-primary mx-auto mb-1" />
-                  <p className="text-[10px] text-muted-foreground">Han ido</p>
-                  <p className="font-semibold text-xs">{route.participants} personas</p>
+                <div className="bg-card rounded-lg p-3.5 shadow-sm hover:shadow-md transition-shadow">
+                  <Users className="w-5 h-5 text-primary mx-auto mb-1.5" />
+                  <p className="text-[11px] text-muted-foreground">Han ido</p>
+                  <p className="font-semibold text-sm">{route.participants} personas</p>
                 </div>
               </div>
 
               {/* Route Experience - Moved here */}
-              <div className="bg-card rounded-lg p-3 border-2 border-primary/30">
-                <h2 className="text-base font-bold text-primary mb-1.5">La Experiencia</h2>
-                <p className="text-muted-foreground leading-relaxed text-xs">{route.narrative}</p>
+              <div className="bg-card rounded-lg p-4 shadow-sm">
+                <h2 className="text-lg font-bold text-primary mb-2">La Experiencia</h2>
+                <p className="text-muted-foreground leading-relaxed text-sm">{route.narrative}</p>
               </div>
             </div>
           </div>
@@ -281,8 +281,8 @@ const RutaDetalle = () => {
               {/* Related Routes Section */}
               <section className="mt-8 pt-6 border-t">
                 <h2 className="text-2xl font-bold text-primary mb-6">Otras rutas que te pueden gustar</h2>
-                <div className="relative px-20">
-                  <Carousel className="w-full">
+                <div className="relative">
+                  <Carousel className="w-full max-w-5xl mx-auto px-16">
                     <CarouselContent className="-ml-4">
                       {relatedRoutes.map((relatedRoute) => (
                         <CarouselItem key={relatedRoute.id} className="pl-4 md:basis-1/2 lg:basis-1/2">
@@ -314,8 +314,8 @@ const RutaDetalle = () => {
                         </CarouselItem>
                       ))}
                     </CarouselContent>
-                    <CarouselPrevious className="absolute -left-6 top-1/2 -translate-y-1/2 w-14 h-14 bg-primary/80 text-white hover:bg-primary shadow-2xl border-4 border-background rounded-full transition-all" />
-                    <CarouselNext className="absolute -right-6 top-1/2 -translate-y-1/2 w-14 h-14 bg-primary/80 text-white hover:bg-primary shadow-2xl border-4 border-background rounded-full transition-all" />
+                    <CarouselPrevious className="absolute -left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-primary/90 hover:bg-primary text-white border-none shadow-lg transition-colors" />
+                    <CarouselNext className="absolute -right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-primary/90 hover:bg-primary text-white border-none shadow-lg transition-colors" />
                   </Carousel>
                 </div>
               </section>
