@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 const PackDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
+  const [relatedPacksIndex, setRelatedPacksIndex] = useState(0);
 
   // Auto scroll to top when pack changes
   useEffect(() => {
@@ -448,15 +449,35 @@ const PackDetail = () => {
 
               {/* Producer Information - Matches mini-hero color */}
               <Card className="overflow-hidden" style={{ backgroundColor: getMiniHeroColor(pack.type) }}>
-                <CardContent className="p-4">
-                  {/* Top section: Image on left, Title on right */}
-                  <div className="flex gap-3 mb-3">
-                    {/* Company Image - Small on left */}
+                <CardContent className="p-5">
+                  {/* Title at top */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <User className="w-5 h-5 text-white" />
+                    <h3 className="text-base font-semibold text-white">Información del Productor</h3>
+                  </div>
+
+                  {/* Company name and location - directly below title */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <Link 
+                      to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
+                      className="hover:underline"
+                    >
+                      <h4 className="text-lg font-bold text-white">{pack.company.name}</h4>
+                    </Link>
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-4 h-4 text-white/90" />
+                      <span className="text-sm font-medium text-white/90">{pack.company.location}</span>
+                    </div>
+                  </div>
+
+                  {/* Image and quote side by side */}
+                  <div className="flex gap-4 mb-4">
+                    {/* Company Image */}
                     <Link 
                       to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
                       className="hover:opacity-90 transition-opacity flex-shrink-0"
                     >
-                      <div className="w-20 h-20 rounded-lg overflow-hidden border-2 border-white/40 shadow-lg">
+                      <div className="w-24 h-24 rounded-lg overflow-hidden border-2 border-white/40 shadow-lg">
                         <img 
                           src={pack.company.logo} 
                           alt={pack.company.name}
@@ -465,46 +486,22 @@ const PackDetail = () => {
                       </div>
                     </Link>
                     
-                    {/* Title on right */}
-                    <div className="flex items-center pt-1">
-                      <div className="flex items-center gap-2">
-                        <User className="w-4 h-4 text-white" />
-                        <h3 className="text-sm font-semibold text-white leading-tight">Información del Productor</h3>
-                      </div>
+                    {/* Quote with decorative border */}
+                    <div className="relative flex-1">
+                      <div 
+                        className="absolute left-0 top-0 bottom-0 w-1 bg-white/80 shadow-sm"
+                        style={{
+                          clipPath: 'polygon(0 0, 100% 2%, 100% 98%, 0 100%)',
+                          filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))'
+                        }}
+                      />
+                      <blockquote className="pl-4 py-2 bg-white/20 backdrop-blur-sm rounded-r border-r border-white/30 h-full flex items-center">
+                        <p className="text-sm text-white leading-relaxed italic">
+                          "Elaboramos estos productos con el mismo mimo que pusieron nuestros abuelos. 
+                          Cada elaboración conserva la esencia tradicional de {pack.region}."
+                        </p>
+                      </blockquote>
                     </div>
-                  </div>
-
-                  {/* Company name and location - directly attached */}
-                  <div className="mb-3">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Link 
-                        to={`/negocio/${pack.company.name.toLowerCase().replace(/\s+/g, '-')}`}
-                        className="hover:underline"
-                      >
-                        <h4 className="text-base font-bold text-white">{pack.company.name}</h4>
-                      </Link>
-                      <div className="flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5 text-white/90" />
-                        <span className="text-xs font-medium text-white/90">{pack.company.location}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Quote with decorative border */}
-                  <div className="relative mb-3">
-                    <div 
-                      className="absolute left-0 top-0 bottom-0 w-1 bg-white/80 shadow-sm"
-                      style={{
-                        clipPath: 'polygon(0 0, 100% 1%, 90% 4%, 100% 7%, 85% 11%, 100% 15%, 90% 19%, 100% 23%, 80% 28%, 100% 33%, 85% 38%, 100% 43%, 90% 48%, 100% 53%, 85% 58%, 100% 63%, 90% 68%, 100% 73%, 80% 78%, 100% 83%, 85% 88%, 100% 93%, 90% 97%, 100% 100%, 0 100%)',
-                        filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))'
-                      }}
-                    />
-                    <blockquote className="pl-4 py-2 bg-white/20 backdrop-blur-sm rounded-r border-r border-white/30">
-                      <p className="text-xs text-white leading-relaxed italic">
-                        "Elaboramos estos productos con el mismo mimo que pusieron nuestros abuelos. 
-                        Cada elaboración conserva la esencia tradicional de {pack.region}."
-                      </p>
-                    </blockquote>
                   </div>
 
                   {/* Button */}
@@ -674,7 +671,7 @@ const PackDetail = () => {
             </div>
           </div>
 
-          {/* Related Packs - Nombres más pequeños y hover con sombra */}
+          {/* Related Packs with Navigation */}
           {relatedPacks.length > 0 && (
             <section className="mt-12">
               <Card>
@@ -685,44 +682,75 @@ const PackDetail = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {relatedPacks.map((relatedPack) => {
-                      const lighterColor = relatedPack.type === 'raiz' 
-                        ? 'bg-[#D4C5A0]' 
-                        : relatedPack.type === 'esencia' 
-                        ? 'bg-[#C8D9B8]' 
-                        : 'bg-[#D9B89A]';
-                      
-                      return (
-                        <Card key={relatedPack.id} className="hover:shadow-xl transition-all duration-300">
-                          <div className="relative">
-                            <img 
-                              src={relatedPack.company.logo} 
-                              alt={relatedPack.name}
-                              className="w-full h-32 object-cover rounded-t-lg"
-                            />
-                            <Badge 
-                              variant="secondary" 
-                              className={`absolute top-2 left-2 ${lighterColor}`}
+                  <div className="relative">
+                    <div className="overflow-hidden">
+                      <div 
+                        className="flex gap-6 transition-transform duration-500 ease-in-out"
+                        style={{ transform: `translateX(-${relatedPacksIndex * (100 / 3)}%)` }}
+                      >
+                        {relatedPacks.map((relatedPack) => {
+                          const lighterColor = relatedPack.type === 'raiz' 
+                            ? 'bg-[#D4C5A0]' 
+                            : relatedPack.type === 'esencia' 
+                            ? 'bg-[#C8D9B8]' 
+                            : 'bg-[#D9B89A]';
+                          
+                          return (
+                            <Link
+                              key={relatedPack.id}
+                              to={`/packs/${relatedPack.id}`}
+                              className="min-w-[calc(33.333%-1rem)] flex-shrink-0"
                             >
-                              {getPackTypeName(relatedPack.type)}
-                            </Badge>
-                          </div>
-                          <CardContent className="p-4">
-                            <h3 className="font-semibold text-sm mb-2">{relatedPack.name} - {relatedPack.autonomousCommunity}</h3>
-                            <div className="flex items-center justify-between">
-                              <span className="text-lg font-bold text-primary">{relatedPack.price}€</span>
-                              <Button asChild size="sm">
-                                <Link to={`/packs/${relatedPack.id}`}>
-                                  <Eye className="w-4 h-4 mr-1" />
-                                  Ver más
-                                </Link>
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
+                              <Card className="hover:shadow-xl transition-all duration-300 h-full">
+                                <div className="relative">
+                                  <img 
+                                    src={relatedPack.company.logo} 
+                                    alt={relatedPack.name}
+                                    className="w-full h-32 object-cover rounded-t-lg"
+                                  />
+                                  <Badge 
+                                    variant="secondary" 
+                                    className={`absolute top-2 left-2 ${lighterColor}`}
+                                  >
+                                    {getPackTypeName(relatedPack.type)}
+                                  </Badge>
+                                </div>
+                                <CardContent className="p-4">
+                                  <h3 className="font-semibold text-sm mb-2">{relatedPack.name} - {relatedPack.autonomousCommunity}</h3>
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-lg font-bold text-primary">{relatedPack.price}€</span>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    
+                    {/* Navigation Arrows */}
+                    {relatedPacks.length > 3 && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white/90 hover:bg-white shadow-lg rounded-full"
+                          onClick={() => setRelatedPacksIndex(Math.max(0, relatedPacksIndex - 1))}
+                          disabled={relatedPacksIndex === 0}
+                        >
+                          <ChevronRight className="w-6 h-6 rotate-180" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white/90 hover:bg-white shadow-lg rounded-full"
+                          onClick={() => setRelatedPacksIndex(Math.min(relatedPacks.length - 3, relatedPacksIndex + 1))}
+                          disabled={relatedPacksIndex >= relatedPacks.length - 3}
+                        >
+                          <ChevronRight className="w-6 h-6" />
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </CardContent>
               </Card>
