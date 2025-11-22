@@ -96,46 +96,46 @@ const RutaDetalle = () => {
       <Header />
       <main className="pt-0">
         {/* Hero Section */}
-        <section className="py-6 bg-gradient-warm enso-watermark relative">
+        <section className="py-8 bg-gradient-warm enso-watermark relative">
           <div className="container mx-auto px-6">
-            <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-4">
-                <h1 className="text-2xl md:text-3xl font-bold text-primary mb-1">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-6">
+                <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">
                   {route.title}
                 </h1>
-                <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
+                <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
                   {route.description}
                 </p>
               </div>
               
               {/* Quick metrics */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                <div className="bg-card rounded-lg p-3.5 shadow-sm hover:shadow-md transition-shadow">
-                  <Clock className="w-5 h-5 text-primary mx-auto mb-1.5" />
-                  <p className="text-[11px] text-muted-foreground">Duración</p>
-                  <p className="font-semibold text-sm">{route.duration}</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-card rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
+                  <Clock className="w-6 h-6 text-primary mx-auto mb-2" />
+                  <p className="text-xs text-muted-foreground">Duración</p>
+                  <p className="font-semibold text-base">{route.duration}</p>
                 </div>
-                <div className="bg-card rounded-lg p-3.5 shadow-sm hover:shadow-md transition-shadow">
-                  <MapPin className="w-5 h-5 text-primary mx-auto mb-1.5" />
-                  <p className="text-[11px] text-muted-foreground">Paradas</p>
-                  <p className="font-semibold text-sm">{route.businesses} lugares</p>
+                <div className="bg-card rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
+                  <MapPin className="w-6 h-6 text-primary mx-auto mb-2" />
+                  <p className="text-xs text-muted-foreground">Paradas</p>
+                  <p className="font-semibold text-base">{route.businesses} lugares</p>
                 </div>
-                <div className="bg-card rounded-lg p-3.5 shadow-sm hover:shadow-md transition-shadow">
-                  <Route className="w-5 h-5 text-primary mx-auto mb-1.5" />
-                  <p className="text-[11px] text-muted-foreground">Dificultad</p>
-                  <p className="font-semibold text-sm">{route.difficulty}</p>
+                <div className="bg-card rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
+                  <Route className="w-6 h-6 text-primary mx-auto mb-2" />
+                  <p className="text-xs text-muted-foreground">Dificultad</p>
+                  <p className="font-semibold text-base">{route.difficulty}</p>
                 </div>
-                <div className="bg-card rounded-lg p-3.5 shadow-sm hover:shadow-md transition-shadow">
-                  <Users className="w-5 h-5 text-primary mx-auto mb-1.5" />
-                  <p className="text-[11px] text-muted-foreground">Han ido</p>
-                  <p className="font-semibold text-sm">{route.participants} personas</p>
+                <div className="bg-card rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
+                  <Users className="w-6 h-6 text-primary mx-auto mb-2" />
+                  <p className="text-xs text-muted-foreground">Han ido</p>
+                  <p className="font-semibold text-base">{route.participants} personas</p>
                 </div>
               </div>
 
-              {/* Route Experience - Moved here */}
-              <div className="bg-card rounded-lg p-4 shadow-sm">
-                <h2 className="text-lg font-bold text-primary mb-2">La Experiencia</h2>
-                <p className="text-muted-foreground leading-relaxed text-sm">{route.narrative}</p>
+              {/* Route Experience */}
+              <div className="bg-card rounded-lg p-6 shadow-sm">
+                <h2 className="text-xl font-bold text-primary mb-3">La Experiencia</h2>
+                <p className="text-muted-foreground leading-relaxed text-base">{route.narrative}</p>
               </div>
             </div>
           </div>
@@ -276,7 +276,7 @@ const RutaDetalle = () => {
               <section className="mt-8 pt-6 border-t">
                 <h2 className="text-2xl font-bold text-primary mb-6">Otras rutas que te pueden gustar</h2>
                 {relatedRoutes.length > 0 && (
-                  <div className="relative px-16">
+                  <div className="relative px-20">
                     <div className="overflow-hidden">
                       <div
                         className="flex gap-6 transition-transform duration-500 ease-in-out"
@@ -316,27 +316,25 @@ const RutaDetalle = () => {
                       </div>
                     </div>
 
-                    {/* Navigation Arrows - same style as packs */}
-                    <>
-                      <Button
-                        variant="default"
-                        size="icon"
-                        className="absolute left-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
-                        onClick={() => setRelatedRoutesIndex(Math.max(0, relatedRoutesIndex - 1))}
-                        disabled={relatedRoutesIndex === 0}
-                      >
-                        <ChevronRight className="w-7 h-7 text-primary-foreground rotate-180" />
-                      </Button>
-                      <Button
-                        variant="default"
-                        size="icon"
-                        className="absolute right-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
-                        onClick={() => setRelatedRoutesIndex(Math.min(relatedRoutes.length - 2, relatedRoutesIndex + 1))}
-                        disabled={relatedRoutesIndex >= relatedRoutes.length - 2}
-                      >
-                        <ChevronRight className="w-7 h-7 text-primary-foreground" />
-                      </Button>
-                    </>
+                    {/* Navigation Arrows - same exact style as packs */}
+                    <Button
+                      variant="default"
+                      size="icon"
+                      className="absolute -left-6 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
+                      onClick={() => setRelatedRoutesIndex(Math.max(0, relatedRoutesIndex - 1))}
+                      disabled={relatedRoutesIndex === 0}
+                    >
+                      <ChevronRight className="w-7 h-7 text-primary-foreground rotate-180" />
+                    </Button>
+                    <Button
+                      variant="default"
+                      size="icon"
+                      className="absolute -right-6 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
+                      onClick={() => setRelatedRoutesIndex(Math.min(relatedRoutes.length - 2, relatedRoutesIndex + 1))}
+                      disabled={relatedRoutesIndex >= relatedRoutes.length - 2}
+                    >
+                      <ChevronRight className="w-7 h-7 text-primary-foreground" />
+                    </Button>
                   </div>
                 )}
               </section>
