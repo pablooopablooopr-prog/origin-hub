@@ -274,28 +274,28 @@ const RutaDetalle = () => {
               
               {/* Related Routes Section */}
               {relatedRoutes.length > 0 && (
-                <section className="mt-12">
+                <section className="mt-8">
                   <Card>
-                    <CardHeader>
-                      <CardTitle className="text-2xl">Otras rutas que te pueden gustar</CardTitle>
-                      <CardDescription>
-                        Otras rutas similares que podrían interesarte
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg">Otras rutas que te pueden gustar</CardTitle>
+                      <CardDescription className="text-xs">
+                        Rutas similares que podrían interesarte
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pb-4">
                       <div className="relative px-16">
                         <div className="overflow-hidden">
                           <div
-                            className="flex gap-6 transition-transform duration-500 ease-in-out"
-                            style={{ transform: `translateX(-${relatedRoutesIndex * (100 / 3)}%)` }}
+                            className="flex gap-3 transition-transform duration-500 ease-in-out"
+                            style={{ transform: `translateX(-${relatedRoutesIndex * (100 / 4)}%)` }}
                           >
                             {relatedRoutes.map((relatedRoute) => (
                               <Link
                                 key={relatedRoute.id}
                                 to={`/rutas/${relatedRoute.id}`}
-                                className="min-w-[calc(33.333%-1rem)] flex-shrink-0"
+                                className="min-w-[calc(25%-0.75rem)] flex-shrink-0"
                               >
-                                <Card className="hover:shadow-xl transition-all duration-300 h-full">
+                                <Card className="hover:shadow-lg transition-all duration-300 h-full">
                                   <div className="aspect-video relative overflow-hidden bg-muted">
                                     <img
                                       src={relatedRoute.image}
@@ -303,16 +303,16 @@ const RutaDetalle = () => {
                                       className="object-cover w-full h-full"
                                     />
                                   </div>
-                                  <div className="p-4">
-                                    <h3 className="font-semibold text-base mb-2 line-clamp-1">{relatedRoute.title}</h3>
-                                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{relatedRoute.description}</p>
-                                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                                      <div className="flex items-center gap-1">
-                                        <Clock className="w-3.5 h-3.5" />
+                                  <div className="p-2.5">
+                                    <h3 className="font-semibold text-xs mb-1 line-clamp-1">{relatedRoute.title}</h3>
+                                    <p className="text-[10px] text-muted-foreground mb-2 line-clamp-2">{relatedRoute.description}</p>
+                                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                                      <div className="flex items-center gap-0.5">
+                                        <Clock className="w-3 h-3" />
                                         <span>{relatedRoute.duration}</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
-                                        <MapPin className="w-3.5 h-3.5" />
+                                      <div className="flex items-center gap-0.5">
+                                        <MapPin className="w-3 h-3" />
                                         <span>{relatedRoute.businesses} lugares</span>
                                       </div>
                                     </div>
@@ -323,7 +323,7 @@ const RutaDetalle = () => {
                           </div>
                         </div>
                         
-                        {/* Navigation Arrows - Outside cards, always visible */}
+                        {/* Navigation Arrows */}
                         <>
                           <Button
                             variant="default"
@@ -338,8 +338,8 @@ const RutaDetalle = () => {
                             variant="default"
                             size="icon"
                             className="absolute right-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
-                            onClick={() => setRelatedRoutesIndex(Math.min(relatedRoutes.length - 3, relatedRoutesIndex + 1))}
-                            disabled={relatedRoutesIndex >= relatedRoutes.length - 3}
+                            onClick={() => setRelatedRoutesIndex(Math.min(Math.max(0, relatedRoutes.length - 4), relatedRoutesIndex + 1))}
+                            disabled={relatedRoutesIndex >= Math.max(0, relatedRoutes.length - 4)}
                           >
                             <ChevronRight className="w-7 h-7 text-white" />
                           </Button>
