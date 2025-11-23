@@ -38,8 +38,8 @@ const availableAttributes = [
 
 const packTypeMaxPrices: { [key: string]: number } = {
   raiz: 35,
-  esencia: 55,
-  gourmet: 85
+  esencia: 60,
+  gourmet: 90
 };
 
 const EditarPack = () => {
@@ -301,6 +301,18 @@ const EditarPack = () => {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 text-sm">
+                  <div className="flex items-center gap-1">
+                    <Package className="w-4 h-4 text-primary" />
+                    <Label className="text-xs">Productos:</Label>
+                    <Input 
+                      type="number"
+                      value={productCount}
+                      onChange={(e) => setProductCount(e.target.value)}
+                      placeholder="8"
+                      className="w-16 h-7 text-xs"
+                    />
+                  </div>
+                  
                   <label className="flex items-center gap-1 cursor-pointer">
                     <input 
                       type="checkbox" 
@@ -311,18 +323,6 @@ const EditarPack = () => {
                     <Truck className="w-4 h-4 text-green-600" />
                     <span className="text-xs">Envío rápido</span>
                   </label>
-                  
-                  <div className="flex items-center gap-1">
-                    <Package className="w-4 h-4 text-primary" />
-                    <Label className="text-xs">Cantidad:</Label>
-                    <Input 
-                      type="number"
-                      value={productCount}
-                      onChange={(e) => setProductCount(e.target.value)}
-                      placeholder="8"
-                      className="w-16 h-7 text-xs"
-                    />
-                  </div>
                   
                   <label className="flex items-center gap-1 cursor-pointer">
                     <input 
@@ -355,16 +355,13 @@ const EditarPack = () => {
                 <CardTitle className="text-lg">Descripción del Pack</CardTitle>
               </CardHeader>
               <CardContent className="pb-3 pt-1">
-                <div>
-                  <Label className="text-sm">Descripción del pack</Label>
-                  <Textarea 
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Descripción detallada del pack, su historia, qué lo hace especial..."
-                    rows={4}
-                    className="text-sm"
-                  />
-                </div>
+                <Textarea 
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Descripción detallada del pack, su historia, qué lo hace especial..."
+                  rows={4}
+                  className="text-sm"
+                />
               </CardContent>
             </Card>
           </div>
@@ -585,10 +582,6 @@ const EditarPack = () => {
                     <Award className="w-4 h-4 mr-2" />
                     Publicar Pack
                   </Button>
-                  <Button onClick={handleSaveDraft} variant="outline" className="w-full">
-                    <Save className="w-4 h-4 mr-2" />
-                    Guardar Borrador
-                  </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="destructive" className="w-full">
@@ -617,9 +610,9 @@ const EditarPack = () => {
               {/* Help Card */}
               <Card className="bg-primary/5 border-primary/20">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm">💡 Consejos</CardTitle>
+                  <CardTitle className="text-base">💡 Consejos</CardTitle>
                 </CardHeader>
-                <CardContent className="text-xs space-y-2">
+                <CardContent className="text-sm space-y-2">
                   <p>• Usa imágenes de alta calidad</p>
                   <p>• Describe cada producto con detalle</p>
                   <p>• Destaca el origen y la autenticidad</p>
