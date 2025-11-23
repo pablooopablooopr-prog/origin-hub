@@ -15,7 +15,7 @@ const RoutesExplorer = ({
 }) => {
   const navigate = useNavigate();
   const displayRoutes = customRoutes || routesData;
-  return <section className="py-4 bg-gradient-warm enso-watermark relative" id="rutas">
+  return <section className="py-2 bg-gradient-warm enso-watermark relative" id="rutas">
       <div className="container mx-auto px-6">
         {/* Título principal - solo mostrar si showTitle es true */}
         {showTitle && <div className="text-center mb-16">
@@ -26,21 +26,21 @@ const RoutesExplorer = ({
           </div>}
 
         {/* Rutas destacadas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          {displayRoutes.map((route, index) => <Card key={route.title} className="group hover:shadow-earth transition-all duration-300 hover:-translate-y-1 relative overflow-hidden flex flex-col h-[440px]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
+          {displayRoutes.map((route, index) => <Card key={route.title} className="group hover:shadow-earth transition-all duration-300 hover:-translate-y-1 relative overflow-hidden flex flex-col h-[400px]">
               {/* Imagen de fondo con transparencia */}
               <div className="absolute inset-0 opacity-5">
                 <img src="/lovable-uploads/new-enso-symbol.png" alt="" className="w-full h-full object-contain" />
               </div>
-              <CardHeader className="text-center relative z-10 pb-4">
+              <CardHeader className="text-center relative z-10 pb-3 pt-5">
                 <CardTitle className="text-xl text-primary mb-2">{route.title}</CardTitle>
                 <CardDescription className="text-muted-foreground min-h-[48px]">
                   {route.description}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3 relative z-20 pt-0 flex-1 flex flex-col">{/* Asegurar que el contenido esté por encima */}
+              <CardContent className="space-y-3 relative z-20 pt-0 pb-5 flex-1 flex flex-col">{/* Asegurar que el contenido esté por encima */}
                 {/* Métricas de la ruta */}
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="flex items-center space-x-2">
                     <Clock className="w-4 h-4 text-muted-foreground" />
                     <span>{route.duration}</span>
@@ -70,7 +70,7 @@ const RoutesExplorer = ({
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-3 relative z-30 mt-auto">
+                <div className="flex flex-col gap-3 relative z-30 mt-auto pt-2">
                   <Button className="w-full group-hover:shadow-soft transition-all relative z-40" onClick={e => {
                 e.preventDefault();
                 e.stopPropagation();
