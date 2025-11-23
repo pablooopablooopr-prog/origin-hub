@@ -15,7 +15,7 @@ const RoutesExplorer = ({
 }) => {
   const navigate = useNavigate();
   const displayRoutes = customRoutes || routesData;
-  return <section className="py-20 bg-gradient-warm enso-watermark relative" id="rutas">
+  return <section className="py-8 bg-gradient-warm enso-watermark relative" id="rutas">
       <div className="container mx-auto px-6">
         {/* Título principal - solo mostrar si showTitle es true */}
         {showTitle && <div className="text-center mb-16">
@@ -32,16 +32,13 @@ const RoutesExplorer = ({
               <div className="absolute inset-0 opacity-5">
                 <img src="/lovable-uploads/new-enso-symbol.png" alt="" className="w-full h-full object-contain" />
               </div>
-              <CardHeader className="text-center relative z-10">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full overflow-hidden bg-muted/20 flex items-center justify-center">
-                  <img src={route.image} alt={route.title} className="w-12 h-12 object-contain opacity-80" />
-                </div>
+              <CardHeader className="text-center relative z-10 pb-4">
                 <CardTitle className="text-xl text-primary mb-2">{route.title}</CardTitle>
                 <CardDescription className="text-muted-foreground">
                   {route.description}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4 relative z-20">{/* Asegurar que el contenido esté por encima */}
+              <CardContent className="space-y-3 relative z-20 pt-0">{/* Asegurar que el contenido esté por encima */}
                 {/* Métricas de la ruta */}
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex items-center space-x-2">
