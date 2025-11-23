@@ -250,17 +250,18 @@ const EditarPack = () => {
 
                   <div>
                     <Label className="text-xs mb-1 block">Clasificación</Label>
-                    <select 
-                      value={classification}
-                      onChange={(e) => setClassification(e.target.value)}
-                      className="h-8 px-3 text-xs border rounded-md bg-background"
-                    >
-                      <option value="">Sin clasificar</option>
-                      <option value="mas-vendido">Más vendido</option>
-                      <option value="nuevo">Nuevo</option>
-                      <option value="recomendado">Recomendado</option>
-                      <option value="edicion-limitada">Edición limitada</option>
-                    </select>
+                    <Select value={classification} onValueChange={setClassification}>
+                      <SelectTrigger className="h-8 text-xs">
+                        <SelectValue placeholder="Sin clasificar" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sin-clasificar">Sin clasificar</SelectItem>
+                        <SelectItem value="mas-vendido">Más vendido</SelectItem>
+                        <SelectItem value="nuevo">Nuevo</SelectItem>
+                        <SelectItem value="recomendado">Recomendado</SelectItem>
+                        <SelectItem value="edicion-limitada">Edición limitada</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 
@@ -559,11 +560,18 @@ const EditarPack = () => {
                     <Box className="w-4 h-4 text-primary mt-0.5" />
                     <div className="flex-1">
                       <p className="text-muted-foreground text-xs mb-1">Tipo de empaque:</p>
-                      <Input 
-                        value={packagingType}
-                        onChange={(e) => setPackagingType(e.target.value)}
-                        className="h-7 text-xs"
-                      />
+                      <Select value={packagingType} onValueChange={setPackagingType}>
+                        <SelectTrigger className="h-7 text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Caja de cartón reciclado">Caja de cartón reciclado</SelectItem>
+                          <SelectItem value="Cesta de mimbre">Cesta de mimbre</SelectItem>
+                          <SelectItem value="Bolsa de tela reutilizable">Bolsa de tela reutilizable</SelectItem>
+                          <SelectItem value="Caja de madera">Caja de madera</SelectItem>
+                          <SelectItem value="Envase biodegradable">Envase biodegradable</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                   <Separator />
@@ -571,11 +579,18 @@ const EditarPack = () => {
                     <Clock className="w-4 h-4 text-primary mt-0.5" />
                     <div className="flex-1">
                       <p className="text-muted-foreground text-xs mb-1">Envío estimado:</p>
-                      <Input 
-                        value={estimatedShipping}
-                        onChange={(e) => setEstimatedShipping(e.target.value)}
-                        className="h-7 text-xs"
-                      />
+                      <Select value={estimatedShipping} onValueChange={setEstimatedShipping}>
+                        <SelectTrigger className="h-7 text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1-2 días laborables">1-2 días laborables</SelectItem>
+                          <SelectItem value="2-3 días laborables">2-3 días laborables</SelectItem>
+                          <SelectItem value="3-5 días laborables">3-5 días laborables</SelectItem>
+                          <SelectItem value="5-7 días laborables">5-7 días laborables</SelectItem>
+                          <SelectItem value="Envío express 24h">Envío express 24h</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                   <Separator />
@@ -597,18 +612,20 @@ const EditarPack = () => {
                   <CardTitle className="text-lg">Acciones</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button onClick={handlePublish} className="w-full justify-center">
-                    <Check className="w-4 h-4 mr-2" />
+                  <Button onClick={handlePublish} className="w-full justify-center bg-[#8B6F47] hover:bg-[#8B6F47]/90">
+                    <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center mr-2">
+                      <Check className="w-3 h-3 text-[#8B6F47]" />
+                    </div>
                     <span>Guardar Cambios</span>
                   </Button>
                   <Button onClick={handlePublish} variant="default" className="w-full justify-center bg-green-600 hover:bg-green-700">
-                    <Award className="w-4 h-4 mr-2" />
+                    <Award className="w-5 h-5 mr-2" />
                     <span>Publicar Pack</span>
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="destructive" className="w-full justify-center">
-                        <Trash2 className="w-4 h-4 mr-2" />
+                        <Trash2 className="w-5 h-5 mr-2" />
                         <span>Eliminar Pack</span>
                       </Button>
                     </AlertDialogTrigger>
