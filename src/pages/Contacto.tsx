@@ -47,11 +47,11 @@ const Contacto = () => {
             </div>
             
             <div className="bg-card p-6 rounded-lg shadow-soft text-center">
-              <a href="#" className="inline-block hover:opacity-80 transition-opacity">
-                <Instagram className="w-8 h-8 text-secondary mx-auto mb-3" />
-              </a>
+              <Instagram className="w-8 h-8 text-secondary mx-auto mb-3" />
               <p className="font-semibold text-primary mb-1">Síguenos</p>
-              <p className="text-sm text-muted-foreground">@origen</p>
+              <a href="https://instagram.com/origen" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-secondary transition-colors">
+                @origen
+              </a>
             </div>
           </div>
 
