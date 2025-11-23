@@ -27,50 +27,50 @@ const RoutesExplorer = ({
 
         {/* Rutas destacadas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
-          {displayRoutes.map((route, index) => <Card key={route.title} className="group hover:shadow-earth transition-all duration-300 hover:-translate-y-1 relative overflow-hidden flex flex-col h-[400px]">
+          {displayRoutes.map((route, index) => <Card key={route.title} className="group hover:shadow-earth transition-all duration-300 hover:-translate-y-1 relative overflow-hidden flex flex-col h-[380px]">
               {/* Imagen de fondo con transparencia */}
               <div className="absolute inset-0 opacity-5">
                 <img src="/lovable-uploads/new-enso-symbol.png" alt="" className="w-full h-full object-contain" />
               </div>
-              <CardHeader className="text-center relative z-10 pb-3 pt-5">
+              <CardHeader className="text-center relative z-10 pb-3 pt-4 px-4">
                 <CardTitle className="text-xl text-primary mb-2">{route.title}</CardTitle>
-                <CardDescription className="text-muted-foreground min-h-[48px]">
+                <CardDescription className="text-muted-foreground min-h-[48px] leading-tight">
                   {route.description}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3 relative z-20 pt-0 pb-5 flex-1 flex flex-col">{/* Asegurar que el contenido esté por encima */}
+              <CardContent className="space-y-2.5 relative z-20 pt-0 pb-4 px-4 flex-1 flex flex-col">{/* Asegurar que el contenido esté por encima */}
                 {/* Métricas de la ruta */}
-                <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="grid grid-cols-2 gap-2.5 text-sm">
                   <div className="flex items-center space-x-2">
-                    <Clock className="w-4 h-4 text-muted-foreground" />
+                    <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                     <span>{route.duration}</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <MapPin className="w-4 h-4 text-muted-foreground" />
+                    <MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                     <span>{route.businesses} lugares</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Users className="w-4 h-4 text-muted-foreground" />
+                    <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                     <span>{route.participants} personas</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Route className="w-4 h-4 text-muted-foreground" />
+                    <Route className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                     <span>{route.difficulty}</span>
                   </div>
                 </div>
 
                 {/* Valoración humana */}
-                <div className="bg-muted/30 rounded-lg p-3 h-[70px] flex flex-col justify-center">
+                <div className="bg-muted/30 rounded-lg p-2.5 h-[68px] flex flex-col justify-center">
                   <div className="flex items-center space-x-2 mb-1">
-                    <Star className="w-4 h-4 text-secondary fill-current" />
+                    <Star className="w-4 h-4 text-secondary fill-current flex-shrink-0" />
                     <span className="text-sm font-medium">Valoración destacada</span>
                   </div>
-                  <p className="text-sm text-muted-foreground italic line-clamp-1">
+                  <p className="text-sm text-muted-foreground italic line-clamp-1 leading-tight">
                     "{route.rating}"
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-3 relative z-30 mt-auto pt-2">
+                <div className="flex flex-col relative z-30 mt-auto">
                   <Button className="w-full group-hover:shadow-soft transition-all relative z-40" onClick={e => {
                 e.preventDefault();
                 e.stopPropagation();
