@@ -47,10 +47,11 @@ const Contacto = () => {
             </div>
             
             <div className="bg-card p-6 rounded-lg shadow-soft text-center">
-              <p className="font-semibold text-primary mb-3">Síguenos</p>
-              <a href="#" className="inline-flex p-3 rounded-full bg-secondary/10 hover:bg-secondary/20 transition-colors">
-                <Instagram className="w-6 h-6 text-secondary" />
+              <a href="#" className="inline-block hover:opacity-80 transition-opacity">
+                <Instagram className="w-8 h-8 text-secondary mx-auto mb-3" />
               </a>
+              <p className="font-semibold text-primary mb-1">Síguenos</p>
+              <p className="text-sm text-muted-foreground">@origen</p>
             </div>
           </div>
 
