@@ -10,7 +10,7 @@ import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { MapPin, Package, Star, Truck, Clock, Users, ShoppingCart, Share2, Award, Leaf, Gift, Plus, X, Save, Trash2, Image as ImageIcon, CheckCircle, Check, Box, Euro, Calendar } from "lucide-react";
+import { MapPin, Package, Star, Truck, Clock, Users, ShoppingCart, Share2, Award, Leaf, Gift, Plus, X, Save, Trash2, Image as ImageIcon, CheckCircle, Check, Box, Euro, Calendar, Bookmark } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -612,20 +612,20 @@ const EditarPack = () => {
                   <CardTitle className="text-lg">Acciones</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button onClick={handlePublish} className="w-full justify-center bg-[#8B6F47] hover:bg-[#8B6F47]/90">
-                    <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center mr-2">
-                      <Check className="w-3 h-3 text-[#8B6F47]" />
+                  <Button onClick={handlePublish} className="w-full flex items-center justify-center gap-2 bg-[#8B6F47] hover:bg-[#8B6F47]/90">
+                    <div className="w-5 h-5 rounded-full border-2 border-white flex items-center justify-center">
+                      <Check className="w-3 h-3 text-white" />
                     </div>
                     <span>Guardar Cambios</span>
                   </Button>
-                  <Button onClick={handlePublish} variant="default" className="w-full justify-center bg-green-600 hover:bg-green-700">
-                    <Award className="w-5 h-5 mr-2" />
+                  <Button onClick={handlePublish} variant="default" className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700">
+                    <Bookmark className="w-4 h-4" />
                     <span>Publicar Pack</span>
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="destructive" className="w-full justify-center">
-                        <Trash2 className="w-5 h-5 mr-2" />
+                      <Button variant="destructive" className="w-full flex items-center justify-center gap-2">
+                        <Trash2 className="w-4 h-4" />
                         <span>Eliminar Pack</span>
                       </Button>
                     </AlertDialogTrigger>
