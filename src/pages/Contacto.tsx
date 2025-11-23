@@ -26,56 +26,39 @@ const Contacto = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-            {/* Información de contacto */}
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl font-semibold text-primary mb-6">Información de contacto</h2>
-                <div className="space-y-6">
-                  <div className="flex items-center space-x-4">
-                    <Mail className="w-6 h-6 text-secondary" />
-                    <div>
-                      <p className="font-medium">Email</p>
-                      <p className="text-muted-foreground">hola@origen.es</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <Phone className="w-6 h-6 text-secondary" />
-                    <div>
-                      <p className="font-medium">Teléfono</p>
-                      <p className="text-muted-foreground">+34 900 123 456</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-4">
-                    <MapPin className="w-6 h-6 text-secondary mt-1" />
-                    <div>
-                      <p className="font-medium">Ubicación</p>
-                      <p className="text-muted-foreground">Madrid, España<br />Presente en toda la península</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-semibold text-primary mb-4">Síguenos</h3>
-                <div className="flex space-x-4">
-                  <a href="#" className="p-3 rounded-full bg-secondary/10 hover:bg-secondary/20 transition-colors">
-                    <Instagram className="w-5 h-5 text-secondary" />
-                  </a>
-                  <a href="#" className="p-3 rounded-full bg-secondary/10 hover:bg-secondary/20 transition-colors">
-                    <Facebook className="w-5 h-5 text-secondary" />
-                  </a>
-                  <a href="#" className="p-3 rounded-full bg-secondary/10 hover:bg-secondary/20 transition-colors">
-                    <Twitter className="w-5 h-5 text-secondary" />
-                  </a>
-                </div>
-              </div>
+          {/* Tarjetas de información de contacto */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-5xl mx-auto mb-12">
+            <div className="bg-card p-6 rounded-lg shadow-soft text-center">
+              <Mail className="w-8 h-8 text-secondary mx-auto mb-3" />
+              <p className="font-semibold text-primary mb-1">Email</p>
+              <p className="text-sm text-muted-foreground">hola@origen.es</p>
             </div>
+            
+            <div className="bg-card p-6 rounded-lg shadow-soft text-center">
+              <Phone className="w-8 h-8 text-secondary mx-auto mb-3" />
+              <p className="font-semibold text-primary mb-1">Teléfono</p>
+              <p className="text-sm text-muted-foreground">+34 900 123 456</p>
+            </div>
+            
+            <div className="bg-card p-6 rounded-lg shadow-soft text-center">
+              <MapPin className="w-8 h-8 text-secondary mx-auto mb-3" />
+              <p className="font-semibold text-primary mb-1">Ubicación</p>
+              <p className="text-sm text-muted-foreground">Madrid, España</p>
+            </div>
+            
+            <div className="bg-card p-6 rounded-lg shadow-soft text-center">
+              <p className="font-semibold text-primary mb-3">Síguenos</p>
+              <a href="#" className="inline-flex p-3 rounded-full bg-secondary/10 hover:bg-secondary/20 transition-colors">
+                <Instagram className="w-6 h-6 text-secondary" />
+              </a>
+            </div>
+          </div>
 
-            {/* Formulario de contacto */}
-            <div className="bg-card p-8 rounded-lg shadow-soft">
-              <h2 className="text-2xl font-semibold text-primary mb-6">Envíanos un mensaje</h2>
-              <form className="space-y-6">
+          {/* Formulario de contacto */}
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-card p-6 rounded-lg shadow-soft">
+              <h2 className="text-xl font-semibold text-primary mb-4">Envíanos un mensaje</h2>
+              <form className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Nombre</label>
@@ -94,7 +77,7 @@ const Contacto = () => {
                   <label className="block text-sm font-medium mb-2">Mensaje</label>
                   <Textarea 
                     placeholder="Cuéntanos sobre tu negocio, proyecto o consulta..."
-                    rows={6}
+                    rows={5}
                   />
                 </div>
                 <Button size="lg" className="w-full">
