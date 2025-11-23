@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RoutesExplorer from "@/components/RoutesExplorer";
+import { Button } from "@/components/ui/button";
 import { RouteDetail } from "@/data/routes";
 import oliveOilBottle from "@/assets/olive-oil-bottle.png";
 import cheeseWheel from "@/assets/cheese-wheel.png";
@@ -135,8 +136,8 @@ const Rutas = () => {
     <div className="min-h-screen">
       <Header />
       <main className="pt-6">
-        <div className="container mx-auto px-6 py-6">
-          <div className="text-center mb-8">
+        <div className="container mx-auto px-6 py-4">
+          <div className="text-center mb-6">
             <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4 flex items-center justify-center">
               <span>Rutas </span>
               <img 
@@ -152,6 +153,17 @@ const Rutas = () => {
           </div>
         </div>
         <RoutesExplorer showTitle={false} showCTA={false} customRoutes={extendedRoutesData} />
+        
+        {/* Ver más button */}
+        <div className="container mx-auto px-6 pb-12 text-center">
+          <Button 
+            variant="default" 
+            size="lg" 
+            className="bg-[hsl(var(--primary))] text-primary-foreground hover:brightness-110 shadow-lg"
+          >
+            Ver más
+          </Button>
+        </div>
       </main>
       <Footer />
     </div>
