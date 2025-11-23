@@ -12,6 +12,9 @@ import RutaDetalle from "./pages/RutaDetalle";
 import Contacto from "./pages/Contacto";
 import SoyCliente from "./pages/SoyCliente";
 import SoyEmpresa from "./pages/SoyEmpresa";
+import SobreOrigen from "./pages/SobreOrigen";
+import EditarPack from "./pages/EditarPack";
+import CrearRuta from "./pages/CrearRuta";
 import BusinessDetail from "./pages/BusinessDetail";
 import CreateRoute from "./pages/CreateRoute";
 import PackDetail from "./pages/PackDetail";
@@ -45,6 +48,10 @@ const App = () => (
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/soy-cliente" element={<SoyCliente />} />
           <Route path="/soy-empresa" element={<SoyEmpresa />} />
+          <Route path="/sobre-origen" element={<SobreOrigen />} />
+          <Route path="/editar-pack" element={<EditarPack />} />
+          <Route path="/editar-pack/:packId" element={<EditarPack />} />
+          <Route path="/crear-ruta" element={<CrearRuta />} />
           <Route path="/valoraciones" element={<Valoraciones />} />
           <Route path="/escribir-valoracion" element={<EscribirValoracion />} />
           <Route path="/negocio/:id" element={<BusinessDetail />} />
