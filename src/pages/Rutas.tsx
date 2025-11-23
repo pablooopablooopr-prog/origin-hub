@@ -135,10 +135,10 @@ const Rutas = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="pt-6">
-        <div className="container mx-auto px-6 py-4">
-          <div className="text-center mb-6">
-            <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4 flex items-center justify-center">
+      <main className="pt-2">
+        <div className="container mx-auto px-6 py-2">
+          <div className="text-center mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-primary mb-3 flex items-center justify-center">
               <span>Rutas </span>
               <img 
                 src="/lovable-uploads/clean-enso-symbol.png" 
@@ -155,7 +155,7 @@ const Rutas = () => {
         <RoutesExplorer showTitle={false} showCTA={false} customRoutes={extendedRoutesData} />
         
         {/* Ver más button */}
-        <div className="container mx-auto px-6 pb-12 text-center">
+        <div className="container mx-auto px-6 pb-8 text-center">
           <Button 
             variant="default" 
             size="lg" 

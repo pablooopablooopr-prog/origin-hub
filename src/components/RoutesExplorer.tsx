@@ -15,7 +15,7 @@ const RoutesExplorer = ({
 }) => {
   const navigate = useNavigate();
   const displayRoutes = customRoutes || routesData;
-  return <section className="py-8 bg-gradient-warm enso-watermark relative" id="rutas">
+  return <section className="py-4 bg-gradient-warm enso-watermark relative" id="rutas">
       <div className="container mx-auto px-6">
         {/* Título principal - solo mostrar si showTitle es true */}
         {showTitle && <div className="text-center mb-16">
@@ -26,19 +26,19 @@ const RoutesExplorer = ({
           </div>}
 
         {/* Rutas destacadas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          {displayRoutes.map((route, index) => <Card key={route.title} className="group hover:shadow-earth transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          {displayRoutes.map((route, index) => <Card key={route.title} className="group hover:shadow-earth transition-all duration-300 hover:-translate-y-1 relative overflow-hidden flex flex-col h-[440px]">
               {/* Imagen de fondo con transparencia */}
               <div className="absolute inset-0 opacity-5">
                 <img src="/lovable-uploads/new-enso-symbol.png" alt="" className="w-full h-full object-contain" />
               </div>
               <CardHeader className="text-center relative z-10 pb-4">
                 <CardTitle className="text-xl text-primary mb-2">{route.title}</CardTitle>
-                <CardDescription className="text-muted-foreground">
+                <CardDescription className="text-muted-foreground min-h-[48px]">
                   {route.description}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3 relative z-20 pt-0">{/* Asegurar que el contenido esté por encima */}
+              <CardContent className="space-y-3 relative z-20 pt-0 flex-1 flex flex-col">{/* Asegurar que el contenido esté por encima */}
                 {/* Métricas de la ruta */}
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex items-center space-x-2">
@@ -60,17 +60,17 @@ const RoutesExplorer = ({
                 </div>
 
                 {/* Valoración humana */}
-                <div className="bg-muted/30 rounded-lg p-3">
+                <div className="bg-muted/30 rounded-lg p-3 h-[70px] flex flex-col justify-center">
                   <div className="flex items-center space-x-2 mb-1">
                     <Star className="w-4 h-4 text-secondary fill-current" />
                     <span className="text-sm font-medium">Valoración destacada</span>
                   </div>
-                  <p className="text-sm text-muted-foreground italic">
+                  <p className="text-sm text-muted-foreground italic line-clamp-1">
                     "{route.rating}"
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-3 relative z-30">
+                <div className="flex flex-col gap-3 relative z-30 mt-auto">
                   <Button className="w-full group-hover:shadow-soft transition-all relative z-40" onClick={e => {
                 e.preventDefault();
                 e.stopPropagation();
