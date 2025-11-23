@@ -1,13 +1,32 @@
 import { Button } from "@/components/ui/button";
-import { MapPin, Menu, X, ShoppingCart } from "lucide-react";
-import { useState } from "react";
+import { MapPin, Menu, X, ShoppingCart, User } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   // Mock cart items count - en producción vendría del estado global/context
   const cartItemsCount = 1;
+
+  useEffect(() => {
+    // Check auth status
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   return <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 py-3">
@@ -53,9 +72,18 @@ const Header = () => {
                 Soy Empresa
               </Button>
             </Link>
-            <Link to="/customer-auth">
-              <Button variant="default" size="sm">Log in</Button>
-            </Link>
+            {isAuthenticated ? (
+              <Link to="/mi-cuenta">
+                <Button variant="default" size="sm">
+                  <User className="w-4 h-4 mr-2" />
+                  Mi Cuenta
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/customer-auth">
+                <Button variant="default" size="sm">Log in</Button>
+              </Link>
+            )}
           </div>
 
           {/* Menu mobile */}
@@ -93,11 +121,20 @@ const Header = () => {
                     Soy Empresa
                   </Button>
                 </Link>
-                <Link to="/customer-auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="default" size="sm" className="w-full">
-                    Log in
-                  </Button>
-                </Link>
+                {isAuthenticated ? (
+                  <Link to="/mi-cuenta" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="default" size="sm" className="w-full">
+                      <User className="w-4 h-4 mr-2" />
+                      Mi Cuenta
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link to="/customer-auth" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="default" size="sm" className="w-full">
+                      Log in
+                    </Button>
+                  </Link>
+                )}
               </div>
             </nav>
           </div>}
