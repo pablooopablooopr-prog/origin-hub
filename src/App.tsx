@@ -27,6 +27,10 @@ import PackBuilder from "./pages/PackBuilder";
 import CustomerAuth from "./pages/CustomerAuth";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import NotFound from "./pages/NotFound";
+import FAQ from "./pages/FAQ";
+import TerminosCondiciones from "./pages/TerminosCondiciones";
+import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
+import PoliticaCookies from "./pages/PoliticaCookies";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +67,10 @@ const App = () => (
           <Route path="/customer-auth" element={<CustomerAuth />} />
           <Route path="/soy-cliente" element={<CustomerDashboard />} />
           <Route path="/mi-cuenta" element={<CustomerDashboard />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/terminos-condiciones" element={<TerminosCondiciones />} />
+          <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
+          <Route path="/politica-cookies" element={<PoliticaCookies />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
