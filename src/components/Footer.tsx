@@ -81,7 +81,9 @@ const Footer = () => {
                 <MapPin className="w-5 h-5 text-secondary mt-1" />
                 <span className="text-primary-foreground/80">
                   
-Presente dentro y fuera de la península
+
+
+Presente en toda la península
 
 
 
