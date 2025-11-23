@@ -20,9 +20,27 @@ interface Product {
   name: string;
   description: string;
   company: string;
-  origin: string;
   attributes: string[];
 }
+
+const availableAttributes = [
+  "Artesanal",
+  "Km 0",
+  "Producción local",
+  "Ecológico",
+  "Vegano",
+  "Sin gluten",
+  "Denominación de origen",
+  "Temporada",
+  "Edición limitada",
+  "Tradicional"
+];
+
+const packTypeMaxPrices: { [key: string]: number } = {
+  raiz: 35,
+  esencia: 55,
+  gourmet: 85
+};
 
 const EditarPack = () => {
   const { toast } = useToast();
@@ -31,17 +49,16 @@ const EditarPack = () => {
   const [packName, setPackName] = useState("");
   const [packType, setPackType] = useState("raiz");
   const [province, setProvince] = useState("");
-  const [price, setPrice] = useState("");
-  const [status, setStatus] = useState("draft");
+  const [price, setPrice] = useState(packTypeMaxPrices["raiz"].toString());
   const [description, setDescription] = useState("");
-  const [expandedDescription, setExpandedDescription] = useState("");
+  const [sustainabilityInfo, setSustainabilityInfo] = useState("");
   
   // Pack features
   const [seasonal, setSeasonal] = useState(false);
   const [fastShipping, setFastShipping] = useState(false);
   const [sustainablePackaging, setSustainablePackaging] = useState(false);
-  const [qualitySeal, setQualitySeal] = useState(false);
   const [featured, setFeatured] = useState("");
+  const [productCount, setProductCount] = useState("");
   
   // Products
   const [products, setProducts] = useState<Product[]>([
@@ -50,10 +67,26 @@ const EditarPack = () => {
       name: "",
       description: "",
       company: "",
-      origin: "",
       attributes: []
     }
   ]);
+
+  // Handle pack type change - update max price
+  const handlePackTypeChange = (newType: string) => {
+    setPackType(newType);
+    setPrice(packTypeMaxPrices[newType].toString());
+  };
+
+  // Validate price doesn't exceed max for pack type
+  const handlePriceChange = (newPrice: string) => {
+    const numPrice = parseFloat(newPrice);
+    const maxPrice = packTypeMaxPrices[packType];
+    if (!isNaN(numPrice) && numPrice <= maxPrice) {
+      setPrice(newPrice);
+    } else if (newPrice === "") {
+      setPrice("");
+    }
+  };
 
   const getPackTypeColor = (type: string) => {
     switch (type) {
@@ -108,7 +141,6 @@ const EditarPack = () => {
       name: "",
       description: "",
       company: "",
-      origin: "",
       attributes: []
     }]);
   };
@@ -190,7 +222,7 @@ const EditarPack = () => {
                 <div className="flex flex-wrap items-center gap-2 mb-4">
                   <div>
                     <Label className="text-xs mb-1 block">Tipo de Pack *</Label>
-                    <Select value={packType} onValueChange={setPackType}>
+                    <Select value={packType} onValueChange={handlePackTypeChange}>
                       <SelectTrigger className="w-40 bg-[#8B6F47] text-white border-[#8B6F47]/30">
                         <SelectValue />
                       </SelectTrigger>
@@ -213,14 +245,24 @@ const EditarPack = () => {
                       <span className="text-xs">Temporada</span>
                     </label>
                     
+                    <div>
+                      <Label className="text-xs mb-1 block">Provincia</Label>
+                      <Input 
+                        value={province}
+                        onChange={(e) => setProvince(e.target.value)}
+                        placeholder="León"
+                        className="w-32 h-8 text-xs"
+                      />
+                    </div>
+
                     <label className="flex items-center gap-1 cursor-pointer">
                       <input 
                         type="checkbox" 
-                        checked={qualitySeal} 
-                        onChange={(e) => setQualitySeal(e.target.checked)}
+                        checked={featured !== ""}
+                        onChange={(e) => setFeatured(e.target.checked ? "recommended" : "")}
                         className="rounded"
                       />
-                      <span className="text-xs">Sello Origen</span>
+                      <span className="text-xs">Destacado</span>
                     </label>
                   </div>
                 </div>
@@ -245,33 +287,20 @@ const EditarPack = () => {
                   />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Precio (€) *</Label>
-                    <Input 
-                      type="number"
-                      value={price}
-                      onChange={(e) => setPrice(e.target.value)}
-                      placeholder="45.90"
-                      className="text-3xl font-bold"
-                    />
-                    <p className="text-xs text-muted-foreground">(envío incluido)</p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Estado</Label>
-                    <Select value={status} onValueChange={setStatus}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="draft">Borrador</SelectItem>
-                        <SelectItem value="published">Publicado</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="space-y-2">
+                  <Label>Precio (€) * - Máximo {packTypeMaxPrices[packType]}€</Label>
+                  <Input 
+                    type="number"
+                    value={price}
+                    onChange={(e) => handlePriceChange(e.target.value)}
+                    max={packTypeMaxPrices[packType]}
+                    placeholder={packTypeMaxPrices[packType].toString()}
+                    className="text-3xl font-bold"
+                  />
+                  <p className="text-xs text-muted-foreground">(envío incluido - Solo puedes bajar el precio desde {packTypeMaxPrices[packType]}€)</p>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 text-sm">
+                <div className="flex flex-wrap items-center gap-3 text-sm">
                   <label className="flex items-center gap-1 cursor-pointer">
                     <input 
                       type="checkbox" 
@@ -283,6 +312,18 @@ const EditarPack = () => {
                     <span className="text-xs">Envío rápido</span>
                   </label>
                   
+                  <div className="flex items-center gap-1">
+                    <Package className="w-4 h-4 text-primary" />
+                    <Label className="text-xs">Cantidad:</Label>
+                    <Input 
+                      type="number"
+                      value={productCount}
+                      onChange={(e) => setProductCount(e.target.value)}
+                      placeholder="8"
+                      className="w-16 h-7 text-xs"
+                    />
+                  </div>
+                  
                   <label className="flex items-center gap-1 cursor-pointer">
                     <input 
                       type="checkbox" 
@@ -293,21 +334,6 @@ const EditarPack = () => {
                     <Leaf className="w-4 h-4 text-green-600" />
                     <span className="text-xs">Empaque sostenible</span>
                   </label>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Destacado</Label>
-                  <Select value={featured} onValueChange={setFeatured}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Ninguno" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Ninguno</SelectItem>
-                      <SelectItem value="recommended">Recomendado</SelectItem>
-                      <SelectItem value="bestseller">Más vendido</SelectItem>
-                      <SelectItem value="new">Novedad</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
               </div>
 
@@ -328,22 +354,12 @@ const EditarPack = () => {
               <CardHeader className="pb-3 pt-3">
                 <CardTitle className="text-lg">Descripción del Pack</CardTitle>
               </CardHeader>
-              <CardContent className="pb-3 pt-1 space-y-3">
+              <CardContent className="pb-3 pt-1">
                 <div>
-                  <Label className="text-sm">Descripción breve</Label>
+                  <Label className="text-sm">Descripción del pack</Label>
                   <Textarea 
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Descripción corta que aparecerá en las tarjetas..."
-                    rows={2}
-                    className="text-sm"
-                  />
-                </div>
-                <div>
-                  <Label className="text-sm">Descripción ampliada</Label>
-                  <Textarea 
-                    value={expandedDescription}
-                    onChange={(e) => setExpandedDescription(e.target.value)}
                     placeholder="Descripción detallada del pack, su historia, qué lo hace especial..."
                     rows={4}
                     className="text-sm"
@@ -382,7 +398,7 @@ const EditarPack = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="pb-5">
-                  <div className="space-y-5">
+                  <div className="space-y-4">
                     {products.map((product, index) => (
                       <Card key={product.id} className="overflow-hidden border-l-4 border-l-primary/30 relative">
                         <Button
@@ -394,18 +410,18 @@ const EditarPack = () => {
                         >
                           <X className="w-4 h-4" />
                         </Button>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-0">
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
                           <div className="relative cursor-pointer">
-                            <div className="w-full h-32 md:h-full bg-muted border-2 border-dashed border-muted-foreground/25 flex items-center justify-center hover:border-primary/50 transition-colors">
+                            <div className="w-full h-24 md:h-full bg-muted border-2 border-dashed border-muted-foreground/25 flex items-center justify-center hover:border-primary/50 transition-colors">
                               <div className="text-center">
-                                <ImageIcon className="w-8 h-8 mx-auto mb-1 text-muted-foreground" />
-                                <p className="text-xs text-muted-foreground">Imagen</p>
+                                <ImageIcon className="w-6 h-6 mx-auto mb-1 text-muted-foreground" />
+                                <p className="text-xs text-muted-foreground">Img</p>
                               </div>
                             </div>
                           </div>
-                          <div className="md:col-span-3 p-5 space-y-3">
+                          <div className="md:col-span-4 p-3 space-y-2">
                             <div>
-                              <Label className="text-sm">Nombre del Producto *</Label>
+                              <Label className="text-xs">Nombre del Producto *</Label>
                               <Input 
                                 value={product.name}
                                 onChange={(e) => {
@@ -414,11 +430,11 @@ const EditarPack = () => {
                                   setProducts(newProducts);
                                 }}
                                 placeholder="Ej: Queso Curado de Oveja"
-                                className="font-semibold"
+                                className="font-semibold h-8 text-sm"
                               />
                             </div>
                             <div>
-                              <Label className="text-sm">Descripción *</Label>
+                              <Label className="text-xs">Descripción *</Label>
                               <Textarea 
                                 value={product.description}
                                 onChange={(e) => {
@@ -428,11 +444,12 @@ const EditarPack = () => {
                                 }}
                                 placeholder="Describe el producto..."
                                 rows={2}
+                                className="text-sm"
                               />
                             </div>
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-2">
                               <div>
-                                <Label className="text-sm">Empresa/Productor</Label>
+                                <Label className="text-xs">Empresa/Productor</Label>
                                 <Input 
                                   value={product.company}
                                   onChange={(e) => {
@@ -440,29 +457,51 @@ const EditarPack = () => {
                                     newProducts[index].company = e.target.value;
                                     setProducts(newProducts);
                                   }}
-                                  placeholder="Nombre del productor"
+                                  placeholder="Ej: Quesería El Prado"
+                                  className="h-8 text-sm"
                                 />
                               </div>
                               <div>
-                                <Label className="text-sm">Origen</Label>
-                                <Input 
-                                  value={product.origin}
-                                  onChange={(e) => {
+                                <Label className="text-xs">Atributos</Label>
+                                <Select
+                                  value={product.attributes[0] || ""}
+                                  onValueChange={(value) => {
                                     const newProducts = [...products];
-                                    newProducts[index].origin = e.target.value;
-                                    setProducts(newProducts);
+                                    if (!newProducts[index].attributes.includes(value)) {
+                                      newProducts[index].attributes = [...newProducts[index].attributes, value];
+                                      setProducts(newProducts);
+                                    }
                                   }}
-                                  placeholder="Ciudad, región"
-                                />
+                                >
+                                  <SelectTrigger className="h-8 text-sm">
+                                    <SelectValue placeholder="Seleccionar atributo" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {availableAttributes.map((attr) => (
+                                      <SelectItem key={attr} value={attr}>{attr}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
                               </div>
                             </div>
-                            <div>
-                              <Label className="text-sm">Atributos (km0, artesanal, etc.)</Label>
-                              <Input 
-                                placeholder="Separados por comas"
-                                className="text-sm"
-                              />
-                            </div>
+                            {product.attributes.length > 0 && (
+                              <div className="flex flex-wrap gap-1">
+                                {product.attributes.map((attr, attrIndex) => (
+                                  <Badge 
+                                    key={attrIndex} 
+                                    variant="outline" 
+                                    className="text-xs cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                                    onClick={() => {
+                                      const newProducts = [...products];
+                                      newProducts[index].attributes = newProducts[index].attributes.filter((_, i) => i !== attrIndex);
+                                      setProducts(newProducts);
+                                    }}
+                                  >
+                                    {attr} ×
+                                  </Badge>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </Card>
@@ -471,81 +510,82 @@ const EditarPack = () => {
                 </CardContent>
               </Card>
 
-              {/* Sustainability Info */}
+              {/* Valor Añadido */}
               <Card>
-                <CardHeader className="pb-3">
+                <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Leaf className="w-5 h-5" />
-                    Información de Sostenibilidad
+                    <Gift className="w-5 h-5" />
+                    Valor Añadido
                   </CardTitle>
-                  <CardDescription>Opcional - Explica tu compromiso con el medio ambiente</CardDescription>
+                  <CardDescription>
+                    Describe prácticas sostenibles, empaque ecológico, etc.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Textarea 
-                    placeholder="Describe las prácticas sostenibles, empaque ecológico, km0, etc."
-                    rows={3}
+                    value={sustainabilityInfo}
+                    onChange={(e) => setSustainabilityInfo(e.target.value)}
+                    placeholder="Ej: Empaque 100% reciclable&#10;Productos de km0&#10;Sin plásticos..."
+                    rows={6}
+                    className="text-sm"
                   />
-                </CardContent>
-              </Card>
-
-              {/* Shipping Policy */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2">
-                    <Truck className="w-5 h-5" />
-                    Política de Envío
-                  </CardTitle>
-                  <CardDescription>Opcional - Información sobre tiempos y condiciones de envío</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Textarea 
-                    placeholder="Tiempos de entrega, condiciones especiales, zonas de envío..."
-                    rows={3}
-                  />
+                  <p className="text-xs text-muted-foreground mt-2">Cada línea será un punto separado en la tarjeta</p>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Right Sidebar - Preview & Actions */}
-            <div className="lg:col-span-1 space-y-4">
-              
-              {/* Preview Card */}
-              <Card className="sticky top-4">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base">Vista Previa</CardTitle>
-                  <CardDescription className="text-xs">Así verán tu pack los clientes</CardDescription>
+
+            {/* Right Sidebar - Technical Details & Actions */}
+            <div className="space-y-6">
+
+              {/* Technical Details */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    Detalles Técnicos
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-                    <ImageIcon className="w-12 h-12 text-muted-foreground" />
-                  </div>
-                  <div>
-                    <Badge variant="secondary" className="mb-2">{getPackTypeName(packType)}</Badge>
-                    <h3 className="font-bold text-lg line-clamp-2">{packName || "Nombre del pack"}</h3>
-                    <p className="text-sm text-muted-foreground">{province || "Región"}</p>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-primary">{price ? `${price}€` : "0€"}</span>
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-gray-300" />
-                      <span className="text-sm">0 valoraciones</span>
+                <CardContent>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between">
+                      <span>Productos incluidos:</span>
+                      <span className="font-medium">{productCount || products.length}</span>
                     </div>
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    <Package className="w-3 h-3 inline mr-1" />
-                    {products.length} productos incluidos
+                    <div className="flex justify-between">
+                      <span>Precio total:</span>
+                      <span className="font-medium">{price ? `${price}€` : "0€"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Tipo de empaque:</span>
+                      <span className="font-medium">{sustainablePackaging ? "Sostenible" : "Estándar"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Envío estimado:</span>
+                      <span className="font-medium">{fastShipping ? "24-48h" : "2-3 días"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Origen:</span>
+                      <span className="font-medium">{province || "Sin definir"}</span>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Action Buttons */}
               <Card>
-                <CardContent className="pt-6 space-y-2">
-                  <Button className="w-full" onClick={handlePublish}>
-                    <Save className="w-4 h-4 mr-2" />
-                    {status === 'published' ? 'Guardar Cambios' : 'Publicar Pack'}
+                <CardHeader className="pb-3">
+                  <CardTitle>Acciones</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button onClick={handlePublish} className="w-full" size="lg">
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Guardar Cambios
                   </Button>
-                  <Button className="w-full" variant="outline" onClick={handleSaveDraft}>
+                  <Button onClick={handlePublish} variant="secondary" className="w-full" size="lg">
+                    <Award className="w-4 h-4 mr-2" />
+                    Publicar Pack
+                  </Button>
+                  <Button onClick={handleSaveDraft} variant="outline" className="w-full">
                     <Save className="w-4 h-4 mr-2" />
                     Guardar Borrador
                   </Button>
@@ -565,7 +605,7 @@ const EditarPack = () => {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDelete}>
+                        <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                           Eliminar
                         </AlertDialogAction>
                       </AlertDialogFooter>
