@@ -9,17 +9,15 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { MapPin, Plus, X, Save, Trash2, Image as ImageIcon, Clock, FileText, Users, Route, Star } from "lucide-react";
+import { MapPin, Plus, X, Save, Trash2, Image as ImageIcon, Clock, FileText, Users, Route, Star, Coffee, Utensils, Camera } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RouteMap from "@/components/RouteMap";
-import RouteDayRecommendations from "@/components/RouteDayRecommendations";
-import RoutePracticalInfo from "@/components/RoutePracticalInfo";
 
 interface Stop {
   id: number;
   name: string;
   category: string;
-  description: string;
+  whatToDo: string[];
   schedule?: string;
   address?: string;
 }
@@ -29,25 +27,36 @@ interface Recommendation {
   text: string;
 }
 
+interface LocalTip {
+  id: number;
+  text: string;
+}
+
 const CrearRuta = () => {
   const { toast } = useToast();
   const [routeName, setRouteName] = useState("");
   const [description, setDescription] = useState("");
+  const [experience, setExperience] = useState("");
   const [duration, setDuration] = useState("");
-  const [difficulty, setDifficulty] = useState("facil");
+  const [difficulty, setDifficulty] = useState("Fácil");
+  const [numStops, setNumStops] = useState("3");
   
   const [stops, setStops] = useState<Stop[]>([
     {
       id: 1,
       name: "",
       category: "",
-      description: "",
+      whatToDo: [""],
       schedule: "",
       address: ""
     }
   ]);
 
   const [recommendations, setRecommendations] = useState<Recommendation[]>([
+    { id: 1, text: "" }
+  ]);
+
+  const [localTips, setLocalTips] = useState<LocalTip[]>([
     { id: 1, text: "" }
   ]);
 
@@ -64,7 +73,7 @@ const CrearRuta = () => {
       id: Date.now(),
       name: "",
       category: "",
-      description: "",
+      whatToDo: [""],
       schedule: "",
       address: ""
     }]);
@@ -98,8 +107,40 @@ const CrearRuta = () => {
     setRecommendations(recommendations.filter(r => r.id !== id));
   };
 
+  const addLocalTip = () => {
+    if (localTips.length >= 4) {
+      toast({
+        title: "Límite alcanzado",
+        description: "Máximo 4 consejos locales",
+        variant: "destructive",
+      });
+      return;
+    }
+    setLocalTips([...localTips, { id: Date.now(), text: "" }]);
+  };
+
+  const removeLocalTip = (id: number) => {
+    setLocalTips(localTips.filter(t => t.id !== id));
+  };
+
+  const addWhatToDo = (stopIndex: number) => {
+    const newStops = [...stops];
+    if (newStops[stopIndex].whatToDo.length < 6) {
+      newStops[stopIndex].whatToDo.push("");
+      setStops(newStops);
+    }
+  };
+
+  const removeWhatToDo = (stopIndex: number, todoIndex: number) => {
+    const newStops = [...stops];
+    if (newStops[stopIndex].whatToDo.length > 1) {
+      newStops[stopIndex].whatToDo.splice(todoIndex, 1);
+      setStops(newStops);
+    }
+  };
+
   const handlePublish = () => {
-    if (!routeName || !description || stops.some(s => !s.name)) {
+    if (!routeName || !description || !experience || stops.some(s => !s.name || s.whatToDo.some(w => !w))) {
       toast({
         title: "Campos incompletos",
         description: "Completa todos los campos obligatorios",
@@ -179,8 +220,15 @@ const CrearRuta = () => {
               </div>
               <div className="bg-card rounded-lg p-5 shadow-sm">
                 <MapPin className="w-6 h-6 text-primary mx-auto mb-2" />
-                <p className="text-xs text-muted-foreground">Paradas</p>
-                <p className="font-semibold text-base">{stops.length} lugares</p>
+                <p className="text-xs text-muted-foreground mb-1">Paradas</p>
+                <Input
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={numStops}
+                  onChange={(e) => setNumStops(e.target.value)}
+                  className="h-8 text-sm text-center font-semibold"
+                />
               </div>
               <div className="bg-card rounded-lg p-5 shadow-sm">
                 <Route className="w-6 h-6 text-primary mx-auto mb-2" />
@@ -190,9 +238,9 @@ const CrearRuta = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="facil">Fácil</SelectItem>
-                    <SelectItem value="moderado">Moderado</SelectItem>
-                    <SelectItem value="dificil">Difícil</SelectItem>
+                    <SelectItem value="Fácil">Fácil</SelectItem>
+                    <SelectItem value="Moderado">Moderado</SelectItem>
+                    <SelectItem value="Difícil">Difícil</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -203,15 +251,17 @@ const CrearRuta = () => {
               </div>
             </div>
 
-            {/* Imagen Principal */}
-            <div className="bg-card rounded-lg p-6 shadow-sm mb-4">
-              <Label htmlFor="photo" className="block mb-2">Foto Principal *</Label>
-              <div className="aspect-video rounded-lg border-2 border-dashed border-muted-foreground/25 flex items-center justify-center hover:border-primary/50 transition-colors cursor-pointer bg-muted/30">
-                <div className="text-center">
-                  <ImageIcon className="w-12 h-12 mx-auto mb-2 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">Haz clic para subir una imagen</p>
-                </div>
-              </div>
+            {/* La Experiencia */}
+            <div className="bg-card rounded-lg p-6 shadow-sm">
+              <h2 className="text-xl font-bold text-primary mb-3">La Experiencia</h2>
+              <Textarea 
+                value={experience}
+                onChange={(e) => setExperience(e.target.value)}
+                placeholder="Describe la experiencia completa de la ruta. ¿Qué van a vivir los visitantes?"
+                className="resize-none min-h-[100px]"
+                rows={4}
+              />
+              <p className="text-xs text-muted-foreground mt-2">Proporciona una descripción detallada y emotiva de la experiencia.</p>
             </div>
           </div>
         </div>
@@ -270,12 +320,17 @@ const CrearRuta = () => {
                                 <SelectValue placeholder="Selecciona una categoría" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="panaderia">Panadería</SelectItem>
-                                <SelectItem value="queseria">Quesería</SelectItem>
-                                <SelectItem value="artesania">Artesanía</SelectItem>
-                                <SelectItem value="mercado">Mercado</SelectItem>
-                                <SelectItem value="bodega">Bodega</SelectItem>
-                                <SelectItem value="otro">Otro</SelectItem>
+                                <SelectItem value="Panadería artesanal">Panadería artesanal</SelectItem>
+                                <SelectItem value="Quesería tradicional">Quesería tradicional</SelectItem>
+                                <SelectItem value="Bodega familiar">Bodega familiar</SelectItem>
+                                <SelectItem value="Mercado local">Mercado local</SelectItem>
+                                <SelectItem value="Taller artesanal">Taller artesanal</SelectItem>
+                                <SelectItem value="Chocolatería">Chocolatería</SelectItem>
+                                <SelectItem value="Conservas artesanales">Conservas artesanales</SelectItem>
+                                <SelectItem value="Productor de aceite">Productor de aceite</SelectItem>
+                                <SelectItem value="Pastelería tradicional">Pastelería tradicional</SelectItem>
+                                <SelectItem value="Granja ecológica">Granja ecológica</SelectItem>
+                                <SelectItem value="Otro">Otro</SelectItem>
                               </SelectContent>
                             </Select>
                             {stop.category && (
@@ -303,17 +358,47 @@ const CrearRuta = () => {
 
                     <div className="space-y-3">
                       <div>
-                        <Label className="text-sm">Descripción *</Label>
-                        <Textarea 
-                          value={stop.description}
-                          onChange={(e) => {
-                            const newStops = [...stops];
-                            newStops[index].description = e.target.value;
-                            setStops(newStops);
-                          }}
-                          placeholder="¿Qué hace especial este lugar?"
-                          rows={3}
-                        />
+                        <div className="flex items-center justify-between mb-2">
+                          <Label className="text-sm">Qué puedes hacer *</Label>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => addWhatToDo(index)}
+                            disabled={stop.whatToDo.length >= 6}
+                            className="h-7 text-xs"
+                          >
+                            <Plus className="w-3 h-3 mr-1" />
+                            Añadir
+                          </Button>
+                        </div>
+                        <div className="space-y-2">
+                          {stop.whatToDo.map((activity, actIndex) => (
+                            <div key={actIndex} className="flex gap-2">
+                              <Input
+                                value={activity}
+                                onChange={(e) => {
+                                  const newStops = [...stops];
+                                  newStops[index].whatToDo[actIndex] = e.target.value;
+                                  setStops(newStops);
+                                }}
+                                placeholder={`Actividad ${actIndex + 1}`}
+                                className="text-sm"
+                              />
+                              {stop.whatToDo.length > 1 && (
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => removeWhatToDo(index, actIndex)}
+                                  className="flex-shrink-0"
+                                >
+                                  <X className="w-4 h-4" />
+                                </Button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
 
                       <div className="grid md:grid-cols-2 gap-4">
@@ -384,7 +469,7 @@ const CrearRuta = () => {
             <Card>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base">Recomendaciones del Día</CardTitle>
+                  <CardTitle className="text-lg font-bold text-foreground">Recomendaciones del Día</CardTitle>
                   <Button onClick={addRecommendation} size="sm" variant="ghost" disabled={recommendations.length >= 4}>
                     <Plus className="w-4 h-4" />
                   </Button>
@@ -393,28 +478,34 @@ const CrearRuta = () => {
                   Consejos para aprovechar la ruta (máximo 4)
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-2">
-                {recommendations.map((rec, index) => (
-                  <div key={rec.id} className="flex gap-2">
-                    <Input 
-                      value={rec.text}
-                      onChange={(e) => {
-                        const newRecs = [...recommendations];
-                        newRecs[index].text = e.target.value;
-                        setRecommendations(newRecs);
-                      }}
-                      placeholder={`Recomendación ${index + 1}`}
-                      className="text-sm"
-                    />
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeRecommendation(rec.id)}
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ))}
+              <CardContent className="space-y-2.5 pt-0">
+                {recommendations.map((rec, index) => {
+                  const icons = [Clock, MapPin, Coffee, Utensils, Camera];
+                  const Icon = icons[index % icons.length];
+                  return (
+                    <div key={rec.id} className="flex items-start gap-2">
+                      <Icon className="w-4 h-4 text-primary mt-2.5 flex-shrink-0" />
+                      <Input 
+                        value={rec.text}
+                        onChange={(e) => {
+                          const newRecs = [...recommendations];
+                          newRecs[index].text = e.target.value;
+                          setRecommendations(newRecs);
+                        }}
+                        placeholder={`Recomendación ${index + 1}`}
+                        className="text-sm flex-1"
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeRecommendation(rec.id)}
+                        className="flex-shrink-0"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  );
+                })}
                 {recommendations.length === 0 && (
                   <p className="text-xs text-muted-foreground italic">No hay recomendaciones todavía</p>
                 )}
@@ -422,22 +513,74 @@ const CrearRuta = () => {
             </Card>
 
             {/* Practical Information Preview */}
-            <Card>
+            <Card className="overflow-hidden">
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">Información Práctica</CardTitle>
+                <CardTitle className="text-lg font-bold text-foreground">
+                  Información Práctica
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2 text-sm">
-                <div>
-                  <p className="font-medium text-primary">Dificultad</p>
-                  <p className="text-muted-foreground capitalize">{difficulty || "No especificada"}</p>
+              <CardContent className="space-y-4 pt-0">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className="font-medium text-gray-900 text-sm">Dificultad:</span>
+                      <Badge 
+                        variant="secondary" 
+                        className={`${
+                          difficulty === 'Fácil' ? 'bg-green-600 text-white' :
+                          difficulty === 'Moderado' ? 'bg-amber-700 text-white' :
+                          difficulty === 'Difícil' ? 'bg-red-600 text-white' :
+                          'bg-gray-600 text-white'
+                        } border-0 rounded-full px-2.5 py-0.5 text-xs`}
+                      >
+                        {difficulty || "No especificada"}
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className="font-medium text-gray-900 text-sm">Duración:</span>
+                      <span className="text-gray-600 text-sm">{duration || "No especificada"}</span>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium text-primary">Duración</p>
-                  <p className="text-muted-foreground">{duration || "No especificada"}</p>
-                </div>
-                <div>
-                  <p className="font-medium text-primary">Paradas</p>
-                  <p className="text-muted-foreground">{stops.length} lugares</p>
+
+                <div className="border-t pt-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium text-gray-900 text-sm">Consejos locales:</h4>
+                    <Button onClick={addLocalTip} size="sm" variant="ghost" disabled={localTips.length >= 4}>
+                      <Plus className="w-3 h-3" />
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    {localTips.map((tip, index) => (
+                      <div key={tip.id} className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0" />
+                        <Input
+                          value={tip.text}
+                          onChange={(e) => {
+                            const newTips = [...localTips];
+                            newTips[index].text = e.target.value;
+                            setLocalTips(newTips);
+                          }}
+                          placeholder={`Consejo ${index + 1}`}
+                          className="text-sm flex-1"
+                        />
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeLocalTip(tip.id)}
+                          className="flex-shrink-0"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))}
+                    {localTips.length === 0 && (
+                      <p className="text-xs text-muted-foreground italic">No hay consejos todavía</p>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
