@@ -10,7 +10,7 @@ import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { MapPin, Package, Star, Truck, Clock, Users, ShoppingCart, Share2, Award, Leaf, Gift, Plus, X, Save, Trash2, Image as ImageIcon, CheckCircle } from "lucide-react";
+import { MapPin, Package, Star, Truck, Clock, Users, ShoppingCart, Share2, Award, Leaf, Gift, Plus, X, Save, Trash2, Image as ImageIcon, CheckCircle, Check, Box, Euro, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -54,11 +54,15 @@ const EditarPack = () => {
   const [sustainabilityInfo, setSustainabilityInfo] = useState("");
   
   // Pack features
-  const [seasonal, setSeasonal] = useState(false);
+  const [classification, setClassification] = useState("");
   const [fastShipping, setFastShipping] = useState(false);
   const [sustainablePackaging, setSustainablePackaging] = useState(false);
-  const [featured, setFeatured] = useState("");
   const [productCount, setProductCount] = useState("");
+  
+  // Technical details
+  const [packagingType, setPackagingType] = useState("Caja de cartón reciclado");
+  const [estimatedShipping, setEstimatedShipping] = useState("2-3 días laborables");
+  const [packOrigin, setPackOrigin] = useState("León");
   
   // Products
   const [products, setProducts] = useState<Product[]>([
@@ -219,7 +223,7 @@ const EditarPack = () => {
               
               {/* Pack Info - Editable */}
               <div className="space-y-3">
-                <div className="flex flex-wrap items-center gap-2 mb-4">
+                <div className="flex flex-wrap items-end gap-3 mb-4">
                   <div>
                     <Label className="text-xs mb-1 block">Tipo de Pack *</Label>
                     <Select value={packType} onValueChange={handlePackTypeChange}>
@@ -233,37 +237,30 @@ const EditarPack = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  
-                  <div className="flex gap-2 items-end">
-                    <label className="flex items-center gap-1 cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        checked={seasonal} 
-                        onChange={(e) => setSeasonal(e.target.checked)}
-                        className="rounded"
-                      />
-                      <span className="text-xs">Temporada</span>
-                    </label>
                     
-                    <div>
-                      <Label className="text-xs mb-1 block">Provincia</Label>
-                      <Input 
-                        value={province}
-                        onChange={(e) => setProvince(e.target.value)}
-                        placeholder="León"
-                        className="w-32 h-8 text-xs"
-                      />
-                    </div>
+                  <div>
+                    <Label className="text-xs mb-1 block">Provincia</Label>
+                    <Input 
+                      value={province}
+                      onChange={(e) => setProvince(e.target.value)}
+                      placeholder="León"
+                      className="w-32 h-8 text-xs"
+                    />
+                  </div>
 
-                    <label className="flex items-center gap-1 cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        checked={featured !== ""}
-                        onChange={(e) => setFeatured(e.target.checked ? "recommended" : "")}
-                        className="rounded"
-                      />
-                      <span className="text-xs">Destacado</span>
-                    </label>
+                  <div>
+                    <Label className="text-xs mb-1 block">Clasificación</Label>
+                    <select 
+                      value={classification}
+                      onChange={(e) => setClassification(e.target.value)}
+                      className="h-8 px-3 text-xs border rounded-md bg-background"
+                    >
+                      <option value="">Sin clasificar</option>
+                      <option value="mas-vendido">Más vendido</option>
+                      <option value="nuevo">Nuevo</option>
+                      <option value="recomendado">Recomendado</option>
+                      <option value="edicion-limitada">Edición limitada</option>
+                    </select>
                   </div>
                 </div>
                 
@@ -537,61 +534,87 @@ const EditarPack = () => {
 
               {/* Technical Details */}
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    Detalles Técnicos
-                  </CardTitle>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">Detalles Técnicos</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                      <span>Productos incluidos:</span>
-                      <span className="font-medium">{productCount || products.length}</span>
+                <CardContent className="space-y-3 text-sm">
+                  <div className="flex items-center gap-2">
+                    <Package className="w-4 h-4 text-primary" />
+                    <span className="text-muted-foreground text-xs">Productos incluidos:</span>
+                    <Input 
+                      type="number"
+                      value={productCount}
+                      onChange={(e) => setProductCount(e.target.value)}
+                      className="w-16 h-7 text-xs ml-auto"
+                    />
+                  </div>
+                  <Separator />
+                  <div className="flex items-center gap-2">
+                    <Euro className="w-4 h-4 text-primary" />
+                    <span className="text-muted-foreground text-xs">Precio total:</span>
+                    <span className="font-medium ml-auto">{price}€</span>
+                  </div>
+                  <Separator />
+                  <div className="flex items-start gap-2">
+                    <Box className="w-4 h-4 text-primary mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-muted-foreground text-xs mb-1">Tipo de empaque:</p>
+                      <Input 
+                        value={packagingType}
+                        onChange={(e) => setPackagingType(e.target.value)}
+                        className="h-7 text-xs"
+                      />
                     </div>
-                    <div className="flex justify-between">
-                      <span>Precio total:</span>
-                      <span className="font-medium">{price ? `${price}€` : "0€"}</span>
+                  </div>
+                  <Separator />
+                  <div className="flex items-start gap-2">
+                    <Clock className="w-4 h-4 text-primary mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-muted-foreground text-xs mb-1">Envío estimado:</p>
+                      <Input 
+                        value={estimatedShipping}
+                        onChange={(e) => setEstimatedShipping(e.target.value)}
+                        className="h-7 text-xs"
+                      />
                     </div>
-                    <div className="flex justify-between">
-                      <span>Tipo de empaque:</span>
-                      <span className="font-medium">{sustainablePackaging ? "Sostenible" : "Estándar"}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Envío estimado:</span>
-                      <span className="font-medium">{fastShipping ? "24-48h" : "2-3 días"}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Origen:</span>
-                      <span className="font-medium">{province || "Sin definir"}</span>
-                    </div>
+                  </div>
+                  <Separator />
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-primary" />
+                    <span className="text-muted-foreground text-xs">Origen:</span>
+                    <Input 
+                      value={packOrigin}
+                      onChange={(e) => setPackOrigin(e.target.value)}
+                      className="w-24 h-7 text-xs ml-auto"
+                    />
                   </div>
                 </CardContent>
               </Card>
 
               {/* Action Buttons */}
               <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle>Acciones</CardTitle>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg">Acciones</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button onClick={handlePublish} className="w-full" size="lg">
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    Guardar Cambios
+                  <Button onClick={handlePublish} className="w-full justify-center">
+                    <Check className="w-4 h-4 mr-2" />
+                    <span>Guardar Cambios</span>
                   </Button>
-                  <Button onClick={handlePublish} variant="secondary" className="w-full" size="lg">
+                  <Button onClick={handlePublish} variant="default" className="w-full justify-center bg-green-600 hover:bg-green-700">
                     <Award className="w-4 h-4 mr-2" />
-                    Publicar Pack
+                    <span>Publicar Pack</span>
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="destructive" className="w-full">
+                      <Button variant="destructive" className="w-full justify-center">
                         <Trash2 className="w-4 h-4 mr-2" />
-                        Eliminar Pack
+                        <span>Eliminar Pack</span>
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>¿Eliminar pack?</AlertDialogTitle>
+                        <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                         <AlertDialogDescription>
                           Esta acción no se puede deshacer. El pack será eliminado permanentemente.
                         </AlertDialogDescription>
