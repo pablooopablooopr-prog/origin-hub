@@ -57,6 +57,11 @@ const TerminosCondiciones = () => {
                 por región.
               </p>
               <p>
+                <strong>ORIGEN es una plataforma digital y solo actúa como intermediario tecnológico.</strong> 
+                ORIGEN no manipula, no almacena, no empaca y no gestiona envíos. El productor es siempre 
+                el responsable del envío y la preparación del pedido.
+              </p>
+              <p>
                 El acceso y uso del Sitio Web, así como la compra de los productos ofrecidos en el mismo, 
                 atribuye la condición de usuario (en adelante, el "Usuario") e implica la aceptación de 
                 todas las Condiciones Generales.
@@ -139,6 +144,10 @@ const TerminosCondiciones = () => {
             <h2 className="text-2xl font-bold mb-4 text-[#8B7355]">5. Envíos y entregas</h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
+                <strong>Los envíos se realizan directamente desde el productor al cliente final. 
+                Los tiempos de entrega dependen exclusivamente del productor.</strong>
+              </p>
+              <p>
                 Los envíos se realizan a toda la península ibérica. Los plazos de entrega estimados 
                 son los siguientes:
               </p>
@@ -149,8 +158,9 @@ const TerminosCondiciones = () => {
               </ul>
               <p>
                 Estos plazos son estimados y comienzan a contar desde la confirmación del pedido y pago. 
-                ORIGEN hará todo lo posible por cumplir con estos plazos, pero no se hace responsable 
-                de retrasos causados por la empresa de transporte o causas de fuerza mayor.
+                El productor hará todo lo posible por cumplir con estos plazos, pero ORIGEN no se hace 
+                responsable de retrasos causados por el productor, la empresa de transporte o causas de 
+                fuerza mayor.
               </p>
               <p>
                 Una vez realizado el envío, el Usuario recibirá un email con el número de seguimiento 
@@ -158,8 +168,9 @@ const TerminosCondiciones = () => {
               </p>
               <p>
                 En el momento de la entrega, el Usuario debe verificar el estado del paquete. Si el 
-                paquete presenta daños evidentes, el Usuario debe rechazarlo y contactar inmediatamente 
-                con ORIGEN.
+                paquete presenta daños evidentes, el Usuario debe rechazarlo. <strong>Si un producto 
+                llega dañado o en mal estado, el cliente debe contactar primero con el productor 
+                responsable del envío. ORIGEN puede actuar como mediador en caso necesario.</strong>
               </p>
             </div>
           </section>
@@ -183,6 +194,10 @@ const TerminosCondiciones = () => {
                 o que puedan deteriorarse o caducar con rapidez. Por tanto, los productos alimenticios 
                 frescos incluidos en los packs no admiten devolución por este motivo, salvo que presenten 
                 defectos o no correspondan con lo solicitado.
+              </p>
+              <p>
+                <strong>Cada productor define su propia política de devoluciones. ORIGEN no gestiona 
+                devoluciones de forma directa.</strong>
               </p>
               <p>
                 Para ejercer el derecho de desistimiento, el Usuario deberá notificar su decisión a 

@@ -60,11 +60,37 @@ const FAQ = () => {
                     ¿Puedo devolver un producto?
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
-                    Sí. Dispones de 14 días naturales desde la recepción del pedido para devolver 
-                    productos no perecederos. Los productos alimenticios frescos no admiten devolución 
-                    por motivos de salud e higiene, salvo que presenten defectos o no correspondan 
-                    con lo solicitado. Para iniciar una devolución, contacta con nosotros a través 
-                    del email de soporte.
+                    <strong>Cada productor define su propia política de devoluciones. ORIGEN no gestiona 
+                    devoluciones de forma directa.</strong>
+                    <p className="mt-2">
+                      En general, dispones de 14 días naturales desde la recepción del pedido para devolver 
+                      productos no perecederos. Los productos alimenticios frescos no admiten devolución 
+                      por motivos de salud e higiene, salvo que presenten defectos o no correspondan 
+                      con lo solicitado. Para iniciar una devolución, contacta directamente con el productor 
+                      o con nosotros a través del email de soporte.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="damaged-product">
+                  <AccordionTrigger className="text-left hover:text-[#8B7355]">
+                    ¿Qué hago si un producto llega dañado?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Debes contactar primero con el productor responsable del pedido. Si necesitas ayuda 
+                    adicional, ORIGEN podrá actuar como mediador en caso necesario. Es importante que 
+                    documentes el daño con fotografías y conserves el embalaje original.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="who-ships">
+                  <AccordionTrigger className="text-left hover:text-[#8B7355]">
+                    ¿Quién envía el pedido?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    El envío lo realiza directamente el productor desde su ubicación. ORIGEN no almacena 
+                    ni manipula productos. Actuamos como intermediario tecnológico conectando productores 
+                    locales con consumidores.
                   </AccordionContent>
                 </AccordionItem>
 
@@ -73,7 +99,8 @@ const FAQ = () => {
                     ¿Cuánto tardaré en recibir mi pedido?
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
-                    Los plazos de envío varían según el tipo de pack:
+                    <strong>Los tiempos de envío dependen de cada productor, ya que envían directamente.</strong>
+                    <p className="mt-2">Los plazos de entrega estimados varían según el tipo de pack:</p>
                     <ul className="list-disc pl-5 mt-2 space-y-1">
                       <li><strong>Packs Raíz:</strong> 2-3 días laborables</li>
                       <li><strong>Packs Esencia:</strong> 3-5 días laborables</li>
@@ -209,8 +236,14 @@ const FAQ = () => {
                     Las rutas gastronómicas son itinerarios diseñados para descubrir los mejores 
                     productores y productos de una región. Incluyen visitas a explotaciones, 
                     degustaciones, recomendaciones de restaurantes locales y consejos prácticos 
-                    para aprovechar al máximo tu experiencia. Puedes seguir nuestras rutas sugeridas 
-                    o crear las tuyas propias.
+                    para aprovechar al máximo tu experiencia.
+                    <p className="mt-2">
+                      <strong>Las rutas y experiencias publicadas en ORIGEN son propuestas de terceros 
+                      o de usuarios. ORIGEN no opera físicamente las rutas.</strong>
+                    </p>
+                    <p className="mt-2">
+                      Puedes seguir nuestras rutas sugeridas o crear las tuyas propias.
+                    </p>
                   </AccordionContent>
                 </AccordionItem>
 

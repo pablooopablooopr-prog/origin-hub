@@ -319,6 +319,11 @@ const PoliticaCookies = () => {
                 nuestro uso de cookies. La fecha de la última actualización se indica al principio de 
                 esta política.
               </p>
+              <p className="mt-4">
+                <strong>Nota importante:</strong> ORIGEN utiliza cookies únicamente para mejorar la 
+                experiencia de navegación y facilitar la conexión entre productores y consumidores. 
+                No están relacionadas con procesos logísticos ni de envío.
+              </p>
             </div>
           </section>
 
