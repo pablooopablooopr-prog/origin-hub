@@ -51,6 +51,11 @@ const PoliticaPrivacidad = () => {
                 protegemos tu información personal cuando utilizas nuestra plataforma.
               </p>
               <p>
+                <strong>ORIGEN es una plataforma digital y solo actúa como intermediario tecnológico.</strong> 
+                ORIGEN no manipula, no almacena, no empaca y no gestiona envíos. El productor es siempre 
+                el responsable del envío y la preparación del pedido.
+              </p>
+              <p>
                 Al utilizar nuestros servicios, aceptas las prácticas descritas en esta política. 
                 Te recomendamos que leas detenidamente este documento.
               </p>
