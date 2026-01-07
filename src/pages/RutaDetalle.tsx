@@ -6,7 +6,8 @@ import RouteMap from "@/components/RouteMap";
 import RouteDayRecommendations from "@/components/RouteDayRecommendations";
 import RoutePracticalInfo from "@/components/RoutePracticalInfo";
 import { Button } from "@/components/ui/button";
-import { getRouteById, getAllRoutes } from "@/data/routes";
+import { getRouteById, getAllRoutes, RouteDetail } from "@/data/routes";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Clock, 
   Users, 
@@ -18,33 +19,172 @@ import {
   Printer,
   ArrowUp,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+
+// Helper to safely parse JSON arrays
+const parseJsonArray = (value: unknown): string[] => {
+  if (Array.isArray(value)) return value as string[];
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+};
+
+const parseJsonObject = (value: unknown): Record<string, unknown> => {
+  if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+    return value as Record<string, unknown>;
+  }
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return {};
+    }
+  }
+  return {};
+};
 
 const RutaDetalle = () => {
   const { id } = useParams<{ id: string }>();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [relatedRoutesIndex, setRelatedRoutesIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [route, setRoute] = useState<RouteDetail | null>(null);
+  const [relatedRoutes, setRelatedRoutes] = useState<RouteDetail[]>([]);
   
-  if (!id) {
-    return <Navigate to="/rutas" replace />;
-  }
+  useEffect(() => {
+    const fetchRoute = async () => {
+      if (!id) return;
+      
+      setLoading(true);
+      
+      try {
+        // Try to fetch from Supabase first
+        const { data: supabaseRoute, error } = await supabase
+          .from('routes')
+          .select('*')
+          .or(`slug.eq.${id},id.eq.${id}`)
+          .single();
 
-  const route = getRouteById(id);
-  
-  if (!route) {
-    return <Navigate to="/rutas" replace />;
-  }
+        if (supabaseRoute && !error) {
+          // Fetch stops for this route
+          const { data: stops } = await supabase
+            .from('route_stops')
+            .select('*')
+            .eq('route_id', supabaseRoute.id)
+            .order('position');
 
-  // Mock gallery images for demo
+          // Parse practical info from JSON
+          const practicalInfoData = parseJsonObject(supabaseRoute.practical_info);
+          const dailyRecsData = parseJsonArray(supabaseRoute.daily_recommendations);
+          
+          // Transform to RouteDetail format
+          const transformedRoute: RouteDetail = {
+            id: supabaseRoute.slug,
+            title: supabaseRoute.title,
+            description: supabaseRoute.description || '',
+            duration: supabaseRoute.duration || 'Medio día',
+            businesses: supabaseRoute.total_stops || stops?.length || 0,
+            rating: '4.8/5',
+            participants: supabaseRoute.total_participants || 0,
+            image: supabaseRoute.image_url || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800',
+            difficulty: supabaseRoute.difficulty || 'Fácil',
+            narrative: supabaseRoute.narrative || supabaseRoute.description || '',
+            stops: (stops || []).map((stop) => ({
+              id: stop.id,
+              name: stop.name,
+              type: stop.type || 'Local',
+              typeIcon: stop.type_icon || '📍',
+              description: stop.description || '',
+              whatToDo: parseJsonArray(stop.what_to_do),
+              address: stop.address || '',
+              schedule: stop.schedule || '',
+              coordinates: [stop.longitude || 0, stop.latitude || 0] as [number, number],
+              images: parseJsonArray(stop.images),
+              highlights: parseJsonArray(stop.highlights),
+              featuredReview: {
+                author: 'Visitante',
+                rating: 5,
+                comment: 'Excelente experiencia'
+              }
+            })),
+            dailyRecommendations: dailyRecsData,
+            practicalInfo: {
+              level: (practicalInfoData.level as string) || supabaseRoute.difficulty || 'Fácil',
+              duration: (practicalInfoData.duration as string) || supabaseRoute.duration || 'Medio día',
+              recommendedPeople: (practicalInfoData.recommendedPeople as string) || '2-6 personas',
+              localTips: parseJsonArray(practicalInfoData.localTips)
+            }
+          };
+
+          setRoute(transformedRoute);
+        } else {
+          // Fallback to static data
+          const staticRoute = getRouteById(id);
+          setRoute(staticRoute || null);
+        }
+
+        // Fetch related routes
+        const { data: otherRoutes } = await supabase
+          .from('routes')
+          .select('*')
+          .neq('slug', id)
+          .eq('is_public', true)
+          .limit(6);
+
+        if (otherRoutes && otherRoutes.length > 0) {
+          const transformed = otherRoutes.map((r) => ({
+            id: r.slug,
+            title: r.title,
+            description: r.description || '',
+            duration: r.duration || 'Medio día',
+            businesses: r.total_stops || 0,
+            rating: '4.5/5',
+            participants: r.total_participants || 0,
+            image: r.image_url || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400',
+            difficulty: r.difficulty || 'Fácil',
+            narrative: '',
+            stops: [],
+            dailyRecommendations: [],
+            practicalInfo: { level: 'Fácil', duration: '', recommendedPeople: '', localTips: [] as string[] }
+          }));
+          setRelatedRoutes(transformed);
+        } else {
+          // Fallback to static
+          const allStatic = getAllRoutes();
+          setRelatedRoutes(allStatic.filter(r => r.id !== id));
+        }
+      } catch (err) {
+        console.error('Error fetching route:', err);
+        const staticRoute = getRouteById(id);
+        setRoute(staticRoute || null);
+        const allStatic = getAllRoutes();
+        setRelatedRoutes(allStatic.filter(r => r.id !== id));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRoute();
+  }, [id]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 500);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const mockGallery = [
     "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=200&h=150&fit=crop",
     "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=150&fit=crop",
@@ -52,11 +192,8 @@ const RutaDetalle = () => {
     "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=200&h=150&fit=crop"
   ];
 
-  // Get related routes
-  const allRoutes = getAllRoutes();
-  const relatedRoutes = allRoutes.filter(r => r.id !== route.id);
-
   const handleShare = async () => {
+    if (!route) return;
     const shareData = {
       title: route.title,
       text: route.description,
@@ -82,14 +219,25 @@ const RutaDetalle = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 500);
-    };
+  if (!id) {
+    return <Navigate to="/rutas" replace />;
+  }
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  if (loading) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <div className="flex items-center justify-center py-32">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!route) {
+    return <Navigate to="/rutas" replace />;
+  }
 
   return (
     <div className="min-h-screen">
@@ -152,25 +300,22 @@ const RutaDetalle = () => {
               <section>
                 <div className="space-y-5">
                   {route.stops.map((stop, index) => (
-                  <div key={stop.id} className="bg-white border border-gray-200 rounded-lg p-4 relative shadow-sm">
-                    {/* Stop number badge */}
+                  <div key={stop.id} className="bg-card border border-border rounded-lg p-4 relative shadow-sm">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-start space-x-3">
-                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0 text-white text-sm font-bold">
+                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0 text-primary-foreground text-sm font-bold">
                           {index + 1}
                         </div>
                         <div className="flex-1">
                           <div className="flex items-start justify-between mb-1">
                             <div>
-                              <Link to="/mi-zona/negocio/1" className="hover:text-primary transition-colors">
-                                <h3 className="text-lg font-bold text-gray-900 mb-1 hover:underline">{stop.name}</h3>
-                              </Link>
+                              <h3 className="text-lg font-bold text-foreground mb-1">{stop.name}</h3>
                               <div className="flex items-center gap-2">
-                                <p className="text-gray-500 text-sm">{stop.type}</p>
+                                <p className="text-muted-foreground text-sm">{stop.type}</p>
                                 <div className="flex items-center gap-1">
                                   <Star className="w-3.5 h-3.5 text-yellow-400 fill-current" />
-                                  <span className="text-xs font-medium text-gray-700">4.8</span>
-                                  <span className="text-xs text-gray-500">(127)</span>
+                                  <span className="text-xs font-medium">4.8</span>
+                                  <span className="text-xs text-muted-foreground">(127)</span>
                                 </div>
                               </div>
                             </div>
@@ -182,7 +327,7 @@ const RutaDetalle = () => {
                     {/* Mini Gallery */}
                     <div className="mb-3 overflow-x-auto">
                       <div className="flex gap-2">
-                        {mockGallery.map((img, idx) => (
+                        {(stop.images?.length ? stop.images : mockGallery).slice(0, 4).map((img, idx) => (
                           <img
                             key={idx}
                             src={img}
@@ -193,64 +338,72 @@ const RutaDetalle = () => {
                       </div>
                     </div>
 
-                    <p className="text-gray-600 mb-4 leading-relaxed text-[15px]">{stop.description}</p>
+                    <p className="text-muted-foreground mb-4 leading-relaxed text-[15px]">{stop.description}</p>
 
-                    <div className="mb-4">
-                      <h4 className="font-semibold text-gray-900 mb-2 text-[15px]">Qué puedes hacer:</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
-                        {stop.whatToDo.map((activity, idx) => (
-                          <div key={idx} className="flex items-start space-x-2">
-                            <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-1.5 flex-shrink-0" />
-                            <span className="text-sm text-gray-600 leading-snug">{activity}</span>
-                          </div>
-                        ))}
+                    {stop.whatToDo && stop.whatToDo.length > 0 && (
+                      <div className="mb-4">
+                        <h4 className="font-semibold text-foreground mb-2 text-[15px]">Qué puedes hacer:</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
+                          {stop.whatToDo.map((activity, idx) => (
+                            <div key={idx} className="flex items-start space-x-2">
+                              <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-1.5 flex-shrink-0" />
+                              <span className="text-sm text-muted-foreground leading-snug">{activity}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     <div className="grid md:grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <h4 className="font-medium text-amber-800 mb-1.5 flex items-center text-sm">
-                          <MapPin className="w-3.5 h-3.5 mr-1.5 text-amber-700" />
-                          Dirección
-                        </h4>
-                        <p className="text-sm text-amber-700">{stop.address}</p>
-                      </div>
+                      {stop.address && (
+                        <div>
+                          <h4 className="font-medium text-primary mb-1.5 flex items-center text-sm">
+                            <MapPin className="w-3.5 h-3.5 mr-1.5" />
+                            Dirección
+                          </h4>
+                          <p className="text-sm text-muted-foreground">{stop.address}</p>
+                        </div>
+                      )}
                       
-                      <div>
-                        <h4 className="font-medium text-amber-800 mb-1.5 flex items-center text-sm">
-                          <Clock className="w-3.5 h-3.5 mr-1.5 text-amber-700" />
-                          Horarios
-                        </h4>
-                        <p className="text-sm text-amber-700">{stop.schedule}</p>
-                      </div>
+                      {stop.schedule && (
+                        <div>
+                          <h4 className="font-medium text-primary mb-1.5 flex items-center text-sm">
+                            <Clock className="w-3.5 h-3.5 mr-1.5" />
+                            Horarios
+                          </h4>
+                          <p className="text-sm text-muted-foreground">{stop.schedule}</p>
+                        </div>
+                      )}
                     </div>
 
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-2 text-[15px]">Reseñas destacadas:</h4>
-                      <div className="bg-green-50 border-l-4 border-green-400 p-3 rounded-r-lg relative">
-                        <Button 
-                          size="sm" 
-                          className="absolute top-2 right-2 bg-green-600 hover:bg-green-700 text-white h-6 text-xs px-2"
-                        >
-                          Ver más
-                        </Button>
-                        <div className="flex items-center space-x-2 mb-1.5 pr-16">
-                          <div className="flex">
-                            {[...Array(stop.featuredReview.rating)].map((_, i) => (
-                              <Star key={i} className="w-3.5 h-3.5 text-yellow-400 fill-current" />
-                            ))}
+                    {stop.featuredReview && (
+                      <div>
+                        <h4 className="font-medium text-foreground mb-2 text-[15px]">Reseñas destacadas:</h4>
+                        <div className="bg-accent/50 border-l-4 border-primary p-3 rounded-r-lg relative">
+                          <Button 
+                            size="sm" 
+                            className="absolute top-2 right-2 h-6 text-xs px-2"
+                          >
+                            Ver más
+                          </Button>
+                          <div className="flex items-center space-x-2 mb-1.5 pr-16">
+                            <div className="flex">
+                              {[...Array(stop.featuredReview.rating)].map((_, i) => (
+                                <Star key={i} className="w-3.5 h-3.5 text-yellow-400 fill-current" />
+                              ))}
+                            </div>
+                            <span className="font-medium text-foreground text-sm">{stop.featuredReview.author}</span>
                           </div>
-                          <span className="font-medium text-gray-900 text-sm">{stop.featuredReview.author}</span>
+                          <p className="text-sm italic text-muted-foreground leading-snug pr-16">"{stop.featuredReview.comment}"</p>
                         </div>
-                        <p className="text-sm italic text-gray-700 leading-snug pr-16">"{stop.featuredReview.comment}"</p>
                       </div>
-                    </div>
+                    )}
                   </div>
                   ))}
                 </div>
               </section>
               
-              {/* Rating Section - Compact */}
+              {/* Rating Section */}
               <section>
                 <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-4 border border-primary/10">
                   <div className="flex items-center justify-between">
@@ -265,7 +418,7 @@ const RutaDetalle = () => {
                         <p className="text-xs text-muted-foreground">{route.participants} valoraciones</p>
                       </div>
                     </div>
-                    <Button size="sm" className="bg-primary hover:bg-primary/90 text-white h-8 text-xs px-4">
+                    <Button size="sm" className="h-8 text-xs px-4">
                       Valorar ruta
                     </Button>
                   </div>
@@ -328,20 +481,20 @@ const RutaDetalle = () => {
                           <Button
                             variant="default"
                             size="icon"
-                            className="absolute left-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-xl rounded-full w-7 h-7 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-2 border-background"
+                            className="absolute left-0 top-1/2 -translate-y-1/2 shadow-xl rounded-full w-7 h-7 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-2 border-background"
                             onClick={() => setRelatedRoutesIndex(Math.max(0, relatedRoutesIndex - 1))}
                             disabled={relatedRoutesIndex === 0}
                           >
-                            <ChevronRight className="w-3.5 h-3.5 text-white rotate-180" />
+                            <ChevronRight className="w-3.5 h-3.5 rotate-180" />
                           </Button>
                           <Button
                             variant="default"
                             size="icon"
-                            className="absolute right-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-xl rounded-full w-7 h-7 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-2 border-background"
+                            className="absolute right-0 top-1/2 -translate-y-1/2 shadow-xl rounded-full w-7 h-7 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-2 border-background"
                             onClick={() => setRelatedRoutesIndex(Math.min(Math.max(0, relatedRoutes.length - 4), relatedRoutesIndex + 1))}
                             disabled={relatedRoutesIndex >= Math.max(0, relatedRoutes.length - 4)}
                           >
-                            <ChevronRight className="w-3.5 h-3.5 text-white" />
+                            <ChevronRight className="w-3.5 h-3.5" />
                           </Button>
                         </>
                       </div>
@@ -353,13 +506,8 @@ const RutaDetalle = () => {
 
             {/* Right Sidebar */}
             <div className="lg:col-span-1 space-y-4">
-              {/* Route Map */}
               <RouteMap routeTitle={route.title} />
-
-              {/* Daily Recommendations */}
               <RouteDayRecommendations recommendations={route.dailyRecommendations} />
-
-              {/* Practical Information */}
               <RoutePracticalInfo 
                 practicalInfo={route.practicalInfo} 
                 difficulty={route.difficulty}
@@ -378,26 +526,26 @@ const RutaDetalle = () => {
                 <Link to="/crear-ruta">
                   <Button variant="default" size="sm" className="w-full text-xs h-8">
                     <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
-                    Personalizar
+                    Personalizar esta ruta
                   </Button>
                 </Link>
               </div>
             </div>
-
           </div>
         </div>
-
-        {/* Floating Back to Top Button */}
-        {showScrollTop && (
-          <button
-            onClick={scrollToTop}
-            className="fixed bottom-6 right-6 z-50 bg-primary text-white rounded-md p-2.5 shadow-xl hover:bg-primary/90 transition-all hover:scale-105"
-            aria-label="Volver arriba"
-          >
-            <ArrowUp className="w-4 h-4" />
-          </button>
-        )}
       </main>
+
+      {/* Floating Back to Top Button */}
+      {showScrollTop && (
+        <Button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 rounded-full w-12 h-12 shadow-lg z-50"
+          size="icon"
+        >
+          <ArrowUp className="w-5 h-5" />
+        </Button>
+      )}
+
       <Footer />
     </div>
   );
