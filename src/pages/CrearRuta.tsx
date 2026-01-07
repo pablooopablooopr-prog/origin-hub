@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,9 +10,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { MapPin, Plus, X, Save, Trash2, Image as ImageIcon, Clock, FileText, Users, Route, Star, Coffee, Utensils, Camera } from "lucide-react";
+import { MapPin, Plus, X, Save, Trash2, Image as ImageIcon, Clock, FileText, Users, Route, Star, Coffee, Utensils, Camera, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RouteMap from "@/components/RouteMap";
+import { supabase } from "@/integrations/supabase/client";
+import { useRegions } from "@/hooks/useSupabaseData";
 
 interface Stop {
   id: number;
@@ -34,12 +37,16 @@ interface LocalTip {
 
 const CrearRuta = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { regions } = useRegions();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const [routeName, setRouteName] = useState("");
   const [description, setDescription] = useState("");
   const [experience, setExperience] = useState("");
   const [duration, setDuration] = useState("");
   const [difficulty, setDifficulty] = useState("Fácil");
-  const [numStops, setNumStops] = useState("3");
+  const [regionId, setRegionId] = useState("");
   
   const [stops, setStops] = useState<Stop[]>([
     {
@@ -139,7 +146,16 @@ const CrearRuta = () => {
     }
   };
 
-  const handlePublish = () => {
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  };
+
+  const handlePublish = async () => {
     if (!routeName || !description || !experience || stops.some(s => !s.name || s.whatToDo.some(w => !w))) {
       toast({
         title: "Campos incompletos",
@@ -148,23 +164,135 @@ const CrearRuta = () => {
       });
       return;
     }
-    toast({
-      title: "Ruta publicada",
-      description: "Tu ruta ha sido publicada correctamente.",
-    });
+
+    setIsSubmitting(true);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      // Create route
+      const { data: routeData, error: routeError } = await supabase
+        .from('routes')
+        .insert({
+          title: routeName,
+          slug: generateSlug(routeName),
+          description,
+          narrative: experience,
+          duration,
+          difficulty,
+          region_id: regionId || null,
+          creator_id: user?.id || null,
+          is_public: true,
+          total_stops: stops.length,
+          daily_recommendations: recommendations.filter(r => r.text).map(r => r.text),
+          practical_info: {
+            level: difficulty,
+            duration,
+            localTips: localTips.filter(t => t.text).map(t => t.text)
+          }
+        })
+        .select()
+        .single();
+
+      if (routeError) throw routeError;
+
+      // Create stops
+      const stopsToInsert = stops.map((stop, index) => ({
+        route_id: routeData.id,
+        name: stop.name,
+        type: stop.category,
+        description: '',
+        what_to_do: stop.whatToDo.filter(w => w),
+        address: stop.address || null,
+        schedule: stop.schedule || null,
+        position: index
+      }));
+
+      const { error: stopsError } = await supabase
+        .from('route_stops')
+        .insert(stopsToInsert);
+
+      if (stopsError) throw stopsError;
+
+      toast({
+        title: "Ruta publicada",
+        description: "Tu ruta ha sido publicada correctamente.",
+      });
+
+      navigate(`/rutas/${routeData.slug}`);
+    } catch (error) {
+      console.error('Error creating route:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo crear la ruta. Inicia sesión para continuar.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleSaveDraft = () => {
-    toast({
-      title: "Guardado como borrador",
-      description: "La ruta se ha guardado como borrador.",
-    });
+  const handleSaveDraft = async () => {
+    if (!routeName) {
+      toast({
+        title: "Nombre requerido",
+        description: "Añade un nombre para guardar el borrador",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const { error } = await supabase
+        .from('routes')
+        .insert({
+          title: routeName,
+          slug: generateSlug(routeName) + '-draft-' + Date.now(),
+          description: description || 'Borrador',
+          narrative: experience,
+          duration,
+          difficulty,
+          region_id: regionId || null,
+          creator_id: user?.id || null,
+          is_public: false,
+          total_stops: stops.length
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Guardado como borrador",
+        description: "La ruta se ha guardado como borrador.",
+      });
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo guardar el borrador",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleDelete = () => {
+    setRouteName("");
+    setDescription("");
+    setExperience("");
+    setDuration("");
+    setDifficulty("Fácil");
+    setStops([{ id: 1, name: "", category: "", whatToDo: [""], schedule: "", address: "" }]);
+    setRecommendations([{ id: 1, text: "" }]);
+    setLocalTips([{ id: 1, text: "" }]);
+    
     toast({
-      title: "Ruta eliminada",
-      description: "La ruta ha sido eliminada correctamente.",
+      title: "Formulario limpiado",
+      description: "Se han eliminado todos los datos del formulario.",
       variant: "destructive",
     });
   };
@@ -212,23 +340,16 @@ const CrearRuta = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="2-3h">2-3 horas</SelectItem>
-                    <SelectItem value="medio-dia">Medio día</SelectItem>
-                    <SelectItem value="dia-completo">Día completo</SelectItem>
-                    <SelectItem value="fin-semana">Fin de semana</SelectItem>
+                    <SelectItem value="Medio día">Medio día</SelectItem>
+                    <SelectItem value="1 día">Día completo</SelectItem>
+                    <SelectItem value="Fin de semana">Fin de semana</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="bg-card rounded-lg p-5 shadow-sm">
                 <MapPin className="w-6 h-6 text-primary mx-auto mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Paradas</p>
-                <Input
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={numStops}
-                  onChange={(e) => setNumStops(e.target.value)}
-                  className="h-8 text-sm text-center font-semibold"
-                />
+                <p className="font-semibold text-base text-center">{stops.length}</p>
               </div>
               <div className="bg-card rounded-lg p-5 shadow-sm">
                 <Route className="w-6 h-6 text-primary mx-auto mb-2" />
@@ -250,6 +371,23 @@ const CrearRuta = () => {
                 <p className="font-semibold text-base">0 personas</p>
               </div>
             </div>
+
+            {/* Region selector */}
+            {regions && regions.length > 0 && (
+              <div className="bg-card rounded-lg p-4 shadow-sm mb-6">
+                <Label className="text-sm mb-2 block">Región</Label>
+                <Select value={regionId} onValueChange={setRegionId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona una región" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {regions.map(region => (
+                      <SelectItem key={region.id} value={region.id}>{region.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             {/* La Experiencia */}
             <div className="bg-card rounded-lg p-6 shadow-sm">
@@ -285,11 +423,10 @@ const CrearRuta = () => {
               </div>
               <div className="space-y-5">
                 {stops.map((stop, index) => (
-                  <div key={stop.id} className="bg-white border border-gray-200 rounded-lg p-4 relative shadow-sm">
-                    {/* Stop number badge */}
+                  <div key={stop.id} className="bg-card border border-border rounded-lg p-4 relative shadow-sm">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-start space-x-3 flex-1">
-                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0 text-white text-sm font-bold">
+                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0 text-primary-foreground text-sm font-bold">
                           {index + 1}
                         </div>
                         <div className="flex-1 space-y-3">
@@ -350,7 +487,6 @@ const CrearRuta = () => {
                       </Button>
                     </div>
 
-                    {/* Mini Gallery Placeholder */}
                     <div className="mb-3 p-4 border-2 border-dashed rounded-md bg-muted/20 text-center">
                       <ImageIcon className="w-8 h-8 mx-auto mb-1 text-muted-foreground" />
                       <p className="text-xs text-muted-foreground">Galería de imágenes (opcional)</p>
@@ -430,7 +566,7 @@ const CrearRuta = () => {
                               newStops[index].schedule = e.target.value;
                               setStops(newStops);
                             }}
-                            placeholder="Ej: 10:00 - 14:00"
+                            placeholder="Lun-Vie: 9:00-18:00"
                           />
                         </div>
                       </div>
@@ -439,187 +575,119 @@ const CrearRuta = () => {
                 ))}
               </div>
             </section>
-            
-            {/* Preview Rating Section */}
+
+            {/* Recommendations */}
             <section>
-              <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-4 border border-primary/10">
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col items-start space-y-2">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-5 h-5 text-gray-300" />
-                      ))}
-                    </div>
-                    <div>
-                      <p className="text-lg font-bold text-primary">Sin valoraciones</p>
-                      <p className="text-xs text-muted-foreground">Sé el primero en valorar</p>
-                    </div>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-primary">Recomendaciones del Día</h2>
+                <Button onClick={addRecommendation} size="sm" variant="outline" disabled={recommendations.length >= 4}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Añadir
+                </Button>
+              </div>
+              <div className="space-y-3">
+                {recommendations.map((rec, index) => (
+                  <div key={rec.id} className="flex gap-2">
+                    <Input
+                      value={rec.text}
+                      onChange={(e) => {
+                        const newRecs = [...recommendations];
+                        newRecs[index].text = e.target.value;
+                        setRecommendations(newRecs);
+                      }}
+                      placeholder={`Recomendación ${index + 1}`}
+                    />
+                    {recommendations.length > 1 && (
+                      <Button variant="ghost" size="icon" onClick={() => removeRecommendation(rec.id)}>
+                        <X className="w-4 h-4" />
+                      </Button>
+                    )}
                   </div>
-                </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Local Tips */}
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-primary">Consejos Locales</h2>
+                <Button onClick={addLocalTip} size="sm" variant="outline" disabled={localTips.length >= 4}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Añadir
+                </Button>
+              </div>
+              <div className="space-y-3">
+                {localTips.map((tip, index) => (
+                  <div key={tip.id} className="flex gap-2">
+                    <Input
+                      value={tip.text}
+                      onChange={(e) => {
+                        const newTips = [...localTips];
+                        newTips[index].text = e.target.value;
+                        setLocalTips(newTips);
+                      }}
+                      placeholder={`Consejo ${index + 1}`}
+                    />
+                    {localTips.length > 1 && (
+                      <Button variant="ghost" size="icon" onClick={() => removeLocalTip(tip.id)}>
+                        <X className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
               </div>
             </section>
           </div>
 
           {/* Right Sidebar */}
           <div className="lg:col-span-1 space-y-4">
-            {/* Route Map Preview */}
-            <RouteMap routeTitle={routeName || "Tu ruta"} />
-
-            {/* Daily Recommendations - Editable */}
-            <Card>
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg font-bold text-foreground">Recomendaciones del Día</CardTitle>
-                  <Button onClick={addRecommendation} size="sm" variant="ghost" disabled={recommendations.length >= 4}>
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </div>
-                <CardDescription className="text-xs">
-                  Consejos para aprovechar la ruta (máximo 4)
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2.5 pt-0">
-                {recommendations.map((rec, index) => {
-                  const icons = [Clock, MapPin, Coffee, Utensils, Camera];
-                  const Icon = icons[index % icons.length];
-                  return (
-                    <div key={rec.id} className="flex items-start gap-2">
-                      <Icon className="w-4 h-4 text-primary mt-2.5 flex-shrink-0" />
-                      <Input 
-                        value={rec.text}
-                        onChange={(e) => {
-                          const newRecs = [...recommendations];
-                          newRecs[index].text = e.target.value;
-                          setRecommendations(newRecs);
-                        }}
-                        placeholder={`Recomendación ${index + 1}`}
-                        className="text-sm flex-1"
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeRecommendation(rec.id)}
-                        className="flex-shrink-0"
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  );
-                })}
-                {recommendations.length === 0 && (
-                  <p className="text-xs text-muted-foreground italic">No hay recomendaciones todavía</p>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Practical Information Preview */}
-            <Card className="overflow-hidden">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-bold text-foreground">
-                  Información Práctica
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 pt-0">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span className="font-medium text-gray-900 text-sm">Dificultad:</span>
-                      <Badge 
-                        variant="secondary" 
-                        className={`${
-                          difficulty === 'Fácil' ? 'bg-green-600 text-white' :
-                          difficulty === 'Moderado' ? 'bg-amber-700 text-white' :
-                          difficulty === 'Difícil' ? 'bg-red-600 text-white' :
-                          'bg-gray-600 text-white'
-                        } border-0 rounded-full px-2.5 py-0.5 text-xs`}
-                      >
-                        {difficulty || "No especificada"}
-                      </Badge>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span className="font-medium text-gray-900 text-sm">Duración:</span>
-                      <span className="text-gray-600 text-sm">{duration || "No especificada"}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="border-t pt-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium text-gray-900 text-sm">Consejos locales:</h4>
-                    <Button onClick={addLocalTip} size="sm" variant="ghost" disabled={localTips.length >= 4}>
-                      <Plus className="w-3 h-3" />
-                    </Button>
-                  </div>
-                  <div className="space-y-2">
-                    {localTips.map((tip, index) => (
-                      <div key={tip.id} className="flex items-start gap-2">
-                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0" />
-                        <Input
-                          value={tip.text}
-                          onChange={(e) => {
-                            const newTips = [...localTips];
-                            newTips[index].text = e.target.value;
-                            setLocalTips(newTips);
-                          }}
-                          placeholder={`Consejo ${index + 1}`}
-                          className="text-sm flex-1"
-                        />
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeLocalTip(tip.id)}
-                          className="flex-shrink-0"
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    ))}
-                    {localTips.length === 0 && (
-                      <p className="text-xs text-muted-foreground italic">No hay consejos todavía</p>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
+            <RouteMap routeTitle={routeName || "Nueva Ruta"} />
+            
             {/* Action Buttons */}
-            <Card>
-              <CardContent className="pt-6 space-y-2">
-                <Button className="w-full" onClick={handlePublish}>
-                  <Save className="w-4 h-4 mr-2" />
-                  Publicar Ruta
-                </Button>
-                <Button className="w-full" variant="outline" onClick={handleSaveDraft}>
+            <div className="bg-card rounded-lg p-4 border space-y-3">
+              <Button 
+                onClick={handlePublish} 
+                className="w-full" 
+                size="lg"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
                   <FileText className="w-4 h-4 mr-2" />
-                  Guardar Borrador
-                </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive" className="w-full">
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Eliminar
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>¿Eliminar ruta?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Esta acción no se puede deshacer. La ruta será eliminada permanentemente.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDelete}>
-                        Eliminar
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </CardContent>
-            </Card>
+                )}
+                Publicar Ruta
+              </Button>
+              <Button 
+                onClick={handleSaveDraft} 
+                variant="outline" 
+                className="w-full"
+                disabled={isSubmitting}
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Guardar Borrador
+              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" className="w-full">
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Limpiar Formulario
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta acción eliminará todos los datos del formulario. Esta acción no se puede deshacer.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDelete}>Eliminar</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           </div>
         </div>
       </div>
