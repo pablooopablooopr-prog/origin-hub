@@ -1,32 +1,97 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, MapPin, Beef, Milk, Wheat, Leaf, Shirt, Heart, UtensilsCrossed } from "lucide-react";
+import { Search, Filter, MapPin, Beef, Milk, Wheat, Leaf, Shirt, Heart, UtensilsCrossed, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import MapboxMap from "./MapboxMap";
-import { businessesData, categories as categoriesData } from "@/data/businesses";
+import { supabase } from "@/integrations/supabase/client";
+
+// Fallback data
+import { businessesData as fallbackBusinesses, Business } from "@/data/businesses";
+
+interface DbCompany {
+  id: string;
+  business_name: string;
+  description: string | null;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  avg_rating: number | null;
+  category?: {
+    name: string;
+  } | null;
+}
 
 const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [companies, setCompanies] = useState<Business[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const categories = [
-    { name: "Restaurantes", icon: UtensilsCrossed, count: 42, color: "bg-primary" },
-    { name: "Carnes", icon: Beef, count: 89, color: "bg-secondary" },
-    { name: "Lácteos", icon: Milk, count: 67, color: "bg-moss-medium" },
-    { name: "Fermentos", icon: Wheat, count: 45, color: "bg-earth-medium" },
-    { name: "Herbolarios", icon: Leaf, count: 78, color: "bg-accent" },
-    { name: "EcoModa", icon: Shirt, count: 34, color: "bg-moss-dark" },
-    { name: "Vida Natural", icon: Heart, count: 56, color: "bg-moss-light" }
+    { name: "Restaurantes", icon: UtensilsCrossed, count: 0, color: "bg-primary" },
+    { name: "Carnes", icon: Beef, count: 0, color: "bg-secondary" },
+    { name: "Lácteos", icon: Milk, count: 0, color: "bg-moss-medium" },
+    { name: "Fermentos", icon: Wheat, count: 0, color: "bg-earth-medium" },
+    { name: "Herbolarios", icon: Leaf, count: 0, color: "bg-accent" },
+    { name: "EcoModa", icon: Shirt, count: 0, color: "bg-moss-dark" },
+    { name: "Vida Natural", icon: Heart, count: 0, color: "bg-moss-light" }
   ];
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('companies')
+          .select(`
+            id,
+            business_name,
+            description,
+            address,
+            latitude,
+            longitude,
+            avg_rating,
+            category:categories(name)
+          `)
+          .eq('status', 'approved');
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          // Transform DB data to Business format
+          const transformed: Business[] = data.map((company: any) => ({
+            id: company.id,
+            name: company.business_name,
+            category: company.category?.name || 'Vida Natural',
+            description: company.description || '',
+            address: company.address || '',
+            city: '',
+            province: '',
+            coordinates: [company.longitude || -3.7038, company.latitude || 40.4168] as [number, number],
+            rating: company.avg_rating || 4.5,
+            tags: []
+          }));
+          setCompanies(transformed);
+        } else {
+          setCompanies(fallbackBusinesses);
+        }
+      } catch (err) {
+        console.error('Error fetching companies:', err);
+        setCompanies(fallbackBusinesses);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCompanies();
+  }, []);
 
   // Filter businesses based on search and category
   const filteredBusinesses = useMemo(() => {
-    let filtered = businessesData;
+    let filtered = companies;
 
-    // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(business =>
@@ -39,13 +104,12 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
       );
     }
 
-    // Filter by category
     if (selectedCategory) {
       filtered = filtered.filter(business => business.category === selectedCategory);
     }
 
     return filtered;
-  }, [searchQuery, selectedCategory]);
+  }, [companies, searchQuery, selectedCategory]);
 
   const handleCategoryClick = (categoryName: string) => {
     if (selectedCategory === categoryName) {
@@ -55,10 +119,25 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
     }
   };
 
+  // Calculate category counts
+  const categoriesWithCounts = categories.map(cat => ({
+    ...cat,
+    count: companies.filter(b => b.category === cat.name).length
+  }));
+
+  if (loading) {
+    return (
+      <section className="py-20">
+        <div className="flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-20 enso-watermark" id="mapa">
       <div className="container mx-auto px-6">
-        {/* Título principal - solo mostrar si showTitle es true */}
         {showTitle && (
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
@@ -70,10 +149,7 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
           </div>
         )}
 
-        {/* Search and filters section */}
         <div className="max-w-4xl mx-auto mb-16">
-
-          {/* Barra de búsqueda y filtros */}
           <div className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-4 mb-8">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
@@ -94,9 +170,8 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
             </Button>
           </div>
 
-          {/* Categorías */}
           <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {categories.map((category) => {
+            {categoriesWithCounts.map((category) => {
               const IconComponent = category.icon;
               const isSelected = selectedCategory === category.name;
               return (
@@ -115,7 +190,6 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
             })}
           </div>
 
-          {/* Results counter */}
           <div className="text-center mb-6">
             <p className="text-sm text-muted-foreground">
               Mostrando {filteredBusinesses.length} negocios
@@ -138,7 +212,6 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
           </div>
         </div>
 
-        {/* Mapa interactivo */}
         <div className="relative">
           <Card className="overflow-hidden shadow-earth">
             <CardContent className="p-0">
@@ -151,14 +224,13 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
           </Card>
         </div>
 
-        {/* Estadísticas del mapa */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-12">
           <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">{businessesData.length}</div>
+            <div className="text-3xl font-bold text-primary mb-2">{companies.length}</div>
             <p className="text-sm text-muted-foreground">Empresas verificadas</p>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-secondary mb-2">{new Set(businessesData.map(b => b.city)).size}</div>
+            <div className="text-3xl font-bold text-secondary mb-2">{new Set(companies.map(b => b.city)).size || 6}</div>
             <p className="text-sm text-muted-foreground">Ciudades cubiertas</p>
           </div>
           <div className="text-center">
