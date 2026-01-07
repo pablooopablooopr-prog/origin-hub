@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -8,58 +8,127 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, MessageCircle, Heart, MapPin, Building } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft, MessageCircle, Heart, Star, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Company {
+  id: string;
+  business_name: string;
+  address: string | null;
+}
 
 const EscribirValoracion = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [customerId, setCustomerId] = useState<string | null>(null);
+  
   const [formData, setFormData] = useState({
-    businessName: "",
-    location: "",
-    category: "",
+    companyId: "",
     userName: "",
-    selectedRating: "",
+    rating: 0,
+    title: "",
     comment: ""
   });
 
-  const ratingTypes = [
-    "Auténtico de verdad",
-    "Lo recomendaría a mi abuela", 
-    "Me hizo reconectar con mi alimentación",
-    "Un lugar para volver"
-  ];
+  useEffect(() => {
+    const initialize = async () => {
+      // Fetch approved companies
+      const { data: companiesData } = await supabase
+        .from("companies")
+        .select("id, business_name, address")
+        .eq("status", "approved")
+        .order("business_name");
 
-  const categories = [
-    "Lácteos", "Panadería", "Frutas", "Conservas", "Embutidos", 
-    "Aceites", "Vinos", "Miel", "Pescado", "Carne", "Otros"
-  ];
+      if (companiesData) {
+        setCompanies(companiesData);
+      }
 
-  const handleSubmit = (e: React.FormEvent) => {
+      // Check if user is logged in and get customer_id
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: customer } = await supabase
+          .from("customers")
+          .select("id, full_name")
+          .eq("user_id", user.id)
+          .single();
+        
+        if (customer) {
+          setCustomerId(customer.id);
+          setFormData(prev => ({ ...prev, userName: customer.full_name }));
+        }
+      }
+
+      setLoading(false);
+    };
+
+    initialize();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Basic validation
-    if (!formData.businessName || !formData.location || !formData.userName || !formData.selectedRating || !formData.comment) {
+    if (!formData.companyId || !formData.userName || formData.rating === 0 || !formData.comment) {
       toast({
         title: "Campos requeridos",
-        description: "Por favor, completa todos los campos obligatorios.",
+        description: "Por favor, selecciona un negocio, tu nombre, puntuación y comentario.",
         variant: "destructive"
       });
       return;
     }
 
-    // For now, just show success message and redirect
+    setSubmitting(true);
+
+    const { error } = await supabase
+      .from("company_reviews")
+      .insert({
+        company_id: formData.companyId,
+        customer_id: customerId,
+        customer_name: formData.userName,
+        rating: formData.rating,
+        title: formData.title || null,
+        comment: formData.comment,
+        is_approved: true // Auto-approve for now
+      });
+
+    setSubmitting(false);
+
+    if (error) {
+      console.error("Error submitting review:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo enviar la valoración. Inténtalo de nuevo.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     toast({
       title: "¡Valoración enviada!",
       description: "Gracias por compartir tu experiencia auténtica.",
     });
     
-    // Redirect to valoraciones page after 2 seconds
     setTimeout(() => {
       navigate('/valoraciones');
-    }, 2000);
+    }, 1500);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <main className="pt-6 flex justify-center items-center min-h-[50vh]">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -104,52 +173,24 @@ const EscribirValoracion = () => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Business Info */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="businessName" className="text-sm font-medium flex items-center">
-                      <Building className="w-4 h-4 mr-2" />
-                      Nombre del negocio *
-                    </Label>
-                    <Input
-                      id="businessName"
-                      value={formData.businessName}
-                      onChange={(e) => setFormData({...formData, businessName: e.target.value})}
-                      placeholder="Ej: Quesería La Antigua"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="location" className="text-sm font-medium flex items-center">
-                      <MapPin className="w-4 h-4 mr-2" />
-                      Ubicación *
-                    </Label>
-                    <Input
-                      id="location"
-                      value={formData.location}
-                      onChange={(e) => setFormData({...formData, location: e.target.value})}
-                      placeholder="Ej: Casar de Cáceres"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Category */}
+                {/* Company Selection */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">Categoría</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {categories.map((category) => (
-                      <Badge
-                        key={category}
-                        variant={formData.category === category ? "default" : "outline"}
-                        className="cursor-pointer hover:bg-primary/10 transition-colors"
-                        onClick={() => setFormData({...formData, category})}
-                      >
-                        {category}
-                      </Badge>
-                    ))}
-                  </div>
+                  <Label className="text-sm font-medium">Negocio *</Label>
+                  <Select
+                    value={formData.companyId}
+                    onValueChange={(value) => setFormData({ ...formData, companyId: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona el negocio" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {companies.map((company) => (
+                        <SelectItem key={company.id} value={company.id}>
+                          {company.business_name} {company.address && `- ${company.address}`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Your Name */}
@@ -166,41 +207,46 @@ const EscribirValoracion = () => {
                   />
                 </div>
 
-                {/* Rating Type */}
+                {/* Star Rating */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium">
-                    ¿Cómo definirías tu experiencia? *
-                  </Label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {ratingTypes.map((rating) => (
-                      <div
-                        key={rating}
-                        className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                          formData.selectedRating === rating
-                            ? "border-primary bg-primary/5"
-                            : "border-border hover:border-primary/50"
-                        }`}
-                        onClick={() => setFormData({...formData, selectedRating: rating})}
+                  <Label className="text-sm font-medium">Puntuación *</Label>
+                  <div className="flex gap-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, rating: star })}
+                        className="focus:outline-none"
                       >
-                        <div className="flex items-center space-x-2">
-                          <Heart className={`w-4 h-4 ${
-                            formData.selectedRating === rating ? "text-primary" : "text-muted-foreground"
-                          }`} />
-                          <span className={`text-sm font-medium ${
-                            formData.selectedRating === rating ? "text-primary" : "text-foreground"
-                          }`}>
-                            {rating}
-                          </span>
-                        </div>
-                      </div>
+                        <Star
+                          className={`w-8 h-8 transition-colors ${
+                            star <= formData.rating
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "text-gray-300 hover:text-yellow-300"
+                          }`}
+                        />
+                      </button>
                     ))}
                   </div>
+                </div>
+
+                {/* Title (optional) */}
+                <div className="space-y-2">
+                  <Label htmlFor="title" className="text-sm font-medium">
+                    Título (opcional)
+                  </Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    placeholder="Ej: Productos excepcionales"
+                  />
                 </div>
 
                 {/* Comment */}
                 <div className="space-y-2">
                   <Label htmlFor="comment" className="text-sm font-medium">
-                    Cuéntanos más sobre tu experiencia *
+                    Tu comentario *
                   </Label>
                   <Textarea
                     id="comment"
@@ -214,9 +260,13 @@ const EscribirValoracion = () => {
 
                 {/* Submit Button */}
                 <div className="flex justify-center pt-6">
-                  <Button type="submit" size="lg" className="shadow-earth">
-                    <MessageCircle className="w-5 h-5 mr-2" />
-                    Publicar valoración
+                  <Button type="submit" size="lg" className="shadow-earth" disabled={submitting}>
+                    {submitting ? (
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    ) : (
+                      <MessageCircle className="w-5 h-5 mr-2" />
+                    )}
+                    {submitting ? "Enviando..." : "Publicar valoración"}
                   </Button>
                 </div>
               </form>
