@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import RouteMap from "@/components/RouteMap";
 import { supabase } from "@/integrations/supabase/client";
 import { useRegions } from "@/hooks/useSupabaseData";
+import { ImageUpload } from "@/components/ImageUpload";
 
 interface Stop {
   id: number;
@@ -47,6 +48,7 @@ const CrearRuta = () => {
   const [duration, setDuration] = useState("");
   const [difficulty, setDifficulty] = useState("Fácil");
   const [regionId, setRegionId] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   
   const [stops, setStops] = useState<Stop[]>([
     {
@@ -184,6 +186,7 @@ const CrearRuta = () => {
           creator_id: user?.id || null,
           is_public: true,
           total_stops: stops.length,
+          image_url: imageUrl || null,
           daily_recommendations: recommendations.filter(r => r.text).map(r => r.text),
           practical_info: {
             level: difficulty,
@@ -388,6 +391,19 @@ const CrearRuta = () => {
                 </Select>
               </div>
             )}
+
+            {/* Imagen de la Ruta */}
+            <div className="bg-card rounded-lg p-6 shadow-sm">
+              <h2 className="text-xl font-bold text-primary mb-3">Imagen de la Ruta</h2>
+              <ImageUpload
+                bucket="route-images"
+                currentImage={imageUrl}
+                onImageUploaded={setImageUrl}
+                onImageRemoved={() => setImageUrl("")}
+                aspectRatio="video"
+              />
+              <p className="text-xs text-muted-foreground mt-2">Sube una imagen representativa de la ruta (opcional)</p>
+            </div>
 
             {/* La Experiencia */}
             <div className="bg-card rounded-lg p-6 shadow-sm">
