@@ -48,10 +48,18 @@ interface Favorite {
 
 interface SavedRoute {
   id: string;
-  name: string;
-  province: string;
-  duration: string;
-  stops: number;
+  route_id: string;
+  notes: string | null;
+  route?: {
+    id: string;
+    title: string;
+    slug: string;
+    duration: string | null;
+    total_stops: number | null;
+    region?: {
+      name: string;
+    } | null;
+  } | null;
 }
 
 const CustomerDashboard = () => {
@@ -131,11 +139,19 @@ const CustomerDashboard = () => {
       if (favoritesError) throw favoritesError;
       setFavorites(favoritesData || []);
       
-      // Mock saved routes - en el futuro se cargarían de la BD
-      setSavedRoutes([
-        { id: "1", name: "Ruta del Queso", province: "León", duration: "3 días", stops: 5 },
-        { id: "2", name: "Sabores de Castilla", province: "Valladolid", duration: "2 días", stops: 4 }
-      ]);
+      // Load saved routes from database
+      const { data: savedRoutesData, error: savedRoutesError } = await supabase
+        .from('saved_routes')
+        .select(`
+          id,
+          route_id,
+          notes,
+          route:routes(id, title, slug, duration, total_stops, region:regions(name))
+        `)
+        .eq('customer_id', customerData.id);
+
+      if (savedRoutesError) throw savedRoutesError;
+      setSavedRoutes(savedRoutesData || []);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -416,21 +432,21 @@ const CustomerDashboard = () => {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {savedRoutes.map((route) => (
-                      <Card key={route.id} className="hover:shadow-lg transition-shadow">
+                    {savedRoutes.map((savedRoute) => (
+                      <Card key={savedRoute.id} className="hover:shadow-lg transition-shadow">
                         <CardHeader className="pb-3">
                           <CardTitle className="text-base flex items-center justify-between">
-                            {route.name}
-                            <Badge variant="outline">{route.province}</Badge>
+                            {savedRoute.route?.title || "Ruta"}
+                            <Badge variant="outline">{savedRoute.route?.region?.name || "España"}</Badge>
                           </CardTitle>
                           <CardDescription className="flex gap-4 text-xs">
                             <span className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              {route.duration}
+                              {savedRoute.route?.duration || "1 día"}
                             </span>
                             <span className="flex items-center gap-1">
                               <MapPin className="w-3 h-3" />
-                              {route.stops} paradas
+                              {savedRoute.route?.total_stops || 0} paradas
                             </span>
                           </CardDescription>
                         </CardHeader>
@@ -439,7 +455,7 @@ const CustomerDashboard = () => {
                             variant="outline"
                             className="w-full"
                             size="sm"
-                            onClick={() => navigate(`/rutas/${route.id}`)}
+                            onClick={() => navigate(`/rutas/${savedRoute.route?.slug || savedRoute.route_id}`)}
                           >
                             Ver Ruta
                           </Button>
@@ -610,23 +626,23 @@ const CustomerDashboard = () => {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {savedRoutes.map((route) => (
-                      <Card key={route.id} className="hover:shadow-lg transition-shadow">
+                    {savedRoutes.map((savedRoute) => (
+                      <Card key={savedRoute.id} className="hover:shadow-lg transition-shadow">
                         <CardHeader className="pb-3">
                           <CardTitle className="text-base flex items-center justify-between">
-                            {route.name}
+                            {savedRoute.route?.title || "Ruta"}
                             <Badge variant="outline" className="border-[#8B7355] text-[#8B7355]">
-                              {route.province}
+                              {savedRoute.route?.region?.name || "España"}
                             </Badge>
                           </CardTitle>
                           <CardDescription className="flex gap-4 text-xs">
                             <span className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              {route.duration}
+                              {savedRoute.route?.duration || "1 día"}
                             </span>
                             <span className="flex items-center gap-1">
                               <MapPin className="w-3 h-3" />
-                              {route.stops} paradas
+                              {savedRoute.route?.total_stops || 0} paradas
                             </span>
                           </CardDescription>
                         </CardHeader>
@@ -635,7 +651,7 @@ const CustomerDashboard = () => {
                             variant="default"
                             className="w-full bg-[#8B7355] hover:bg-[#7A6449]"
                             size="sm"
-                            onClick={() => navigate(`/rutas/${route.id}`)}
+                            onClick={() => navigate(`/rutas/${savedRoute.route?.slug || savedRoute.route_id}`)}
                           >
                             Ver Ruta Completa
                           </Button>

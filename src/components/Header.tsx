@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { MapPin, Menu, X, ShoppingCart, User } from "lucide-react";
+import { Menu, X, ShoppingCart, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { NotificationsDropdown } from "@/components/NotificationsDropdown";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -57,6 +58,7 @@ const Header = () => {
 
           {/* Botones de acción */}
           <div className="hidden md:flex items-center space-x-4">
+            {isAuthenticated && <NotificationsDropdown />}
             {cartItemsCount > 0 && (
               <Link to="/carrito" className="relative">
                 <Button variant="outline" size="sm" className="relative">
