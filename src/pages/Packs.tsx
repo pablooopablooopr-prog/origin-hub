@@ -39,9 +39,11 @@ interface DbPack {
 const Packs = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [packs, setPacks] = useState<(DbPack | FallbackPack)[]>([]);
+  const [allPacks, setAllPacks] = useState<(DbPack | FallbackPack)[]>([]);
+  const [filteredPacks, setFilteredPacks] = useState<(DbPack | FallbackPack)[]>([]);
   const [loading, setLoading] = useState(true);
   const [initialFilters, setInitialFilters] = useState<SearchFilters | null>(null);
+  const [usingDatabase, setUsingDatabase] = useState(false);
 
   useEffect(() => {
     const fetchPacks = async () => {
@@ -50,7 +52,7 @@ const Packs = () => {
           .from('company_packs')
           .select(`
             *,
-            company:companies(business_name, address)
+            company:companies(business_name, address, region:regions(name))
           `)
           .eq('status', 'published')
           .order('created_at', { ascending: false });
@@ -58,46 +60,93 @@ const Packs = () => {
         if (error) throw error;
         
         if (data && data.length > 0) {
-          setPacks(data);
+          setAllPacks(data);
+          setFilteredPacks(data);
+          setUsingDatabase(true);
         } else {
           // Use fallback data
-          const packType = searchParams.get('packType');
-          if (packType) {
-            const filters: SearchFilters = {
-              location: "",
-              categories: [],
-              packType: packType,
-              addedValue: [],
-              priceRange: ""
-            };
-            setInitialFilters(filters);
-            setPacks(filterPacks(companyPacks, filters));
-          } else {
-            setPacks(companyPacks);
-          }
+          setAllPacks(companyPacks);
+          setFilteredPacks(companyPacks);
+          setUsingDatabase(false);
         }
       } catch (err) {
         console.error('Error fetching packs:', err);
-        setPacks(companyPacks);
+        setAllPacks(companyPacks);
+        setFilteredPacks(companyPacks);
+        setUsingDatabase(false);
       } finally {
         setLoading(false);
       }
     };
 
     fetchPacks();
-  }, [searchParams]);
+  }, []);
 
-  const handleFiltersChange = (filters: SearchFilters) => {
-    // For now, filter fallback data if using fallback
-    if (packs.length > 0 && 'type' in packs[0]) {
+  // Apply initial filters from URL
+  useEffect(() => {
+    const packType = searchParams.get('packType');
+    if (packType && allPacks.length > 0) {
+      const filters: SearchFilters = {
+        location: "",
+        categories: [],
+        packType: packType,
+        addedValue: [],
+        priceRange: ""
+      };
+      setInitialFilters(filters);
+      applyFilters(filters);
+    }
+  }, [searchParams, allPacks]);
+
+  const applyFilters = (filters: SearchFilters) => {
+    if (usingDatabase) {
+      // Filter database packs
+      let filtered = [...allPacks] as DbPack[];
+      
+      // Filter by region/location
+      if (filters.location) {
+        filtered = filtered.filter(pack => {
+          const region = (pack.company as any)?.region?.name;
+          return region?.toLowerCase().includes(filters.location.toLowerCase());
+        });
+      }
+
+      // Filter by pack type (from title)
+      if (filters.packType) {
+        filtered = filtered.filter(pack => {
+          const title = pack.title.toLowerCase();
+          if (filters.packType === 'raiz') return title.includes('raíz') || title.includes('raiz');
+          if (filters.packType === 'esencia') return title.includes('esencia');
+          if (filters.packType === 'gourmet') return title.includes('gourmet');
+          return true;
+        });
+      }
+
+      // Filter by tags (categories and added value)
+      if (filters.categories.length > 0 || filters.addedValue.length > 0) {
+        const allTerms = [...filters.categories, ...filters.addedValue].map(t => t.toLowerCase());
+        filtered = filtered.filter(pack => {
+          const tags = pack.tags?.map(t => t.toLowerCase()) || [];
+          const title = pack.title.toLowerCase();
+          return allTerms.some(term => tags.some(tag => tag.includes(term)) || title.includes(term));
+        });
+      }
+
+      setFilteredPacks(filtered);
+    } else {
+      // Filter fallback data
       const filtered = filterPacks(companyPacks, filters);
-      setPacks(filtered);
+      setFilteredPacks(filtered);
     }
   };
 
+  const handleFiltersChange = (filters: SearchFilters) => {
+    applyFilters(filters);
+  };
+
   const handleClearFilters = () => {
-    setPacks(companyPacks);
-    window.location.reload();
+    setFilteredPacks(allPacks);
+    setInitialFilters(null);
   };
 
   // Helper to get pack type from tags or name
@@ -191,16 +240,16 @@ const Packs = () => {
           ) : (
             <>
               {/* Results */}
-              {packs.length > 0 && (
+              {filteredPacks.length > 0 && (
                 <div className="mb-6">
                   <p className="text-sm text-muted-foreground">
-                    {packs.length} packs encontrados
+                    {filteredPacks.length} packs encontrados
                   </p>
                 </div>
               )}
 
               {/* Empty State */}
-              {packs.length === 0 && (
+              {filteredPacks.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-16 px-4">
                   <PackageX className="w-16 h-16 text-muted-foreground/50 mb-4" />
                   <p className="text-lg text-muted-foreground text-center mb-6 max-w-md">
@@ -213,9 +262,9 @@ const Packs = () => {
               )}
 
               {/* Pack Results Grid */}
-              {packs.length > 0 && (
+              {filteredPacks.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {packs.map((pack) => {
+                  {filteredPacks.map((pack) => {
                     const data = getPackData(pack);
                     return (
                       <Card 
