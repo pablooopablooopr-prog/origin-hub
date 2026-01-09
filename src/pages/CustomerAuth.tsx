@@ -63,6 +63,15 @@ const CustomerAuth = () => {
         if (profileError) {
           console.error('Error creating customer profile:', profileError);
         }
+
+        // Send welcome email
+        try {
+          await supabase.functions.invoke('send-welcome-email', {
+            body: { name: fullName, email, type: 'customer' }
+          });
+        } catch (emailError) {
+          console.error('Error sending welcome email:', emailError);
+        }
       }
 
       toast({
