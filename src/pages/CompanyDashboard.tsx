@@ -4,15 +4,32 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Eye, Edit, Copy, BarChart3, Package, Settings } from "lucide-react";
+import { Plus, Eye, Edit, Copy, BarChart3, Package, Settings, Trash2, ShoppingBag, Loader2, Save, X } from "lucide-react";
 import { User } from "@supabase/supabase-js";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 interface Company {
   id: string;
   business_name: string;
   status: string;
+  contact_email?: string;
+  phone?: string;
+  website?: string;
+  description?: string;
+  address?: string;
 }
 
 interface CompanyPack {
@@ -33,11 +50,36 @@ interface CompanyPack {
   };
 }
 
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  price?: number;
+  stock_quantity?: number;
+  is_available: boolean;
+  origin?: string;
+  weight?: string;
+}
+
 export default function CompanyDashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [company, setCompany] = useState<Company | null>(null);
   const [packs, setPacks] = useState<CompanyPack[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showProductDialog, setShowProductDialog] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [productForm, setProductForm] = useState({
+    name: "",
+    description: "",
+    price: "",
+    stock_quantity: "",
+    origin: "",
+    weight: "",
+    is_available: true
+  });
+  const [savingProduct, setSavingProduct] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -116,6 +158,16 @@ export default function CompanyDashboard() {
       );
 
       setPacks(packsWithAnalytics);
+
+      // Load products
+      const { data: productsData, error: productsError } = await supabase
+        .from('products')
+        .select('*')
+        .eq('company_id', companyData.id)
+        .order('created_at', { ascending: false });
+
+      if (productsError) throw productsError;
+      setProducts(productsData || []);
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -194,6 +246,119 @@ export default function CompanyDashboard() {
     navigate('/');
   };
 
+  // Product management functions
+  const openProductDialog = (product?: Product) => {
+    if (product) {
+      setEditingProduct(product);
+      setProductForm({
+        name: product.name,
+        description: product.description || "",
+        price: product.price?.toString() || "",
+        stock_quantity: product.stock_quantity?.toString() || "",
+        origin: product.origin || "",
+        weight: product.weight || "",
+        is_available: product.is_available
+      });
+    } else {
+      setEditingProduct(null);
+      setProductForm({
+        name: "",
+        description: "",
+        price: "",
+        stock_quantity: "",
+        origin: "",
+        weight: "",
+        is_available: true
+      });
+    }
+    setShowProductDialog(true);
+  };
+
+  const saveProduct = async () => {
+    if (!company || !productForm.name) {
+      toast.error("El nombre del producto es obligatorio");
+      return;
+    }
+
+    setSavingProduct(true);
+
+    try {
+      const slug = productForm.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+
+      const productData = {
+        company_id: company.id,
+        name: productForm.name,
+        slug: editingProduct ? editingProduct.slug : `${slug}-${Date.now()}`,
+        description: productForm.description || null,
+        price: productForm.price ? parseFloat(productForm.price) : null,
+        stock_quantity: productForm.stock_quantity ? parseInt(productForm.stock_quantity) : null,
+        origin: productForm.origin || null,
+        weight: productForm.weight || null,
+        is_available: productForm.is_available
+      };
+
+      if (editingProduct) {
+        const { error } = await supabase
+          .from('products')
+          .update(productData)
+          .eq('id', editingProduct.id);
+
+        if (error) throw error;
+        toast.success("Producto actualizado");
+      } else {
+        const { error } = await supabase
+          .from('products')
+          .insert(productData);
+
+        if (error) throw error;
+        toast.success("Producto creado");
+      }
+
+      setShowProductDialog(false);
+      if (user) loadCompanyData(user.id);
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setSavingProduct(false);
+    }
+  };
+
+  const deleteProduct = async (productId: string) => {
+    if (!confirm("¿Estás seguro de eliminar este producto?")) return;
+
+    try {
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', productId);
+
+      if (error) throw error;
+      toast.success("Producto eliminado");
+      setProducts(products.filter(p => p.id !== productId));
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const toggleProductAvailability = async (product: Product) => {
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({ is_available: !product.is_available })
+        .eq('id', product.id);
+
+      if (error) throw error;
+      setProducts(products.map(p => 
+        p.id === product.id ? { ...p, is_available: !p.is_available } : p
+      ));
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -231,6 +396,10 @@ export default function CompanyDashboard() {
             <TabsTrigger value="packs" className="flex items-center gap-2">
               <Package className="h-4 w-4" />
               Mis Packs
+            </TabsTrigger>
+            <TabsTrigger value="products" className="flex items-center gap-2">
+              <ShoppingBag className="h-4 w-4" />
+              Productos
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
@@ -348,6 +517,103 @@ export default function CompanyDashboard() {
             </div>
           </TabsContent>
 
+          {/* Products Tab */}
+          <TabsContent value="products">
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-semibold">Tus Productos</h2>
+                <Button onClick={() => openProductDialog()}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Añadir Producto
+                </Button>
+              </div>
+
+              {products.length === 0 ? (
+                <Card>
+                  <CardContent className="p-12 text-center">
+                    <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">No tienes productos</h3>
+                    <p className="text-muted-foreground mb-6">
+                      Añade productos para incluirlos en tus packs
+                    </p>
+                    <Button onClick={() => openProductDialog()}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Añadir Primer Producto
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {products.map((product) => (
+                    <Card key={product.id} className="hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <CardTitle className="text-lg">{product.name}</CardTitle>
+                            <CardDescription className="line-clamp-2">
+                              {product.description || "Sin descripción"}
+                            </CardDescription>
+                          </div>
+                          <Badge variant={product.is_available ? "default" : "secondary"}>
+                            {product.is_available ? "Disponible" : "No disponible"}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="flex justify-between text-sm">
+                            <span>Precio:</span>
+                            <span className="font-semibold">
+                              {product.price ? `€${product.price}` : 'No definido'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Stock:</span>
+                            <span>{product.stock_quantity ?? 'Sin control'}</span>
+                          </div>
+                          {product.origin && (
+                            <div className="flex justify-between text-sm">
+                              <span>Origen:</span>
+                              <span>{product.origin}</span>
+                            </div>
+                          )}
+                          <div className="flex items-center justify-between pt-2">
+                            <div className="flex items-center gap-2">
+                              <Switch 
+                                checked={product.is_available}
+                                onCheckedChange={() => toggleProductAvailability(product)}
+                              />
+                              <span className="text-sm text-muted-foreground">Disponible</span>
+                            </div>
+                          </div>
+                          <div className="flex gap-2 pt-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="flex-1"
+                              onClick={() => openProductDialog(product)}
+                            >
+                              <Edit className="h-4 w-4 mr-1" />
+                              Editar
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-destructive hover:text-destructive"
+                              onClick={() => deleteProduct(product.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
           <TabsContent value="analytics">
             <Card>
               <CardHeader>
@@ -357,7 +623,7 @@ export default function CompanyDashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                   <div className="text-center">
                     <div className="text-3xl font-bold text-primary">{packs.length}</div>
                     <div className="text-sm text-muted-foreground">Packs Totales</div>
@@ -373,6 +639,10 @@ export default function CompanyDashboard() {
                       {packs.reduce((sum, pack) => sum + (pack.analytics?.views || 0), 0)}
                     </div>
                     <div className="text-sm text-muted-foreground">Vistas Totales</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-amber-600">{products.length}</div>
+                    <div className="text-sm text-muted-foreground">Productos</div>
                   </div>
                 </div>
               </CardContent>
@@ -395,6 +665,106 @@ export default function CompanyDashboard() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Product Dialog */}
+        <Dialog open={showProductDialog} onOpenChange={setShowProductDialog}>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle>
+                {editingProduct ? "Editar Producto" : "Nuevo Producto"}
+              </DialogTitle>
+              <DialogDescription>
+                {editingProduct ? "Modifica los datos del producto" : "Añade un nuevo producto a tu catálogo"}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="name">Nombre *</Label>
+                <Input
+                  id="name"
+                  value={productForm.name}
+                  onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+                  placeholder="Nombre del producto"
+                />
+              </div>
+              <div>
+                <Label htmlFor="description">Descripción</Label>
+                <Textarea
+                  id="description"
+                  value={productForm.description}
+                  onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
+                  placeholder="Descripción del producto"
+                  rows={3}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="price">Precio (€)</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    step="0.01"
+                    value={productForm.price}
+                    onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
+                    placeholder="0.00"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="stock">Stock</Label>
+                  <Input
+                    id="stock"
+                    type="number"
+                    value={productForm.stock_quantity}
+                    onChange={(e) => setProductForm({ ...productForm, stock_quantity: e.target.value })}
+                    placeholder="Cantidad"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="origin">Origen</Label>
+                  <Input
+                    id="origin"
+                    value={productForm.origin}
+                    onChange={(e) => setProductForm({ ...productForm, origin: e.target.value })}
+                    placeholder="Ej: Andalucía"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="weight">Peso</Label>
+                  <Input
+                    id="weight"
+                    value={productForm.weight}
+                    onChange={(e) => setProductForm({ ...productForm, weight: e.target.value })}
+                    placeholder="Ej: 500g"
+                  />
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="available"
+                  checked={productForm.is_available}
+                  onCheckedChange={(checked) => setProductForm({ ...productForm, is_available: checked })}
+                />
+                <Label htmlFor="available">Producto disponible</Label>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowProductDialog(false)}>
+                <X className="h-4 w-4 mr-2" />
+                Cancelar
+              </Button>
+              <Button onClick={saveProduct} disabled={savingProduct}>
+                {savingProduct ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4 mr-2" />
+                )}
+                {editingProduct ? "Guardar Cambios" : "Crear Producto"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

@@ -1,17 +1,38 @@
-import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ShoppingCart, Trash2, Plus, Minus, Gift, Package, ArrowRight, Tag, Loader2, LogIn } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { ShoppingCart, Trash2, Plus, Minus, Gift, Package, ArrowRight, Tag, Loader2, LogIn, CheckCircle, MapPin } from "lucide-react";
 import { toast } from "sonner";
-import { useCart } from "@/hooks/useSupabaseData";
+import { useCart, createOrder } from "@/hooks/useSupabaseData";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const Cart = () => {
-  const { items, loading, isLoggedIn, updateQuantity, removeFromCart } = useCart();
+  const { items, loading, isLoggedIn, updateQuantity, removeFromCart, clearCart, refetch } = useCart();
+  const navigate = useNavigate();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [showCheckoutDialog, setShowCheckoutDialog] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [orderId, setOrderId] = useState<string | null>(null);
+  const [checkoutForm, setCheckoutForm] = useState({
+    address: "",
+    city: "",
+    postalCode: "",
+    notes: ""
+  });
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -39,7 +60,47 @@ const Cart = () => {
       toast.error("Tu carrito está vacío");
       return;
     }
-    toast.success("Redirigiendo a la pasarela de pago...");
+    setShowCheckoutDialog(true);
+  };
+
+  const handleConfirmOrder = async () => {
+    if (!checkoutForm.address || !checkoutForm.city || !checkoutForm.postalCode) {
+      toast.error("Por favor completa la dirección de envío");
+      return;
+    }
+
+    setIsCheckingOut(true);
+
+    const orderItems = items.map(item => {
+      const pack = (item as any).pack;
+      const product = (item as any).product;
+      return {
+        pack_id: pack?.id,
+        product_id: product?.id,
+        quantity: item.quantity,
+        unit_price: Number(pack?.price || product?.price || 0)
+      };
+    });
+
+    const shippingAddress = `${checkoutForm.address}, ${checkoutForm.postalCode} ${checkoutForm.city}`;
+
+    const { data, error } = await createOrder({
+      shipping_address: shippingAddress,
+      notes: checkoutForm.notes,
+      items: orderItems
+    });
+
+    setIsCheckingOut(false);
+
+    if (error) {
+      toast.error(typeof error === 'string' ? error : "Error al crear el pedido");
+      return;
+    }
+
+    setOrderId(data?.id || null);
+    setShowCheckoutDialog(false);
+    setShowSuccessDialog(true);
+    refetch();
   };
 
   const subtotal = items.reduce((acc, item) => {
@@ -306,6 +367,123 @@ const Cart = () => {
           </div>
         </div>
       </main>
+
+      {/* Checkout Dialog */}
+      <Dialog open={showCheckoutDialog} onOpenChange={setShowCheckoutDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <MapPin className="w-5 h-5" />
+              Dirección de Envío
+            </DialogTitle>
+            <DialogDescription>
+              Ingresa la dirección donde deseas recibir tu pedido
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="address">Dirección</Label>
+              <Input
+                id="address"
+                placeholder="Calle, número, piso..."
+                value={checkoutForm.address}
+                onChange={(e) => setCheckoutForm({ ...checkoutForm, address: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="postalCode">Código Postal</Label>
+                <Input
+                  id="postalCode"
+                  placeholder="28001"
+                  value={checkoutForm.postalCode}
+                  onChange={(e) => setCheckoutForm({ ...checkoutForm, postalCode: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="city">Ciudad</Label>
+                <Input
+                  id="city"
+                  placeholder="Madrid"
+                  value={checkoutForm.city}
+                  onChange={(e) => setCheckoutForm({ ...checkoutForm, city: e.target.value })}
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="notes">Notas (opcional)</Label>
+              <Textarea
+                id="notes"
+                placeholder="Instrucciones especiales para la entrega..."
+                value={checkoutForm.notes}
+                onChange={(e) => setCheckoutForm({ ...checkoutForm, notes: e.target.value })}
+              />
+            </div>
+            <Separator />
+            <div className="flex justify-between text-lg font-bold">
+              <span>Total a pagar:</span>
+              <span className="text-primary">{total}€</span>
+            </div>
+            <Button 
+              className="w-full" 
+              size="lg" 
+              onClick={handleConfirmOrder}
+              disabled={isCheckingOut}
+            >
+              {isCheckingOut ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Procesando...
+                </>
+              ) : (
+                <>
+                  Confirmar Pedido
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </>
+              )}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Success Dialog */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="sm:max-w-md text-center">
+          <div className="flex flex-col items-center py-6">
+            <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
+            <DialogTitle className="text-2xl mb-2">¡Pedido Confirmado!</DialogTitle>
+            <DialogDescription className="text-base mb-4">
+              Tu pedido ha sido realizado con éxito. Recibirás un email de confirmación en breve.
+            </DialogDescription>
+            {orderId && (
+              <p className="text-sm text-muted-foreground mb-4">
+                Número de pedido: <span className="font-mono font-semibold">{orderId.slice(0, 8).toUpperCase()}</span>
+              </p>
+            )}
+            <div className="flex gap-3 w-full">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => {
+                  setShowSuccessDialog(false);
+                  navigate('/customer-dashboard');
+                }}
+              >
+                Ver Mis Pedidos
+              </Button>
+              <Button 
+                className="flex-1"
+                onClick={() => {
+                  setShowSuccessDialog(false);
+                  navigate('/packs');
+                }}
+              >
+                Seguir Comprando
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>
