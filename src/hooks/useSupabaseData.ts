@@ -452,3 +452,100 @@ export async function addRouteStop(stopData: {
   
   return { data, error };
 }
+
+// Type for order items
+interface OrderItemInput {
+  pack_id?: string;
+  product_id?: string;
+  quantity: number;
+  unit_price: number;
+}
+
+// Function to create an order
+export async function createOrder(orderData: {
+  shipping_address: string;
+  notes?: string;
+  items: OrderItemInput[];
+}) {
+  const { data: session } = await supabase.auth.getSession();
+  if (!session?.session?.user) return { data: null, error: 'Not logged in' };
+
+  const { data: customer } = await supabase
+    .from('customers')
+    .select('id, email, full_name')
+    .eq('user_id', session.session.user.id)
+    .single();
+
+  if (!customer) return { data: null, error: 'Customer not found' };
+
+  // Calculate total
+  const totalAmount = orderData.items.reduce(
+    (sum, item) => sum + item.unit_price * item.quantity,
+    0
+  );
+
+  // Create order
+  const { data: order, error: orderError } = await supabase
+    .from('orders')
+    .insert({
+      customer_id: customer.id,
+      shipping_address: orderData.shipping_address,
+      notes: orderData.notes,
+      total_amount: totalAmount,
+      status: 'pending',
+      payment_status: 'pending'
+    })
+    .select()
+    .single();
+
+  if (orderError) return { data: null, error: orderError.message };
+
+  // Create order items with product snapshot
+  const orderItems = orderData.items.map(item => ({
+    order_id: order.id,
+    pack_id: item.pack_id,
+    product_id: item.product_id,
+    quantity: item.quantity,
+    unit_price: item.unit_price,
+    total_price: item.unit_price * item.quantity,
+    product_snapshot: { price: item.unit_price }
+  }));
+
+  const { error: itemsError } = await supabase
+    .from('order_items')
+    .insert(orderItems);
+
+  if (itemsError) {
+    // Rollback order if items fail
+    await supabase.from('orders').delete().eq('id', order.id);
+    return { data: null, error: itemsError.message };
+  }
+
+  // Clear cart after successful order
+  await supabase
+    .from('cart_items')
+    .delete()
+    .eq('customer_id', customer.id);
+
+  // Send order confirmation email via edge function
+  try {
+    await supabase.functions.invoke('send-order-confirmation', {
+      body: {
+        to: customer.email,
+        customerName: customer.full_name,
+        orderId: order.id,
+        items: orderData.items.map(item => ({
+          name: item.pack_id ? 'Pack' : 'Producto',
+          quantity: item.quantity,
+          price: item.unit_price
+        })),
+        total: totalAmount
+      }
+    });
+  } catch (emailError) {
+    console.error('Failed to send confirmation email:', emailError);
+    // Don't fail the order if email fails
+  }
+
+  return { data: order, error: null };
+}

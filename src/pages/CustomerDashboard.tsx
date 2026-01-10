@@ -23,6 +23,23 @@ interface Customer {
   address?: string;
 }
 
+interface OrderItem {
+  id: string;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+  company_packs?: {
+    id: string;
+    title: string;
+    slug: string;
+  } | null;
+  products?: {
+    id: string;
+    name: string;
+    slug: string;
+  } | null;
+}
+
 interface Order {
   id: string;
   status: string;
@@ -30,10 +47,9 @@ interface Order {
   order_date: string;
   tracking_number?: string;
   estimated_delivery?: string;
-  company_packs?: {
-    id: string;
-    title: string;
-  };
+  shipping_address?: string;
+  payment_status?: string;
+  order_items?: OrderItem[];
 }
 
 interface Favorite {
@@ -114,12 +130,26 @@ const CustomerDashboard = () => {
         address: customerData.address || ""
       });
 
-      // Load orders
+      // Load orders with items
       const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
         .select(`
-          *,
-          company_packs(id, title)
+          id,
+          status,
+          total_amount,
+          order_date,
+          tracking_number,
+          estimated_delivery,
+          shipping_address,
+          payment_status,
+          order_items(
+            id,
+            quantity,
+            unit_price,
+            total_price,
+            company_packs(id, title, slug),
+            products(id, name, slug)
+          )
         `)
         .eq('customer_id', customerData.id)
         .order('order_date', { ascending: false });
@@ -513,69 +543,114 @@ const CustomerDashboard = () => {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {orders.map((order) => (
-                      <Card key={order.id} className="hover:shadow-lg transition-shadow">
-                        <CardHeader>
-                          <div className="flex justify-between items-start">
-                            <div className="flex gap-4">
-                              <div className="w-20 h-20 bg-muted rounded-lg flex items-center justify-center">
-                                <Package className="w-10 h-10 text-muted-foreground" />
+                    {orders.map((order) => {
+                      const firstItem = order.order_items?.[0];
+                      const firstPack = firstItem?.company_packs;
+                      const firstProduct = firstItem?.products;
+                      const itemCount = order.order_items?.length || 0;
+                      const displayName = firstPack?.title || firstProduct?.name || "Pedido";
+                      const repeatId = firstPack?.slug || firstPack?.id;
+                      
+                      return (
+                        <Card key={order.id} className="hover:shadow-lg transition-shadow">
+                          <CardHeader>
+                            <div className="flex justify-between items-start">
+                              <div className="flex gap-4">
+                                <div className="w-20 h-20 bg-muted rounded-lg flex items-center justify-center">
+                                  <Package className="w-10 h-10 text-muted-foreground" />
+                                </div>
+                                <div>
+                                  <CardTitle className="text-lg mb-1">
+                                    {displayName}
+                                    {itemCount > 1 && (
+                                      <span className="text-sm font-normal text-muted-foreground ml-2">
+                                        +{itemCount - 1} más
+                                      </span>
+                                    )}
+                                  </CardTitle>
+                                  <CardDescription className="flex items-center gap-2">
+                                    <Calendar className="w-3 h-3" />
+                                    {new Date(order.order_date).toLocaleDateString('es-ES', {
+                                      day: 'numeric',
+                                      month: 'long',
+                                      year: 'numeric'
+                                    })}
+                                  </CardDescription>
+                                  <p className="text-xl font-bold text-[#8B7355] mt-2">
+                                    {order.total_amount}€
+                                  </p>
+                                </div>
                               </div>
-                              <div>
-                                <CardTitle className="text-lg mb-1">
-                                  {order.company_packs?.title || "Pack"}
-                                </CardTitle>
-                                <CardDescription className="flex items-center gap-2">
-                                  <Calendar className="w-3 h-3" />
-                                  {new Date(order.order_date).toLocaleDateString('es-ES', {
-                                    day: 'numeric',
-                                    month: 'long',
-                                    year: 'numeric'
-                                  })}
-                                </CardDescription>
-                                <p className="text-xl font-bold text-[#8B7355] mt-2">
-                                  {order.total_amount}€
+                              <div className="flex flex-col items-end gap-2">
+                                <Badge className={getStatusColor(order.status) + " text-white"}>
+                                  {getStatusText(order.status)}
+                                </Badge>
+                                {order.payment_status && (
+                                  <Badge variant="outline" className="text-xs">
+                                    {order.payment_status === 'paid' ? 'Pagado' : 
+                                     order.payment_status === 'pending' ? 'Pago pendiente' : 
+                                     order.payment_status}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          </CardHeader>
+                          <CardContent>
+                            {/* Order items summary */}
+                            {order.order_items && order.order_items.length > 0 && (
+                              <div className="mb-4 p-3 bg-muted/50 rounded-lg">
+                                <p className="text-xs text-muted-foreground mb-2">Productos del pedido:</p>
+                                <div className="space-y-1">
+                                  {order.order_items.slice(0, 3).map((item) => (
+                                    <div key={item.id} className="flex justify-between text-sm">
+                                      <span>{item.company_packs?.title || item.products?.name || 'Producto'} x{item.quantity}</span>
+                                      <span className="font-medium">{item.total_price}€</span>
+                                    </div>
+                                  ))}
+                                  {order.order_items.length > 3 && (
+                                    <p className="text-xs text-muted-foreground">
+                                      +{order.order_items.length - 3} productos más
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                            
+                            <div className="flex gap-2">
+                              {repeatId && (
+                                <Button
+                                  variant="default"
+                                  size="sm"
+                                  className="flex-1 bg-[#8B7355] hover:bg-[#7A6449]"
+                                  onClick={() => repeatOrder(repeatId)}
+                                >
+                                  <RepeatIcon className="w-4 h-4 mr-2" />
+                                  Repetir Compra
+                                </Button>
+                              )}
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className={repeatId ? "flex-1" : "w-full"}
+                                onClick={() => downloadInvoice(order.id)}
+                              >
+                                <Download className="w-4 h-4 mr-2" />
+                                Descargar Factura
+                              </Button>
+                            </div>
+                            {order.tracking_number && (
+                              <div className="mt-3 p-3 bg-muted rounded-lg">
+                                <p className="text-xs text-muted-foreground mb-1">Número de seguimiento</p>
+                                <p className="font-mono text-sm font-medium flex items-center gap-2">
+                                  <Truck className="w-4 h-4 text-[#8B7355]" />
+                                  {order.tracking_number}
                                 </p>
                               </div>
-                            </div>
-                            <Badge className={getStatusColor(order.status) + " text-white"}>
-                              {getStatusText(order.status)}
-                            </Badge>
-                          </div>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="flex gap-2">
-                            <Button
-                              variant="default"
-                              size="sm"
-                              className="flex-1 bg-[#8B7355] hover:bg-[#7A6449]"
-                              onClick={() => order.company_packs?.id && repeatOrder(order.company_packs.id)}
-                            >
-                              <RepeatIcon className="w-4 h-4 mr-2" />
-                              Repetir Compra
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="flex-1"
-                              onClick={() => downloadInvoice(order.id)}
-                            >
-                              <Download className="w-4 h-4 mr-2" />
-                              Descargar Factura
-                            </Button>
-                          </div>
-                          {order.tracking_number && (
-                            <div className="mt-3 p-3 bg-muted rounded-lg">
-                              <p className="text-xs text-muted-foreground mb-1">Número de seguimiento</p>
-                              <p className="font-mono text-sm font-medium flex items-center gap-2">
-                                <Truck className="w-4 h-4 text-[#8B7355]" />
-                                {order.tracking_number}
-                              </p>
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    ))}
+                            )}
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
                   </div>
                 )}
               </CardContent>
