@@ -30,6 +30,7 @@ interface Company {
   website?: string;
   description?: string;
   address?: string;
+  authenticity_story?: string;
 }
 
 interface CompanyPack {
@@ -80,6 +81,15 @@ export default function CompanyDashboard() {
     is_available: true
   });
   const [savingProduct, setSavingProduct] = useState(false);
+  const [savingCompany, setSavingCompany] = useState(false);
+  const [companyForm, setCompanyForm] = useState({
+    business_name: "",
+    phone: "",
+    website: "",
+    address: "",
+    description: "",
+    authenticity_story: ""
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -127,6 +137,14 @@ export default function CompanyDashboard() {
       }
 
       setCompany(companyData);
+      setCompanyForm({
+        business_name: companyData.business_name || "",
+        phone: companyData.phone || "",
+        website: companyData.website || "",
+        address: companyData.address || "",
+        description: companyData.description || "",
+        authenticity_story: companyData.authenticity_story || ""
+      });
 
       // Load packs
       const { data: packsData, error: packsError } = await supabase
@@ -356,6 +374,34 @@ export default function CompanyDashboard() {
       ));
     } catch (error: any) {
       toast.error(error.message);
+    }
+  };
+
+  const saveCompanyProfile = async () => {
+    if (!company) return;
+    
+    setSavingCompany(true);
+    try {
+      const { error } = await supabase
+        .from('companies')
+        .update({
+          business_name: companyForm.business_name,
+          phone: companyForm.phone,
+          website: companyForm.website,
+          address: companyForm.address,
+          description: companyForm.description,
+          authenticity_story: companyForm.authenticity_story
+        })
+        .eq('id', company.id);
+
+      if (error) throw error;
+      
+      setCompany({ ...company, ...companyForm });
+      toast.success("Perfil de empresa actualizado correctamente");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setSavingCompany(false);
     }
   };
 
@@ -650,19 +696,116 @@ export default function CompanyDashboard() {
           </TabsContent>
 
           <TabsContent value="settings">
-            <Card>
-              <CardHeader>
-                <CardTitle>Configuración de Empresa</CardTitle>
-                <CardDescription>
-                  Gestiona los datos de tu empresa
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Configuración de empresa próximamente...
-                </p>
-              </CardContent>
-            </Card>
+            <div className="space-y-6">
+              {/* Company Profile Settings */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Settings className="h-5 w-5" />
+                    Datos de la Empresa
+                  </CardTitle>
+                  <CardDescription>
+                    Gestiona la información visible de tu empresa
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="business_name">Nombre del Negocio</Label>
+                      <Input
+                        id="business_name"
+                        value={companyForm.business_name}
+                        onChange={(e) => setCompanyForm({ ...companyForm, business_name: e.target.value })}
+                        placeholder="Nombre de tu empresa"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="phone">Teléfono</Label>
+                      <Input
+                        id="phone"
+                        value={companyForm.phone}
+                        onChange={(e) => setCompanyForm({ ...companyForm, phone: e.target.value })}
+                        placeholder="+34 600 000 000"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="address">Dirección</Label>
+                    <Input
+                      id="address"
+                      value={companyForm.address}
+                      onChange={(e) => setCompanyForm({ ...companyForm, address: e.target.value })}
+                      placeholder="Dirección completa"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="website">Sitio Web</Label>
+                    <Input
+                      id="website"
+                      value={companyForm.website}
+                      onChange={(e) => setCompanyForm({ ...companyForm, website: e.target.value })}
+                      placeholder="https://www.tuempresa.com"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="description">Descripción</Label>
+                    <Textarea
+                      id="description"
+                      value={companyForm.description}
+                      onChange={(e) => setCompanyForm({ ...companyForm, description: e.target.value })}
+                      placeholder="Describe tu empresa, qué productos ofreces y qué te hace único..."
+                      rows={4}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="authenticity_story">Historia de Autenticidad</Label>
+                    <Textarea
+                      id="authenticity_story"
+                      value={companyForm.authenticity_story}
+                      onChange={(e) => setCompanyForm({ ...companyForm, authenticity_story: e.target.value })}
+                      placeholder="Cuenta la historia de tu empresa, tu tradición familiar, valores..."
+                      rows={4}
+                    />
+                  </div>
+                  <Button onClick={saveCompanyProfile} disabled={savingCompany} className="w-full md:w-auto">
+                    {savingCompany ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Save className="h-4 w-4 mr-2" />
+                    )}
+                    Guardar Cambios
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Account Status */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Estado de la Cuenta</CardTitle>
+                  <CardDescription>
+                    Información sobre el estado de tu cuenta empresarial
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                      <div>
+                        <p className="font-medium">Estado de verificación</p>
+                        <p className="text-sm text-muted-foreground">Tu empresa está verificada y aprobada</p>
+                      </div>
+                      <Badge variant="default" className="bg-green-500">Verificado</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                      <div>
+                        <p className="font-medium">Plan actual</p>
+                        <p className="text-sm text-muted-foreground">Plan básico gratuito</p>
+                      </div>
+                      <Badge variant="outline">Básico</Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
 
