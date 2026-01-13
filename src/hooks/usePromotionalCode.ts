@@ -100,7 +100,18 @@ export function usePromotionalCode() {
   };
 
   const incrementCodeUsage = async (codeId: string) => {
-    await supabase.rpc('increment_promo_code_usage', { code_id: codeId });
+    const { data: currentCode } = await supabase
+      .from('promotional_codes')
+      .select('current_uses')
+      .eq('id', codeId)
+      .single();
+    
+    if (currentCode) {
+      await supabase
+        .from('promotional_codes')
+        .update({ current_uses: (currentCode.current_uses || 0) + 1 })
+        .eq('id', codeId);
+    }
   };
 
   return {
