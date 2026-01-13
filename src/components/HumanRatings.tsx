@@ -85,14 +85,14 @@ const HumanRatings = () => {
                     <CardTitle className="text-lg text-primary mb-1">
                       {rating.business}
                     </CardTitle>
-                    <CardDescription className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                       <MapPin className="w-3 h-3" />
                       <span>{rating.location}</span>
                       <span>•</span>
                       <Badge variant="outline" className="text-xs">
                         {rating.category}
                       </Badge>
-                    </CardDescription>
+                    </div>
                   </div>
                 </div>
               </CardHeader>
