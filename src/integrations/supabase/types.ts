@@ -766,6 +766,7 @@ export type Database = {
         Row: {
           comment: string | null
           created_at: string
+          customer_id: string | null
           customer_name: string
           id: string
           pack_id: string | null
@@ -774,6 +775,7 @@ export type Database = {
         Insert: {
           comment?: string | null
           created_at?: string
+          customer_id?: string | null
           customer_name: string
           id?: string
           pack_id?: string | null
@@ -782,12 +784,20 @@ export type Database = {
         Update: {
           comment?: string | null
           created_at?: string
+          customer_id?: string | null
           customer_name?: string
           id?: string
           pack_id?: string | null
           rating?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "pack_reviews_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "pack_reviews_pack_id_fkey"
             columns: ["pack_id"]
@@ -898,6 +908,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      promotional_codes: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          current_uses: number | null
+          discount_type: string
+          discount_value: number
+          id: string
+          is_active: boolean | null
+          max_uses: number | null
+          min_order_amount: number | null
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          current_uses?: number | null
+          discount_type: string
+          discount_value: number
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          min_order_amount?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          current_uses?: number | null
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          min_order_amount?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: []
       }
       regions: {
         Row: {
