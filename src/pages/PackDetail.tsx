@@ -1,5 +1,5 @@
 import { useParams, Navigate, Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,15 +8,29 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { MapPin, Package, Star, Truck, Clock, Users, ShoppingCart, Share2, Award, Leaf, Gift, ChevronRight, ArrowLeft, MessageCircle, Eye, Heart, User, Calendar, CheckCircle } from "lucide-react";
+import { MapPin, Package, Star, Truck, Clock, Users, ShoppingCart, Share2, Award, Leaf, Gift, ChevronRight, ArrowLeft, MessageCircle, Eye, Heart, User, Calendar, CheckCircle, Loader2 } from "lucide-react";
 import { getPackById, companyPacks } from "@/data/companyPacks";
-import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { usePackFavorites } from "@/hooks/usePackFavorites";
+import { usePackAnalytics } from "@/hooks/usePackAnalytics";
+import { usePackReviews } from "@/hooks/usePackReviews";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 const PackDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
   const [relatedPacksIndex, setRelatedPacksIndex] = useState(0);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewForm, setReviewForm] = useState({ name: "", rating: 0, comment: "" });
+  const [submittingReview, setSubmittingReview] = useState(false);
+  
+  // Hooks for Supabase integration
+  const { isFavorite, loading: favoriteLoading, toggleFavorite } = usePackFavorites(id);
+  const { trackClick } = usePackAnalytics(id);
+  const { reviews, loading: reviewsLoading, averageRating, submitReview } = usePackReviews(id);
 
   // Auto scroll to top when pack changes
   useEffect(() => {
@@ -45,19 +59,65 @@ const PackDetail = () => {
     );
   }
 
-  const handleShare = () => {
-    window.location.href = '/mi-cuenta';
+  const handleShare = async () => {
+    trackClick();
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: pack.name,
+          text: pack.description,
+          url: window.location.href
+        });
+      } catch (err) {
+        // User cancelled share
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast({
+        title: "Enlace copiado",
+        description: "El enlace ha sido copiado al portapapeles"
+      });
+    }
   };
 
   const handleFavorite = () => {
-    window.location.href = '/mi-cuenta';
+    toggleFavorite();
   };
 
   const handleAddToCart = () => {
+    trackClick();
     toast({
       title: "Añadido al carrito",
       description: `${pack.name} ha sido añadido a tu carrito`,
     });
+  };
+
+  const handleSubmitReview = async () => {
+    if (!reviewForm.name || reviewForm.rating === 0 || !reviewForm.comment) {
+      toast({
+        title: "Campos requeridos",
+        description: "Por favor, completa tu nombre, puntuación y comentario",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setSubmittingReview(true);
+    const success = await submitReview(reviewForm.name, reviewForm.rating, reviewForm.comment);
+    setSubmittingReview(false);
+
+    if (success) {
+      setReviewForm({ name: "", rating: 0, comment: "" });
+      setShowReviewForm(false);
+    }
+  };
+
+  const formatReviewDate = (dateString: string) => {
+    try {
+      return format(new Date(dateString), "d MMM yyyy", { locale: es });
+    } catch {
+      return dateString;
+    }
   };
 
   const getPackTypeColor = (type: string) => {
@@ -129,24 +189,9 @@ const PackDetail = () => {
     }
   };
 
-  const mockReviews = [
-    {
-      id: 1,
-      user: "María González",
-      rating: 5,
-      date: "15 Nov 2024",
-      comment: "Excelente pack, productos de calidad superior. La cecina estaba espectacular y el queso increíble.",
-      verified: true
-    },
-    {
-      id: 2, 
-      user: "Carlos Ruiz",
-      rating: 4,
-      date: "10 Nov 2024",
-      comment: "Muy buena selección de productos locales. El envío llegó perfecto y rápido.",
-      verified: true
-    }
-  ];
+  // Combine real reviews with fallback if no reviews exist
+  const displayReviews = reviews.length > 0 ? reviews : [];
+  const displayRating = averageRating > 0 ? averageRating : pack.rating;
 
   const relatedPacks = companyPacks.filter(p => 
     p.id !== pack.id && 
@@ -329,10 +374,11 @@ const PackDetail = () => {
                   <Button 
                     variant="outline" 
                     size="icon" 
-                    className="bg-background/80 backdrop-blur"
+                    className={`backdrop-blur ${isFavorite ? 'bg-red-50 border-red-200' : 'bg-background/80'}`}
                     onClick={handleFavorite}
+                    disabled={favoriteLoading}
                   >
-                    <Heart className="w-4 h-4" />
+                    <Heart className={`w-4 h-4 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
                   </Button>
                 </div>
               </div>
@@ -521,26 +567,100 @@ const PackDetail = () => {
                     <MessageCircle className="w-6 h-6" />
                     Opiniones de otros clientes
                   </CardTitle>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
                           <Star 
                             key={i} 
-                            className={`w-5 h-5 ${i < Math.floor(pack.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} 
+                            className={`w-5 h-5 ${i < Math.floor(displayRating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} 
                           />
                         ))}
                       </div>
-                      <span className="font-semibold">{pack.rating}/5</span>
-                      <Link to="/valoraciones" className="text-muted-foreground hover:text-primary transition-colors">
-                        ({pack.reviews} valoraciones)
-                      </Link>
+                      <span className="font-semibold">{displayRating}/5</span>
+                      <span className="text-muted-foreground">
+                        ({displayReviews.length || pack.reviews} valoraciones)
+                      </span>
                     </div>
+                    <Button variant="outline" size="sm" onClick={() => setShowReviewForm(!showReviewForm)}>
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      Escribir valoración
+                    </Button>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
-                    {mockReviews.map((review) => (
+                    {/* Review Form */}
+                    {showReviewForm && (
+                      <Card className="border-2 border-primary/20 bg-primary/5">
+                        <CardContent className="pt-4 space-y-4">
+                          <div>
+                            <label className="text-sm font-medium mb-2 block">Tu nombre</label>
+                            <Input 
+                              value={reviewForm.name}
+                              onChange={(e) => setReviewForm({ ...reviewForm, name: e.target.value })}
+                              placeholder="Ej: María G."
+                            />
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium mb-2 block">Puntuación</label>
+                            <div className="flex gap-1">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <button
+                                  key={star}
+                                  type="button"
+                                  onClick={() => setReviewForm({ ...reviewForm, rating: star })}
+                                  className="focus:outline-none"
+                                >
+                                  <Star
+                                    className={`w-7 h-7 transition-colors ${
+                                      star <= reviewForm.rating
+                                        ? "fill-yellow-400 text-yellow-400"
+                                        : "text-gray-300 hover:text-yellow-300"
+                                    }`}
+                                  />
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium mb-2 block">Tu comentario</label>
+                            <Textarea 
+                              value={reviewForm.comment}
+                              onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
+                              placeholder="Cuéntanos qué te pareció este pack..."
+                              className="min-h-[80px]"
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <Button onClick={handleSubmitReview} disabled={submittingReview}>
+                              {submittingReview && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                              Enviar valoración
+                            </Button>
+                            <Button variant="outline" onClick={() => setShowReviewForm(false)}>
+                              Cancelar
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* Loading Reviews */}
+                    {reviewsLoading && (
+                      <div className="flex justify-center py-4">
+                        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                      </div>
+                    )}
+
+                    {/* Reviews List */}
+                    {!reviewsLoading && displayReviews.length === 0 && (
+                      <div className="text-center py-6 text-muted-foreground">
+                        <MessageCircle className="w-12 h-12 mx-auto mb-2 opacity-30" />
+                        <p>Aún no hay valoraciones. ¡Sé el primero en compartir tu experiencia!</p>
+                      </div>
+                    )}
+
+                    {displayReviews.map((review) => (
                       <div key={review.id} className="border-l-4 border-l-primary/20 pl-4">
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex items-center gap-2">
@@ -548,8 +668,8 @@ const PackDetail = () => {
                               <User className="w-4 h-4 text-primary" />
                             </div>
                             <div>
-                              <span className="font-medium">{review.user}</span>
-                              {review.verified && (
+                              <span className="font-medium">{review.customer_name}</span>
+                              {review.customer_id && (
                                 <Badge variant="outline" className="ml-2 text-xs">
                                   <CheckCircle className="w-3 h-3 mr-1" />
                                   Verificado
@@ -568,18 +688,13 @@ const PackDetail = () => {
                             </div>
                             <span className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                               <Calendar className="w-3 h-3" />
-                              {review.date}
+                              {formatReviewDate(review.created_at)}
                             </span>
                           </div>
                         </div>
                         <p className="text-muted-foreground">{review.comment}</p>
                       </div>
                     ))}
-                    <Button asChild variant="outline" className="w-full">
-                      <Link to="/valoraciones">
-                        Ver todas las valoraciones
-                      </Link>
-                    </Button>
                   </div>
                 </CardContent>
               </Card>
