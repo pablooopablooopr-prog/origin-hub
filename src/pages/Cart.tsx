@@ -9,9 +9,10 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ShoppingCart, Trash2, Plus, Minus, Gift, Package, ArrowRight, Tag, Loader2, LogIn, CheckCircle, MapPin } from "lucide-react";
+import { ShoppingCart, Trash2, Plus, Minus, Gift, Package, ArrowRight, Tag, Loader2, LogIn, CheckCircle, MapPin, X } from "lucide-react";
 import { toast } from "sonner";
 import { useCart, createOrder } from "@/hooks/useSupabaseData";
+import { usePromotionalCode } from "@/hooks/usePromotionalCode";
 import {
   Dialog,
   DialogContent,
@@ -22,11 +23,13 @@ import {
 
 const Cart = () => {
   const { items, loading, isLoggedIn, updateQuantity, removeFromCart, clearCart, refetch } = useCart();
+  const { appliedCode, discount, loading: promoLoading, validateCode, removeCode, incrementCodeUsage } = usePromotionalCode();
   const navigate = useNavigate();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [showCheckoutDialog, setShowCheckoutDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [promoInput, setPromoInput] = useState("");
   const [checkoutForm, setCheckoutForm] = useState({
     address: "",
     city: "",
