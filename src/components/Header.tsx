@@ -5,12 +5,12 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { NotificationsDropdown } from "@/components/NotificationsDropdown";
+import { useCart } from "@/hooks/useCart";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // Mock cart items count - en producción vendría del estado global/context
-  const cartItemsCount = 1;
+  const { itemCount } = useCart();
 
   useEffect(() => {
     // Check auth status
@@ -59,12 +59,12 @@ const Header = () => {
           {/* Botones de acción */}
           <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated && <NotificationsDropdown />}
-            {cartItemsCount > 0 && (
+            {itemCount > 0 && (
               <Link to="/carrito" className="relative">
                 <Button variant="outline" size="sm" className="relative">
                   <ShoppingCart className="w-4 h-4" />
                   <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
-                    {cartItemsCount}
+                    {itemCount}
                   </Badge>
                 </Button>
               </Link>
@@ -110,11 +110,11 @@ const Header = () => {
                 Contacto
               </Link>
               <div className="flex flex-col space-y-2 pt-4">
-                {cartItemsCount > 0 && (
+                {itemCount > 0 && (
                   <Link to="/carrito" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="outline" size="sm" className="w-full relative">
                       <ShoppingCart className="w-4 h-4 mr-2" />
-                      Carrito ({cartItemsCount})
+                      Carrito ({itemCount})
                     </Button>
                   </Link>
                 )}
