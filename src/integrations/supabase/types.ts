@@ -1463,6 +1463,17 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_promo_code_safe: { Args: { code_id: string }; Returns: boolean }
+      validate_promo_code: {
+        Args: { code_value: string; order_total: number }
+        Returns: {
+          code_id: string
+          discount_type: string
+          discount_value: number
+          error_message: string
+          valid: boolean
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

@@ -23,7 +23,7 @@ import {
 
 const Cart = () => {
   const { items, loading, isLoggedIn, updateQuantity, removeFromCart, clearCart, refetch } = useCart();
-  const { appliedCode, discount, loading: promoLoading, validateCode, removeCode, incrementCodeUsage } = usePromotionalCode();
+  const { appliedCodeId, discount, loading: promoLoading, validateCode, removeCode, incrementCodeUsage } = usePromotionalCode();
   const navigate = useNavigate();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [showCheckoutDialog, setShowCheckoutDialog] = useState(false);

@@ -43,8 +43,9 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
+        // Use companies_public view for safe public access (no email/phone exposure)
         const { data, error } = await supabase
-          .from('companies')
+          .from('companies_public')
           .select(`
             id,
             business_name,
@@ -53,7 +54,7 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
             latitude,
             longitude,
             avg_rating,
-            category:categories(name)
+            category_id
           `)
           .eq('status', 'approved');
 
@@ -64,7 +65,7 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
           const transformed: Business[] = data.map((company: any) => ({
             id: company.id,
             name: company.business_name,
-            category: company.category?.name || 'Vida Natural',
+            category: 'Vida Natural', // Category name not available in public view
             description: company.description || '',
             address: company.address || '',
             city: '',
