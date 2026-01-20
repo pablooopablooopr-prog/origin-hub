@@ -87,15 +87,13 @@ const AdminDashboard = () => {
       return;
     }
 
-    // Check if user has admin role
-    const { data: roleData } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', session.user.id)
-      .eq('role', 'admin')
-      .single();
+    // Use RPC function for secure server-side role check
+    const { data: isAdmin, error } = await supabase.rpc('has_role', {
+      _user_id: session.user.id,
+      _role: 'admin'
+    });
 
-    if (!roleData) {
+    if (error || !isAdmin) {
       toast({
         title: "Acceso denegado",
         description: "No tienes permisos de administrador",

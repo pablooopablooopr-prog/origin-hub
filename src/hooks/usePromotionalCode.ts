@@ -16,15 +16,18 @@ export interface PromotionalCode {
 
 interface ValidateResult {
   valid: boolean;
-  code?: PromotionalCode;
+  codeId?: string;
+  discountType?: string;
   error?: string;
   discount?: number;
 }
 
 export function usePromotionalCode() {
-  const [appliedCode, setAppliedCode] = useState<PromotionalCode | null>(null);
+  const [appliedCodeId, setAppliedCodeId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [discount, setDiscount] = useState(0);
+  const [discountType, setDiscountType] = useState<string | null>(null);
+  const [discountValue, setDiscountValue] = useState<number>(0);
 
   const validateCode = async (code: string, orderTotal: number): Promise<ValidateResult> => {
     if (!code.trim()) {
@@ -34,60 +37,44 @@ export function usePromotionalCode() {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase
-        .from('promotional_codes')
-        .select('*')
-        .eq('code', code.toUpperCase().trim())
-        .eq('is_active', true)
-        .single();
+      // Use RPC function instead of direct table access to prevent enumeration
+      const { data, error } = await supabase.rpc('validate_promo_code', {
+        code_value: code,
+        order_total: orderTotal
+      });
 
-      if (error || !data) {
+      if (error) {
         setLoading(false);
-        return { valid: false, error: 'Código no válido o expirado' };
+        return { valid: false, error: 'Error al validar el código' };
       }
 
-      const promoCode = data as PromotionalCode;
-
-      // Check validity dates
-      const now = new Date();
-      if (promoCode.valid_from && new Date(promoCode.valid_from) > now) {
+      const result = data?.[0];
+      
+      if (!result?.valid) {
         setLoading(false);
-        return { valid: false, error: 'Este código aún no está activo' };
-      }
-
-      if (promoCode.valid_until && new Date(promoCode.valid_until) < now) {
-        setLoading(false);
-        return { valid: false, error: 'Este código ha expirado' };
-      }
-
-      // Check max uses
-      if (promoCode.max_uses && promoCode.current_uses >= promoCode.max_uses) {
-        setLoading(false);
-        return { valid: false, error: 'Este código ha alcanzado el límite de usos' };
-      }
-
-      // Check minimum order amount
-      if (orderTotal < promoCode.min_order_amount) {
-        setLoading(false);
-        return { 
-          valid: false, 
-          error: `Pedido mínimo de ${promoCode.min_order_amount}€ para usar este código` 
-        };
+        return { valid: false, error: result?.error_message || 'Código no válido o expirado' };
       }
 
       // Calculate discount
       let discountAmount = 0;
-      if (promoCode.discount_type === 'percentage') {
-        discountAmount = (orderTotal * promoCode.discount_value) / 100;
+      if (result.discount_type === 'percentage') {
+        discountAmount = (orderTotal * result.discount_value) / 100;
       } else {
-        discountAmount = Math.min(promoCode.discount_value, orderTotal);
+        discountAmount = Math.min(result.discount_value, orderTotal);
       }
 
-      setAppliedCode(promoCode);
+      setAppliedCodeId(result.code_id);
+      setDiscountType(result.discount_type);
+      setDiscountValue(result.discount_value);
       setDiscount(discountAmount);
       setLoading(false);
 
-      return { valid: true, code: promoCode, discount: discountAmount };
+      return { 
+        valid: true, 
+        codeId: result.code_id,
+        discountType: result.discount_type,
+        discount: discountAmount 
+      };
     } catch (err) {
       setLoading(false);
       return { valid: false, error: 'Error al validar el código' };
@@ -95,28 +82,30 @@ export function usePromotionalCode() {
   };
 
   const removeCode = () => {
-    setAppliedCode(null);
+    setAppliedCodeId(null);
     setDiscount(0);
+    setDiscountType(null);
+    setDiscountValue(0);
   };
 
-  const incrementCodeUsage = async (codeId: string) => {
-    const { data: currentCode } = await supabase
-      .from('promotional_codes')
-      .select('current_uses')
-      .eq('id', codeId)
-      .single();
+  // Use atomic RPC function for safe increment
+  const incrementCodeUsage = async (codeId: string): Promise<boolean> => {
+    const { data, error } = await supabase.rpc('increment_promo_code_safe', {
+      code_id: codeId
+    });
     
-    if (currentCode) {
-      await supabase
-        .from('promotional_codes')
-        .update({ current_uses: (currentCode.current_uses || 0) + 1 })
-        .eq('id', codeId);
+    if (error) {
+      return false;
     }
+    
+    return data === true;
   };
 
   return {
-    appliedCode,
+    appliedCodeId,
     discount,
+    discountType,
+    discountValue,
     loading,
     validateCode,
     removeCode,

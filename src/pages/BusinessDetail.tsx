@@ -16,9 +16,11 @@ interface Company {
   description: string | null;
   authenticity_story: string | null;
   address: string | null;
-  phone: string | null;
-  email: string;
-  user_id: string | null;
+  website: string | null;
+  logo_url: string | null;
+  cover_image_url: string | null;
+  avg_rating: number | null;
+  total_reviews: number | null;
 }
 
 interface CompanyPack {
@@ -56,9 +58,9 @@ const BusinessDetail = () => {
 
   const loadCompanyData = async () => {
     try {
-      // Load company data
+      // Use companies_public view for public access (no email/phone exposure)
       const { data: companyData, error: companyError } = await supabase
-        .from('companies')
+        .from('companies_public')
         .select('*')
         .eq('id', id)
         .single();
@@ -66,9 +68,17 @@ const BusinessDetail = () => {
       if (companyError) throw companyError;
       setCompany(companyData);
 
-      // Check if current user is owner
+      // Check ownership via auth session comparison with companies table
       const { data: { session } } = await supabase.auth.getSession();
-      setIsOwner(session?.user?.id === companyData.user_id);
+      if (session) {
+        const { data: ownerCheck } = await supabase
+          .from('companies')
+          .select('user_id')
+          .eq('id', id)
+          .eq('user_id', session.user.id)
+          .single();
+        setIsOwner(!!ownerCheck);
+      }
 
       // Load company packs
       const { data: packsData, error: packsError } = await supabase
@@ -106,15 +116,8 @@ const BusinessDetail = () => {
   };
 
   const handleContact = () => {
-    if (company?.email) {
-      window.location.href = `mailto:${company.email}`;
-    } else {
-      toast({
-        title: "Email no disponible",
-        description: "Esta empresa no tiene email de contacto configurado",
-        variant: "destructive",
-      });
-    }
+    // Redirect to contact page since email is not publicly exposed
+    navigate('/contacto');
   };
 
   if (loading) {
@@ -399,26 +402,26 @@ const BusinessDetail = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                {company.email && (
-                  <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-                    <Mail className="w-5 h-5 text-[#8B7355]" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Email</p>
-                      <p className="font-medium text-sm">{company.email}</p>
-                    </div>
+              {company.website && (
+                <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                  <Globe className="w-5 h-5 text-primary" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Web</p>
+                    <a href={company.website} target="_blank" rel="noopener noreferrer" className="font-medium text-sm text-primary hover:underline">
+                      {company.website}
+                    </a>
                   </div>
-                )}
-                {company.phone && (
-                  <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-                    <Phone className="w-5 h-5 text-[#8B7355]" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Teléfono</p>
-                      <p className="font-medium text-sm">{company.phone}</p>
-                    </div>
+                </div>
+              )}
+              {company.address && (
+                <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                  <MapPin className="w-5 h-5 text-primary" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Dirección</p>
+                    <p className="font-medium text-sm">{company.address}</p>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
               <Button
                 size="lg"
                 className="w-full bg-[#8B7355] hover:bg-[#7A6449]"
