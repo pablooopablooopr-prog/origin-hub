@@ -20,9 +20,9 @@ const Index = () => {
         <InteractiveMap />
         
         {/* Pack Exploration Section */}
-        <section className="pt-6 pb-12">
+        <section className="pt-4 pb-12">
           <div className="container mx-auto px-6">
-            <div className="text-center mb-16">
+            <div className="text-center mb-12">
               <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
                 Explora los Packs Regionales
               </h2>

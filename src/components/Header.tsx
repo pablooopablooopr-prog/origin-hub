@@ -54,6 +54,9 @@ const Header = () => {
             <Link to="/contacto" className="text-muted-foreground hover:text-primary transition-colors">
               Contacto
             </Link>
+            <Link to="/sobre-origen" className="text-muted-foreground hover:text-primary transition-colors">
+              Historia
+            </Link>
           </nav>
 
           {/* Botones de acción */}
@@ -108,6 +111,9 @@ const Header = () => {
               </Link>
               <Link to="/contacto" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                 Contacto
+              </Link>
+              <Link to="/sobre-origen" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
+                Historia
               </Link>
               <div className="flex flex-col space-y-2 pt-4">
                 {itemCount > 0 && (
