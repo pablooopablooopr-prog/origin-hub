@@ -1,4 +1,4 @@
-import { useParams, Navigate, Link } from "react-router-dom";
+import { useParams, Navigate, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { getRouteById, getAllRoutes, RouteDetail } from "@/data/routes";
 import { supabase } from "@/integrations/supabase/client";
 import { useRouteFavorites } from "@/hooks/useRouteFavorites";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Clock, 
   Users, 
@@ -22,7 +23,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
-  Heart
+  Heart,
+  Copy
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -56,10 +58,14 @@ const parseJsonObject = (value: unknown): Record<string, unknown> => {
 
 const RutaDetalle = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [relatedRoutesIndex, setRelatedRoutesIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [personalizing, setPersonalizing] = useState(false);
   const [route, setRoute] = useState<RouteDetail | null>(null);
+  const [dbRouteId, setDbRouteId] = useState<string | null>(null);
   const [relatedRoutes, setRelatedRoutes] = useState<RouteDetail[]>([]);
   const { isFavorite, loading: favoriteLoading, toggleFavorite } = useRouteFavorites(id);
   
@@ -129,6 +135,7 @@ const RutaDetalle = () => {
           };
 
           setRoute(transformedRoute);
+          setDbRouteId(supabaseRoute.id);
         } else {
           // Fallback to static data
           const staticRoute = getRouteById(id);
@@ -230,6 +237,118 @@ const RutaDetalle = () => {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Personalizar ruta: crea una copia de la ruta en la cuenta del usuario
+  const handlePersonalize = async () => {
+    if (!route) return;
+    
+    setPersonalizing(true);
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Inicia sesión",
+          description: "Debes iniciar sesión para personalizar esta ruta",
+          variant: "destructive",
+        });
+        navigate('/soy-cliente');
+        return;
+      }
+
+      // Generate unique slug for the copy
+      const timestamp = Date.now();
+      const newSlug = `${route.id}-personalizada-${timestamp}`;
+
+      // Create a copy of the route
+      const { data: newRoute, error: routeError } = await supabase
+        .from('routes')
+        .insert({
+          title: `${route.title} (Mi versión)`,
+          slug: newSlug,
+          description: route.description,
+          narrative: route.narrative,
+          duration: route.duration,
+          difficulty: route.difficulty,
+          creator_id: user.id,
+          is_public: false, // User's personal copy is private by default
+          total_stops: route.stops?.length || 0,
+          image_url: route.image,
+          daily_recommendations: route.dailyRecommendations || [],
+          practical_info: route.practicalInfo || {}
+        })
+        .select()
+        .single();
+
+      if (routeError) throw routeError;
+
+      // Copy all the stops if we have them from DB
+      if (dbRouteId) {
+        const { data: originalStops } = await supabase
+          .from('route_stops')
+          .select('*')
+          .eq('route_id', dbRouteId)
+          .order('position');
+
+        if (originalStops && originalStops.length > 0) {
+          const stopsToInsert = originalStops.map((stop) => ({
+            route_id: newRoute.id,
+            name: stop.name,
+            type: stop.type,
+            type_icon: stop.type_icon,
+            description: stop.description,
+            what_to_do: stop.what_to_do,
+            address: stop.address,
+            schedule: stop.schedule,
+            latitude: stop.latitude,
+            longitude: stop.longitude,
+            position: stop.position,
+            images: stop.images,
+            highlights: stop.highlights,
+            external_link: stop.external_link
+          }));
+
+          await supabase.from('route_stops').insert(stopsToInsert);
+        }
+      } else if (route.stops && route.stops.length > 0) {
+        // Create stops from static data
+        const stopsToInsert = route.stops.map((stop, index) => ({
+          route_id: newRoute.id,
+          name: stop.name,
+          type: stop.type,
+          description: stop.description,
+          what_to_do: stop.whatToDo || [],
+          address: stop.address,
+          schedule: stop.schedule,
+          latitude: stop.coordinates?.[1] || null,
+          longitude: stop.coordinates?.[0] || null,
+          position: index,
+          images: stop.images || []
+        }));
+
+        await supabase.from('route_stops').insert(stopsToInsert);
+      }
+
+      toast({
+        title: "Ruta personalizada creada",
+        description: "Puedes editar tu versión personalizada",
+      });
+
+      // Navigate to the edit page for the new route
+      navigate(`/editar-ruta/${newRoute.slug}`);
+      
+    } catch (error) {
+      console.error('Error personalizing route:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo crear tu versión personalizada",
+        variant: "destructive",
+      });
+    } finally {
+      setPersonalizing(false);
+    }
   };
 
   if (!id) {
@@ -546,12 +665,20 @@ const RutaDetalle = () => {
                   <Printer className="w-3.5 h-3.5 mr-1.5" />
                   Imprimir Ruta
                 </Button>
-                <Link to="/crear-ruta">
-                  <Button variant="default" size="sm" className="w-full text-xs h-8">
-                    <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
-                    Personalizar esta ruta
-                  </Button>
-                </Link>
+                <Button 
+                  onClick={handlePersonalize} 
+                  variant="default" 
+                  size="sm" 
+                  className="w-full text-xs h-8"
+                  disabled={personalizing}
+                >
+                  {personalizing ? (
+                    <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5 mr-1.5" />
+                  )}
+                  {personalizing ? 'Creando copia...' : 'Personalizar esta ruta'}
+                </Button>
               </div>
             </div>
           </div>
