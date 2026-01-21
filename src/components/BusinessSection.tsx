@@ -27,68 +27,64 @@ const BusinessSection = () => {
   return (
     <section className="pt-8 pb-12 bg-gradient-earth" id="empresas">
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Contenido principal */}
-          <div className="space-y-8">
-            <div>
-              <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-                ¿Tienes un negocio con alma?
-              </h2>
-              <p className="text-xl text-foreground/90 leading-relaxed mb-8">
-                Forma parte de la comunidad que está salvando lo esencial. 
-                Visibilidad nacional, venta directa y comunidad real.
-              </p>
-            </div>
+        <div className="max-w-3xl mx-auto text-center space-y-8">
+          <div>
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
+              ¿Tienes un negocio con alma?
+            </h2>
+            <p className="text-xl text-foreground/90 leading-relaxed mb-8">
+              Forma parte de la comunidad que está salvando lo esencial. 
+              Visibilidad nacional, venta directa y comunidad real.
+            </p>
+          </div>
 
-            {/* Beneficios */}
-            <div className="space-y-6">
-              {benefits.map((benefit, index) => {
-                const IconComponent = benefit.icon;
-                return (
-                  <div key={index} className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <IconComponent className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-primary mb-2">{benefit.title}</h3>
-                      <p className="text-muted-foreground">{benefit.description}</p>
-                    </div>
+          {/* Beneficios */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {benefits.map((benefit, index) => {
+              const IconComponent = benefit.icon;
+              return (
+                <div key={index} className="flex flex-col items-center text-center space-y-3">
+                  <div className="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <IconComponent className="w-7 h-7 text-primary" />
                   </div>
-                );
-              })}
-            </div>
-
-            {/* Lista de verificación */}
-            <div className="bg-background/80 backdrop-blur-sm rounded-lg p-6 space-y-4">
-              <h4 className="font-semibold text-primary mb-4">¿Tu negocio es ORIGEN?</h4>
-              <div className="space-y-3">
-                {[
-                  "Productos auténticos y naturales",
-                  "Procesos tradicionales o artesanos",
-                  "Sin refinamientos industriales",
-                  "Compromiso con la calidad real",
-                  "Pasión por lo que haces"
-                ].map((item, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-secondary flex-shrink-0" />
-                    <span className="text-muted-foreground">{item}</span>
+                  <div>
+                    <h3 className="font-semibold text-primary mb-1">{benefit.title}</h3>
+                    <p className="text-muted-foreground text-sm">{benefit.description}</p>
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
+              );
+            })}
+          </div>
 
-            {/* CTA */}
-            <div className="space-y-4">
-              <Button size="lg" className="shadow-earth" onClick={() => navigate('/soy-empresa')}>
-                <Building className="w-5 h-5 mr-2" />
-                Solicita tu espacio
-              </Button>
-              <p className="text-sm text-muted-foreground">
-                Proceso de verificación gratuito • Comenzamos contigo en 48h
-              </p>
+          {/* Lista de verificación */}
+          <div className="bg-background/80 backdrop-blur-sm rounded-lg p-6 space-y-4 text-left max-w-md mx-auto">
+            <h4 className="font-semibold text-primary mb-4 text-center">¿Tu negocio es ORIGEN?</h4>
+            <div className="space-y-3">
+              {[
+                "Productos auténticos y naturales",
+                "Procesos tradicionales o artesanos",
+                "Sin refinamientos industriales",
+                "Compromiso con la calidad real",
+                "Pasión por lo que haces"
+              ].map((item, index) => (
+                <div key={index} className="flex items-center space-x-3">
+                  <Check className="w-5 h-5 text-secondary flex-shrink-0" />
+                  <span className="text-muted-foreground">{item}</span>
+                </div>
+              ))}
             </div>
           </div>
 
+          {/* CTA */}
+          <div className="space-y-4">
+            <Button size="lg" className="shadow-earth" onClick={() => navigate('/soy-empresa')}>
+              <Building className="w-5 h-5 mr-2" />
+              Solicita tu espacio
+            </Button>
+            <p className="text-sm text-muted-foreground">
+              Proceso de verificación gratuito • Comenzamos contigo en 48h
+            </p>
+          </div>
         </div>
       </div>
     </section>
