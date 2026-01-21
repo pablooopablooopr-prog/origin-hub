@@ -8,6 +8,7 @@ import RoutePracticalInfo from "@/components/RoutePracticalInfo";
 import { Button } from "@/components/ui/button";
 import { getRouteById, getAllRoutes, RouteDetail } from "@/data/routes";
 import { supabase } from "@/integrations/supabase/client";
+import { useRouteFavorites } from "@/hooks/useRouteFavorites";
 import { 
   Clock, 
   Users, 
@@ -20,7 +21,8 @@ import {
   ArrowUp,
   ChevronLeft,
   ChevronRight,
-  Loader2
+  Loader2,
+  Heart
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -59,6 +61,7 @@ const RutaDetalle = () => {
   const [loading, setLoading] = useState(true);
   const [route, setRoute] = useState<RouteDetail | null>(null);
   const [relatedRoutes, setRelatedRoutes] = useState<RouteDetail[]>([]);
+  const { isFavorite, loading: favoriteLoading, toggleFavorite } = useRouteFavorites(id);
   
   useEffect(() => {
     const fetchRoute = async () => {
@@ -192,22 +195,32 @@ const RutaDetalle = () => {
     "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=200&h=150&fit=crop"
   ];
 
-  const handleShare = async () => {
+  const handleShare = async (platform?: 'whatsapp' | 'twitter' | 'facebook' | 'email') => {
     if (!route) return;
-    const shareData = {
-      title: route.title,
-      text: route.description,
-      url: window.location.href
-    };
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(`${route.title} - ${route.description}`);
     
-    if (navigator.share) {
+    if (platform === 'whatsapp') {
+      window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+    } else if (platform === 'twitter') {
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    } else if (platform === 'facebook') {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+    } else if (platform === 'email') {
+      window.location.href = `mailto:?subject=${encodeURIComponent(route.title)}&body=${text}%20${url}`;
+    } else if (navigator.share) {
       try {
-        await navigator.share(shareData);
+        await navigator.share({
+          title: route.title,
+          text: route.description,
+          url: window.location.href
+        });
       } catch (err) {
         console.log('Error sharing:', err);
       }
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      // Fallback to WhatsApp
+      window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
     }
   };
 
@@ -515,7 +528,17 @@ const RutaDetalle = () => {
 
               {/* Action Buttons Section */}
               <div className="bg-card rounded-lg p-3 border space-y-2">
-                <Button onClick={handleShare} variant="outline" size="sm" className="w-full text-xs h-8">
+                <Button 
+                  onClick={toggleFavorite} 
+                  variant={isFavorite ? "default" : "outline"} 
+                  size="sm" 
+                  className="w-full text-xs h-8"
+                  disabled={favoriteLoading}
+                >
+                  <Heart className={`w-3.5 h-3.5 mr-1.5 ${isFavorite ? 'fill-current' : ''}`} />
+                  {isFavorite ? 'Guardado en favoritos' : 'Añadir a favoritos'}
+                </Button>
+                <Button onClick={() => handleShare('whatsapp')} variant="outline" size="sm" className="w-full text-xs h-8">
                   <Share2 className="w-3.5 h-3.5 mr-1.5" />
                   Compartir Ruta
                 </Button>

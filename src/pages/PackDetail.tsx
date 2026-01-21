@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { usePackFavorites } from "@/hooks/usePackFavorites";
 import { usePackAnalytics } from "@/hooks/usePackAnalytics";
 import { usePackReviews } from "@/hooks/usePackReviews";
+import { useCart } from "@/hooks/useCart";
+import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
@@ -26,11 +28,13 @@ const PackDetail = () => {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewForm, setReviewForm] = useState({ name: "", rating: 0, comment: "" });
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [addingToCart, setAddingToCart] = useState(false);
   
   // Hooks for Supabase integration
   const { isFavorite, loading: favoriteLoading, toggleFavorite } = usePackFavorites(id);
   const { trackClick } = usePackAnalytics(id);
   const { reviews, loading: reviewsLoading, averageRating, submitReview } = usePackReviews(id);
+  const { addToCart, isLoggedIn } = useCart();
 
   // Auto scroll to top when pack changes
   useEffect(() => {
@@ -59,9 +63,20 @@ const PackDetail = () => {
     );
   }
 
-  const handleShare = async () => {
+  const handleShare = async (platform?: 'whatsapp' | 'twitter' | 'facebook' | 'email') => {
     trackClick();
-    if (navigator.share) {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(`${pack.name} - ${pack.description}`);
+    
+    if (platform === 'whatsapp') {
+      window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+    } else if (platform === 'twitter') {
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    } else if (platform === 'facebook') {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+    } else if (platform === 'email') {
+      window.location.href = `mailto:?subject=${encodeURIComponent(pack.name)}&body=${text}%20${url}`;
+    } else if (navigator.share) {
       try {
         await navigator.share({
           title: pack.name,
@@ -72,11 +87,8 @@ const PackDetail = () => {
         // User cancelled share
       }
     } else {
-      navigator.clipboard.writeText(window.location.href);
-      toast({
-        title: "Enlace copiado",
-        description: "El enlace ha sido copiado al portapapeles"
-      });
+      // Fallback to WhatsApp
+      window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
     }
   };
 
@@ -84,12 +96,49 @@ const PackDetail = () => {
     toggleFavorite();
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    if (!isLoggedIn) {
+      toast({
+        title: "Inicia sesión",
+        description: "Debes iniciar sesión para añadir productos al carrito",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setAddingToCart(true);
     trackClick();
-    toast({
-      title: "Añadido al carrito",
-      description: `${pack.name} ha sido añadido a tu carrito`,
-    });
+    
+    // Get pack UUID from slug
+    const { data: packData } = await supabase
+      .from("company_packs")
+      .select("id")
+      .eq("slug", id)
+      .single();
+    
+    if (packData) {
+      const success = await addToCart(packData.id);
+      if (success) {
+        toast({
+          title: "Añadido al carrito",
+          description: `${pack.name} ha sido añadido a tu carrito`,
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "No se pudo añadir al carrito",
+          variant: "destructive"
+        });
+      }
+    } else {
+      toast({
+        title: "Error",
+        description: "Pack no encontrado",
+        variant: "destructive"
+      });
+    }
+    
+    setAddingToCart(false);
   };
 
   const handleSubmitReview = async () => {
@@ -350,7 +399,7 @@ const PackDetail = () => {
                     Añadir al carrito
                   </Button>
                   <Button 
-                    onClick={handleShare}
+                    onClick={() => handleShare('whatsapp')}
                     variant="outline"
                     size="lg"
                     className="py-6 border-2"
