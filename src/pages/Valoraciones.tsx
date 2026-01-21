@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Star, MessageCircle, Heart, User, Calendar, Loader2 } from "lucide-react";
+import { Star, MessageCircle, User, Calendar, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -79,26 +79,23 @@ const Valoraciones = () => {
         <div className="container mx-auto px-6 py-12">
           {/* Header Section */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4 flex items-center justify-center">
-              <Heart className="w-8 h-8 md:w-10 md:h-10 mr-3 text-secondary" />
-              <span>Valoraci</span>
+            <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6 flex items-center justify-center">
+              <span>Val</span>
               <img 
                 src="/lovable-uploads/clean-enso-symbol.png" 
                 alt="Ensō"
                 className="w-8 h-8 md:w-10 md:h-10 object-contain mx-1"
               />
-              <span>nes Humanas</span>
+              <span>raciones Humanas</span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
+            <p className="text-lg text-muted-foreground max-w-4xl mx-auto leading-relaxed mb-8">
               Experiencias reales de personas como tú. Cada valoración cuenta una historia auténtica 
               sobre negocios que mantienen viva nuestra tradición gastronómica.
             </p>
-            <div className="flex justify-center gap-4 mb-8">
-              <Button size="lg" className="shadow-earth" onClick={() => window.location.href = '/escribir-valoracion'}>
-                <MessageCircle className="w-5 h-5 mr-2" />
-                Escribir valoración
-              </Button>
-            </div>
+            <Button size="lg" className="shadow-earth" onClick={() => window.location.href = '/escribir-valoracion'}>
+              <MessageCircle className="w-5 h-5 mr-2" />
+              Escribir valoración
+            </Button>
           </div>
 
           {/* Loading State */}
