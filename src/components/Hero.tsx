@@ -22,9 +22,7 @@ const Hero = () => {
         </p>
 
         {/* Descripción adicional */}
-        <p className="text-muted-foreground mb-16 max-w-2xl mx-auto opacity-90 text-lg font-normal font-sans text-center">
-          Conectamos sin intermediarios consumidores conscientes con productores artesanos que cuidan de tu alimentación y de su tierra, packs y experiencias rurales de toda España                                                                                                                                                                                              
-        </p>
+        <p className="text-muted-foreground mb-16 max-w-2xl mx-auto opacity-90 text-lg font-normal font-sans text-center">Conectamos sin intermediarios consumidores con productores artesanos que cuidan de tu alimentación y de su tierra, packs y experiencias rurales por toda España</p>
 
         {/* Botones de acción */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-4xl mx-auto">
