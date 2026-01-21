@@ -104,13 +104,27 @@ const SobreOrigen = () => {
         <section className="py-16">
           <div className="container">
             <h2 className="text-3xl font-serif text-center mb-12 text-primary">Nuestra Historia</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              {timeline.map((step, index) => <div key={index} className="text-center">
-                  
-                  <div className="text-2xl font-bold text-primary mb-2">{step.year}</div>
-                  <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
-                  <p className="text-muted-foreground">{step.description}</p>
-                </div>)}
+            <div className="relative max-w-5xl mx-auto">
+              {/* Línea de camino conectando las tarjetas */}
+              <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary/50 transform -translate-y-1/2 z-0"></div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                {timeline.map((step, index) => (
+                  <div key={index} className="relative">
+                    {/* Conector circular en el camino */}
+                    <div className="hidden md:flex absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-primary border-4 border-background items-center justify-center z-20">
+                      <div className="w-3 h-3 rounded-full bg-background"></div>
+                    </div>
+                    
+                    {/* Tarjeta */}
+                    <Card className="text-center p-6 bg-background hover:shadow-lg transition-shadow border-2 border-primary/10 mt-6 md:mt-8">
+                      <div className="text-2xl font-bold text-primary mb-2">{step.year}</div>
+                      <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
+                      <p className="text-muted-foreground text-sm">{step.description}</p>
+                    </Card>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -183,16 +197,11 @@ const SobreOrigen = () => {
           <div className="container text-center">
             <h2 className="text-3xl font-serif mb-6 text-primary">Únete a ORIGEN</h2>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Descubre la autenticidad o forma parte de nuestra comunidad de negocios
+              Forma parte de nuestra comunidad de negocios auténticos
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg">
-                <Link to="/packs">Explorar Packs</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link to="/soy-empresa">Unirse como Empresa</Link>
-              </Button>
-            </div>
+            <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+              <Link to="/soy-empresa">Unirse como Empresa</Link>
+            </Button>
           </div>
         </section>
       </main>
