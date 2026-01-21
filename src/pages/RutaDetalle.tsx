@@ -70,11 +70,6 @@ const RutaDetalle = () => {
   const [relatedRoutes, setRelatedRoutes] = useState<RouteDetail[]>([]);
   const { isFavorite, loading: favoriteLoading, toggleFavorite } = useRouteFavorites(id);
   
-  // Auto scroll to top when route changes
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [id]);
-
   useEffect(() => {
     const fetchRoute = async () => {
       if (!id) return;
