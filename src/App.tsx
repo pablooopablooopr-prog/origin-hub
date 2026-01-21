@@ -14,6 +14,7 @@ import SoyCliente from "./pages/SoyCliente";
 import SoyEmpresa from "./pages/SoyEmpresa";
 import SobreOrigen from "./pages/SobreOrigen";
 import EditarPack from "./pages/EditarPack";
+import EditarRuta from "./pages/EditarRuta";
 import CrearRuta from "./pages/CrearRuta";
 import BusinessDetail from "./pages/BusinessDetail";
 import CreateRoute from "./pages/CreateRoute";
@@ -57,6 +58,7 @@ const App = () => (
           <Route path="/editar-pack" element={<EditarPack />} />
           <Route path="/editar-pack/:packId" element={<EditarPack />} />
           <Route path="/crear-ruta" element={<CrearRuta />} />
+          <Route path="/editar-ruta/:slug" element={<EditarRuta />} />
           <Route path="/valoraciones" element={<Valoraciones />} />
           <Route path="/escribir-valoracion" element={<EscribirValoracion />} />
           <Route path="/negocio/:id" element={<BusinessDetail />} />
