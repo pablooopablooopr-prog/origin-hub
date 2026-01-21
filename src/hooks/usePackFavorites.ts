@@ -2,25 +2,41 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-export const usePackFavorites = (packId?: string) => {
+export const usePackFavorites = (packSlug?: string) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(false);
   const [customerId, setCustomerId] = useState<string | null>(null);
+  const [packId, setPackId] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    const checkFavorite = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user || !packId) return;
+    const initFavorites = async () => {
+      if (!packSlug) return;
 
-      // Get customer ID - create if doesn't exist
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // First, get the actual pack UUID from slug
+      const { data: packData } = await supabase
+        .from("company_packs")
+        .select("id")
+        .eq("slug", packSlug)
+        .single();
+
+      if (!packData) {
+        console.log("Pack not found for slug:", packSlug);
+        return;
+      }
+      
+      setPackId(packData.id);
+
+      // Get or create customer
       let { data: customer } = await supabase
         .from("customers")
         .select("id")
         .eq("user_id", user.id)
         .single();
 
-      // If customer doesn't exist, create one
       if (!customer) {
         const { data: newCustomer, error: createError } = await supabase
           .from("customers")
@@ -42,23 +58,30 @@ export const usePackFavorites = (packId?: string) => {
       if (customer) {
         setCustomerId(customer.id);
         
-        // Check if already favorite
+        // Check if already favorite using the UUID
         const { data: favorite } = await supabase
           .from("favorites")
           .select("id")
           .eq("customer_id", customer.id)
-          .eq("pack_id", packId)
+          .eq("pack_id", packData.id)
           .single();
 
         setIsFavorite(!!favorite);
       }
     };
 
-    checkFavorite();
-  }, [packId]);
+    initFavorites();
+  }, [packSlug]);
 
   const toggleFavorite = useCallback(async () => {
-    if (!packId) return;
+    if (!packId) {
+      toast({
+        title: "Error",
+        description: "Pack no encontrado en la base de datos",
+        variant: "destructive"
+      });
+      return;
+    }
     
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -82,7 +105,6 @@ export const usePackFavorites = (packId?: string) => {
     setLoading(true);
 
     if (isFavorite) {
-      // Remove from favorites
       const { error } = await supabase
         .from("favorites")
         .delete()
@@ -97,7 +119,6 @@ export const usePackFavorites = (packId?: string) => {
         });
       }
     } else {
-      // Add to favorites
       const { error } = await supabase
         .from("favorites")
         .insert({
@@ -112,6 +133,7 @@ export const usePackFavorites = (packId?: string) => {
           description: "El pack ha sido guardado en tus favoritos"
         });
       } else {
+        console.error("Error adding favorite:", error);
         toast({
           title: "Error",
           description: "No se pudo guardar el favorito",

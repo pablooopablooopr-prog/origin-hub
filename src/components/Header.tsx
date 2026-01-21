@@ -62,16 +62,16 @@ const Header = () => {
           {/* Botones de acción */}
           <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated && <NotificationsDropdown />}
-            {itemCount > 0 && (
-              <Link to="/carrito" className="relative">
-                <Button variant="outline" size="sm" className="relative">
-                  <ShoppingCart className="w-4 h-4" />
+            <Link to="/carrito" className="relative">
+              <Button variant="outline" size="sm" className="relative">
+                <ShoppingCart className="w-4 h-4" />
+                {itemCount > 0 && (
                   <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
                     {itemCount}
                   </Badge>
-                </Button>
-              </Link>
-            )}
+                )}
+              </Button>
+            </Link>
             <Link to="/soy-empresa">
               <Button variant="secondary" size="sm">
                 Soy Empresa
@@ -116,14 +116,12 @@ const Header = () => {
                 Historia
               </Link>
               <div className="flex flex-col space-y-2 pt-4">
-                {itemCount > 0 && (
-                  <Link to="/carrito" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="outline" size="sm" className="w-full relative">
-                      <ShoppingCart className="w-4 h-4 mr-2" />
-                      Carrito ({itemCount})
-                    </Button>
-                  </Link>
-                )}
+                <Link to="/carrito" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full relative">
+                    <ShoppingCart className="w-4 h-4 mr-2" />
+                    Carrito {itemCount > 0 && `(${itemCount})`}
+                  </Button>
+                </Link>
                 <Link to="/soy-empresa" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="secondary" size="sm" className="w-full">
                     Soy Empresa
