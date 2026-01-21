@@ -5,88 +5,68 @@ import Footer from "@/components/Footer";
 import { Heart, Leaf, Scale, MapPin, Package, Users, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 const SobreOrigen = () => {
-  const values = [
-    {
-      icon: Heart,
-      title: "Autenticidad",
-      description: "Negocios verificados que mantienen tradiciones ancestrales y procesos artesanales genuinos.",
-    },
-    {
-      icon: Leaf,
-      title: "Sostenibilidad",
-      description: "Compromiso con prácticas responsables que respetan el medio ambiente y las comunidades locales.",
-    },
-    {
-      icon: Scale,
-      title: "Comercio Justo",
-      description: "Precios justos para productores y transparencia total en toda la cadena de valor.",
-    },
-  ];
-  const howItWorks = [
-    {
-      icon: MapPin,
-      title: "Explora negocios",
-      description: "Descubre negocios auténticos verificados por ORIGEN en toda España.",
-    },
-    {
-      icon: Package,
-      title: "Descubre packs y rutas",
-      description: "Elige entre packs curados o crea rutas personalizadas para explorar.",
-    },
-    {
-      icon: Users,
-      title: "Apoya la economía local",
-      description: "Cada compra fortalece a pequeños productores y preserva tradiciones.",
-    },
-  ];
-  const timeline = [
-    {
-      year: "2024",
-      title: "Nacimiento de ORIGEN",
-      description: "Iniciamos la misión de conectar consumidores con la autenticidad.",
-    },
-    {
-      year: "2025",
-      title: "Expansión nacional",
-      description: "Crecimos a más de 50 negocios verificados en toda España.",
-    },
-    {
-      year: "Futuro",
-      title: "Preservando tradiciones",
-      description: "Continuamos nuestra misión de preservar lo tradicional y auténtico.",
-    },
-  ];
-  const team = [
-    {
-      name: "María González",
-      role: "Fundadora & CEO",
-      image: "/lovable-uploads/clean-enso-symbol.png",
-    },
-    {
-      name: "Carlos Ruiz",
-      role: "Director de Operaciones",
-      image: "/lovable-uploads/clean-enso-symbol.png",
-    },
-    {
-      name: "Ana Martínez",
-      role: "Responsable de Comunidad",
-      image: "/lovable-uploads/clean-enso-symbol.png",
-    },
-  ];
-  const testimonials = [
-    {
-      name: "Laura P.",
-      text: "ORIGEN me ha permitido descubrir negocios auténticos que jamás habría encontrado por mi cuenta. La calidad es excepcional.",
-      rating: 5,
-    },
-    {
-      name: "Roberto M.",
-      text: "Como empresa, ORIGEN nos ha ayudado a llegar a clientes que valoran nuestro trabajo artesanal y nuestra historia.",
-      rating: 5,
-    },
-  ];
-  return (
-    <div className="min-h-screen flex flex-col">
+  const values = [{
+    icon: Heart,
+    title: "Autenticidad",
+    description: "Negocios verificados que mantienen tradiciones ancestrales y procesos artesanales genuinos."
+  }, {
+    icon: Leaf,
+    title: "Sostenibilidad",
+    description: "Compromiso con prácticas responsables que respetan el medio ambiente y las comunidades locales."
+  }, {
+    icon: Scale,
+    title: "Comercio Justo",
+    description: "Precios justos para productores y transparencia total en toda la cadena de valor."
+  }];
+  const howItWorks = [{
+    icon: MapPin,
+    title: "Explora negocios",
+    description: "Descubre negocios auténticos verificados por ORIGEN en toda España."
+  }, {
+    icon: Package,
+    title: "Descubre packs y rutas",
+    description: "Elige entre packs curados o crea rutas personalizadas para explorar."
+  }, {
+    icon: Users,
+    title: "Apoya la economía local",
+    description: "Cada compra fortalece a pequeños productores y preserva tradiciones."
+  }];
+  const timeline = [{
+    year: "2024",
+    title: "Nacimiento de ORIGEN",
+    description: "Iniciamos la misión de conectar consumidores con la autenticidad."
+  }, {
+    year: "2025",
+    title: "Expansión nacional",
+    description: "Crecimos a más de 50 negocios verificados en toda España."
+  }, {
+    year: "Futuro",
+    title: "Preservando tradiciones",
+    description: "Continuamos nuestra misión de preservar lo tradicional y auténtico."
+  }];
+  const team = [{
+    name: "María González",
+    role: "Fundadora & CEO",
+    image: "/lovable-uploads/clean-enso-symbol.png"
+  }, {
+    name: "Carlos Ruiz",
+    role: "Director de Operaciones",
+    image: "/lovable-uploads/clean-enso-symbol.png"
+  }, {
+    name: "Ana Martínez",
+    role: "Responsable de Comunidad",
+    image: "/lovable-uploads/clean-enso-symbol.png"
+  }];
+  const testimonials = [{
+    name: "Laura P.",
+    text: "ORIGEN me ha permitido descubrir negocios auténticos que jamás habría encontrado por mi cuenta. La calidad es excepcional.",
+    rating: 5
+  }, {
+    name: "Roberto M.",
+    text: "Como empresa, ORIGEN nos ha ayudado a llegar a clientes que valoran nuestro trabajo artesanal y nuestra historia.",
+    rating: 5
+  }];
+  return <div className="min-h-screen flex flex-col">
       <Header />
 
       <main className="flex-1">
@@ -97,9 +77,7 @@ const SobreOrigen = () => {
           </div>
           <div className="container relative z-10 text-center">
             <h1 className="text-5xl md:text-6xl font-serif mb-6 text-primary">Sobre ORIGEN</h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Conectamos personas con la autenticidad de negocios que preservan tradiciones ancestrales
-            </p>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">Preservamos y aseguramos la autenticidad y crecimiento de negocios tradicionales</p>
           </div>
         </section>
 
@@ -127,16 +105,12 @@ const SobreOrigen = () => {
           <div className="container">
             <h2 className="text-3xl font-serif text-center mb-12 text-primary">Nuestra Historia</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              {timeline.map((step, index) => (
-                <div key={index} className="text-center">
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <CheckCircle2 className="w-8 h-8 text-primary" />
-                  </div>
+              {timeline.map((step, index) => <div key={index} className="text-center">
+                  
                   <div className="text-2xl font-bold text-primary mb-2">{step.year}</div>
                   <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
                   <p className="text-muted-foreground">{step.description}</p>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </section>
@@ -146,8 +120,7 @@ const SobreOrigen = () => {
           <div className="container">
             <h2 className="text-3xl font-serif text-center mb-12 text-primary">Cómo Funciona ORIGEN</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {howItWorks.map((item, index) => (
-                <Card key={index} className="text-center hover:shadow-md transition-shadow">
+              {howItWorks.map((item, index) => <Card key={index} className="text-center hover:shadow-md transition-shadow">
                   <CardHeader>
                     <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                       <item.icon className="w-8 h-8 text-primary" />
@@ -157,8 +130,7 @@ const SobreOrigen = () => {
                   <CardContent>
                     <CardDescription className="text-base">{item.description}</CardDescription>
                   </CardContent>
-                </Card>
-              ))}
+                </Card>)}
             </div>
           </div>
         </section>
@@ -168,8 +140,7 @@ const SobreOrigen = () => {
           <div className="container">
             <h2 className="text-3xl font-serif text-center mb-12 text-primary">Nuestros Valores</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {values.map((value, index) => (
-                <Card key={index} className="hover:shadow-md transition-shadow">
+              {values.map((value, index) => <Card key={index} className="hover:shadow-md transition-shadow">
                   <CardHeader>
                     <div className="w-16 h-16 rounded-full bg-secondary/20 flex items-center justify-center mx-auto mb-4">
                       <value.icon className="w-8 h-8 text-secondary" />
@@ -179,8 +150,7 @@ const SobreOrigen = () => {
                   <CardContent>
                     <CardDescription className="text-center text-base">{value.description}</CardDescription>
                   </CardContent>
-                </Card>
-              ))}
+                </Card>)}
             </div>
           </div>
         </section>
@@ -190,8 +160,7 @@ const SobreOrigen = () => {
           <div className="container">
             <h2 className="text-3xl font-serif text-center mb-12 text-primary">Equipo ORIGEN</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              {team.map((member, index) => (
-                <Card key={index} className="text-center">
+              {team.map((member, index) => <Card key={index} className="text-center">
                   <CardHeader>
                     <div className="w-32 h-32 rounded-full overflow-hidden mx-auto mb-4 bg-muted">
                       <img src={member.image} alt={member.name} className="w-full h-full object-cover opacity-30" />
@@ -199,8 +168,7 @@ const SobreOrigen = () => {
                     <CardTitle className="text-lg">{member.name}</CardTitle>
                     <CardDescription>{member.role}</CardDescription>
                   </CardHeader>
-                </Card>
-              ))}
+                </Card>)}
             </div>
           </div>
         </section>
@@ -210,21 +178,17 @@ const SobreOrigen = () => {
           <div className="container">
             <h2 className="text-3xl font-serif text-center mb-12 text-primary">Lo Que Dicen de Nosotros</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {testimonials.map((testimonial, index) => (
-                <Card key={index} className="shadow-sm">
+              {testimonials.map((testimonial, index) => <Card key={index} className="shadow-sm">
                   <CardContent className="pt-6">
                     <p className="text-muted-foreground italic mb-4">"{testimonial.text}"</p>
                     <div className="flex items-center justify-between">
                       <p className="font-semibold">— {testimonial.name}</p>
                       <div className="flex gap-1">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Heart key={i} className="w-4 h-4 fill-secondary text-secondary" />
-                        ))}
+                        {[...Array(testimonial.rating)].map((_, i) => <Heart key={i} className="w-4 h-4 fill-secondary text-secondary" />)}
                       </div>
                     </div>
                   </CardContent>
-                </Card>
-              ))}
+                </Card>)}
             </div>
           </div>
         </section>
@@ -249,7 +213,6 @@ const SobreOrigen = () => {
       </main>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
 export default SobreOrigen;
