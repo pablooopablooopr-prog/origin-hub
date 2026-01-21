@@ -24,7 +24,7 @@ const CustomerAuth = () => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        navigate("/soy-cliente");
+        navigate("/mi-cuenta");
       }
     };
     checkUser();
@@ -39,7 +39,7 @@ const CustomerAuth = () => {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/soy-cliente`,
+          emailRedirectTo: `${window.location.origin}/mi-cuenta`,
           data: {
             full_name: fullName,
             phone: phone,
@@ -101,7 +101,7 @@ const CustomerAuth = () => {
 
       if (error) throw error;
 
-      navigate("/soy-cliente");
+      navigate("/mi-cuenta");
     } catch (error: any) {
       toast({
         title: "Error",

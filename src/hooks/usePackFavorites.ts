@@ -13,12 +13,31 @@ export const usePackFavorites = (packId?: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || !packId) return;
 
-      // Get customer ID
-      const { data: customer } = await supabase
+      // Get customer ID - create if doesn't exist
+      let { data: customer } = await supabase
         .from("customers")
         .select("id")
         .eq("user_id", user.id)
         .single();
+
+      // If customer doesn't exist, create one
+      if (!customer) {
+        const { data: newCustomer, error: createError } = await supabase
+          .from("customers")
+          .insert({
+            user_id: user.id,
+            email: user.email || "",
+            full_name: user.user_metadata?.full_name || user.email?.split("@")[0] || "Usuario"
+          })
+          .select("id")
+          .single();
+        
+        if (createError) {
+          console.error("Error creating customer:", createError);
+          return;
+        }
+        customer = newCustomer;
+      }
 
       if (customer) {
         setCustomerId(customer.id);

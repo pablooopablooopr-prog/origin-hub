@@ -13,7 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { User, Package, Heart, MapPin, Mail, Phone, LogOut, Truck, Download, RepeatIcon, Settings, Bell, Lock, Bookmark, Route, Store, Calendar, FileText } from "lucide-react";
+import { User, Package, Heart, MapPin, Mail, Phone, LogOut, Truck, Download, RepeatIcon, Settings, Bell, Lock, Bookmark, Route, Store, Calendar, FileText, Camera } from "lucide-react";
 
 interface Customer {
   id: string;
@@ -21,6 +21,7 @@ interface Customer {
   email: string;
   phone?: string;
   address?: string;
+  avatar_url?: string;
 }
 
 interface OrderItem {
@@ -84,6 +85,7 @@ const CustomerDashboard = () => {
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [savedRoutes, setSavedRoutes] = useState<SavedRoute[]>([]);
   const [loading, setLoading] = useState(true);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   
   // Configuration states
   const [editMode, setEditMode] = useState(false);
@@ -339,12 +341,69 @@ const CustomerDashboard = () => {
         <div className="container mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Avatar className="h-16 w-16 border-4 border-white/20">
-                <AvatarImage src="" alt={customer?.full_name} />
-                <AvatarFallback className="bg-white/20 text-white text-xl font-bold">
-                  {customer?.full_name?.split(' ').map(n => n[0]).join('').toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+              <div className="relative">
+                <Avatar className="h-16 w-16 border-4 border-white/20">
+                  <AvatarImage src={customer?.avatar_url || ""} alt={customer?.full_name} />
+                  <AvatarFallback className="bg-white/20 text-white text-xl font-bold">
+                    {customer?.full_name?.split(' ').map(n => n[0]).join('').toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <label 
+                  htmlFor="avatar-upload" 
+                  className="absolute -bottom-1 -right-1 bg-white rounded-full p-1.5 cursor-pointer hover:bg-gray-100 transition-colors shadow-md"
+                >
+                  <Camera className="w-3 h-3 text-[#8B7355]" />
+                  <input
+                    id="avatar-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file || !customer) return;
+                      
+                      setUploadingAvatar(true);
+                      try {
+                        const fileExt = file.name.split('.').pop();
+                        const fileName = `${customer.id}-${Date.now()}.${fileExt}`;
+                        const filePath = `avatars/${fileName}`;
+                        
+                        const { error: uploadError } = await supabase.storage
+                          .from('company-files')
+                          .upload(filePath, file);
+                        
+                        if (uploadError) throw uploadError;
+                        
+                        const { data: { publicUrl } } = supabase.storage
+                          .from('company-files')
+                          .getPublicUrl(filePath);
+                        
+                        const { error: updateError } = await supabase
+                          .from('customers')
+                          .update({ avatar_url: publicUrl })
+                          .eq('id', customer.id);
+                        
+                        if (updateError) throw updateError;
+                        
+                        setCustomer({ ...customer, avatar_url: publicUrl });
+                        toast({
+                          title: "Foto actualizada",
+                          description: "Tu foto de perfil se ha actualizado correctamente",
+                        });
+                      } catch (error: any) {
+                        toast({
+                          title: "Error",
+                          description: "No se pudo subir la imagen",
+                          variant: "destructive",
+                        });
+                      } finally {
+                        setUploadingAvatar(false);
+                      }
+                    }}
+                    disabled={uploadingAvatar}
+                  />
+                </label>
+              </div>
               <div>
                 <h1 className="text-2xl font-bold">{customer?.full_name}</h1>
                 <p className="text-white/80 flex items-center gap-2">
