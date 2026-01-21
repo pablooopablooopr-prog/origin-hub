@@ -53,7 +53,7 @@ const SobreOrigen = () => {
     {
       year: "Futuro",
       title: "Preservando tradiciones",
-      description: "Continuamos escalando la preservación de lo auténtico en toda España",
+      description: "Continuamos nuestra misión de preservar lo tradicional y auténtico.",
     },
   ];
   const team = [
