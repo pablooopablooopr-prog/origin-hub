@@ -79,9 +79,7 @@ const SobreOrigen = () => {
             <h1 className="text-5xl md:text-6xl font-serif mb-6 text-primary">
               Sobre ORIGEN
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Conectamos personas con la autenticidad de negocios que preservan tradiciones ancestrales
-            </p>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">Conectamos personas con negocios auténticos que preservan tradiciones reales</p>
           </div>
         </section>
 
