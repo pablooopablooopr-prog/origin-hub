@@ -20,7 +20,7 @@ const Index = () => {
         <InteractiveMap />
         
         {/* Pack Exploration Section */}
-        <section className="py-12">
+        <section className="pt-6 pb-12">
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">

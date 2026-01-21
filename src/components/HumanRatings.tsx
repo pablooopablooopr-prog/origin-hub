@@ -55,7 +55,7 @@ const HumanRatings = () => {
     count: 203,
     color: "bg-earth-medium"
   }];
-  return <section className="py-20">
+  return <section className="pt-12 pb-20">
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">
