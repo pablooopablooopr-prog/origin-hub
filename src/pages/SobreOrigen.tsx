@@ -105,11 +105,11 @@ const SobreOrigen = () => {
           <div className="container">
             <h2 className="text-3xl font-serif text-center mb-12 text-primary">Nuestra Historia</h2>
             <div className="relative max-w-5xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
                 {timeline.map((step, index) => (
-                  <div key={index} className="relative pb-16 md:pb-20">
+                  <div key={index} className="flex items-center">
                     {/* Tarjeta */}
-                    <Card className="text-center p-6 bg-background hover:shadow-lg transition-shadow border-2 border-primary/10 h-full">
+                    <Card className="text-center p-6 bg-background hover:shadow-lg transition-shadow border-2 border-primary/10 w-64">
                       {/* Línea de acento superior */}
                       <div className="w-12 h-1 bg-secondary mx-auto mb-4"></div>
                       <div className="text-2xl font-bold text-primary mb-2">{step.year}</div>
@@ -117,29 +117,13 @@ const SobreOrigen = () => {
                       <p className="text-muted-foreground text-sm">{step.description}</p>
                     </Card>
                     
-                    {/* Punto conector debajo de la tarjeta */}
-                    <div className="hidden md:flex absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full bg-primary border-4 border-background items-center justify-center z-20">
-                      <div className="w-2 h-2 rounded-full bg-background"></div>
-                    </div>
-                    
-                    {/* Línea curva conectando al siguiente (excepto el último) */}
+                    {/* Conector entre tarjetas (excepto después de la última) */}
                     {index < timeline.length - 1 && (
-                      <svg 
-                        className="hidden md:block absolute -bottom-4 left-1/2 w-full h-16 z-10" 
-                        viewBox="0 0 200 60" 
-                        fill="none" 
-                        preserveAspectRatio="none"
-                        style={{ transform: 'translateX(-50%) translateX(50%)', width: 'calc(100% + 2rem)' }}
-                      >
-                        <path 
-                          d="M 0 5 Q 50 55, 100 55 Q 150 55, 200 5" 
-                          stroke="hsl(var(--primary))" 
-                          strokeWidth="3" 
-                          strokeDasharray="8 6"
-                          fill="none"
-                          strokeLinecap="round"
-                        />
-                      </svg>
+                      <div className="hidden md:flex items-center mx-2">
+                        <div className="w-2 h-2 rounded-full bg-primary"></div>
+                        <div className="w-8 border-t-2 border-dashed border-primary"></div>
+                        <div className="w-2 h-2 rounded-full bg-primary"></div>
+                      </div>
                     )}
                   </div>
                 ))}
@@ -192,10 +176,10 @@ const SobreOrigen = () => {
         
 
         {/* Testimonios */}
-        <section className="py-16">
+        <section className="py-16 bg-muted/30">
           <div className="container">
             <h2 className="text-3xl font-serif text-center mb-12 text-primary">Lo Que Dicen de Nosotros</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-8">
               {testimonials.map((testimonial, index) => <Card key={index} className="shadow-sm">
                   <CardContent className="pt-6">
                     <p className="text-muted-foreground italic mb-4">"{testimonial.text}"</p>
@@ -207,6 +191,11 @@ const SobreOrigen = () => {
                     </div>
                   </CardContent>
                 </Card>)}
+            </div>
+            <div className="text-center">
+              <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90">
+                <Link to="/valoraciones">Ver Todas las Valoraciones</Link>
+              </Button>
             </div>
           </div>
         </section>
