@@ -36,10 +36,6 @@ const PackDetail = () => {
   const { reviews, loading: reviewsLoading, averageRating, submitReview } = usePackReviews(id);
   const { addToCart, isLoggedIn } = useCart();
 
-  // Auto scroll to top when pack changes
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [id]);
   
   if (!id) {
     return <Navigate to="/packs" replace />;
