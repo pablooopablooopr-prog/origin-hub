@@ -97,6 +97,7 @@ const CustomerDashboard = () => {
     offers: true,
     newsletter: true
   });
+  const [savingNotifications, setSavingNotifications] = useState(false);
   
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -130,6 +131,13 @@ const CustomerDashboard = () => {
         full_name: customerData.full_name,
         phone: customerData.phone || "",
         address: customerData.address || ""
+      });
+      // Load notification preferences
+      setNotifications({
+        email: customerData.notification_email ?? true,
+        sms: customerData.notification_sms ?? false,
+        offers: customerData.notification_offers ?? true,
+        newsletter: customerData.notification_newsletter ?? true
       });
 
       // Load orders with items
@@ -279,6 +287,40 @@ const CustomerDashboard = () => {
       toast({
         title: "Error",
         description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const updateNotificationPreference = async (key: keyof typeof notifications, value: boolean) => {
+    if (!customer) return;
+    
+    // Optimistically update the UI
+    setNotifications(prev => ({ ...prev, [key]: value }));
+    
+    try {
+      const updateData: Record<string, boolean> = {};
+      updateData[`notification_${key}`] = value;
+      
+      const { error } = await supabase
+        .from('customers')
+        .update(updateData)
+        .eq('id', customer.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Preferencia guardada",
+        description: value 
+          ? `Recibirás notificaciones ${key === 'email' ? 'por email' : key === 'sms' ? 'por SMS' : key === 'offers' ? 'de ofertas' : 'del newsletter'}`
+          : `Notificaciones ${key === 'email' ? 'por email' : key === 'sms' ? 'por SMS' : key === 'offers' ? 'de ofertas' : 'del newsletter'} desactivadas`,
+      });
+    } catch (error: any) {
+      // Revert on error
+      setNotifications(prev => ({ ...prev, [key]: !value }));
+      toast({
+        title: "Error",
+        description: "No se pudo guardar la preferencia",
         variant: "destructive",
       });
     }
@@ -933,7 +975,7 @@ const CustomerDashboard = () => {
                   <Switch
                     id="email-notif"
                     checked={notifications.email}
-                    onCheckedChange={(checked) => setNotifications({ ...notifications, email: checked })}
+                    onCheckedChange={(checked) => updateNotificationPreference('email', checked)}
                   />
                 </div>
                 <Separator />
@@ -949,7 +991,7 @@ const CustomerDashboard = () => {
                   <Switch
                     id="sms-notif"
                     checked={notifications.sms}
-                    onCheckedChange={(checked) => setNotifications({ ...notifications, sms: checked })}
+                    onCheckedChange={(checked) => updateNotificationPreference('sms', checked)}
                   />
                 </div>
                 <Separator />
@@ -965,7 +1007,7 @@ const CustomerDashboard = () => {
                   <Switch
                     id="offers-notif"
                     checked={notifications.offers}
-                    onCheckedChange={(checked) => setNotifications({ ...notifications, offers: checked })}
+                    onCheckedChange={(checked) => updateNotificationPreference('offers', checked)}
                   />
                 </div>
                 <Separator />
@@ -981,7 +1023,7 @@ const CustomerDashboard = () => {
                   <Switch
                     id="newsletter-notif"
                     checked={notifications.newsletter}
-                    onCheckedChange={(checked) => setNotifications({ ...notifications, newsletter: checked })}
+                    onCheckedChange={(checked) => updateNotificationPreference('newsletter', checked)}
                   />
                 </div>
               </CardContent>

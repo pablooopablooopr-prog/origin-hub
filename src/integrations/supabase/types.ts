@@ -398,6 +398,10 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          notification_email: boolean | null
+          notification_newsletter: boolean | null
+          notification_offers: boolean | null
+          notification_sms: boolean | null
           phone: string | null
           updated_at: string
           user_id: string
@@ -409,6 +413,10 @@ export type Database = {
           email: string
           full_name: string
           id?: string
+          notification_email?: boolean | null
+          notification_newsletter?: boolean | null
+          notification_offers?: boolean | null
+          notification_sms?: boolean | null
           phone?: string | null
           updated_at?: string
           user_id: string
@@ -420,6 +428,10 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
+          notification_email?: boolean | null
+          notification_newsletter?: boolean | null
+          notification_offers?: boolean | null
+          notification_sms?: boolean | null
           phone?: string | null
           updated_at?: string
           user_id?: string
