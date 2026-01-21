@@ -27,6 +27,7 @@ import {
   Copy
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 // Helper to safely parse JSON arrays
 const parseJsonArray = (value: unknown): string[] => {
@@ -69,6 +70,11 @@ const RutaDetalle = () => {
   const [relatedRoutes, setRelatedRoutes] = useState<RouteDetail[]>([]);
   const { isFavorite, loading: favoriteLoading, toggleFavorite } = useRouteFavorites(id);
   
+  // Auto scroll to top when route changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [id]);
+
   useEffect(() => {
     const fetchRoute = async () => {
       if (!id) return;
@@ -557,76 +563,81 @@ const RutaDetalle = () => {
                 </div>
               </section>
               
-              {/* Related Routes Section */}
+              {/* Related Routes Section - Same format as Packs */}
               {relatedRoutes.length > 0 && (
-                <section className="mt-4">
+                <section className="mt-8">
                   <Card>
-                    <CardHeader className="pb-1.5">
-                      <CardTitle className="text-sm">Otras rutas que te pueden gustar</CardTitle>
-                      <CardDescription className="text-[10px]">
-                        Rutas similares que podrían interesarte
+                    <CardHeader>
+                      <CardTitle className="text-2xl">Rutas Relacionadas</CardTitle>
+                      <CardDescription>
+                        Otras rutas similares que podrían interesarte
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="pb-2">
-                      <div className="relative px-8">
+                    <CardContent>
+                      <div className="relative px-16">
                         <div className="overflow-hidden">
                           <div
-                            className="flex gap-1.5 transition-transform duration-500 ease-in-out"
-                            style={{ transform: `translateX(-${relatedRoutesIndex * (100 / 4)}%)` }}
+                            className="flex gap-6 transition-transform duration-500 ease-in-out"
+                            style={{ transform: `translateX(-${relatedRoutesIndex * (100 / 2)}%)` }}
                           >
                             {relatedRoutes.map((relatedRoute) => (
                               <Link
                                 key={relatedRoute.id}
                                 to={`/rutas/${relatedRoute.id}`}
-                                className="min-w-[calc(25%-0.375rem)] flex-shrink-0"
+                                className="min-w-[calc(50%-0.75rem)] flex-shrink-0"
                               >
-                                <Card className="hover:shadow-md transition-all duration-300 h-full">
-                                  <div className="aspect-video relative overflow-hidden bg-muted">
-                                    <img
-                                      src={relatedRoute.image}
+                                <Card className="hover:shadow-xl transition-all duration-300 h-full">
+                                  <div className="relative">
+                                    <img 
+                                      src={relatedRoute.image} 
                                       alt={relatedRoute.title}
-                                      className="object-cover w-full h-full"
+                                      className="w-full h-32 object-cover rounded-t-lg"
                                     />
+                                    <Badge 
+                                      variant="secondary" 
+                                      className="absolute top-2 left-2 bg-primary/80 text-primary-foreground"
+                                    >
+                                      {relatedRoute.difficulty}
+                                    </Badge>
                                   </div>
-                                  <div className="p-1.5">
-                                    <h3 className="font-semibold text-[10px] mb-0.5 line-clamp-1">{relatedRoute.title}</h3>
-                                    <p className="text-[8px] text-muted-foreground mb-1 line-clamp-2">{relatedRoute.description}</p>
-                                    <div className="flex items-center gap-1.5 text-[8px] text-muted-foreground">
-                                      <div className="flex items-center gap-0.5">
-                                        <Clock className="w-2.5 h-2.5" />
+                                  <CardContent className="p-4">
+                                    <h3 className="font-semibold text-sm mb-2 line-clamp-1">{relatedRoute.title}</h3>
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2 text-muted-foreground text-xs">
+                                        <Clock className="w-3.5 h-3.5" />
                                         <span>{relatedRoute.duration}</span>
                                       </div>
-                                      <div className="flex items-center gap-0.5">
-                                        <MapPin className="w-2.5 h-2.5" />
-                                        <span>{relatedRoute.businesses} lugares</span>
+                                      <div className="flex items-center gap-1 text-muted-foreground text-xs">
+                                        <MapPin className="w-3.5 h-3.5" />
+                                        <span>{relatedRoute.businesses} paradas</span>
                                       </div>
                                     </div>
-                                  </div>
+                                  </CardContent>
                                 </Card>
                               </Link>
                             ))}
                           </div>
                         </div>
                         
-                        {/* Navigation Arrows */}
+                        {/* Navigation Arrows - Same style as Packs */}
                         <>
                           <Button
                             variant="default"
                             size="icon"
-                            className="absolute left-0 top-1/2 -translate-y-1/2 shadow-xl rounded-full w-7 h-7 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-2 border-background"
+                            className="absolute left-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
                             onClick={() => setRelatedRoutesIndex(Math.max(0, relatedRoutesIndex - 1))}
                             disabled={relatedRoutesIndex === 0}
                           >
-                            <ChevronRight className="w-3.5 h-3.5 rotate-180" />
+                            <ChevronRight className="w-7 h-7 text-primary-foreground rotate-180" />
                           </Button>
                           <Button
                             variant="default"
                             size="icon"
-                            className="absolute right-0 top-1/2 -translate-y-1/2 shadow-xl rounded-full w-7 h-7 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-2 border-background"
-                            onClick={() => setRelatedRoutesIndex(Math.min(Math.max(0, relatedRoutes.length - 4), relatedRoutesIndex + 1))}
-                            disabled={relatedRoutesIndex >= Math.max(0, relatedRoutes.length - 4)}
+                            className="absolute right-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 shadow-2xl rounded-full w-14 h-14 disabled:opacity-20 disabled:cursor-not-allowed transition-all z-10 border-4 border-background"
+                            onClick={() => setRelatedRoutesIndex(Math.min(Math.max(0, relatedRoutes.length - 2), relatedRoutesIndex + 1))}
+                            disabled={relatedRoutesIndex >= Math.max(0, relatedRoutes.length - 2)}
                           >
-                            <ChevronRight className="w-3.5 h-3.5" />
+                            <ChevronRight className="w-7 h-7 text-primary-foreground" />
                           </Button>
                         </>
                       </div>
@@ -685,16 +696,6 @@ const RutaDetalle = () => {
         </div>
       </main>
 
-      {/* Floating Back to Top Button */}
-      {showScrollTop && (
-        <Button
-          onClick={scrollToTop}
-          className="fixed bottom-6 right-6 rounded-full w-12 h-12 shadow-lg z-50"
-          size="icon"
-        >
-          <ArrowUp className="w-5 h-5" />
-        </Button>
-      )}
 
       <Footer />
     </div>
