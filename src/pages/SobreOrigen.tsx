@@ -105,23 +105,42 @@ const SobreOrigen = () => {
           <div className="container">
             <h2 className="text-3xl font-serif text-center mb-12 text-primary">Nuestra Historia</h2>
             <div className="relative max-w-5xl mx-auto">
-              {/* Línea de camino conectando las tarjetas */}
-              <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary/50 transform -translate-y-1/2 z-0"></div>
-              
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
                 {timeline.map((step, index) => (
-                  <div key={index} className="relative">
-                    {/* Conector circular en el camino */}
-                    <div className="hidden md:flex absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-primary border-4 border-background items-center justify-center z-20">
-                      <div className="w-3 h-3 rounded-full bg-background"></div>
-                    </div>
-                    
+                  <div key={index} className="relative pb-16 md:pb-20">
                     {/* Tarjeta */}
-                    <Card className="text-center p-6 bg-background hover:shadow-lg transition-shadow border-2 border-primary/10 mt-6 md:mt-8">
+                    <Card className="text-center p-6 bg-background hover:shadow-lg transition-shadow border-2 border-primary/10 h-full">
+                      {/* Línea de acento superior */}
+                      <div className="w-12 h-1 bg-secondary mx-auto mb-4"></div>
                       <div className="text-2xl font-bold text-primary mb-2">{step.year}</div>
                       <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
                       <p className="text-muted-foreground text-sm">{step.description}</p>
                     </Card>
+                    
+                    {/* Punto conector debajo de la tarjeta */}
+                    <div className="hidden md:flex absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full bg-primary border-4 border-background items-center justify-center z-20">
+                      <div className="w-2 h-2 rounded-full bg-background"></div>
+                    </div>
+                    
+                    {/* Línea curva conectando al siguiente (excepto el último) */}
+                    {index < timeline.length - 1 && (
+                      <svg 
+                        className="hidden md:block absolute -bottom-4 left-1/2 w-full h-16 z-10" 
+                        viewBox="0 0 200 60" 
+                        fill="none" 
+                        preserveAspectRatio="none"
+                        style={{ transform: 'translateX(-50%) translateX(50%)', width: 'calc(100% + 2rem)' }}
+                      >
+                        <path 
+                          d="M 0 5 Q 50 55, 100 55 Q 150 55, 200 5" 
+                          stroke="hsl(var(--primary))" 
+                          strokeWidth="3" 
+                          strokeDasharray="8 6"
+                          fill="none"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    )}
                   </div>
                 ))}
               </div>

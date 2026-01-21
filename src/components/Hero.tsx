@@ -48,16 +48,6 @@ const Hero = () => {
           </Link>
         </div>
 
-        {/* Enlaces secundarios */}
-        <div className="mt-6 flex justify-center gap-6">
-          <Link to="/sobre-origen" className="text-muted-foreground hover:text-primary transition-colors font-medium">
-            Historia
-          </Link>
-          <Link to="/contacto" className="text-muted-foreground hover:text-primary transition-colors font-medium">
-            Contacto
-          </Link>
-        </div>
-
         {/* Indicadores sutiles */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           <div className="space-y-2">
