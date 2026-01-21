@@ -76,7 +76,7 @@ const SobreOrigen = () => {
             <img src="/lovable-uploads/new-enso-symbol.png" alt="" className="w-full h-full object-contain" />
           </div>
           <div className="container relative z-10 text-center">
-            <h1 className="text-5xl md:text-6xl font-serif mb-6 text-primary">Sobre ORIGEN</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-primary">Sobre ORIGEN</h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">Preservamos y aseguramos la autenticidad y crecimiento de negocios tradicionales</p>
           </div>
         </section>
@@ -86,7 +86,7 @@ const SobreOrigen = () => {
           <div className="container">
             <Card className="border-0 shadow-sm">
               <CardHeader className="text-center">
-                <CardTitle className="text-3xl mb-4">Nuestra Misión</CardTitle>
+                <CardTitle className="text-4xl md:text-5xl font-bold mb-4">Nuestra Misión</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-lg text-muted-foreground text-center max-w-4xl mx-auto leading-relaxed">
@@ -103,7 +103,7 @@ const SobreOrigen = () => {
         {/* Historia */}
         <section className="py-16">
           <div className="container">
-            <h2 className="text-3xl font-serif text-center mb-12 text-primary">Nuestra Historia</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-primary">Nuestra Historia</h2>
             <div className="relative max-w-5xl mx-auto">
               <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
                 {timeline.map((step, index) => (
@@ -135,7 +135,7 @@ const SobreOrigen = () => {
         {/* Cómo Funciona */}
         <section className="py-16 bg-muted/30">
           <div className="container">
-            <h2 className="text-3xl font-serif text-center mb-12 text-primary">Cómo Funciona ORIGEN</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-primary">Cómo Funciona ORIGEN</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {howItWorks.map((item, index) => <Card key={index} className="text-center hover:shadow-md transition-shadow">
                   <CardHeader>
@@ -155,7 +155,7 @@ const SobreOrigen = () => {
         {/* Valores */}
         <section className="py-16">
           <div className="container">
-            <h2 className="text-3xl font-serif text-center mb-12 text-primary">Nuestros Valores</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-primary">Nuestros Valores</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {values.map((value, index) => <Card key={index} className="hover:shadow-md transition-shadow">
                   <CardHeader>
@@ -178,7 +178,7 @@ const SobreOrigen = () => {
         {/* Testimonios */}
         <section className="py-16 bg-muted/30">
           <div className="container">
-            <h2 className="text-3xl font-serif text-center mb-12 text-primary">Lo Que Dicen de Nosotros</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-primary">Lo Que Dicen de Nosotros</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-8">
               {testimonials.map((testimonial, index) => <Card key={index} className="shadow-sm">
                   <CardContent className="pt-6">
@@ -201,9 +201,9 @@ const SobreOrigen = () => {
         </section>
 
         {/* CTA Final */}
-        <section className="py-16 bg-primary/5">
+        <section className="py-16 bg-secondary/10">
           <div className="container text-center">
-            <h2 className="text-3xl font-serif mb-6 text-primary">Únete a ORIGEN</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-primary">Únete a ORIGEN</h2>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
               Forma parte de nuestra comunidad de negocios auténticos
             </p>
