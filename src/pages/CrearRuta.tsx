@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +10,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { MapPin, Plus, X, Save, Trash2, Image as ImageIcon, Clock, FileText, Users, Route, Star, Coffee, Utensils, Camera, Loader2 } from "lucide-react";
+import { MapPin, Plus, X, Save, Trash2, Image as ImageIcon, Clock, FileText, Users, Route, Star, Coffee, Utensils, Camera, Loader2, LogIn } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RouteMap from "@/components/RouteMap";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,6 +41,15 @@ const CrearRuta = () => {
   const navigate = useNavigate();
   const { regions } = useRegions();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    };
+    checkAuth();
+  }, []);
   
   const [routeName, setRouteName] = useState("");
   const [description, setDescription] = useState("");
@@ -299,6 +308,68 @@ const CrearRuta = () => {
       variant: "destructive",
     });
   };
+
+  // Show loading state while checking auth
+  if (isAuthenticated === null) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <main className="pt-6 flex justify-center items-center min-h-[50vh]">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Show auth required message if not logged in
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <main className="pt-6">
+          <div className="container mx-auto px-6 py-12 max-w-4xl">
+            <div className="text-center mb-12">
+              <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6 flex items-center justify-center">
+                <span>Crear Nueva R</span>
+                <img 
+                  src="/lovable-uploads/clean-enso-symbol.png" 
+                  alt="Ensō"
+                  className="w-8 h-8 md:w-10 md:h-10 object-contain mx-1"
+                />
+                <span>ta</span>
+              </h1>
+            </div>
+            <Card className="shadow-soft text-center py-12">
+              <CardContent className="space-y-6">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                  <LogIn className="w-8 h-8 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-primary mb-2">
+                    Inicia sesión para crear una ruta
+                  </h3>
+                  <p className="text-muted-foreground max-w-md mx-auto">
+                    Para crear rutas gastronómicas personalizadas, necesitas tener una cuenta activa.
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button onClick={() => navigate('/soy-cliente')} size="lg">
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Iniciar sesión
+                  </Button>
+                  <Button variant="outline" onClick={() => navigate('/rutas')} size="lg">
+                    Ver rutas disponibles
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">

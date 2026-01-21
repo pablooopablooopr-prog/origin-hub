@@ -7,9 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, MessageCircle, Heart, Star, Loader2 } from "lucide-react";
+import { ArrowLeft, Heart, Star, Loader2, LogIn, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -27,6 +26,7 @@ const EscribirValoracion = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [customerId, setCustomerId] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   
   const [formData, setFormData] = useState({
     companyId: "",
@@ -52,6 +52,7 @@ const EscribirValoracion = () => {
       // Check if user is logged in and get customer_id
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        setIsAuthenticated(true);
         const { data: customer } = await supabase
           .from("customers")
           .select("id, full_name")
@@ -62,6 +63,8 @@ const EscribirValoracion = () => {
           setCustomerId(customer.id);
           setFormData(prev => ({ ...prev, userName: customer.full_name }));
         }
+      } else {
+        setIsAuthenticated(false);
       }
 
       setLoading(false);
@@ -147,31 +150,58 @@ const EscribirValoracion = () => {
 
           {/* Header Section */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4 flex items-center justify-center">
-              <MessageCircle className="w-8 h-8 md:w-10 md:h-10 mr-3 text-secondary" />
-              <span>Escribe tu Valoraci</span>
+            <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6 flex items-center justify-center">
+              <span>Escribe tu Val</span>
               <img 
                 src="/lovable-uploads/clean-enso-symbol.png" 
                 alt="Ensō"
                 className="w-8 h-8 md:w-10 md:h-10 object-contain mx-1"
               />
-              <span>n</span>
+              <span>ración</span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-4xl mx-auto leading-relaxed">
               Comparte tu experiencia auténtica y ayuda a otros a descubrir negocios 
               que mantienen viva nuestra tradición gastronómica.
             </p>
           </div>
 
-          {/* Form */}
-          <Card className="shadow-soft">
-            <CardHeader>
-              <CardTitle className="text-2xl text-primary flex items-center">
-                <Heart className="w-6 h-6 mr-2 text-secondary" />
-                Cuéntanos tu experiencia
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+          {/* Authentication Required Message */}
+          {!isAuthenticated ? (
+            <Card className="shadow-soft text-center py-12">
+              <CardContent className="space-y-6">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                  <LogIn className="w-8 h-8 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-primary mb-2">
+                    Inicia sesión para escribir una valoración
+                  </h3>
+                  <p className="text-muted-foreground max-w-md mx-auto">
+                    Para garantizar la autenticidad de las valoraciones, necesitas tener una cuenta activa.
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button onClick={() => navigate('/soy-cliente')} size="lg">
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Iniciar sesión
+                  </Button>
+                  <Button variant="outline" onClick={() => navigate('/valoraciones')} size="lg">
+                    Ver valoraciones
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <>
+              {/* Form */}
+              <Card className="shadow-soft">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-primary flex items-center">
+                    <Heart className="w-6 h-6 mr-2 text-secondary" />
+                    Cuéntanos tu experiencia
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Company Selection */}
                 <div className="space-y-2">
@@ -264,27 +294,29 @@ const EscribirValoracion = () => {
                     {submitting ? (
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                     ) : (
-                      <MessageCircle className="w-5 h-5 mr-2" />
+                      <Send className="w-5 h-5 mr-2" />
                     )}
                     {submitting ? "Enviando..." : "Publicar valoración"}
                   </Button>
                 </div>
               </form>
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
 
-          {/* Tips Section */}
-          <div className="mt-12 p-6 bg-gradient-moss/10 rounded-lg border border-secondary/20">
-            <h3 className="text-lg font-semibold text-primary mb-3">
-              Consejos para una buena valoración
-            </h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>• Sé específico sobre lo que más te gustó del negocio</li>
-              <li>• Menciona detalles sobre la calidad, el trato o la autenticidad</li>
-              <li>• Ayuda a otros explicando qué hace especial a este lugar</li>
-              <li>• Mantén un tono respetuoso y constructivo</li>
-            </ul>
-          </div>
+              {/* Tips Section */}
+              <div className="mt-12 p-6 bg-gradient-moss/10 rounded-lg border border-secondary/20">
+                <h3 className="text-lg font-semibold text-primary mb-3">
+                  Consejos para una buena valoración
+                </h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>• Sé específico sobre lo que más te gustó del negocio</li>
+                  <li>• Menciona detalles sobre la calidad, el trato o la autenticidad</li>
+                  <li>• Ayuda a otros explicando qué hace especial a este lugar</li>
+                  <li>• Mantén un tono respetuoso y constructivo</li>
+                </ul>
+              </div>
+            </>
+          )}
         </div>
       </main>
       <Footer />
