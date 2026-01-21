@@ -362,20 +362,32 @@ const CustomerDashboard = () => {
                       const file = e.target.files?.[0];
                       if (!file || !customer) return;
                       
+                      // Get user_id for RLS-compatible path
+                      const { data: { user } } = await supabase.auth.getUser();
+                      if (!user) {
+                        toast({
+                          title: "Error",
+                          description: "Debes iniciar sesión para subir imágenes",
+                          variant: "destructive",
+                        });
+                        return;
+                      }
+                      
                       setUploadingAvatar(true);
                       try {
                         const fileExt = file.name.split('.').pop();
-                        const fileName = `${customer.id}-${Date.now()}.${fileExt}`;
-                        const filePath = `avatars/${fileName}`;
+                        const fileName = `${Date.now()}.${fileExt}`;
+                        // Use user.id as folder for RLS policy compliance
+                        const filePath = `${user.id}/${fileName}`;
                         
                         const { error: uploadError } = await supabase.storage
-                          .from('company-files')
-                          .upload(filePath, file);
+                          .from('customer-avatars')
+                          .upload(filePath, file, { upsert: true });
                         
                         if (uploadError) throw uploadError;
                         
                         const { data: { publicUrl } } = supabase.storage
-                          .from('company-files')
+                          .from('customer-avatars')
                           .getPublicUrl(filePath);
                         
                         const { error: updateError } = await supabase
@@ -391,9 +403,10 @@ const CustomerDashboard = () => {
                           description: "Tu foto de perfil se ha actualizado correctamente",
                         });
                       } catch (error: any) {
+                        console.error("Avatar upload error:", error);
                         toast({
                           title: "Error",
-                          description: "No se pudo subir la imagen",
+                          description: error.message || "No se pudo subir la imagen",
                           variant: "destructive",
                         });
                       } finally {

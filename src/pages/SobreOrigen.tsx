@@ -76,7 +76,15 @@ const SobreOrigen = () => {
             <img src="/lovable-uploads/new-enso-symbol.png" alt="" className="w-full h-full object-contain" />
           </div>
           <div className="container relative z-10 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-primary">Sobre ORIGEN</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-primary flex items-center justify-center">
+              <span>S</span>
+              <img 
+                src="/lovable-uploads/clean-enso-symbol.png" 
+                alt="Ensō"
+                className="w-8 h-8 md:w-10 md:h-10 object-contain mx-1"
+              />
+              <span>bre ORIGEN</span>
+            </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">Preservamos y aseguramos la autenticidad y crecimiento de negocios tradicionales</p>
           </div>
         </section>
