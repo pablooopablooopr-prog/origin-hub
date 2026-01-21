@@ -156,22 +156,7 @@ const SobreOrigen = () => {
         </section>
 
         {/* Equipo */}
-        <section className="py-16 bg-muted/30">
-          <div className="container">
-            <h2 className="text-3xl font-serif text-center mb-12 text-primary">Equipo ORIGEN</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              {team.map((member, index) => <Card key={index} className="text-center">
-                  <CardHeader>
-                    <div className="w-32 h-32 rounded-full overflow-hidden mx-auto mb-4 bg-muted">
-                      <img src={member.image} alt={member.name} className="w-full h-full object-cover opacity-30" />
-                    </div>
-                    <CardTitle className="text-lg">{member.name}</CardTitle>
-                    <CardDescription>{member.role}</CardDescription>
-                  </CardHeader>
-                </Card>)}
-            </div>
-          </div>
-        </section>
+        
 
         {/* Testimonios */}
         <section className="py-16">
