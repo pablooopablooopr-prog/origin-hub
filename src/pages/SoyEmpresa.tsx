@@ -68,15 +68,15 @@ const SoyEmpresa = () => {
               Únete a la comunidad que está transformando el comercio local y nacional
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link to="/company-auth">
+              <Link to="/company-auth?tab=signup">
                 <Button size="lg" variant="default" className="shadow-earth">
                   <Building className="w-5 h-5 mr-2" />
                   Unirme a ORIGEN
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
-              <Link to="/company-auth">
-                <Button size="lg" variant="outline">
+              <Link to="/company-auth?tab=signin">
+                <Button size="lg" variant="outline" className="bg-card shadow-md hover:shadow-lg border-border">
                   Ya tengo cuenta
                 </Button>
               </Link>

@@ -147,6 +147,7 @@ const CustomerAuth = () => {
                       <Input
                         id="login-email"
                         type="email"
+                        placeholder="tuemail@ejemplo.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
@@ -157,6 +158,7 @@ const CustomerAuth = () => {
                       <Input
                         id="login-password"
                         type="password"
+                        placeholder="Tu contraseña"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
@@ -190,6 +192,7 @@ const CustomerAuth = () => {
                       <Input
                         id="register-name"
                         type="text"
+                        placeholder="Tu nombre y apellidos"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         required
@@ -200,6 +203,7 @@ const CustomerAuth = () => {
                       <Input
                         id="register-email"
                         type="email"
+                        placeholder="tuemail@ejemplo.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
@@ -210,6 +214,7 @@ const CustomerAuth = () => {
                       <Input
                         id="register-phone"
                         type="tel"
+                        placeholder="+34 600 000 000"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                       />
@@ -219,6 +224,7 @@ const CustomerAuth = () => {
                       <Input
                         id="register-password"
                         type="password"
+                        placeholder="Mínimo 6 caracteres"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required

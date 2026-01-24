@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +14,7 @@ import Footer from "@/components/Footer";
 import { Building, Loader2, CheckCircle2 } from "lucide-react";
 
 export default function CompanyAuth() {
+  const [searchParams] = useSearchParams();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -21,6 +22,9 @@ export default function CompanyAuth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  
+  // Get initial tab from URL parameter
+  const initialTab = searchParams.get('tab') === 'signin' ? 'signin' : 'signup';
 
   // Company registration form
   const [companyData, setCompanyData] = useState({
@@ -361,7 +365,7 @@ export default function CompanyAuth() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="signup" className="w-full">
+              <Tabs defaultValue={initialTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="signup">Registrarse</TabsTrigger>
                   <TabsTrigger value="signin">Iniciar Sesión</TabsTrigger>
@@ -414,6 +418,7 @@ export default function CompanyAuth() {
                       <Input
                         id="email"
                         type="email"
+                        placeholder="contacto@tunegocio.com"
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -424,6 +429,7 @@ export default function CompanyAuth() {
                       <Input
                         id="password"
                         type="password"
+                        placeholder="Tu contraseña"
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
