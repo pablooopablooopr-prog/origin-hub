@@ -94,12 +94,7 @@ const EditarRuta = () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
-          toast({
-            title: "Acceso denegado",
-            description: "Debes iniciar sesión para editar rutas",
-            variant: "destructive",
-          });
-          navigate('/soy-cliente');
+          navigate('/customer-auth');
           return;
         }
 

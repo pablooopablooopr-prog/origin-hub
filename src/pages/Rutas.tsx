@@ -30,6 +30,7 @@ const Rutas = () => {
   const navigate = useNavigate();
   const [routes, setRoutes] = useState<(DbRoute | RouteDetail)[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -57,7 +58,13 @@ const Rutas = () => {
       }
     };
 
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    };
+
     fetchRoutes();
+    checkAuth();
   }, []);
 
   // Helper to normalize route data
@@ -196,7 +203,17 @@ const Rutas = () => {
                   y ayuda a otros a encontrar negocios auténticos.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button size="lg" className="shadow-earth" onClick={() => navigate('/crear-ruta')}>
+                  <Button 
+                    size="lg" 
+                    className="shadow-earth" 
+                    onClick={() => {
+                      if (isAuthenticated) {
+                        navigate('/crear-ruta');
+                      } else {
+                        navigate('/customer-auth');
+                      }
+                    }}
+                  >
                     <Route className="w-5 h-5 mr-2" />
                     Crear mi ruta
                   </Button>

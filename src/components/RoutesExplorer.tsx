@@ -4,6 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Route, Star, Users, Clock, MapPin } from "lucide-react";
 import { routesData, RouteDetail } from "@/data/routes";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
 const RoutesExplorer = ({
   showTitle = true,
   showCTA = true,
@@ -14,20 +17,44 @@ const RoutesExplorer = ({
   customRoutes?: RouteDetail[];
 }) => {
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const displayRoutes = customRoutes || routesData;
-  return <section className="py-2 bg-gradient-warm enso-watermark relative" id="rutas">
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    };
+    checkAuth();
+  }, []);
+
+  const handleCreateRoute = () => {
+    if (isAuthenticated) {
+      navigate('/crear-ruta');
+    } else {
+      navigate('/customer-auth');
+    }
+  };
+
+  return (
+    <section className="py-2 bg-gradient-warm enso-watermark relative" id="rutas">
       <div className="container mx-auto px-6">
         {/* Título principal - solo mostrar si showTitle es true */}
-        {showTitle && <div className="text-center mb-16">
+        {showTitle && (
+          <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
               Rutas ORIGEN
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">Marca y comparte rutas visitando negocios locales. Sube valoraciones y reseñas de cada lugar que descubras en tu camino y compártela con los demás</p>
-          </div>}
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Marca y comparte rutas visitando negocios locales. Sube valoraciones y reseñas de cada lugar que descubras en tu camino y compártela con los demás
+            </p>
+          </div>
+        )}
 
         {/* Rutas destacadas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
-          {displayRoutes.map((route, index) => <Card key={route.title} className="group hover:shadow-earth transition-all duration-300 hover:-translate-y-1 relative overflow-hidden flex flex-col h-[380px]">
+          {displayRoutes.map((route, index) => (
+            <Card key={route.title} className="group hover:shadow-earth transition-all duration-300 hover:-translate-y-1 relative overflow-hidden flex flex-col h-[380px]">
               {/* Imagen de fondo con transparencia */}
               <div className="absolute inset-0 opacity-5">
                 <img src="/lovable-uploads/new-enso-symbol.png" alt="" className="w-full h-full object-contain" />
@@ -38,7 +65,7 @@ const RoutesExplorer = ({
                   {route.description}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-2.5 relative z-20 pt-0 pb-4 px-4 flex-1 flex flex-col">{/* Asegurar que el contenido esté por encima */}
+              <CardContent className="space-y-2.5 relative z-20 pt-0 pb-4 px-4 flex-1 flex flex-col">
                 {/* Métricas de la ruta */}
                 <div className="grid grid-cols-2 gap-2.5 text-sm">
                   <div className="flex items-center space-x-2">
@@ -71,22 +98,26 @@ const RoutesExplorer = ({
                 </div>
 
                 <div className="flex flex-col relative z-30 mt-auto">
-                  <Button className="w-full group-hover:shadow-soft transition-all relative z-40" onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('🚀 BUTTON CLICKED! Navigating to:', `/rutas/${route.id}`);
-                navigate(`/rutas/${route.id}`);
-              }}>
+                  <Button 
+                    className="w-full group-hover:shadow-soft transition-all relative z-40" 
+                    onClick={e => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      navigate(`/rutas/${route.id}`);
+                    }}
+                  >
                     <Route className="w-4 h-4 mr-2" />
                     Explorar ruta
                   </Button>
                 </div>
               </CardContent>
-            </Card>)}
+            </Card>
+          ))}
         </div>
 
         {/* CTA para crear ruta - solo mostrar si showCTA es true */}
-        {showCTA && <div className="text-center bg-card rounded-lg p-8 shadow-soft">
+        {showCTA && (
+          <div className="text-center bg-card rounded-lg p-8 shadow-soft">
             <h3 className="text-2xl font-semibold text-primary mb-4">
               ¿Tienes tu propia ruta?
             </h3>
@@ -95,7 +126,7 @@ const RoutesExplorer = ({
               y ayuda a otros a encontrar negocios auténticos.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="shadow-earth" onClick={() => navigate('/crear-ruta')}>
+              <Button size="lg" className="shadow-earth" onClick={handleCreateRoute}>
                 <Route className="w-5 h-5 mr-2" />
                 Crear mi ruta
               </Button>
@@ -104,8 +135,11 @@ const RoutesExplorer = ({
                 Ver todas las rutas
               </Button>
             </div>
-          </div>}
+          </div>
+        )}
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default RoutesExplorer;
