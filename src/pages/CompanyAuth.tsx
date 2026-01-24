@@ -11,11 +11,13 @@ import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Building } from "lucide-react";
+import { Building, Loader2, CheckCircle2 } from "lucide-react";
 
 export default function CompanyAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [existingCompany, setExistingCompany] = useState<any>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -23,6 +25,7 @@ export default function CompanyAuth() {
   // Company registration form
   const [companyData, setCompanyData] = useState({
     business_name: "",
+    business_type: "",
     contact_person: "",
     phone: "",
     address: "",
@@ -36,6 +39,8 @@ export default function CompanyAuth() {
       if (session?.user) {
         setUser(session.user);
         checkCompanyStatus(session.user.id);
+      } else {
+        setCheckingAuth(false);
       }
     });
 
@@ -45,6 +50,8 @@ export default function CompanyAuth() {
         checkCompanyStatus(session.user.id);
       } else {
         setUser(null);
+        setExistingCompany(null);
+        setCheckingAuth(false);
       }
     });
 
@@ -58,13 +65,12 @@ export default function CompanyAuth() {
       .eq('user_id', userId)
       .maybeSingle();
 
+    setCheckingAuth(false);
+
     if (data) {
+      setExistingCompany(data);
       if (data.status === 'approved') {
         navigate('/company-dashboard');
-      } else if (data.status === 'pending') {
-        toast.info('Tu solicitud está pendiente de aprobación');
-      } else if (data.status === 'rejected') {
-        toast.error('Tu solicitud ha sido rechazada. Contacta con soporte.');
       }
     }
   };
@@ -113,21 +119,38 @@ export default function CompanyAuth() {
     e.preventDefault();
     if (!user) return;
 
+    if (!companyData.business_name || !companyData.contact_person) {
+      toast.error("Por favor, completa los campos obligatorios");
+      return;
+    }
+
     setLoading(true);
 
     try {
+      const descriptionWithType = companyData.description 
+        ? `${companyData.business_type ? `[${companyData.business_type}] ` : ''}${companyData.description}` 
+        : companyData.business_type || null;
+
       const { error } = await supabase
         .from('companies')
         .insert({
           user_id: user.id,
           email: user.email!,
-          ...companyData
+          business_name: companyData.business_name,
+          contact_person: companyData.contact_person,
+          phone: companyData.phone || null,
+          address: companyData.address || null,
+          description: descriptionWithType,
+          authenticity_story: companyData.authenticity_story || null,
+          status: 'pending'
         });
 
       if (error) throw error;
       
-      toast.success('Solicitud enviada. Serás notificado cuando sea aprobada.');
-      navigate('/');
+      toast.success('¡Solicitud enviada! Te notificaremos cuando sea aprobada.');
+      
+      // Refresh company status
+      checkCompanyStatus(user.id);
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -135,95 +158,188 @@ export default function CompanyAuth() {
     }
   };
 
-  if (user && !loading) {
+  // Loading state
+  if (checkingAuth) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-1 container mx-auto px-6 py-16">
-          <Card className="w-full max-w-2xl mx-auto">
-          <CardHeader>
-            <CardTitle>Registro de Empresa</CardTitle>
-            <CardDescription>
-              Completa los datos de tu empresa para acceder a la zona privada
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleCompanyRegistration} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="business_name">Nombre de la Empresa *</Label>
-                  <Input
-                    id="business_name"
-                    required
-                    value={companyData.business_name}
-                    onChange={(e) => setCompanyData({...companyData, business_name: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="contact_person">Persona de Contacto *</Label>
-                  <Input
-                    id="contact_person"
-                    required
-                    value={companyData.contact_person}
-                    onChange={(e) => setCompanyData({...companyData, contact_person: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Teléfono</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={companyData.phone}
-                    onChange={(e) => setCompanyData({...companyData, phone: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="address">Dirección</Label>
-                  <Input
-                    id="address"
-                    value={companyData.address}
-                    onChange={(e) => setCompanyData({...companyData, address: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="description">Descripción de la Empresa</Label>
-                <Textarea
-                  id="description"
-                  rows={3}
-                  value={companyData.description}
-                  onChange={(e) => setCompanyData({...companyData, description: e.target.value})}
-                  placeholder="Describe tu empresa y los productos que ofreces..."
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="authenticity_story">Historia de Autenticidad</Label>
-                <Textarea
-                  id="authenticity_story"
-                  rows={4}
-                  value={companyData.authenticity_story}
-                  onChange={(e) => setCompanyData({...companyData, authenticity_story: e.target.value})}
-                  placeholder="Cuenta la historia de tu producto, su origen, tradición y lo que lo hace auténtico..."
-                />
-              </div>
-
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? 'Enviando...' : 'Enviar Solicitud'}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+        <main className="flex-1 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </main>
         <Footer />
       </div>
     );
   }
 
+  // User logged in with existing company (pending/rejected)
+  if (user && existingCompany) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto px-6 py-16">
+          <Card className="w-full max-w-md mx-auto">
+            <CardHeader className="text-center">
+              {existingCompany.status === 'pending' ? (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-secondary/20 flex items-center justify-center mx-auto mb-4">
+                    <Loader2 className="w-8 h-8 text-secondary animate-spin" />
+                  </div>
+                  <CardTitle className="text-xl">Solicitud en revisión</CardTitle>
+                  <CardDescription className="mt-2">
+                    Tu solicitud para <strong>{existingCompany.business_name}</strong> está siendo revisada. 
+                    Te notificaremos por email en menos de 48 horas.
+                  </CardDescription>
+                </>
+              ) : (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4">
+                    <Building className="w-8 h-8 text-destructive" />
+                  </div>
+                  <CardTitle className="text-xl">Solicitud rechazada</CardTitle>
+                  <CardDescription className="mt-2">
+                    Lo sentimos, tu solicitud ha sido rechazada. 
+                    Contacta con soporte para más información.
+                  </CardDescription>
+                </>
+              )}
+            </CardHeader>
+            <CardContent className="text-center">
+              <Button variant="outline" onClick={() => navigate('/')}>
+                Volver al inicio
+              </Button>
+            </CardContent>
+          </Card>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // User logged in but needs to complete company profile
+  if (user && !existingCompany) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto px-6 py-16">
+          <Card className="w-full max-w-2xl mx-auto shadow-lg">
+            <CardHeader className="text-center border-b pb-6">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                <Building className="w-8 h-8 text-primary" />
+              </div>
+              <CardTitle className="text-2xl">Completa tu perfil de empresa</CardTitle>
+              <CardDescription className="text-base mt-2">
+                Cuéntanos sobre tu negocio para unirte a ORIGEN
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <form onSubmit={handleCompanyRegistration} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="business_name">Nombre del negocio *</Label>
+                    <Input
+                      id="business_name"
+                      placeholder="Ej: Panadería El Horno"
+                      required
+                      value={companyData.business_name}
+                      onChange={(e) => setCompanyData({...companyData, business_name: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="business_type">Tipo de negocio</Label>
+                    <Input
+                      id="business_type"
+                      placeholder="Ej: Panadería artesana"
+                      value={companyData.business_type}
+                      onChange={(e) => setCompanyData({...companyData, business_type: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="contact_person">Persona de contacto *</Label>
+                    <Input
+                      id="contact_person"
+                      placeholder="Tu nombre"
+                      required
+                      value={companyData.contact_person}
+                      onChange={(e) => setCompanyData({...companyData, contact_person: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Teléfono</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="+34 600 000 000"
+                      value={companyData.phone}
+                      onChange={(e) => setCompanyData({...companyData, phone: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="address">Dirección</Label>
+                  <Input
+                    id="address"
+                    placeholder="Calle, número, ciudad, provincia"
+                    value={companyData.address}
+                    onChange={(e) => setCompanyData({...companyData, address: e.target.value})}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="description">Cuéntanos sobre tu negocio</Label>
+                  <Textarea
+                    id="description"
+                    rows={3}
+                    value={companyData.description}
+                    onChange={(e) => setCompanyData({...companyData, description: e.target.value})}
+                    placeholder="Historia, productos, métodos tradicionales, años de experiencia..."
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="authenticity_story">¿Por qué es auténtico tu negocio?</Label>
+                  <Textarea
+                    id="authenticity_story"
+                    rows={3}
+                    value={companyData.authenticity_story}
+                    onChange={(e) => setCompanyData({...companyData, authenticity_story: e.target.value})}
+                    placeholder="Qué te hace diferente, tradiciones que mantienes, compromiso con la calidad..."
+                  />
+                </div>
+
+                <div className="bg-muted/50 rounded-lg p-4 flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-muted-foreground">
+                    Revisaremos tu solicitud en menos de 48 horas y te notificaremos por email cuando esté aprobada.
+                  </p>
+                </div>
+
+                <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Enviando solicitud...
+                    </>
+                  ) : (
+                    <>
+                      <Building className="w-5 h-5 mr-2" />
+                      Enviar solicitud
+                    </>
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Not logged in - show login/register tabs
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -234,81 +350,100 @@ export default function CompanyAuth() {
               <Building className="w-8 h-8" style={{ color: "hsl(var(--secondary-foreground))" }} />
             </div>
             <h1 className="text-3xl font-bold mb-2">Zona de Empresa</h1>
-            <p className="text-muted-foreground">Accede a tu cuenta o regístrate</p>
+            <p className="text-muted-foreground">Accede a tu cuenta o regístrate para unirte</p>
           </div>
 
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Acceso Empresas</CardTitle>
-          <CardDescription>
-            Inicia sesión o regístrate para acceder a tu zona privada
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Iniciar Sesión</TabsTrigger>
-              <TabsTrigger value="signup">Registrarse</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="signin">
-              <form onSubmit={handleSignIn} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Contraseña</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Iniciando...' : 'Iniciar Sesión'}
-                </Button>
-              </form>
-            </TabsContent>
-            
-            <TabsContent value="signup">
-              <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
-                  <Input
-                    id="signup-email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password">Contraseña</Label>
-                  <Input
-                    id="signup-password"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Registrando...' : 'Crear Cuenta'}
-                </Button>
-              </form>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+          <Card className="w-full">
+            <CardHeader>
+              <CardTitle>Acceso Empresas</CardTitle>
+              <CardDescription>
+                Inicia sesión o crea una cuenta para acceder a tu panel de empresa
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="signup" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="signup">Registrarse</TabsTrigger>
+                  <TabsTrigger value="signin">Iniciar Sesión</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="signup">
+                  <form onSubmit={handleSignUp} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-email">Email</Label>
+                      <Input
+                        id="signup-email"
+                        type="email"
+                        placeholder="contacto@tunegocio.com"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-password">Contraseña</Label>
+                      <Input
+                        id="signup-password"
+                        type="password"
+                        placeholder="Mínimo 6 caracteres"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </div>
+                    <Button type="submit" className="w-full" disabled={loading}>
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Creando cuenta...
+                        </>
+                      ) : (
+                        'Crear cuenta'
+                      )}
+                    </Button>
+                    <p className="text-xs text-muted-foreground text-center mt-2">
+                      Recibirás un email de confirmación para activar tu cuenta
+                    </p>
+                  </form>
+                </TabsContent>
+                
+                <TabsContent value="signin">
+                  <form onSubmit={handleSignIn} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="password">Contraseña</Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </div>
+                    <Button type="submit" className="w-full" disabled={loading}>
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Iniciando...
+                        </>
+                      ) : (
+                        'Iniciar Sesión'
+                      )}
+                    </Button>
+                  </form>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
         </div>
       </main>
       <Footer />
