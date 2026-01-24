@@ -327,33 +327,29 @@ const CrearRuta = () => {
     return (
       <div className="min-h-screen">
         <Header />
-        <main className="pt-6">
-          <div className="container mx-auto px-6 py-12 max-w-4xl">
-            <div className="text-center mb-12">
-              <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6 flex items-center justify-center">
-                <span>Crear Nueva R</span>
-                <img 
-                  src="/lovable-uploads/clean-enso-symbol.png" 
-                  alt="Ensō"
-                  className="w-8 h-8 md:w-10 md:h-10 object-contain mx-1"
-                />
-                <span>ta</span>
+        <main>
+          <section className="py-6 bg-gradient-warm">
+            <div className="container mx-auto px-6">
+              <h1 className="text-4xl md:text-5xl font-bold text-primary text-center">
+                Crear Nueva Ruta
               </h1>
             </div>
-            <Card className="shadow-soft text-center py-12">
-              <CardContent className="space-y-6">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                  <LogIn className="w-8 h-8 text-primary" />
+          </section>
+          <div className="container mx-auto px-6 py-8 max-w-2xl">
+            <Card className="border-0 shadow-lg bg-card">
+              <CardContent className="p-8 space-y-6 text-center">
+                <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                  <LogIn className="w-7 h-7 text-primary" />
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-primary mb-2">
+                <div className="space-y-2">
+                  <h3 className="text-xl font-semibold text-primary">
                     Inicia sesión para crear una ruta
                   </h3>
-                  <p className="text-muted-foreground max-w-md mx-auto">
+                  <p className="text-muted-foreground text-sm">
                     Para crear rutas gastronómicas personalizadas, necesitas tener una cuenta activa.
                   </p>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
                   <Button onClick={() => navigate('/customer-auth')} size="lg">
                     <LogIn className="w-4 h-4 mr-2" />
                     Iniciar sesión
