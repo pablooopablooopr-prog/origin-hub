@@ -71,33 +71,37 @@ const SobreOrigen = () => {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative py-16 overflow-hidden">
-          <div className="absolute inset-0 opacity-5">
+        <section className="relative py-20 md:py-28 overflow-hidden bg-gradient-to-b from-muted/20 to-background">
+          <div className="absolute inset-0 opacity-[0.03]">
             <img src="/lovable-uploads/new-enso-symbol.png" alt="" className="w-full h-full object-contain" />
           </div>
-          <div className="container relative z-10 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-primary flex items-center justify-center">
+          <div className="container relative z-10 text-center max-w-4xl mx-auto">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-primary flex items-center justify-center tracking-tight">
               <span>S</span>
               <img 
                 src="/lovable-uploads/clean-enso-symbol.png" 
                 alt="Ensō"
-                className="w-8 h-8 md:w-10 md:h-10 object-contain mx-1"
+                className="w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 object-contain mx-1"
               />
               <span>bre ORIGEN</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">Preservamos y aseguramos la autenticidad y crecimiento de negocios tradicionales</p>
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-light">
+              Preservamos y aseguramos la autenticidad y crecimiento de negocios tradicionales
+            </p>
           </div>
         </section>
 
         {/* Misión */}
-        <section className="py-12 bg-muted/30">
-          <div className="container">
-            <Card className="border-0 shadow-sm">
-              <CardHeader className="text-center">
-                <CardTitle className="text-4xl md:text-5xl font-bold mb-4">Nuestra Misión</CardTitle>
+        <section className="py-16 md:py-20 bg-muted/30">
+          <div className="container max-w-5xl mx-auto">
+            <Card className="border-0 shadow-lg bg-card/80 backdrop-blur-sm">
+              <CardHeader className="text-center pb-4">
+                <CardTitle className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary tracking-tight">
+                  Nuestra Misión
+                </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-lg text-muted-foreground text-center max-w-4xl mx-auto leading-relaxed">
+              <CardContent className="pt-2 pb-10 px-8 md:px-12">
+                <p className="text-lg md:text-xl text-muted-foreground text-center max-w-4xl mx-auto leading-relaxed">
                   En ORIGEN creemos que cada producto tiene una historia que merece ser contada. Nuestra misión es
                   conectar a consumidores conscientes con negocios auténticos que mantienen vivas las tradiciones de
                   toda la vida, preservando técnicas artesanales y valores fundamentales como la sostenibilidad y el
@@ -108,10 +112,12 @@ const SobreOrigen = () => {
           </div>
         </section>
 
-        {/* Historia */}
-        <section className="py-16">
+        {/* Historia - MANTENER IGUAL */}
+        <section className="py-16 md:py-20 bg-muted/20">
           <div className="container">
-            <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-primary">Nuestra Historia</h2>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-14 text-primary tracking-tight">
+              Nuestra Historia
+            </h2>
             <div className="relative max-w-5xl mx-auto">
               <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
                 {timeline.map((step, index) => (
@@ -141,67 +147,78 @@ const SobreOrigen = () => {
         </section>
 
         {/* Cómo Funciona */}
-        <section className="py-16 bg-muted/30">
-          <div className="container">
-            <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-primary">Cómo Funciona ORIGEN</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {howItWorks.map((item, index) => <Card key={index} className="text-center hover:shadow-md transition-shadow">
-                  <CardHeader>
-                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                      <item.icon className="w-8 h-8 text-primary" />
+        <section className="py-16 md:py-20 bg-muted/30">
+          <div className="container max-w-6xl mx-auto">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-14 text-primary tracking-tight">
+              Cómo Funciona ORIGEN
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+              {howItWorks.map((item, index) => (
+                <Card key={index} className="text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-md">
+                  <CardHeader className="pb-4">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mx-auto mb-6 shadow-inner">
+                      <item.icon className="w-10 h-10 text-primary" />
                     </div>
-                    <CardTitle className="text-xl">{item.title}</CardTitle>
+                    <CardTitle className="text-xl md:text-2xl font-semibold">{item.title}</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-base">{item.description}</CardDescription>
+                  <CardContent className="pb-8">
+                    <CardDescription className="text-base md:text-lg leading-relaxed">{item.description}</CardDescription>
                   </CardContent>
-                </Card>)}
+                </Card>
+              ))}
             </div>
           </div>
         </section>
 
         {/* Valores */}
-        <section className="py-16">
-          <div className="container">
-            <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-primary">Nuestros Valores</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {values.map((value, index) => <Card key={index} className="hover:shadow-md transition-shadow">
-                  <CardHeader>
-                    <div className="w-16 h-16 rounded-full bg-secondary/20 flex items-center justify-center mx-auto mb-4">
-                      <value.icon className="w-8 h-8 text-secondary" />
+        <section className="py-16 md:py-20">
+          <div className="container max-w-6xl mx-auto">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-14 text-primary tracking-tight">
+              Nuestros Valores
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+              {values.map((value, index) => (
+                <Card key={index} className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-md">
+                  <CardHeader className="pb-4">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-secondary/30 to-secondary/10 flex items-center justify-center mx-auto mb-6 shadow-inner">
+                      <value.icon className="w-10 h-10 text-secondary" />
                     </div>
-                    <CardTitle className="text-xl text-center">{value.title}</CardTitle>
+                    <CardTitle className="text-xl md:text-2xl text-center font-semibold">{value.title}</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-center text-base">{value.description}</CardDescription>
+                  <CardContent className="pb-8">
+                    <CardDescription className="text-center text-base md:text-lg leading-relaxed">{value.description}</CardDescription>
                   </CardContent>
-                </Card>)}
+                </Card>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Equipo */}
-        
-
         {/* Testimonios */}
-        <section className="py-16 bg-muted/30">
-          <div className="container">
-            <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-primary">Lo Que Dicen de Nosotros</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-8">
-              {testimonials.map((testimonial, index) => <Card key={index} className="shadow-sm">
-                  <CardContent className="pt-6">
-                    <p className="text-muted-foreground italic mb-4">"{testimonial.text}"</p>
+        <section className="py-16 md:py-20 bg-muted/30">
+          <div className="container max-w-5xl mx-auto">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-14 text-primary tracking-tight">
+              Lo Que Dicen de Nosotros
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 mb-12">
+              {testimonials.map((testimonial, index) => (
+                <Card key={index} className="shadow-md hover:shadow-lg transition-shadow border-0">
+                  <CardContent className="pt-8 pb-8 px-8">
+                    <p className="text-muted-foreground italic mb-6 text-lg leading-relaxed">"{testimonial.text}"</p>
                     <div className="flex items-center justify-between">
-                      <p className="font-semibold">— {testimonial.name}</p>
+                      <p className="font-semibold text-foreground">— {testimonial.name}</p>
                       <div className="flex gap-1">
-                        {[...Array(testimonial.rating)].map((_, i) => <Heart key={i} className="w-4 h-4 fill-secondary text-secondary" />)}
+                        {[...Array(testimonial.rating)].map((_, i) => (
+                          <Heart key={i} className="w-5 h-5 fill-secondary text-secondary" />
+                        ))}
                       </div>
                     </div>
                   </CardContent>
-                </Card>)}
+                </Card>
+              ))}
             </div>
             <div className="text-center">
-              <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90">
+              <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90 text-lg px-8 py-6 h-auto shadow-md hover:shadow-lg transition-all">
                 <Link to="/valoraciones">Ver Todas las Valoraciones</Link>
               </Button>
             </div>
@@ -209,13 +226,15 @@ const SobreOrigen = () => {
         </section>
 
         {/* CTA Final */}
-        <section className="py-16 bg-secondary/10">
-          <div className="container text-center">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-primary">Únete a ORIGEN</h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+        <section className="py-20 md:py-24 bg-gradient-to-br from-secondary/10 via-secondary/5 to-background">
+          <div className="container text-center max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-primary tracking-tight">
+              Únete a ORIGEN
+            </h2>
+            <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
               Forma parte de nuestra comunidad de negocios auténticos
             </p>
-            <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+            <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-lg px-10 py-6 h-auto shadow-lg hover:shadow-xl transition-all">
               <Link to="/soy-empresa">Unirse como Empresa</Link>
             </Button>
           </div>
