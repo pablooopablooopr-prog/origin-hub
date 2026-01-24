@@ -1,4 +1,4 @@
-import { useParams, Navigate, Link } from "react-router-dom";
+import { useParams, Navigate, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -23,6 +23,7 @@ import { es } from "date-fns/locale";
 
 const PackDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [relatedPacksIndex, setRelatedPacksIndex] = useState(0);
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -89,16 +90,16 @@ const PackDetail = () => {
   };
 
   const handleFavorite = () => {
+    if (!isLoggedIn) {
+      navigate('/customer-auth');
+      return;
+    }
     toggleFavorite();
   };
 
   const handleAddToCart = async () => {
     if (!isLoggedIn) {
-      toast({
-        title: "Inicia sesión",
-        description: "Debes iniciar sesión para añadir productos al carrito",
-        variant: "destructive"
-      });
+      navigate('/customer-auth');
       return;
     }
     
@@ -627,7 +628,17 @@ const PackDetail = () => {
                         ({displayReviews.length || pack.reviews} valoraciones)
                       </span>
                     </div>
-                    <Button variant="outline" size="sm" onClick={() => setShowReviewForm(!showReviewForm)}>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => {
+                        if (!isLoggedIn) {
+                          navigate('/customer-auth');
+                          return;
+                        }
+                        setShowReviewForm(!showReviewForm);
+                      }}
+                    >
                       <MessageCircle className="w-4 h-4 mr-2" />
                       Escribir valoración
                     </Button>

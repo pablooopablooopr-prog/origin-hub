@@ -68,8 +68,17 @@ const RutaDetalle = () => {
   const [route, setRoute] = useState<RouteDetail | null>(null);
   const [dbRouteId, setDbRouteId] = useState<string | null>(null);
   const [relatedRoutes, setRelatedRoutes] = useState<RouteDetail[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { isFavorite, loading: favoriteLoading, toggleFavorite } = useRouteFavorites(id);
   
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    };
+    checkAuth();
+  }, []);
   useEffect(() => {
     const fetchRoute = async () => {
       if (!id) return;
@@ -244,18 +253,18 @@ const RutaDetalle = () => {
   const handlePersonalize = async () => {
     if (!route) return;
     
+    if (!isAuthenticated) {
+      navigate('/customer-auth');
+      return;
+    }
+    
     setPersonalizing(true);
     
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        toast({
-          title: "Inicia sesión",
-          description: "Debes iniciar sesión para personalizar esta ruta",
-          variant: "destructive",
-        });
-        navigate('/soy-cliente');
+        navigate('/customer-auth');
         return;
       }
 
@@ -516,6 +525,7 @@ const RutaDetalle = () => {
                           <Button 
                             size="sm" 
                             className="absolute top-2 right-2 h-6 text-xs px-2"
+                            onClick={() => navigate('/valoraciones')}
                           >
                             Ver más
                           </Button>
@@ -551,7 +561,17 @@ const RutaDetalle = () => {
                         <p className="text-xs text-muted-foreground">{route.participants} valoraciones</p>
                       </div>
                     </div>
-                    <Button size="sm" className="h-8 text-xs px-4">
+                    <Button 
+                      size="sm" 
+                      className="h-8 text-xs px-4"
+                      onClick={() => {
+                        if (isAuthenticated) {
+                          navigate('/escribir-valoracion');
+                        } else {
+                          navigate('/customer-auth');
+                        }
+                      }}
+                    >
                       Valorar ruta
                     </Button>
                   </div>
@@ -654,7 +674,13 @@ const RutaDetalle = () => {
               {/* Action Buttons Section */}
               <div className="bg-card rounded-lg p-3 border space-y-2">
                 <Button 
-                  onClick={toggleFavorite} 
+                  onClick={() => {
+                    if (isAuthenticated) {
+                      toggleFavorite();
+                    } else {
+                      navigate('/customer-auth');
+                    }
+                  }} 
                   variant={isFavorite ? "default" : "outline"} 
                   size="sm" 
                   className="w-full text-xs h-8"

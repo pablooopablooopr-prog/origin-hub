@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -22,8 +23,10 @@ interface Review {
 }
 
 const Valoraciones = () => {
+  const navigate = useNavigate();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -50,8 +53,22 @@ const Valoraciones = () => {
       setLoading(false);
     };
 
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    };
+
     fetchReviews();
+    checkAuth();
   }, []);
+
+  const handleWriteReview = () => {
+    if (isAuthenticated) {
+      navigate('/escribir-valoracion');
+    } else {
+      navigate('/customer-auth');
+    }
+  };
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -92,7 +109,7 @@ const Valoraciones = () => {
               Experiencias reales de personas como tú. Cada valoración cuenta una historia auténtica 
               sobre negocios que mantienen viva nuestra tradición gastronómica.
             </p>
-            <Button size="lg" className="shadow-earth" onClick={() => window.location.href = '/escribir-valoracion'}>
+            <Button size="lg" className="shadow-earth" onClick={handleWriteReview}>
               <MessageCircle className="w-5 h-5 mr-2" />
               Escribir valoración
             </Button>
@@ -168,7 +185,7 @@ const Valoraciones = () => {
               ¿Has visitado algún negocio auténtico? Tu valoración puede ayudar a otros 
               a descubrir lugares especiales y apoyar a empresas con alma.
             </p>
-            <Button size="lg" className="shadow-earth" onClick={() => window.location.href = '/escribir-valoracion'}>
+            <Button size="lg" className="shadow-earth" onClick={handleWriteReview}>
               <MessageCircle className="w-5 h-5 mr-2" />
               Escribir tu valoración
             </Button>
