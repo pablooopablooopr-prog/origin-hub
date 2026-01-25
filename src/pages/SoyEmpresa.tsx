@@ -191,7 +191,7 @@ const SoyEmpresa = () => {
             </div>
             <div className="mt-6 text-center">
               <Link to="/company-auth">
-                <Button variant="outline">
+                <Button variant="outline" className="bg-card shadow-md">
                   Empezar registro
                 </Button>
               </Link>

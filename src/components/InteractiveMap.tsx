@@ -146,7 +146,7 @@ const InteractiveMap = ({
         </div>
       </section>;
   }
-  return <section className="pt-4 pb-20 enso-watermark" id="mapa">
+  return <section className="pt-12 pb-20 enso-watermark" id="mapa">
       <div className="container mx-auto px-6">
         {showTitle && <div className="text-center mb-6">
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-2">
