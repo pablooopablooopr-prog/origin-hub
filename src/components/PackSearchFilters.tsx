@@ -32,7 +32,7 @@ const PackSearchFilters = ({ onFiltersChange, initialFilters }: PackSearchFilter
     }
   );
 
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   // Update filters when initialFilters change
   useEffect(() => {
