@@ -103,7 +103,7 @@ const Rutas = () => {
       <Header />
       <main className="pt-6">
         <div className="container mx-auto px-6 py-8">
-          <div className="text-center mb-8">
+          <div className="text-center mb-4">
             <h1 className="text-4xl md:text-5xl font-bold text-primary mb-3 flex items-center justify-center">
               <span>Rutas </span>
               <img 

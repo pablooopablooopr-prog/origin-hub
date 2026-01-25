@@ -130,10 +130,6 @@ const SoyEmpresa = () => {
                       </CardDescription>
                     </CardContent>
                   </Card>
-                  {/* Connector line */}
-                  {index < steps.length - 1 && (
-                    <div className="hidden md:block absolute top-1/2 -right-3 w-6 h-0.5 bg-border" />
-                  )}
                 </div>
               ))}
             </div>

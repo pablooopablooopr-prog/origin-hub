@@ -24,7 +24,7 @@ export default function CompanyAuth() {
   const navigate = useNavigate();
   
   // Get initial tab from URL parameter
-  const initialTab = searchParams.get('tab') === 'signin' ? 'signin' : 'signup';
+  const initialTab = searchParams.get('tab') === 'signup' ? 'signup' : 'signin';
 
   // Company registration form
   const [companyData, setCompanyData] = useState({
@@ -365,11 +365,48 @@ export default function CompanyAuth() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue={initialTab} className="w-full">
+              <Tabs defaultValue={initialTab === 'signup' ? 'signup' : 'signin'} className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="signup">Registrarse</TabsTrigger>
                   <TabsTrigger value="signin">Iniciar Sesión</TabsTrigger>
+                  <TabsTrigger value="signup">Registrarse</TabsTrigger>
                 </TabsList>
+                
+                <TabsContent value="signin">
+                  <form onSubmit={handleSignIn} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="contacto@tunegocio.com"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="password">Contraseña</Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="Tu contraseña"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </div>
+                    <Button type="submit" className="w-full" disabled={loading}>
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Iniciando...
+                        </>
+                      ) : (
+                        'Iniciar Sesión'
+                      )}
+                    </Button>
+                  </form>
+                </TabsContent>
                 
                 <TabsContent value="signup">
                   <form onSubmit={handleSignUp} className="space-y-4">
@@ -408,43 +445,6 @@ export default function CompanyAuth() {
                     <p className="text-xs text-muted-foreground text-center mt-2">
                       Recibirás un email de confirmación para activar tu cuenta
                     </p>
-                  </form>
-                </TabsContent>
-                
-                <TabsContent value="signin">
-                  <form onSubmit={handleSignIn} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="contacto@tunegocio.com"
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="password">Contraseña</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        placeholder="Tu contraseña"
-                        required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                      />
-                    </div>
-                    <Button type="submit" className="w-full" disabled={loading}>
-                      {loading ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Iniciando...
-                        </>
-                      ) : (
-                        'Iniciar Sesión'
-                      )}
-                    </Button>
                   </form>
                 </TabsContent>
               </Tabs>

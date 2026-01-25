@@ -7,9 +7,9 @@ const Mapa = () => {
     <div className="min-h-screen">
       <Header />
       <main className="pt-6">
-        <div className="container mx-auto px-6 py-4">
-          <div className="text-center mb-4">
-            <h1 className="text-4xl md:text-5xl font-bold text-primary mb-2 flex items-center justify-center">
+        <div className="container mx-auto px-6 py-8">
+          <div className="text-center mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-primary mb-3 flex items-center justify-center">
               <span>Mapa de </span>
               <img 
                 src="/lovable-uploads/clean-enso-symbol.png" 
@@ -18,7 +18,7 @@ const Mapa = () => {
               />
               <span>rigen</span>
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Descubre negocios auténticos cerca de ti filtrando por categoría, zona o producto.
             </p>
           </div>
