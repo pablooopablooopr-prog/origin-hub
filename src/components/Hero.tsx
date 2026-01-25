@@ -22,7 +22,7 @@ const Hero = () => {
         </p>
 
         {/* Descripción adicional */}
-        <p className="text-muted-foreground mb-16 max-w-2xl mx-auto opacity-90 text-lg font-normal font-sans text-center">Conectamos sin intermediarios consumidores con productores artesanos que cuidan de tu alimentación y de su tierra junto a experiencias rurales por toda España</p>
+        <p className="text-muted-foreground mb-10 max-w-2xl mx-auto opacity-90 text-lg font-normal font-sans text-center">Conectamos sin intermediarios consumidores con productores artesanos que cuidan de tu alimentación y de su tierra junto a experiencias rurales por toda España</p>
 
         {/* Botones de acción */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-4xl mx-auto">
@@ -48,17 +48,17 @@ const Hero = () => {
           </Link>
         </div>
 
-        {/* Indicadores sutiles */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          <div className="space-y-2">
+        {/* Indicadores sutiles - más cerca de los botones */}
+        <div className="mt-6 grid grid-cols-3 gap-8 text-center max-w-2xl mx-auto">
+          <div className="space-y-1">
             <div className="text-2xl font-bold text-primary">500+</div>
             <p className="text-sm text-muted-foreground">Negocios locales</p>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-1">
             <div className="text-2xl font-bold text-secondary">15</div>
             <p className="text-sm text-muted-foreground">Provincias cubiertas</p>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-1">
             <div className="text-2xl font-bold text-primary">10k+</div>
             <p className="text-sm text-muted-foreground">Consumidores conscientes</p>
           </div>
