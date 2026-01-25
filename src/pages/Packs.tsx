@@ -223,7 +223,7 @@ const Packs = () => {
         <div className="container mx-auto px-6 py-8">
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4 flex items-center justify-center flex-wrap">
-              <span>Buscar Packs Regi</span>
+              <span>Packs Regi</span>
               <img 
                 src="/lovable-uploads/clean-enso-symbol.png" 
                 alt="Ensō"
@@ -232,7 +232,7 @@ const Packs = () => {
               <span>nales</span>
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Encuentra el pack perfecto usando nuestros filtros de búsqueda
+              Encuentra el pack perfecto filtrando por región, tipo o categoría
             </p>
           </div>
 

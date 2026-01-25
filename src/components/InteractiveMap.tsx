@@ -146,22 +146,27 @@ const InteractiveMap = ({
         </div>
       </section>;
   }
-  return <section className="pt-8 pb-20 enso-watermark" id="mapa">
+  return <section className="pt-4 pb-20 enso-watermark" id="mapa">
       <div className="container mx-auto px-6">
-        {showTitle && <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
+        {showTitle && <div className="text-center mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-2">
               Mapa Interactivo de Empresas
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Encuentra negocios auténticos cerca de ti. Filtra por categoría, busca por ciudad o tipo de producto.
+            <p className="text-lg text-muted-foreground">
+              Encuentra negocios auténticos cerca de ti filtrando por categoría, zona o producto.
             </p>
           </div>}
 
-        <div className="max-w-4xl mx-auto mb-16">
-          <div className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-4 mb-8">
+        <div className="max-w-4xl mx-auto mb-8">
+          <div className="max-w-3xl mx-auto flex flex-col sm:flex-row gap-3 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-              <Input placeholder="Buscar por ciudad, producto o negocio..." className="pl-11 py-3" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+              <Input 
+                placeholder="Escribe ciudad, tipo de negocio o producto..." 
+                className="pl-11 py-3" 
+                value={searchQuery} 
+                onChange={e => setSearchQuery(e.target.value)} 
+              />
             </div>
             <Button variant="outline" className="sm:w-auto" onClick={() => setShowFilters(!showFilters)}>
               <Filter className="w-4 h-4 mr-2" />
@@ -169,18 +174,23 @@ const InteractiveMap = ({
             </Button>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
+          <div className="flex flex-wrap justify-center gap-2 mb-6">
             {categoriesWithCounts.map(category => {
             const IconComponent = category.icon;
             const isSelected = selectedCategory === category.name;
-            return <Badge key={category.name} variant={isSelected ? "default" : "secondary"} className={`px-4 py-2 text-sm hover:shadow-soft transition-all cursor-pointer ${isSelected ? "shadow-md" : ""}`} onClick={() => handleCategoryClick(category.name)}>
-                  <IconComponent className="w-4 h-4 mr-2" />
+            return <Badge 
+                key={category.name} 
+                variant={isSelected ? "default" : "secondary"} 
+                className={`px-3 py-1.5 text-sm hover:shadow-soft transition-all cursor-pointer ${isSelected ? "shadow-md" : ""}`} 
+                onClick={() => handleCategoryClick(category.name)}
+              >
+                  <IconComponent className="w-4 h-4 mr-1.5" />
                   {category.name} ({category.count})
                 </Badge>;
           })}
           </div>
 
-          <div className="text-center mb-6">
+          <div className="text-center mb-4">
             <p className="text-sm text-muted-foreground">
               Mostrando {filteredBusinesses.length} negocios
               {searchQuery && ` para "${searchQuery}"`}
@@ -189,7 +199,7 @@ const InteractiveMap = ({
             {(searchQuery || selectedCategory) && <Button variant="ghost" size="sm" onClick={() => {
             setSearchQuery("");
             setSelectedCategory(null);
-          }} className="mt-2">
+          }} className="mt-1">
                 Limpiar filtros
               </Button>}
           </div>
