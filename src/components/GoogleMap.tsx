@@ -247,26 +247,26 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
         {/* Selected business info */}
         {selectedBusiness && (
-          <Card className="absolute bottom-4 left-4 right-4 md:right-auto md:w-80 z-10">
+          <Card className="absolute bottom-4 left-4 right-4 md:right-auto md:w-80 z-10 bg-primary border-primary shadow-lg">
             <CardContent className="p-4">
               <div className="flex justify-between items-start mb-2">
-                <h4 className="font-semibold text-primary">{selectedBusiness.name}</h4>
+                <h4 className="font-semibold text-primary-foreground">{selectedBusiness.name}</h4>
                 <button
                   onClick={() => setSelectedBusiness(null)}
-                  className="text-muted-foreground hover:text-foreground text-xl leading-none"
+                  className="text-primary-foreground/70 hover:text-primary-foreground text-xl leading-none"
                 >
                   ×
                 </button>
               </div>
-              <p className="text-sm text-muted-foreground mb-1">{selectedBusiness.category}</p>
-              <p className="text-sm mb-2">{selectedBusiness.description}</p>
-              <p className="text-sm text-muted-foreground mb-3">
+              <p className="text-sm text-primary-foreground/80 mb-1">{selectedBusiness.category}</p>
+              <p className="text-sm text-primary-foreground/90 mb-2">{selectedBusiness.description}</p>
+              <p className="text-sm text-primary-foreground/70 mb-3">
                 {selectedBusiness.address}, {selectedBusiness.city}
               </p>
               
               <div className="flex flex-wrap gap-1 mb-3">
                 {selectedBusiness.tags.map((tag) => (
-                  <Badge key={tag} variant="outline" className="text-xs">
+                  <Badge key={tag} variant="outline" className="text-xs border-primary-foreground/30 text-primary-foreground bg-primary-foreground/10">
                     {tag}
                   </Badge>
                 ))}
@@ -275,9 +275,9 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">
                   <span className="text-sm">⭐</span>
-                  <span className="text-sm font-medium">{selectedBusiness.rating}</span>
+                  <span className="text-sm font-medium text-primary-foreground">{selectedBusiness.rating}</span>
                 </div>
-                <Button size="sm" variant="outline">
+                <Button size="sm" variant="secondary" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
                   Ver detalles
                 </Button>
               </div>
