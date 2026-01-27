@@ -652,7 +652,7 @@ const EditarRuta = () => {
 
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-4">
-            <RouteMap routeTitle={routeName || "Mi Ruta"} />
+            <RouteMap routeTitle={routeName || "Mi Ruta"} stopsCount={stops.length} />
             
             <Card>
               <CardHeader>
