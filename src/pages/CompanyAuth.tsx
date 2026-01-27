@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { User } from "@supabase/supabase-js";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Building, Loader2, CheckCircle2 } from "lucide-react";
+import AddressAutocompleteInput, { AddressComponents } from "@/components/AddressAutocompleteInput";
 
 export default function CompanyAuth() {
   const [searchParams] = useSearchParams();
@@ -33,9 +34,29 @@ export default function CompanyAuth() {
     contact_person: "",
     phone: "",
     address: "",
+    city: "",
+    province: "",
+    postal_code: "",
+    country: "España",
+    latitude: null as number | null,
+    longitude: null as number | null,
     description: "",
     authenticity_story: ""
   });
+
+  // Handle address selection from autocomplete
+  const handleAddressSelect = useCallback((addressComponents: AddressComponents) => {
+    setCompanyData(prev => ({
+      ...prev,
+      address: addressComponents.address_line1,
+      city: addressComponents.city,
+      province: addressComponents.province,
+      postal_code: addressComponents.postal_code,
+      country: addressComponents.country || "España",
+      latitude: addressComponents.latitude,
+      longitude: addressComponents.longitude
+    }));
+  }, []);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -135,6 +156,15 @@ export default function CompanyAuth() {
         ? `${companyData.business_type ? `[${companyData.business_type}] ` : ''}${companyData.description}` 
         : companyData.business_type || null;
 
+      // Build full address from components
+      const fullAddress = [
+        companyData.address,
+        companyData.city,
+        companyData.province,
+        companyData.postal_code,
+        companyData.country
+      ].filter(Boolean).join(', ');
+
       const { error } = await supabase
         .from('companies')
         .insert({
@@ -143,7 +173,9 @@ export default function CompanyAuth() {
           business_name: companyData.business_name,
           contact_person: companyData.contact_person,
           phone: companyData.phone || null,
-          address: companyData.address || null,
+          address: fullAddress || null,
+          latitude: companyData.latitude,
+          longitude: companyData.longitude,
           description: descriptionWithType,
           authenticity_story: companyData.authenticity_story || null,
           status: 'pending'
@@ -284,12 +316,17 @@ export default function CompanyAuth() {
 
                 <div className="space-y-2">
                   <Label htmlFor="address">Dirección</Label>
-                  <Input
+                  <AddressAutocompleteInput
                     id="address"
-                    placeholder="Calle, número, ciudad, provincia"
-                    value={companyData.address}
-                    onChange={(e) => setCompanyData({...companyData, address: e.target.value})}
+                    placeholder="Empieza a escribir tu dirección..."
+                    onAddressSelect={handleAddressSelect}
+                    countryRestriction="es"
                   />
+                  {companyData.latitude && companyData.longitude && (
+                    <p className="text-xs text-muted-foreground">
+                      📍 {companyData.address}, {companyData.city}, {companyData.province} {companyData.postal_code}
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">

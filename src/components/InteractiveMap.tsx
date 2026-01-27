@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter, MapPin, Beef, Milk, Wheat, Leaf, Shirt, Heart, UtensilsCrossed, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import MapboxMap from "./MapboxMap";
+import GoogleMap from "./GoogleMap";
 import { supabase } from "@/integrations/supabase/client";
 
 // Fallback data
@@ -208,7 +208,7 @@ const InteractiveMap = ({
         <div className="relative">
           <Card className="overflow-hidden shadow-earth">
             <CardContent className="p-0">
-              <MapboxMap filteredBusinesses={filteredBusinesses} searchQuery={searchQuery} selectedCategory={selectedCategory} />
+              <GoogleMap filteredBusinesses={filteredBusinesses} searchQuery={searchQuery} selectedCategory={selectedCategory} />
             </CardContent>
           </Card>
         </div>
