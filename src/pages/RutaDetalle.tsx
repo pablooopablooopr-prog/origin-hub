@@ -1,8 +1,9 @@
 import { useParams, Navigate, Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RouteMap from "@/components/RouteMap";
+import RouteGoogleMap from "@/components/RouteGoogleMap";
 import RouteDayRecommendations from "@/components/RouteDayRecommendations";
 import RoutePracticalInfo from "@/components/RoutePracticalInfo";
 import { Button } from "@/components/ui/button";
@@ -664,7 +665,21 @@ const RutaDetalle = () => {
 
             {/* Right Sidebar */}
             <div className="lg:col-span-1 space-y-4">
-              <RouteMap routeTitle={route.title} stopsCount={route.stops?.length || 0} />
+              {/* Use Google Maps if stops have coordinates, otherwise use static map */}
+              {route.stops?.some(stop => stop.coordinates && stop.coordinates[0] !== 0 && stop.coordinates[1] !== 0) ? (
+                <RouteGoogleMap 
+                  routeTitle={route.title}
+                  stops={route.stops.map((stop, index) => ({
+                    id: stop.id,
+                    name: stop.name,
+                    position: index + 1,
+                    latitude: stop.coordinates?.[1] || null,
+                    longitude: stop.coordinates?.[0] || null
+                  }))}
+                />
+              ) : (
+                <RouteMap routeTitle={route.title} stopsCount={route.stops?.length || 0} />
+              )}
               <RouteDayRecommendations recommendations={route.dailyRecommendations} />
               <RoutePracticalInfo 
                 practicalInfo={route.practicalInfo} 
