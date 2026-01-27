@@ -10,12 +10,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { MapPin, Plus, X, Save, Trash2, Clock, Route, Users, Loader2 } from "lucide-react";
+import { MapPin, Plus, X, Save, Trash2, Clock, Route, Users, Loader2, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RouteMap from "@/components/RouteMap";
 import { supabase } from "@/integrations/supabase/client";
 import { useRegions } from "@/hooks/useSupabaseData";
 import { ImageUpload } from "@/components/ImageUpload";
+import PlaceAutocompleteInput, { PlaceResult } from "@/components/PlaceAutocompleteInput";
 
 interface Stop {
   id: string;
@@ -24,6 +25,9 @@ interface Stop {
   whatToDo: string[];
   schedule?: string;
   address?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  placeId?: string;
 }
 
 interface Recommendation {
@@ -149,10 +153,12 @@ const EditarRuta = () => {
             category: stop.type || '',
             whatToDo: parseJsonArray(stop.what_to_do),
             schedule: stop.schedule || '',
-            address: stop.address || ''
+            address: stop.address || '',
+            latitude: stop.latitude || null,
+            longitude: stop.longitude || null
           })));
         } else {
-          setStops([{ id: 'new-1', name: '', category: '', whatToDo: [''], schedule: '', address: '' }]);
+          setStops([{ id: 'new-1', name: '', category: '', whatToDo: [''], schedule: '', address: '', latitude: null, longitude: null }]);
         }
 
       } catch (err) {
@@ -175,7 +181,7 @@ const EditarRuta = () => {
       toast({ title: "Límite alcanzado", description: "Máximo 6 paradas", variant: "destructive" });
       return;
     }
-    setStops([...stops, { id: `new-${Date.now()}`, name: '', category: '', whatToDo: [''], schedule: '', address: '' }]);
+    setStops([...stops, { id: `new-${Date.now()}`, name: '', category: '', whatToDo: [''], schedule: '', address: '', latitude: null, longitude: null }]);
   };
 
   const removeStop = (id: string) => {
@@ -266,6 +272,8 @@ const EditarRuta = () => {
         what_to_do: stop.whatToDo.filter(w => w),
         address: stop.address || null,
         schedule: stop.schedule || null,
+        latitude: stop.latitude || null,
+        longitude: stop.longitude || null,
         position: index
       }));
 
@@ -486,16 +494,37 @@ const EditarRuta = () => {
                       </div>
                       <div className="flex-1 space-y-3">
                         <div>
-                          <Label className="text-sm">Nombre *</Label>
-                          <Input 
+                          <Label className="text-sm flex items-center gap-2">
+                            Nombre *
+                            {stop.latitude && stop.longitude && (
+                              <span className="text-xs text-green-600 flex items-center gap-1">
+                                <Check className="w-3 h-3" />
+                                Ubicación guardada
+                              </span>
+                            )}
+                          </Label>
+                          <PlaceAutocompleteInput
                             value={stop.name}
-                            onChange={(e) => {
+                            onChange={(value) => {
                               const newStops = [...stops];
-                              newStops[index].name = e.target.value;
+                              newStops[index].name = value;
                               setStops(newStops);
                             }}
-                            placeholder="Nombre del lugar"
+                            onPlaceSelect={(place: PlaceResult) => {
+                              const newStops = [...stops];
+                              newStops[index].name = place.name || place.formatted_address;
+                              newStops[index].address = place.address;
+                              newStops[index].latitude = place.latitude;
+                              newStops[index].longitude = place.longitude;
+                              newStops[index].placeId = place.place_id;
+                              setStops(newStops);
+                            }}
+                            placeholder="Buscar empresa, restaurante o lugar..."
+                            searchTypes={['establishment']}
                           />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Escribe y selecciona para guardar la ubicación
+                          </p>
                         </div>
                         <div>
                           <Label className="text-sm">Categoría</Label>
