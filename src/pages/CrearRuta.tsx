@@ -10,12 +10,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { MapPin, Plus, X, Save, Trash2, Image as ImageIcon, Clock, FileText, Users, Route, Star, Coffee, Utensils, Camera, Loader2, LogIn } from "lucide-react";
+import { MapPin, Plus, X, Save, Trash2, Image as ImageIcon, Clock, FileText, Users, Route, Star, Coffee, Utensils, Camera, Loader2, LogIn, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RouteMap from "@/components/RouteMap";
 import { supabase } from "@/integrations/supabase/client";
 import { useRegions } from "@/hooks/useSupabaseData";
 import { ImageUpload } from "@/components/ImageUpload";
+import PlaceAutocompleteInput, { PlaceResult } from "@/components/PlaceAutocompleteInput";
 
 interface Stop {
   id: number;
@@ -24,6 +25,9 @@ interface Stop {
   whatToDo: string[];
   schedule?: string;
   address?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  placeId?: string;
 }
 
 interface Recommendation {
@@ -66,7 +70,10 @@ const CrearRuta = () => {
       category: "",
       whatToDo: [""],
       schedule: "",
-      address: ""
+      address: "",
+      latitude: null,
+      longitude: null,
+      placeId: ""
     }
   ]);
 
@@ -93,7 +100,10 @@ const CrearRuta = () => {
       category: "",
       whatToDo: [""],
       schedule: "",
-      address: ""
+      address: "",
+      latitude: null,
+      longitude: null,
+      placeId: ""
     }]);
   };
 
@@ -217,6 +227,8 @@ const CrearRuta = () => {
         what_to_do: stop.whatToDo.filter(w => w),
         address: stop.address || null,
         schedule: stop.schedule || null,
+        latitude: stop.latitude || null,
+        longitude: stop.longitude || null,
         position: index
       }));
 
@@ -298,7 +310,7 @@ const CrearRuta = () => {
     setExperience("");
     setDuration("");
     setDifficulty("Fácil");
-    setStops([{ id: 1, name: "", category: "", whatToDo: [""], schedule: "", address: "" }]);
+    setStops([{ id: 1, name: "", category: "", whatToDo: [""], schedule: "", address: "", latitude: null, longitude: null, placeId: "" }]);
     setRecommendations([{ id: 1, text: "" }]);
     setLocalTips([{ id: 1, text: "" }]);
     
@@ -514,17 +526,38 @@ const CrearRuta = () => {
                         </div>
                         <div className="flex-1 space-y-3">
                           <div>
-                            <Label className="text-sm">Nombre del Lugar *</Label>
-                            <Input 
+                            <Label className="text-sm flex items-center gap-2">
+                              Nombre del Lugar *
+                              {stop.latitude && stop.longitude && (
+                                <span className="text-xs text-green-600 flex items-center gap-1">
+                                  <Check className="w-3 h-3" />
+                                  Ubicación guardada
+                                </span>
+                              )}
+                            </Label>
+                            <PlaceAutocompleteInput
                               value={stop.name}
-                              onChange={(e) => {
+                              onChange={(value) => {
                                 const newStops = [...stops];
-                                newStops[index].name = e.target.value;
+                                newStops[index].name = value;
                                 setStops(newStops);
                               }}
-                              placeholder="Ej: Quesería Artesanal El Valle"
+                              onPlaceSelect={(place: PlaceResult) => {
+                                const newStops = [...stops];
+                                newStops[index].name = place.name || place.formatted_address;
+                                newStops[index].address = place.address;
+                                newStops[index].latitude = place.latitude;
+                                newStops[index].longitude = place.longitude;
+                                newStops[index].placeId = place.place_id;
+                                setStops(newStops);
+                              }}
+                              placeholder="Buscar empresa, restaurante o lugar..."
                               className="font-bold text-lg"
+                              searchTypes={['establishment']}
                             />
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Escribe el nombre y selecciona de la lista para guardar la ubicación automáticamente
+                            </p>
                           </div>
                           <div>
                             <Label className="text-sm">Categoría</Label>
