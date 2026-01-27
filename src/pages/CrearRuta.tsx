@@ -724,7 +724,7 @@ const CrearRuta = () => {
 
           {/* Right Sidebar */}
           <div className="lg:col-span-1 space-y-4">
-            <RouteMap routeTitle={routeName || "Nueva Ruta"} />
+            <RouteMap routeTitle={routeName || "Nueva Ruta"} stopsCount={stops.length} />
             
             {/* Action Buttons */}
             <div className="bg-card rounded-lg p-4 border space-y-3">

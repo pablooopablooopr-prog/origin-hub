@@ -664,7 +664,7 @@ const RutaDetalle = () => {
 
             {/* Right Sidebar */}
             <div className="lg:col-span-1 space-y-4">
-              <RouteMap routeTitle={route.title} />
+              <RouteMap routeTitle={route.title} stopsCount={route.stops?.length || 0} />
               <RouteDayRecommendations recommendations={route.dailyRecommendations} />
               <RoutePracticalInfo 
                 practicalInfo={route.practicalInfo} 
