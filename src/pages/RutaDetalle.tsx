@@ -674,7 +674,9 @@ const RutaDetalle = () => {
                     name: stop.name,
                     position: index + 1,
                     latitude: stop.coordinates?.[1] || null,
-                    longitude: stop.coordinates?.[0] || null
+                    longitude: stop.coordinates?.[0] || null,
+                    address: stop.address,
+                    images: stop.images
                   }))}
                 />
               ) : (
