@@ -87,12 +87,12 @@ const RutaDetalle = () => {
       setLoading(true);
       
       try {
-        // Try to fetch from Supabase first
+        // Try to fetch from Supabase first - query by slug only (not UUID)
         const { data: supabaseRoute, error } = await supabase
           .from('routes')
           .select('*')
-          .or(`slug.eq.${id},id.eq.${id}`)
-          .single();
+          .eq('slug', id)
+          .maybeSingle();
 
         if (supabaseRoute && !error) {
           // Fetch stops for this route
