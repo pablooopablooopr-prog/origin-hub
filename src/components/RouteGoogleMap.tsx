@@ -519,16 +519,6 @@ const RouteGoogleMap: React.FC<RouteGoogleMapProps> = ({ stops, routeTitle }) =>
                     </div>
                   </div>
 
-                  {/* Image if exists */}
-                  {selectedStop.images && selectedStop.images.length > 0 && (
-                    <div className="h-32 overflow-hidden">
-                      <img 
-                        src={selectedStop.images[0]} 
-                        alt={selectedStop.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
 
                   {/* Content */}
                   <ScrollArea className="flex-1">
