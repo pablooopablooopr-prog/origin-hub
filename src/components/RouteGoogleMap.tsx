@@ -100,26 +100,8 @@ const RouteGoogleMap: React.FC<RouteGoogleMapProps> = ({ stops, routeTitle }) =>
         }));
         setDistanceMatrix(matrix);
 
-        // Draw the route on the map
-        if (directionsRendererRef.current) {
-          directionsRendererRef.current.setMap(null);
-        }
-        
-        directionsRendererRef.current = new google.maps.DirectionsRenderer({
-          map: mapRef.current,
-          directions: result,
-          suppressMarkers: true, // We use our own markers
-          polylineOptions: {
-            strokeColor: 'hsl(30, 41%, 28%)',
-            strokeOpacity: 0.8,
-            strokeWeight: 4
-          }
-        });
-
-        // Hide the basic polyline since we have directions
-        if (polylineRef.current) {
-          polylineRef.current.setMap(null);
-        }
+        // Don't render DirectionsRenderer - we keep our custom polyline instead
+        // Just store the directions data for distance/duration calculations
       }
     } catch (err) {
       console.error('Error calculating directions:', err);
@@ -198,10 +180,6 @@ const RouteGoogleMap: React.FC<RouteGoogleMapProps> = ({ stops, routeTitle }) =>
       markersRef.current.forEach(marker => marker.map = null);
       markersRef.current = [];
 
-      // Remove existing polyline if no directions yet
-      if (polylineRef.current && directionsLegs.length === 0) {
-        polylineRef.current.setMap(null);
-      }
 
       const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
 
@@ -288,26 +266,28 @@ const RouteGoogleMap: React.FC<RouteGoogleMapProps> = ({ stops, routeTitle }) =>
         markersRef.current.push(marker);
       });
 
-      // Create dashed polyline connecting stops (fallback when no directions)
-      if (directionsLegs.length === 0) {
-        polylineRef.current = new google.maps.Polyline({
-          path: pathCoordinates,
-          geodesic: true,
-          strokeColor: 'hsl(30, 41%, 28%)',
-          strokeOpacity: 0.8,
-          strokeWeight: 3,
-          icons: [{
-            icon: {
-              path: 'M 0,-1 0,1',
-              strokeOpacity: 1,
-              scale: 3
-            },
-            offset: '0',
-            repeat: '15px'
-          }]
-        });
-        polylineRef.current.setMap(mapRef.current);
+      // Always create/update the dashed polyline connecting stops
+      if (polylineRef.current) {
+        polylineRef.current.setMap(null);
       }
+      
+      polylineRef.current = new google.maps.Polyline({
+        path: pathCoordinates,
+        geodesic: true,
+        strokeColor: 'hsl(30, 41%, 28%)',
+        strokeOpacity: 0.9,
+        strokeWeight: 3,
+        icons: [{
+          icon: {
+            path: 'M 0,-1 0,1',
+            strokeOpacity: 1,
+            scale: 3
+          },
+          offset: '0',
+          repeat: '15px'
+        }]
+      });
+      polylineRef.current.setMap(mapRef.current);
 
       // Fit bounds to show all markers
       if (validStops.length > 0 && selectedStopIndex === null) {
@@ -329,7 +309,7 @@ const RouteGoogleMap: React.FC<RouteGoogleMapProps> = ({ stops, routeTitle }) =>
     };
 
     updateMapElements();
-  }, [validStops, loaded, selectedStopIndex, directionsLegs.length]);
+  }, [validStops, loaded, selectedStopIndex]);
 
   // Calculate directions when map is ready
   useEffect(() => {
