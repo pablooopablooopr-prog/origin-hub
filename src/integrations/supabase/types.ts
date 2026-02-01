@@ -1096,6 +1096,41 @@ export type Database = {
         }
         Relationships: []
       }
+      route_access: {
+        Row: {
+          created_at: string
+          id: string
+          route_id: string
+          user_id: string
+          valid_from: string
+          valid_until: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          route_id: string
+          user_id: string
+          valid_from?: string
+          valid_until?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          route_id?: string
+          user_id?: string
+          valid_from?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_access_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       route_purchases: {
         Row: {
           base_price: number
@@ -1170,6 +1205,7 @@ export type Database = {
           highlights: Json | null
           id: string
           images: Json | null
+          is_premium: boolean | null
           latitude: number | null
           longitude: number | null
           name: string
@@ -1189,6 +1225,7 @@ export type Database = {
           highlights?: Json | null
           id?: string
           images?: Json | null
+          is_premium?: boolean | null
           latitude?: number | null
           longitude?: number | null
           name: string
@@ -1208,6 +1245,7 @@ export type Database = {
           highlights?: Json | null
           id?: string
           images?: Json | null
+          is_premium?: boolean | null
           latitude?: number | null
           longitude?: number | null
           name?: string
@@ -1245,6 +1283,7 @@ export type Database = {
       routes: {
         Row: {
           avg_rating: number | null
+          base_price_per_person: number | null
           created_at: string
           creator_id: string | null
           daily_recommendations: Json | null
@@ -1253,6 +1292,7 @@ export type Database = {
           duration: string | null
           id: string
           image_url: string | null
+          is_active: boolean | null
           is_featured: boolean | null
           is_public: boolean | null
           narrative: string | null
@@ -1266,6 +1306,7 @@ export type Database = {
         }
         Insert: {
           avg_rating?: number | null
+          base_price_per_person?: number | null
           created_at?: string
           creator_id?: string | null
           daily_recommendations?: Json | null
@@ -1274,6 +1315,7 @@ export type Database = {
           duration?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean | null
           is_featured?: boolean | null
           is_public?: boolean | null
           narrative?: string | null
@@ -1287,6 +1329,7 @@ export type Database = {
         }
         Update: {
           avg_rating?: number | null
+          base_price_per_person?: number | null
           created_at?: string
           creator_id?: string | null
           daily_recommendations?: Json | null
@@ -1295,6 +1338,7 @@ export type Database = {
           duration?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean | null
           is_featured?: boolean | null
           is_public?: boolean | null
           narrative?: string | null

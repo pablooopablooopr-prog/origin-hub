@@ -129,7 +129,7 @@ export const RoutePurchaseCard = ({
   }
 
   return (
-    <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent sticky top-24">
+    <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
       <CardHeader className="pb-4">
         <CardTitle className="text-lg flex items-center gap-2">
           <MapPin className="w-5 h-5 text-primary" />
