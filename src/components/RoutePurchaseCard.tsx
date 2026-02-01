@@ -24,10 +24,11 @@ export const RoutePurchaseCard = ({
   routeTitle,
   stopCount,
   benefits = [
-    "Acceso digital permanente",
-    "Mapa interactivo con todas las paradas",
-    "Información exclusiva de cada productor",
-    "Recomendaciones personalizadas"
+    "Entrada válida para esta ruta específica",
+    "Acceso garantizado a los productores participantes",
+    "Visita organizada sin riesgo de llegar y encontrar cerrado",
+    "Beneficios asociados a la ruta (según paradas)",
+    "Ruta disponible permanentemente en la cuenta del usuario"
   ]
 }: RoutePurchaseCardProps) => {
   const [numPeople, setNumPeople] = useState(2);
@@ -132,94 +133,96 @@ export const RoutePurchaseCard = ({
 
   return (
     <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-primary" />
-          {PAYMENT_MESSAGES.ROUTE_CHECKOUT.title}
+      <CardHeader className="pb-2 pt-4 px-4">
+        <CardTitle className="text-base flex items-center gap-2">
+          <MapPin className="w-4 h-4 text-primary" />
+          Entrada para Ruta ORIGEN
         </CardTitle>
-        <p className="text-sm text-muted-foreground">
-          {PAYMENT_MESSAGES.ROUTE_CHECKOUT.description}
+        <p className="text-xs text-muted-foreground">
+          Acceso garantizado a esta ruta con productores participantes
         </p>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-3 px-4 pb-4">
         {/* Info about separate purchase */}
-        <Alert className="bg-blue-50 border-blue-200">
-          <Info className="h-4 w-4 text-blue-600" />
-          <AlertDescription className="text-blue-800 text-xs">
+        <Alert className="bg-blue-50 border-blue-200 py-2">
+          <Info className="h-3 w-3 text-blue-600" />
+          <AlertDescription className="text-blue-800 text-[10px]">
             {PAYMENT_MESSAGES.ROUTE_CHECKOUT.separation}
           </AlertDescription>
         </Alert>
 
         {/* Price Display */}
-        <div className="text-center p-4 bg-background rounded-lg border">
+        <div className="text-center p-3 bg-background rounded-lg border">
           <div className="flex items-baseline justify-center gap-1">
-            <span className="text-3xl font-bold text-primary">
+            <span className="text-2xl font-bold text-primary">
               {formatPrice(pricing.pricePerPerson)}
             </span>
-            <span className="text-muted-foreground">/persona</span>
+            <span className="text-xs text-muted-foreground">/persona</span>
           </div>
           {pricing.discountPercent > 0 && (
-            <Badge variant="secondary" className="mt-2 bg-green-100 text-green-700">
+            <Badge variant="secondary" className="mt-1 bg-green-100 text-green-700 text-[10px]">
               {pricing.discountPercent}% descuento grupo
             </Badge>
           )}
-          <p className="text-xs text-muted-foreground mt-2">
+          <p className="text-[10px] text-muted-foreground mt-1">
             {stopCount} paradas incluidas
           </p>
         </div>
 
         {/* People Selector */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium flex items-center gap-2">
-            <Users className="w-4 h-4" />
+        <div className="space-y-1">
+          <label className="text-xs font-medium flex items-center gap-1">
+            <Users className="w-3 h-3" />
             Número de personas
           </label>
-          <div className="flex items-center justify-center gap-4 p-3 bg-muted/50 rounded-lg">
+          <div className="flex items-center justify-center gap-3 p-2 bg-muted/50 rounded-lg">
             <Button
               variant="outline"
               size="icon"
+              className="h-7 w-7"
               onClick={() => setNumPeople(Math.max(1, numPeople - 1))}
               disabled={numPeople <= 1}
             >
-              <Minus className="w-4 h-4" />
+              <Minus className="w-3 h-3" />
             </Button>
-            <span className="text-2xl font-semibold w-12 text-center">{numPeople}</span>
+            <span className="text-xl font-semibold w-8 text-center">{numPeople}</span>
             <Button
               variant="outline"
               size="icon"
+              className="h-7 w-7"
               onClick={() => setNumPeople(Math.min(20, numPeople + 1))}
               disabled={numPeople >= 20}
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3 h-3" />
             </Button>
           </div>
           {numPeople >= 4 && (
-            <p className="text-xs text-green-600 text-center">
+            <p className="text-[10px] text-green-600 text-center">
               ¡Descuento de grupo aplicado!
             </p>
           )}
         </div>
 
         {/* Total */}
-        <div className="p-4 bg-primary/10 rounded-lg">
+        <div className="p-2 bg-primary/10 rounded-lg">
           <div className="flex justify-between items-center">
-            <span className="font-medium">Total a pagar:</span>
-            <span className="text-2xl font-bold text-primary">
+            <span className="text-xs font-medium">Total:</span>
+            <span className="text-lg font-bold text-primary">
               {formatPrice(pricing.totalPrice)}
             </span>
           </div>
         </div>
 
         {/* Benefits */}
-        <div className="space-y-2">
-          <p className="text-sm font-medium flex items-center gap-2">
-            <Gift className="w-4 h-4 text-primary" />
+        <div className="space-y-1">
+          <p className="text-xs font-medium flex items-center gap-1">
+            <Gift className="w-3 h-3 text-primary" />
             Incluye:
           </p>
-          <ul className="space-y-1">
+          <ul className="space-y-0.5">
             {benefits.map((benefit, index) => (
-              <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
-                <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+              <li key={index} className="text-[10px] text-muted-foreground flex items-start gap-1">
+                <Check className="w-3 h-3 text-green-500 mt-0.5 flex-shrink-0" />
                 {benefit}
               </li>
             ))}
@@ -228,15 +231,15 @@ export const RoutePurchaseCard = ({
 
         {/* Purchase Button */}
         <Button 
-          className="w-full text-lg py-6" 
-          size="lg"
+          className="w-full text-sm py-2" 
+          size="sm"
           onClick={handlePurchase}
         >
-          Comprar ruta
+          Comprar entrada
         </Button>
 
-        <p className="text-xs text-center text-muted-foreground">
-          Pago seguro · Acceso inmediato · Sin caducidad
+        <p className="text-[10px] text-center text-muted-foreground">
+          Pago seguro · Acceso garantizado · Ruta disponible siempre en tu cuenta
         </p>
       </CardContent>
     </Card>
