@@ -14,7 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { usePackFavorites } from "@/hooks/usePackFavorites";
 import { usePackAnalytics } from "@/hooks/usePackAnalytics";
 import { usePackReviews } from "@/hooks/usePackReviews";
-import { useCart } from "@/hooks/useCart";
+import { useProducerCarts, type Company } from "@/hooks/useProducerCarts";
+import ProducerConflictModal from "@/components/ProducerConflictModal";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,11 +32,19 @@ const PackDetail = () => {
   const [submittingReview, setSubmittingReview] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
   
+  // Producer conflict modal state
+  const [showConflictModal, setShowConflictModal] = useState(false);
+  const [conflictData, setConflictData] = useState<{
+    currentCompany: Company | null;
+    newCompany: Company | null;
+    packId: string;
+  }>({ currentCompany: null, newCompany: null, packId: "" });
+  
   // Hooks for Supabase integration
   const { isFavorite, loading: favoriteLoading, toggleFavorite } = usePackFavorites(id);
   const { trackClick } = usePackAnalytics(id);
   const { reviews, loading: reviewsLoading, averageRating, submitReview } = usePackReviews(id);
-  const { addToCart, isLoggedIn } = useCart();
+  const { addToCart, isLoggedIn } = useProducerCarts();
 
   
   if (!id) {
@@ -114,16 +123,25 @@ const PackDetail = () => {
       .single();
     
     if (packData) {
-      const success = await addToCart(packData.id);
-      if (success) {
+      const result = await addToCart(packData.id);
+      
+      if (result.success) {
         toast({
           title: "Añadido al carrito",
           description: `${pack.name} ha sido añadido a tu carrito`,
         });
+      } else if (result.conflict) {
+        // Show conflict modal
+        setConflictData({
+          currentCompany: result.conflict.currentCompany,
+          newCompany: result.conflict.newCompany,
+          packId: packData.id
+        });
+        setShowConflictModal(true);
       } else {
         toast({
           title: "Error",
-          description: "No se pudo añadir al carrito",
+          description: result.error || "No se pudo añadir al carrito",
           variant: "destructive"
         });
       }
@@ -136,6 +154,27 @@ const PackDetail = () => {
     }
     
     setAddingToCart(false);
+  };
+
+  const handleCreateNewCart = async () => {
+    setShowConflictModal(false);
+    if (conflictData.packId) {
+      const result = await addToCart(conflictData.packId, undefined, 1, true);
+      if (result.success) {
+        toast({
+          title: "Añadido al carrito",
+          description: `${pack.name} ha sido añadido a un nuevo carrito`,
+        });
+      }
+    }
+  };
+
+  const handleKeepCurrent = () => {
+    setShowConflictModal(false);
+    toast({
+      title: "Carrito mantenido",
+      description: `Puedes seguir comprando a ${conflictData.currentCompany?.business_name}`,
+    });
   };
 
   const handleSubmitReview = async () => {
@@ -926,6 +965,16 @@ const PackDetail = () => {
             </section>
           )}
         </main>
+        
+        {/* Producer Conflict Modal */}
+        <ProducerConflictModal
+          open={showConflictModal}
+          onOpenChange={setShowConflictModal}
+          currentCompany={conflictData.currentCompany}
+          newCompany={conflictData.newCompany}
+          onCreateNewCart={handleCreateNewCart}
+          onKeepCurrent={handleKeepCurrent}
+        />
         
         <Footer />
       </div>

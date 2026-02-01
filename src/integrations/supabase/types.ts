@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       cart_items: {
         Row: {
+          company_id: string | null
           created_at: string
           customer_id: string
           id: string
@@ -25,6 +26,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          company_id?: string | null
           created_at?: string
           customer_id: string
           id?: string
@@ -34,6 +36,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          company_id?: string | null
           created_at?: string
           customer_id?: string
           id?: string
@@ -43,6 +46,20 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "cart_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cart_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "cart_items_customer_id_fkey"
             columns: ["customer_id"]

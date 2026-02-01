@@ -21,6 +21,7 @@ import BusinessDetail from "./pages/BusinessDetail";
 import CreateRoute from "./pages/CreateRoute";
 import PackDetail from "./pages/PackDetail";
 import Cart from "./pages/Cart";
+import MisCarritos from "./pages/MisCarritos";
 import Valoraciones from "./pages/Valoraciones";
 import EscribirValoracion from "./pages/EscribirValoracion";
 import CompanyAuth from "./pages/CompanyAuth";
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="/packs/buscar" element={<PacksBuscar />} />
           <Route path="/packs/:id" element={<PackDetail />} />
           <Route path="/carrito" element={<Cart />} />
+          <Route path="/mis-carritos" element={<MisCarritos />} />
           <Route path="/rutas" element={<Rutas />} />
           <Route path="/rutas/:id" element={<RutaDetalle />} />
           <Route path="/contacto" element={<Contacto />} />
