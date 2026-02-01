@@ -1096,6 +1096,70 @@ export type Database = {
         }
         Relationships: []
       }
+      route_purchases: {
+        Row: {
+          base_price: number
+          created_at: string
+          customer_id: string
+          discount_percent: number | null
+          final_price: number
+          id: string
+          num_people: number
+          payment_status: string
+          purchased_at: string | null
+          route_id: string
+          stripe_payment_intent_id: string | null
+        }
+        Insert: {
+          base_price: number
+          created_at?: string
+          customer_id: string
+          discount_percent?: number | null
+          final_price: number
+          id?: string
+          num_people?: number
+          payment_status?: string
+          purchased_at?: string | null
+          route_id: string
+          stripe_payment_intent_id?: string | null
+        }
+        Update: {
+          base_price?: number
+          created_at?: string
+          customer_id?: string
+          discount_percent?: number | null
+          final_price?: number
+          id?: string
+          num_people?: number
+          payment_status?: string
+          purchased_at?: string | null
+          route_id?: string
+          stripe_payment_intent_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_purchases_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_purchases_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_purchases_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       route_stops: {
         Row: {
           address: string | null

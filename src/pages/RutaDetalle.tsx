@@ -6,6 +6,7 @@ import RouteMap from "@/components/RouteMap";
 import RouteGoogleMap from "@/components/RouteGoogleMap";
 import RouteDayRecommendations from "@/components/RouteDayRecommendations";
 import RoutePracticalInfo from "@/components/RoutePracticalInfo";
+import { RoutePurchaseCard } from "@/components/RoutePurchaseCard";
 import { Button } from "@/components/ui/button";
 import { getRouteById, getAllRoutes, RouteDetail } from "@/data/routes";
 import { supabase } from "@/integrations/supabase/client";
@@ -665,6 +666,14 @@ const RutaDetalle = () => {
 
             {/* Right Sidebar */}
             <div className="lg:col-span-1 space-y-4">
+              {/* Route Purchase Card - Digital Product */}
+              <RoutePurchaseCard
+                routeId={dbRouteId || id || ""}
+                routeSlug={id || ""}
+                routeTitle={route.title}
+                stopCount={route.stops?.length || route.businesses || 4}
+              />
+              
               {/* Use Google Maps if stops have coordinates, otherwise use static map */}
               {route.stops?.some(stop => stop.coordinates && stop.coordinates[0] !== 0 && stop.coordinates[1] !== 0) ? (
                 <RouteGoogleMap 
