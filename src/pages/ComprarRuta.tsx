@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   MapPin, 
   Users, 
@@ -13,12 +14,14 @@ import {
   Shield, 
   Check,
   ArrowLeft,
-  Loader2
+  Loader2,
+  Info
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { formatPrice, calculateRoutePricing, RoutePricing } from "@/hooks/useRoutePricing";
 import { getRouteById } from "@/data/routes";
+import { PAYMENT_RULES, PAYMENT_MESSAGES } from "@/lib/paymentRules";
 
 const ComprarRuta = () => {
   const { slug } = useParams();
@@ -277,18 +280,29 @@ const ComprarRuta = () => {
 
           {/* Payment Section */}
           <div className="space-y-6">
+            {/* Separation notice */}
+            <Alert className="bg-blue-50 border-blue-200">
+              <Info className="h-4 w-4 text-blue-600" />
+              <AlertDescription className="text-blue-800 text-sm">
+                {PAYMENT_MESSAGES.ROUTE_CHECKOUT.separation}
+              </AlertDescription>
+            </Alert>
+
             <Card className="border-2 border-primary/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CreditCard className="w-5 h-5 text-primary" />
                   Pago seguro
                 </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  {PAYMENT_MESSAGES.ROUTE_CHECKOUT.paymentInfo}
+                </p>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Stripe Elements will go here */}
+                {/* Stripe Elements will go here - Direct to ORIGEN account */}
                 <div className="p-4 bg-muted/50 rounded-lg border-2 border-dashed border-muted-foreground/30">
                   <p className="text-sm text-muted-foreground text-center">
-                    💳 Integración de Stripe pendiente
+                    💳 Integración de Stripe pendiente (cuenta principal ORIGEN)
                   </p>
                   <p className="text-xs text-muted-foreground text-center mt-1">
                     El botón simulará un pago exitoso
