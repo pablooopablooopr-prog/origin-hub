@@ -5,12 +5,12 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { NotificationsDropdown } from "@/components/NotificationsDropdown";
-import { useCart } from "@/hooks/useCart";
+import { useProducerCarts } from "@/hooks/useProducerCarts";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { itemCount } = useCart();
+  const { totalItemCount: itemCount } = useProducerCarts();
 
   useEffect(() => {
     // Check auth status
@@ -62,7 +62,7 @@ const Header = () => {
           {/* Botones de acción */}
           <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated && <NotificationsDropdown />}
-            <Link to="/carrito" className="relative">
+            <Link to="/mis-carritos" className="relative">
               <Button variant="outline" size="sm" className="relative">
                 <ShoppingCart className="w-4 h-4" />
                 {itemCount > 0 && (
@@ -116,10 +116,10 @@ const Header = () => {
                 Historia
               </Link>
               <div className="flex flex-col space-y-2 pt-4">
-                <Link to="/carrito" onClick={() => setIsMenuOpen(false)}>
+                <Link to="/mis-carritos" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="outline" size="sm" className="w-full relative">
                     <ShoppingCart className="w-4 h-4 mr-2" />
-                    Carrito {itemCount > 0 && `(${itemCount})`}
+                    Mis Carritos {itemCount > 0 && `(${itemCount})`}
                   </Button>
                 </Link>
                 <Link to="/soy-empresa" onClick={() => setIsMenuOpen(false)}>
