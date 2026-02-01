@@ -7,8 +7,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Store, ArrowRight } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ShoppingCart, Store, ArrowRight, Info } from "lucide-react";
 import type { Company } from "@/hooks/useProducerCarts";
+import { PAYMENT_MESSAGES } from "@/lib/paymentRules";
 
 interface ProducerConflictModalProps {
   open: boolean;
@@ -43,12 +45,20 @@ const ProducerConflictModal = ({
         </DialogHeader>
 
         <div className="space-y-4 py-4">
+          {/* Rule explanation */}
+          <Alert className="bg-amber-50 border-amber-200">
+            <Info className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-amber-800 text-sm">
+              {PAYMENT_MESSAGES.ERRORS.MIXED_PRODUCERS}
+            </AlertDescription>
+          </Alert>
+
           <div className="bg-muted/50 rounded-lg p-4 space-y-3">
             <p className="text-sm text-muted-foreground">
               Este pack pertenece a <span className="font-semibold text-foreground">{newCompany.business_name}</span>.
             </p>
             <p className="text-sm text-muted-foreground">
-              Cada productor gestiona sus pedidos de forma independiente.
+              Cada productor gestiona sus pedidos de forma independiente y recibe el pago directamente.
             </p>
           </div>
 

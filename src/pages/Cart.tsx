@@ -9,12 +9,13 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ShoppingCart, Trash2, Plus, Minus, Gift, Package, ArrowRight, Tag, Loader2, LogIn, CheckCircle, MapPin, Store, Info, ArrowLeft } from "lucide-react";
+import { ShoppingCart, Trash2, Plus, Minus, Gift, Package, ArrowRight, Tag, Loader2, LogIn, CheckCircle, MapPin, Store, Info, ArrowLeft, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import { useProducerCarts, type ProducerCart } from "@/hooks/useProducerCarts";
 import { usePromotionalCode } from "@/hooks/usePromotionalCode";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { PAYMENT_MESSAGES } from "@/lib/paymentRules";
 import {
   Dialog,
   DialogContent,
@@ -299,13 +300,20 @@ const Cart = () => {
         </div>
       </section>
 
-      {/* Info Alert */}
-      <div className="container mx-auto px-6 pt-6">
+      {/* Info Alerts */}
+      <div className="container mx-auto px-6 pt-6 space-y-3">
         <Alert className="bg-primary/5 border-primary/20">
           <Store className="h-4 w-4" />
           <AlertDescription>
-            Este pedido será gestionado y enviado directamente por <strong>{selectedCart.company.business_name}</strong>. 
-            El productor se encargará del empaquetado, envío y atención al cliente.
+            {PAYMENT_MESSAGES.PACK_CHECKOUT.description(selectedCart.company.business_name)}
+          </AlertDescription>
+        </Alert>
+        
+        {/* Stripe Connect info */}
+        <Alert className="bg-green-50 border-green-200">
+          <CreditCard className="h-4 w-4 text-green-600" />
+          <AlertDescription className="text-green-800">
+            <strong>Pago directo al productor:</strong> {PAYMENT_MESSAGES.PACK_CHECKOUT.paymentInfo} ORIGEN no cobra comisión.
           </AlertDescription>
         </Alert>
       </div>

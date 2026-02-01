@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, MapPin, Gift, Check, Minus, Plus } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Users, MapPin, Gift, Check, Minus, Plus, Info } from "lucide-react";
 import { calculateRoutePricing, formatPrice } from "@/hooks/useRoutePricing";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { PAYMENT_MESSAGES } from "@/lib/paymentRules";
 
 interface RoutePurchaseCardProps {
   routeId: string;
@@ -133,13 +135,21 @@ export const RoutePurchaseCard = ({
       <CardHeader className="pb-4">
         <CardTitle className="text-lg flex items-center gap-2">
           <MapPin className="w-5 h-5 text-primary" />
-          Ruta Digital Autoguiada
+          {PAYMENT_MESSAGES.ROUTE_CHECKOUT.title}
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          Experiencia digital vendida por ORIGEN
+          {PAYMENT_MESSAGES.ROUTE_CHECKOUT.description}
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Info about separate purchase */}
+        <Alert className="bg-blue-50 border-blue-200">
+          <Info className="h-4 w-4 text-blue-600" />
+          <AlertDescription className="text-blue-800 text-xs">
+            {PAYMENT_MESSAGES.ROUTE_CHECKOUT.separation}
+          </AlertDescription>
+        </Alert>
+
         {/* Price Display */}
         <div className="text-center p-4 bg-background rounded-lg border">
           <div className="flex items-baseline justify-center gap-1">
