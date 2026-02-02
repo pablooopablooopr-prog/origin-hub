@@ -26,9 +26,9 @@ export const RoutePurchaseCard = ({
   benefits = [
     "Entrada válida para esta ruta específica",
     "Acceso garantizado a los productores participantes",
-    "Visita organizada sin riesgo de llegar y encontrar cerrado",
+    "Visita organizada sin riesgo de encontrar cerrado",
     "Beneficios asociados a la ruta (según paradas)",
-    "Ruta disponible permanentemente en la cuenta del usuario"
+    "Acceso permanente al comprobante de reserva"
   ]
 }: RoutePurchaseCardProps) => {
   const [numPeople, setNumPeople] = useState(2);
