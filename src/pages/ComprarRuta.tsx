@@ -15,13 +15,15 @@ import {
   Check,
   ArrowLeft,
   Loader2,
-  Info
+  Info,
+  Ticket
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { formatPrice, calculateRoutePricing, RoutePricing } from "@/hooks/useRoutePricing";
 import { getRouteById } from "@/data/routes";
-import { PAYMENT_RULES, PAYMENT_MESSAGES } from "@/lib/paymentRules";
+import { PAYMENT_MESSAGES } from "@/lib/paymentRules";
+import { processRoutePurchase, PAYMENTS_MODE } from "@/lib/payments";
 
 const ComprarRuta = () => {
   const { slug } = useParams();
@@ -111,66 +113,42 @@ const ComprarRuta = () => {
     setIsProcessing(true);
 
     try {
-      // TODO: Replace with actual Stripe payment integration
-      // For now, simulate successful payment
-      
-      // Check if purchase already exists
-      const { data: existingPurchase } = await supabase
-        .from("route_purchases")
-        .select("id")
-        .eq("customer_id", customerId)
-        .eq("route_id", routeDbId)
-        .single();
+      const result = await processRoutePurchase({
+        routeId: routeDbId,
+        routeSlug: slug || "",
+        routeTitle,
+        customerId,
+        numPeople,
+        basePrice: pricing.basePrice,
+        discountPercent: pricing.discountPercent,
+        totalPrice: pricing.totalPrice,
+      });
 
-      if (existingPurchase) {
-        // Update existing purchase
-        const { error } = await supabase
-          .from("route_purchases")
-          .update({
-            num_people: numPeople,
-            base_price: pricing.basePrice,
-            discount_percent: pricing.discountPercent,
-            final_price: pricing.totalPrice,
-            payment_status: "completed",
-            purchased_at: new Date().toISOString(),
-            // stripe_payment_intent_id: "pi_xxx" // Add when Stripe is integrated
-          })
-          .eq("id", existingPurchase.id);
+      if (result.success) {
+        // If Stripe returned a redirect URL, go there
+        if (result.redirectUrl) {
+          window.location.href = result.redirectUrl;
+          return;
+        }
 
-        if (error) throw error;
+        // Mock mode - direct success
+        toast({
+          title: "¡Reserva completada!",
+          description: "Ya tienes acceso a tu ruta",
+        });
+
+        navigate("/mis-rutas", { 
+          state: { justPurchased: true, routeTitle } 
+        });
       } else {
-        // Create new purchase
-        const { error } = await supabase
-          .from("route_purchases")
-          .insert({
-            customer_id: customerId,
-            route_id: routeDbId,
-            num_people: numPeople,
-            base_price: pricing.basePrice,
-            discount_percent: pricing.discountPercent,
-            final_price: pricing.totalPrice,
-            payment_status: "completed",
-            purchased_at: new Date().toISOString(),
-            // stripe_payment_intent_id: "pi_xxx" // Add when Stripe is integrated
-          });
-
-        if (error) throw error;
+        throw new Error(result.error || "Error procesando la reserva");
       }
-
-      toast({
-        title: "¡Compra completada!",
-        description: "Ya tienes acceso a tu ruta digital",
-      });
-
-      navigate("/mis-rutas", { 
-        state: { justPurchased: true, routeTitle } 
-      });
 
     } catch (error) {
       console.error("Payment error:", error);
       toast({
-        title: "Error en el pago",
-        description: "No se pudo procesar el pago. Inténtalo de nuevo.",
+        title: "Error en la reserva",
+        description: error instanceof Error ? error.message : "No se pudo procesar. Inténtalo de nuevo.",
         variant: "destructive"
       });
     } finally {
@@ -198,15 +176,15 @@ const ComprarRuta = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-primary" />
-                  Resumen del pedido
+                  <Ticket className="w-5 h-5 text-primary" />
+                  Resumen de tu entrada
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <h3 className="font-semibold text-lg">{routeTitle}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Ruta digital autoguiada
+                    Entrada para Ruta ORIGEN
                   </p>
                 </div>
 
@@ -232,7 +210,7 @@ const ComprarRuta = () => {
                     <span>{formatPrice(pricing.basePrice)}</span>
                   </div>
                   {pricing.discountPercent > 0 && (
-                    <div className="flex justify-between text-sm text-green-600">
+                    <div className="flex justify-between text-sm text-primary">
                       <span>Descuento grupo</span>
                       <span>-{pricing.discountPercent}%</span>
                     </div>
@@ -257,19 +235,19 @@ const ComprarRuta = () => {
             {/* What's included */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Qué incluye tu compra</CardTitle>
+                <CardTitle className="text-base">Tu entrada incluye</CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
                   {[
-                    "Acceso digital permanente a la ruta",
-                    "Mapa interactivo con todas las paradas",
-                    "Información detallada de cada productor",
-                    "Recomendaciones del día",
-                    "Información práctica actualizada"
+                    "Entrada válida para esta ruta específica",
+                    "Acceso garantizado a los productores participantes",
+                    "Visita organizada sin riesgo de encontrar cerrado",
+                    "Beneficios asociados a la ruta (según paradas)",
+                    "Acceso permanente al comprobante de reserva"
                   ].map((item, index) => (
                     <li key={index} className="flex items-start gap-2 text-sm">
-                      <Check className="w-4 h-4 text-green-500 mt-0.5" />
+                      <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                       {item}
                     </li>
                   ))}
@@ -281,9 +259,9 @@ const ComprarRuta = () => {
           {/* Payment Section */}
           <div className="space-y-6">
             {/* Separation notice */}
-            <Alert className="bg-blue-50 border-blue-200">
-              <Info className="h-4 w-4 text-blue-600" />
-              <AlertDescription className="text-blue-800 text-sm">
+            <Alert className="bg-muted/50 border-border">
+              <Info className="h-4 w-4 text-muted-foreground" />
+              <AlertDescription className="text-muted-foreground text-sm">
                 {PAYMENT_MESSAGES.ROUTE_CHECKOUT.separation}
               </AlertDescription>
             </Alert>
@@ -291,23 +269,22 @@ const ComprarRuta = () => {
             <Card className="border-2 border-primary/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-primary" />
-                  Pago seguro
+                  <Ticket className="w-5 h-5 text-primary" />
+                  Reservar entrada
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  {PAYMENT_MESSAGES.ROUTE_CHECKOUT.paymentInfo}
+                  Acceso garantizado a esta ruta con productores participantes
                 </p>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Stripe Elements will go here - Direct to ORIGEN account */}
-                <div className="p-4 bg-muted/50 rounded-lg border-2 border-dashed border-muted-foreground/30">
-                  <p className="text-sm text-muted-foreground text-center">
-                    💳 Integración de Stripe pendiente (cuenta principal ORIGEN)
-                  </p>
-                  <p className="text-xs text-muted-foreground text-center mt-1">
-                    El botón simulará un pago exitoso
-                  </p>
-                </div>
+                {/* Payment mode indicator */}
+                {PAYMENTS_MODE === "mock" && (
+                  <div className="p-3 bg-muted/50 rounded-lg border border-dashed border-border">
+                    <p className="text-xs text-muted-foreground text-center">
+                      🧪 Modo de prueba activo - La reserva se completará directamente
+                    </p>
+                  </div>
+                )}
 
                 <Button 
                   className="w-full py-6 text-lg"
@@ -321,14 +298,14 @@ const ComprarRuta = () => {
                     </>
                   ) : (
                     <>
-                      Pagar {formatPrice(pricing.totalPrice)}
+                      Reservar entrada · {formatPrice(pricing.totalPrice)}
                     </>
                   )}
                 </Button>
 
                 <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
                   <Shield className="w-4 h-4" />
-                  <span>Pago 100% seguro con encriptación SSL</span>
+                  <span>Pago seguro · Acceso garantizado · Ruta disponible siempre en tu cuenta</span>
                 </div>
               </CardContent>
             </Card>
@@ -336,12 +313,12 @@ const ComprarRuta = () => {
             {/* Trust badges */}
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="p-3 bg-muted/50 rounded-lg">
-                <p className="text-2xl">🔒</p>
-                <p className="text-xs text-muted-foreground mt-1">Pago seguro</p>
+                <p className="text-2xl">🎟️</p>
+                <p className="text-xs text-muted-foreground mt-1">Entrada válida</p>
               </div>
               <div className="p-3 bg-muted/50 rounded-lg">
-                <p className="text-2xl">⚡</p>
-                <p className="text-xs text-muted-foreground mt-1">Acceso inmediato</p>
+                <p className="text-2xl">✓</p>
+                <p className="text-xs text-muted-foreground mt-1">Acceso garantizado</p>
               </div>
               <div className="p-3 bg-muted/50 rounded-lg">
                 <p className="text-2xl">♾️</p>
