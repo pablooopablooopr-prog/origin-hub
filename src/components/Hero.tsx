@@ -17,9 +17,7 @@ const Hero = () => {
         </h1>
 
         {/* Subtítulo */}
-        <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
-          Productos artesanos. Calidad real. Comunidad nacional.
-        </p>
+        <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-medium">Negocios tradicionales. Calidad real. Comunidad nacional.</p>
 
         {/* Descripción adicional */}
         <p className="text-muted-foreground mb-16 max-w-2xl mx-auto opacity-90 text-lg font-normal font-sans text-center">Conectamos sin intermediarios consumidores con productores artesanos que cuidan de tu alimentación y de su tierra junto a experiencias rurales por toda España</p>
