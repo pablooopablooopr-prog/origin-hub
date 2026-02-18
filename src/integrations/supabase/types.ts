@@ -341,6 +341,7 @@ export type Database = {
           is_active: boolean
           is_demo: boolean | null
           is_published: boolean
+          moderation_status: string
           name: string | null
           price: number | null
           published_at: string | null
@@ -360,6 +361,7 @@ export type Database = {
           is_active?: boolean
           is_demo?: boolean | null
           is_published?: boolean
+          moderation_status?: string
           name?: string | null
           price?: number | null
           published_at?: string | null
@@ -379,6 +381,7 @@ export type Database = {
           is_active?: boolean
           is_demo?: boolean | null
           is_published?: boolean
+          moderation_status?: string
           name?: string | null
           price?: number | null
           published_at?: string | null
@@ -1635,6 +1638,7 @@ export type Database = {
           is_demo: boolean | null
           is_featured: boolean | null
           is_public: boolean | null
+          moderation_status: string
           narrative: string | null
           practical_info: Json | null
           region_id: string | null
@@ -1660,6 +1664,7 @@ export type Database = {
           is_demo?: boolean | null
           is_featured?: boolean | null
           is_public?: boolean | null
+          moderation_status?: string
           narrative?: string | null
           practical_info?: Json | null
           region_id?: string | null
@@ -1685,6 +1690,7 @@ export type Database = {
           is_demo?: boolean | null
           is_featured?: boolean | null
           is_public?: boolean | null
+          moderation_status?: string
           narrative?: string | null
           practical_info?: Json | null
           region_id?: string | null

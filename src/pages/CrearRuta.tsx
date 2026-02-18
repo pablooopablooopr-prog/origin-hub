@@ -271,6 +271,7 @@ const CrearRuta = () => {
           region_id: regionId || null,
           creator_id: user?.id || null,
           is_public: true,
+          moderation_status: 'pending_review',
           total_stops: stops.length,
           image_url: imageUrl || null,
           daily_recommendations: recommendations.filter(r => r.text).map(r => r.text),
@@ -350,6 +351,7 @@ const CrearRuta = () => {
           region_id: regionId || null,
           creator_id: user?.id || null,
           is_public: false,
+          moderation_status: 'pending_review',
           total_stops: stops.length
         });
 
