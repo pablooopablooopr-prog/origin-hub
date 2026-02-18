@@ -405,7 +405,7 @@ const EditarRuta = () => {
                 <Textarea 
                   id="description"
                   value={description}
-                  onChange={(e) => setDescription(toTitleCase(e.target.value))}
+                  onChange={(e) => setDescription(e.target.value)}
                   placeholder="Describe tu ruta..."
                   className="text-base md:text-lg text-center resize-none"
                   rows={2}
@@ -488,7 +488,7 @@ const EditarRuta = () => {
               <h2 className="text-xl font-bold text-primary mb-3">La Experiencia *</h2>
               <Textarea 
                 value={experience}
-                onChange={(e) => setExperience(toTitleCase(e.target.value))}
+                onChange={(e) => setExperience(e.target.value)}
                 placeholder="Describe la experiencia completa..."
                 className="resize-none min-h-[100px]"
                 rows={4}
