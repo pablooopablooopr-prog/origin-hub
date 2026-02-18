@@ -212,3 +212,36 @@ All colors MUST be HSL.
     background: var(--gradient-warm);
   }
 }
+
+/* Google Places Autocomplete (New API) styling */
+gmp-place-autocomplete {
+  width: 100%;
+  display: block;
+}
+
+gmp-place-autocomplete::part(input) {
+  width: 100%;
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid hsl(var(--input));
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+gmp-place-autocomplete::part(input):focus {
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+}
+
+gmp-place-autocomplete::part(input)::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+
+.address-autocomplete-container,
+.place-autocomplete-container {
+  width: 100%;
+}
