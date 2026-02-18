@@ -13,6 +13,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Building, Loader2, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import AddressAutocompleteInput, { AddressComponents } from "@/components/AddressAutocompleteInput";
+import ForgotPasswordDialog from "@/components/ForgotPasswordDialog";
 
 /** Capitalizes first letter of each word, lowercases the rest */
 const capitalizeName = (name: string) =>
@@ -474,6 +475,9 @@ export default function CompanyAuth() {
                         'Iniciar Sesión'
                       )}
                     </Button>
+                    <div className="text-center mt-2">
+                      <ForgotPasswordDialog />
+                    </div>
                   </form>
                 </TabsContent>
                 
