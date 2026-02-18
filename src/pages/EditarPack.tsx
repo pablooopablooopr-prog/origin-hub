@@ -14,6 +14,11 @@ import { MapPin, Package, Star, Truck, Clock, Users, ShoppingCart, Share2, Award
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ImageUpload } from "@/components/ImageUpload";
+
+const toTitleCase = (str: string) => {
+  return str.replace(/\b\w+/g, (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+};
 
 interface Product {
   id: number;
@@ -52,6 +57,7 @@ const EditarPack = () => {
   const [price, setPrice] = useState(packTypeMaxPrices["raiz"].toString());
   const [description, setDescription] = useState("");
   const [sustainabilityInfo, setSustainabilityInfo] = useState("");
+  const [packImageUrl, setPackImageUrl] = useState("");
   
   // Pack features
   const [classification, setClassification] = useState("");
@@ -269,7 +275,7 @@ const EditarPack = () => {
                   <Label>Nombre del Pack *</Label>
                   <Input 
                     value={packName}
-                    onChange={(e) => setPackName(e.target.value)}
+                    onChange={(e) => setPackName(toTitleCase(e.target.value))}
                     placeholder="Ej: Sabores de Castilla"
                     className="text-3xl md:text-4xl font-semibold h-auto py-2"
                   />
@@ -337,13 +343,14 @@ const EditarPack = () => {
 
               {/* Pack Image - Editable */}
               <div className="relative">
-                <div className="w-full h-72 rounded-xl shadow-2xl border-2 border-dashed border-muted-foreground/25 flex items-center justify-center bg-muted/30 cursor-pointer hover:border-primary/50 transition-colors">
-                  <div className="text-center">
-                    <ImageIcon className="w-16 h-16 mx-auto mb-3 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">Imagen principal del pack</p>
-                    <p className="text-xs text-muted-foreground">Haz clic para subir</p>
-                  </div>
-                </div>
+                <ImageUpload
+                  bucket="pack-images"
+                  currentImage={packImageUrl}
+                  onImageUploaded={setPackImageUrl}
+                  onImageRemoved={() => setPackImageUrl("")}
+                  aspectRatio="square"
+                  className="w-full max-h-72"
+                />
               </div>
             </div>
 
