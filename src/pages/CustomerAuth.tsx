@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { User, Eye, EyeOff } from "lucide-react";
+import ForgotPasswordDialog from "@/components/ForgotPasswordDialog";
 
 /** Capitalizes first letter of each word, lowercases the rest */
 const capitalizeName = (name: string) =>
@@ -207,6 +208,9 @@ const CustomerAuth = () => {
                     >
                       {loading ? "Cargando..." : "Iniciar Sesión"}
                     </Button>
+                    <div className="text-center mt-2">
+                      <ForgotPasswordDialog />
+                    </div>
                   </form>
                 </CardContent>
               </Card>
