@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Business } from '@/data/businesses';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -19,6 +20,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   selectedCategory,
   onLocationClick 
 }) => {
+  const navigate = useNavigate();
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
@@ -277,7 +279,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                   <span className="text-sm">⭐</span>
                   <span className="text-sm font-medium text-primary-foreground">{selectedBusiness.rating}</span>
                 </div>
-                <Button size="sm" variant="secondary" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
+                <Button size="sm" variant="secondary" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90" onClick={() => navigate(`/negocio/${selectedBusiness.id}`)}>
                   Ver detalles
                 </Button>
               </div>

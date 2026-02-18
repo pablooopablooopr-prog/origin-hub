@@ -241,6 +241,37 @@ gmp-place-autocomplete::part(input)::placeholder {
   color: hsl(var(--muted-foreground));
 }
 
+/* Style the autocomplete suggestions dropdown to match the site theme */
+gmp-place-autocomplete::part(list) {
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: calc(var(--radius) - 2px);
+  color: hsl(var(--foreground));
+}
+
+gmp-place-autocomplete::part(prediction-item) {
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+}
+
+gmp-place-autocomplete::part(prediction-item):hover,
+gmp-place-autocomplete::part(prediction-item-selected) {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+gmp-place-autocomplete::part(prediction-item-main-text) {
+  color: hsl(var(--foreground));
+}
+
+gmp-place-autocomplete::part(prediction-item-description-text) {
+  color: hsl(var(--muted-foreground));
+}
+
+gmp-place-autocomplete::part(prediction-attribution) {
+  background: hsl(var(--background));
+}
+
 .address-autocomplete-container,
 .place-autocomplete-container {
   width: 100%;
