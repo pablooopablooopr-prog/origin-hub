@@ -108,6 +108,17 @@ const EditarRuta = () => {
   const updateStopSchedule = (stopId: string, field: 'open' | 'close', value: string) => {
     const current = stopSchedules[stopId] || { open: '', close: '' };
     const updated = { ...current, [field]: value };
+
+    // Validate: close must be after open
+    if (updated.open && updated.close && updated.close <= updated.open) {
+      toast({
+        title: "Horario inconsistente",
+        description: "La hora de cierre debe ser posterior a la de apertura",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setStopSchedules({ ...stopSchedules, [stopId]: updated });
     const scheduleStr = updated.open && updated.close ? `${updated.open} - ${updated.close}` : updated.open || updated.close || '';
     const newStops = [...stops];
