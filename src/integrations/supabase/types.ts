@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      _service_role_canary: {
+        Row: {
+          created_at: string
+          id: number
+          note: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          note?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          note?: string | null
+        }
+        Relationships: []
+      }
       cart_items: {
         Row: {
           company_id: string | null
@@ -82,6 +100,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "cart_items_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "cart_items_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -137,6 +162,60 @@ export type Database = {
           },
         ]
       }
+      checkout_requests: {
+        Row: {
+          amount_cents: number | null
+          amount_total: number | null
+          created_at: string
+          currency: string | null
+          error: string | null
+          id: string
+          kind: string
+          paid_at: string | null
+          payload: Json | null
+          ref_id: string
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_cents?: number | null
+          amount_total?: number | null
+          created_at?: string
+          currency?: string | null
+          error?: string | null
+          id?: string
+          kind: string
+          paid_at?: string | null
+          payload?: Json | null
+          ref_id: string
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Update: {
+          amount_cents?: number | null
+          amount_total?: number | null
+          created_at?: string
+          currency?: string | null
+          error?: string | null
+          id?: string
+          kind?: string
+          paid_at?: string | null
+          payload?: Json | null
+          ref_id?: string
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           address: string | null
@@ -155,12 +234,21 @@ export type Database = {
           longitude: number | null
           phone: string | null
           region_id: string | null
+          slug: string | null
           social_media: Json | null
           status: string | null
+          stripe_account_id: string | null
+          stripe_charges_enabled: boolean | null
+          stripe_connected_at: string | null
+          stripe_details_submitted: boolean | null
+          stripe_onboarded_at: string | null
+          stripe_onboarding_status: string | null
+          stripe_payouts_enabled: boolean | null
           total_reviews: number | null
           updated_at: string
           user_id: string | null
           website: string | null
+          welcome_sent_at: string | null
         }
         Insert: {
           address?: string | null
@@ -179,12 +267,21 @@ export type Database = {
           longitude?: number | null
           phone?: string | null
           region_id?: string | null
+          slug?: string | null
           social_media?: Json | null
           status?: string | null
+          stripe_account_id?: string | null
+          stripe_charges_enabled?: boolean | null
+          stripe_connected_at?: string | null
+          stripe_details_submitted?: boolean | null
+          stripe_onboarded_at?: string | null
+          stripe_onboarding_status?: string | null
+          stripe_payouts_enabled?: boolean | null
           total_reviews?: number | null
           updated_at?: string
           user_id?: string | null
           website?: string | null
+          welcome_sent_at?: string | null
         }
         Update: {
           address?: string | null
@@ -203,12 +300,21 @@ export type Database = {
           longitude?: number | null
           phone?: string | null
           region_id?: string | null
+          slug?: string | null
           social_media?: Json | null
           status?: string | null
+          stripe_account_id?: string | null
+          stripe_charges_enabled?: boolean | null
+          stripe_connected_at?: string | null
+          stripe_details_submitted?: boolean | null
+          stripe_onboarded_at?: string | null
+          stripe_onboarding_status?: string | null
+          stripe_payouts_enabled?: boolean | null
           total_reviews?: number | null
           updated_at?: string
           user_id?: string | null
           website?: string | null
+          welcome_sent_at?: string | null
         }
         Relationships: [
           {
@@ -232,7 +338,12 @@ export type Database = {
           company_id: string | null
           created_at: string
           id: string
+          is_active: boolean
+          is_demo: boolean | null
+          is_published: boolean
+          name: string | null
           price: number | null
+          published_at: string | null
           shipping_policy: string | null
           slug: string
           status: string | null
@@ -246,7 +357,12 @@ export type Database = {
           company_id?: string | null
           created_at?: string
           id?: string
+          is_active?: boolean
+          is_demo?: boolean | null
+          is_published?: boolean
+          name?: string | null
           price?: number | null
+          published_at?: string | null
           shipping_policy?: string | null
           slug: string
           status?: string | null
@@ -260,7 +376,12 @@ export type Database = {
           company_id?: string | null
           created_at?: string
           id?: string
+          is_active?: boolean
+          is_demo?: boolean | null
+          is_published?: boolean
+          name?: string | null
           price?: number | null
+          published_at?: string | null
           shipping_policy?: string | null
           slug?: string
           status?: string | null
@@ -422,6 +543,7 @@ export type Database = {
           phone: string | null
           updated_at: string
           user_id: string
+          welcome_sent_at: string | null
         }
         Insert: {
           address?: string | null
@@ -437,6 +559,7 @@ export type Database = {
           phone?: string | null
           updated_at?: string
           user_id: string
+          welcome_sent_at?: string | null
         }
         Update: {
           address?: string | null
@@ -452,6 +575,7 @@ export type Database = {
           phone?: string | null
           updated_at?: string
           user_id?: string
+          welcome_sent_at?: string | null
         }
         Relationships: []
       }
@@ -546,6 +670,13 @@ export type Database = {
             referencedRelation: "company_packs"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "favorites_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       notifications: {
@@ -634,6 +765,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "order_items_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "order_items_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -657,6 +795,8 @@ export type Database = {
           shipping_address: string
           shipping_address_id: string | null
           status: string
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
           total_amount: number
           tracking_number: string | null
           updated_at: string
@@ -675,6 +815,8 @@ export type Database = {
           shipping_address: string
           shipping_address_id?: string | null
           status?: string
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
           total_amount: number
           tracking_number?: string | null
           updated_at?: string
@@ -693,6 +835,8 @@ export type Database = {
           shipping_address?: string
           shipping_address_id?: string | null
           status?: string
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
           total_amount?: number
           tracking_number?: string | null
           updated_at?: string
@@ -734,6 +878,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "orders_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "orders_shipping_address_id_fkey"
             columns: ["shipping_address_id"]
             isOneToOne: false
@@ -770,6 +921,13 @@ export type Database = {
             columns: ["pack_id"]
             isOneToOne: false
             referencedRelation: "company_packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pack_analytics_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public"
             referencedColumns: ["id"]
           },
         ]
@@ -813,6 +971,77 @@ export type Database = {
             referencedRelation: "company_packs"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "pack_elements_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pack_payments: {
+        Row: {
+          amount: number
+          company_id: string
+          created_at: string
+          currency: string
+          id: string
+          order_id: string
+          status: string
+          stripe_account_id: string | null
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          company_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          order_id: string
+          status?: string
+          stripe_account_id?: string | null
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          company_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          order_id?: string
+          status?: string
+          stripe_account_id?: string | null
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pack_payments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pack_payments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pack_payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
         ]
       }
       pack_products: {
@@ -846,6 +1075,13 @@ export type Database = {
             columns: ["pack_id"]
             isOneToOne: false
             referencedRelation: "company_packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pack_products_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public"
             referencedColumns: ["id"]
           },
           {
@@ -905,6 +1141,13 @@ export type Database = {
             columns: ["pack_id"]
             isOneToOne: false
             referencedRelation: "company_packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pack_reviews_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1018,6 +1261,27 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          id: string
+          role: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          role?: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          role?: string
+        }
+        Relationships: []
+      }
       promotional_codes: {
         Row: {
           code: string
@@ -1129,6 +1393,63 @@ export type Database = {
             referencedRelation: "routes"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "route_access_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      route_company_packs: {
+        Row: {
+          company_pack_id: string
+          created_at: string | null
+          id: string
+          route_id: string
+        }
+        Insert: {
+          company_pack_id: string
+          created_at?: string | null
+          id?: string
+          route_id: string
+        }
+        Update: {
+          company_pack_id?: string
+          created_at?: string | null
+          id?: string
+          route_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_company_packs_company_pack_id_fkey"
+            columns: ["company_pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_company_packs_company_pack_id_fkey"
+            columns: ["company_pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_company_packs_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_company_packs_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       route_purchases: {
@@ -1193,6 +1514,13 @@ export type Database = {
             referencedRelation: "routes"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "route_purchases_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       route_stops: {
@@ -1200,6 +1528,7 @@ export type Database = {
           address: string | null
           company_id: string | null
           created_at: string
+          created_by: string
           description: string | null
           external_link: string | null
           highlights: Json | null
@@ -1209,7 +1538,7 @@ export type Database = {
           latitude: number | null
           longitude: number | null
           name: string
-          position: number | null
+          position: number
           route_id: string
           schedule: string | null
           type: string | null
@@ -1220,6 +1549,7 @@ export type Database = {
           address?: string | null
           company_id?: string | null
           created_at?: string
+          created_by?: string
           description?: string | null
           external_link?: string | null
           highlights?: Json | null
@@ -1229,7 +1559,7 @@ export type Database = {
           latitude?: number | null
           longitude?: number | null
           name: string
-          position?: number | null
+          position?: number
           route_id: string
           schedule?: string | null
           type?: string | null
@@ -1240,6 +1570,7 @@ export type Database = {
           address?: string | null
           company_id?: string | null
           created_at?: string
+          created_by?: string
           description?: string | null
           external_link?: string | null
           highlights?: Json | null
@@ -1249,7 +1580,7 @@ export type Database = {
           latitude?: number | null
           longitude?: number | null
           name?: string
-          position?: number | null
+          position?: number
           route_id?: string
           schedule?: string | null
           type?: string | null
@@ -1278,6 +1609,13 @@ export type Database = {
             referencedRelation: "routes"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "route_stops_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       routes: {
@@ -1285,6 +1623,7 @@ export type Database = {
           avg_rating: number | null
           base_price_per_person: number | null
           created_at: string
+          created_by: string
           creator_id: string | null
           daily_recommendations: Json | null
           description: string | null
@@ -1293,6 +1632,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_active: boolean | null
+          is_demo: boolean | null
           is_featured: boolean | null
           is_public: boolean | null
           narrative: string | null
@@ -1308,6 +1648,7 @@ export type Database = {
           avg_rating?: number | null
           base_price_per_person?: number | null
           created_at?: string
+          created_by?: string
           creator_id?: string | null
           daily_recommendations?: Json | null
           description?: string | null
@@ -1316,6 +1657,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          is_demo?: boolean | null
           is_featured?: boolean | null
           is_public?: boolean | null
           narrative?: string | null
@@ -1331,6 +1673,7 @@ export type Database = {
           avg_rating?: number | null
           base_price_per_person?: number | null
           created_at?: string
+          created_by?: string
           creator_id?: string | null
           daily_recommendations?: Json | null
           description?: string | null
@@ -1339,6 +1682,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          is_demo?: boolean | null
           is_featured?: boolean | null
           is_public?: boolean | null
           narrative?: string | null
@@ -1402,6 +1746,13 @@ export type Database = {
             columns: ["route_id"]
             isOneToOne: false
             referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saved_routes_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1472,6 +1823,46 @@ export type Database = {
           },
         ]
       }
+      stop_company_packs: {
+        Row: {
+          company_pack_id: string
+          created_at: string
+          stop_id: string
+        }
+        Insert: {
+          company_pack_id: string
+          created_at?: string
+          stop_id: string
+        }
+        Update: {
+          company_pack_id?: string
+          created_at?: string
+          stop_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stop_company_packs_company_pack_id_fkey"
+            columns: ["company_pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stop_company_packs_company_pack_id_fkey"
+            columns: ["company_pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stop_company_packs_stop_id_fkey"
+            columns: ["stop_id"]
+            isOneToOne: false
+            referencedRelation: "route_stops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1493,63 +1884,120 @@ export type Database = {
         }
         Relationships: []
       }
+      webhook_context_log: {
+        Row: {
+          auth_uid: string | null
+          created_at: string
+          db_user: string | null
+          id: number
+          jwt_role: string | null
+          jwt_sub: string | null
+          source: string
+        }
+        Insert: {
+          auth_uid?: string | null
+          created_at?: string
+          db_user?: string | null
+          id?: number
+          jwt_role?: string | null
+          jwt_sub?: string | null
+          source?: string
+        }
+        Update: {
+          auth_uid?: string | null
+          created_at?: string
+          db_user?: string | null
+          id?: number
+          jwt_role?: string | null
+          jwt_sub?: string | null
+          source?: string
+        }
+        Relationships: []
+      }
+      webhook_whoami_log: {
+        Row: {
+          auth_uid: string | null
+          created_at: string
+          current_user_name: string
+          id: number
+          jwt_email: string | null
+          jwt_role: string | null
+          jwt_sub: string | null
+          note: string | null
+        }
+        Insert: {
+          auth_uid?: string | null
+          created_at?: string
+          current_user_name?: string
+          id?: never
+          jwt_email?: string | null
+          jwt_role?: string | null
+          jwt_sub?: string | null
+          note?: string | null
+        }
+        Update: {
+          auth_uid?: string | null
+          created_at?: string
+          current_user_name?: string
+          id?: never
+          jwt_email?: string | null
+          jwt_role?: string | null
+          jwt_sub?: string | null
+          note?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       companies_public: {
         Row: {
-          address: string | null
           authenticity_story: string | null
           avg_rating: number | null
           business_name: string | null
           category_id: string | null
           cover_image_url: string | null
-          created_at: string | null
           description: string | null
           id: string | null
           latitude: number | null
           logo_url: string | null
           longitude: number | null
           region_id: string | null
+          slug: string | null
           social_media: Json | null
-          status: string | null
           total_reviews: number | null
           website: string | null
         }
         Insert: {
-          address?: string | null
           authenticity_story?: string | null
           avg_rating?: number | null
           business_name?: string | null
           category_id?: string | null
           cover_image_url?: string | null
-          created_at?: string | null
           description?: string | null
           id?: string | null
           latitude?: number | null
           logo_url?: string | null
           longitude?: number | null
           region_id?: string | null
+          slug?: string | null
           social_media?: Json | null
-          status?: string | null
           total_reviews?: number | null
           website?: string | null
         }
         Update: {
-          address?: string | null
           authenticity_story?: string | null
           avg_rating?: number | null
           business_name?: string | null
           category_id?: string | null
           cover_image_url?: string | null
-          created_at?: string | null
           description?: string | null
           id?: string | null
           latitude?: number | null
           logo_url?: string | null
           longitude?: number | null
           region_id?: string | null
+          slug?: string | null
           social_media?: Json | null
-          status?: string | null
           total_reviews?: number | null
           website?: string | null
         }
@@ -1566,6 +2014,85 @@ export type Database = {
             columns: ["region_id"]
             isOneToOne: false
             referencedRelation: "regions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_packs_public: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          id: string | null
+          is_active: boolean | null
+          is_published: boolean | null
+          name: string | null
+          price: number | null
+          published_at: string | null
+          shipping_policy: string | null
+          slug: string | null
+          status: string | null
+          sustainability_info: string | null
+          tags: string[] | null
+          template_id: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_published?: boolean | null
+          name?: string | null
+          price?: number | null
+          published_at?: string | null
+          shipping_policy?: string | null
+          slug?: string | null
+          status?: string | null
+          sustainability_info?: string | null
+          tags?: string[] | null
+          template_id?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_published?: boolean | null
+          name?: string | null
+          price?: number | null
+          published_at?: string | null
+          shipping_policy?: string | null
+          slug?: string | null
+          status?: string | null
+          sustainability_info?: string | null
+          tags?: string[] | null
+          template_id?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_packs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_packs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_packs_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "pack_templates"
             referencedColumns: ["id"]
           },
         ]
@@ -1594,6 +2121,77 @@ export type Database = {
         }
         Relationships: []
       }
+      routes_public: {
+        Row: {
+          avg_rating: number | null
+          base_price_per_person: number | null
+          created_at: string | null
+          daily_recommendations: Json | null
+          description: string | null
+          difficulty: string | null
+          duration: string | null
+          id: string | null
+          image_url: string | null
+          is_featured: boolean | null
+          narrative: string | null
+          practical_info: Json | null
+          region_id: string | null
+          slug: string | null
+          title: string | null
+          total_participants: number | null
+          total_stops: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          avg_rating?: number | null
+          base_price_per_person?: number | null
+          created_at?: string | null
+          daily_recommendations?: Json | null
+          description?: string | null
+          difficulty?: string | null
+          duration?: string | null
+          id?: string | null
+          image_url?: string | null
+          is_featured?: boolean | null
+          narrative?: string | null
+          practical_info?: Json | null
+          region_id?: string | null
+          slug?: string | null
+          title?: string | null
+          total_participants?: number | null
+          total_stops?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          avg_rating?: number | null
+          base_price_per_person?: number | null
+          created_at?: string | null
+          daily_recommendations?: Json | null
+          description?: string | null
+          difficulty?: string | null
+          duration?: string | null
+          id?: string | null
+          image_url?: string | null
+          is_featured?: boolean | null
+          narrative?: string | null
+          practical_info?: Json | null
+          region_id?: string | null
+          slug?: string | null
+          title?: string | null
+          total_participants?: number | null
+          total_stops?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "routes_region_id_fkey"
+            columns: ["region_id"]
+            isOneToOne: false
+            referencedRelation: "regions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       has_role: {
@@ -1604,6 +2202,30 @@ export type Database = {
         Returns: boolean
       }
       increment_promo_code_safe: { Args: { code_id: string }; Returns: boolean }
+      is_admin: { Args: never; Returns: boolean }
+      is_company_owner: { Args: { p_company_id: string }; Returns: boolean }
+      is_pack_owner: { Args: { p_pack_id: string }; Returns: boolean }
+      log_webhook_context: { Args: { p_source?: string }; Returns: undefined }
+      log_webhook_whoami: { Args: never; Returns: undefined }
+      mark_company_welcome_sent: {
+        Args: { p_user_id: string }
+        Returns: boolean
+      }
+      mark_customer_welcome_sent: {
+        Args: { p_user_id: string }
+        Returns: boolean
+      }
+      my_company_id: { Args: never; Returns: string }
+      owns_route: { Args: { p_route_id: string }; Returns: boolean }
+      owns_stop: { Args: { p_stop_id: string }; Returns: boolean }
+      route_owner_id: {
+        Args: { r: Database["public"]["Tables"]["routes"]["Row"] }
+        Returns: string
+      }
+      set_company_stripe_account: {
+        Args: { p_company_id: string; p_stripe_account_id: string }
+        Returns: undefined
+      }
       validate_promo_code: {
         Args: { code_value: string; order_total: number }
         Returns: {
@@ -1614,6 +2236,8 @@ export type Database = {
           valid: boolean
         }[]
       }
+      webhook_whoami: { Args: { note?: string }; Returns: Json }
+      whoami_probe: { Args: never; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

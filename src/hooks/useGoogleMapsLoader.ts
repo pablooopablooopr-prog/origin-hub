@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 declare global {
   interface Window {
     google: typeof google;
-    initGoogleMaps: () => void;
+    __gmapsLoaded?: boolean;
+    __gmapsCallbacks?: Array<() => void>;
   }
 }
 
@@ -14,67 +15,53 @@ let isLoaded = false;
 let loadError: Error | null = null;
 const callbacks: Array<() => void> = [];
 
-export const useGoogleMapsLoader = () => {
-  const [loaded, setLoaded] = useState(isLoaded);
-  const [error, setError] = useState<Error | null>(loadError);
-  const [apiKeyMissing, setApiKeyMissing] = useState(!GOOGLE_MAPS_API_KEY);
+const loadScript = (): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (isLoaded) { resolve(); return; }
+    if (loadError) { reject(loadError); return; }
 
-  useEffect(() => {
-    if (!GOOGLE_MAPS_API_KEY) {
-      setApiKeyMissing(true);
-      return;
-    }
+    callbacks.push(() => resolve());
 
-    if (isLoaded) {
-      setLoaded(true);
-      return;
-    }
-
-    if (loadError) {
-      setError(loadError);
-      return;
-    }
-
-    const onLoadComplete = () => {
-      setLoaded(true);
-    };
-
-    callbacks.push(onLoadComplete);
-
-    if (isLoading) {
-      return () => {
-        const index = callbacks.indexOf(onLoadComplete);
-        if (index > -1) callbacks.splice(index, 1);
-      };
-    }
-
+    if (isLoading) return;
     isLoading = true;
 
-    // Create callback function
-    window.initGoogleMaps = () => {
+    const script = document.createElement('script');
+    // Use the inline bootstrap loader recommended by Google for new API
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places,marker&loading=async&callback=__gmapsInit`;
+    script.async = true;
+    script.defer = true;
+
+    (window as any).__gmapsInit = () => {
       isLoaded = true;
       isLoading = false;
       callbacks.forEach(cb => cb());
       callbacks.length = 0;
     };
 
-    // Load the script
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=initGoogleMaps`;
-    script.async = true;
-    script.defer = true;
     script.onerror = () => {
       loadError = new Error('Failed to load Google Maps API');
       isLoading = false;
-      setError(loadError);
+      callbacks.forEach(() => {}); // drain
+      callbacks.length = 0;
     };
 
     document.head.appendChild(script);
+  });
+};
 
-    return () => {
-      const index = callbacks.indexOf(onLoadComplete);
-      if (index > -1) callbacks.splice(index, 1);
-    };
+export const useGoogleMapsLoader = () => {
+  const [loaded, setLoaded] = useState(isLoaded);
+  const [error, setError] = useState<Error | null>(loadError);
+  const [apiKeyMissing] = useState(!GOOGLE_MAPS_API_KEY);
+
+  useEffect(() => {
+    if (!GOOGLE_MAPS_API_KEY) return;
+    if (isLoaded) { setLoaded(true); return; }
+    if (loadError) { setError(loadError); return; }
+
+    loadScript()
+      .then(() => setLoaded(true))
+      .catch((err) => setError(err));
   }, []);
 
   return { loaded, error, apiKeyMissing };

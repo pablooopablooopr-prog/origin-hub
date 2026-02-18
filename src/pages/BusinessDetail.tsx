@@ -21,6 +21,7 @@ interface Company {
   cover_image_url: string | null;
   avg_rating: number | null;
   total_reviews: number | null;
+  [key: string]: any;
 }
 
 interface CompanyPack {
@@ -66,7 +67,7 @@ const BusinessDetail = () => {
         .single();
 
       if (companyError) throw companyError;
-      setCompany(companyData);
+      setCompany(companyData as unknown as Company);
 
       // Check ownership via auth session comparison with companies table
       const { data: { session } } = await supabase.auth.getSession();

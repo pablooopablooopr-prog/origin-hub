@@ -22,111 +22,110 @@ export const useAddressAutocomplete = ({
   countryRestriction = 'es'
 }: UseAddressAutocompleteProps = {}) => {
   const { loaded, error, apiKeyMissing } = useGoogleMapsLoader();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const autocompleteRef = useRef<google.maps.places.PlaceAutocompleteElement | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const onAddressSelectRef = useRef(onAddressSelect);
+  onAddressSelectRef.current = onAddressSelect;
 
-  const initAutocomplete = useCallback(() => {
-    if (!inputRef.current || !window.google?.maps?.places) return;
+  useEffect(() => {
+    if (!loaded || !containerRef.current || autocompleteRef.current) return;
 
-    // Clean up previous instance
-    if (autocompleteRef.current) {
-      google.maps.event.clearInstanceListeners(autocompleteRef.current);
-    }
+    const init = async () => {
+      await google.maps.importLibrary('places');
 
-    const options: google.maps.places.AutocompleteOptions = {
-      componentRestrictions: { 
-        country: Array.isArray(countryRestriction) ? countryRestriction : [countryRestriction] 
-      },
-      fields: ['address_components', 'geometry', 'formatted_address'],
-      types: ['address']
-    };
+      const countries = Array.isArray(countryRestriction) ? countryRestriction : [countryRestriction];
 
-    autocompleteRef.current = new google.maps.places.Autocomplete(inputRef.current, options);
+      const el = new google.maps.places.PlaceAutocompleteElement({
+        componentRestrictions: { country: countries },
+        types: ['address'],
+      } as any);
 
-    autocompleteRef.current.addListener('place_changed', () => {
-      const place = autocompleteRef.current?.getPlace();
-      
-      if (!place?.address_components || !place?.geometry?.location) {
-        console.warn('No valid place selected');
-        return;
-      }
+      // Style the inner input to match our design
+      el.style.width = '100%';
+      el.style.display = 'block';
 
-      const addressComponents: AddressComponents = {
-        address_line1: '',
-        city: '',
-        province: '',
-        postal_code: '',
-        country: '',
-        latitude: place.geometry.location.lat(),
-        longitude: place.geometry.location.lng(),
-        formatted_address: place.formatted_address || ''
-      };
+      el.addEventListener('gmp-select', async (event: any) => {
+        const placePrediction = event.placePrediction;
+        if (!placePrediction) return;
 
-      // Parse address components
-      let streetNumber = '';
-      let streetName = '';
+        try {
+          const place = placePrediction.toPlace();
+          await place.fetchFields({ fields: ['addressComponents', 'location', 'formattedAddress'] });
 
-      place.address_components.forEach((component) => {
-        const types = component.types;
+          const addressComponents: AddressComponents = {
+            address_line1: '',
+            city: '',
+            province: '',
+            postal_code: '',
+            country: '',
+            latitude: place.location?.lat() ?? 0,
+            longitude: place.location?.lng() ?? 0,
+            formatted_address: place.formattedAddress || ''
+          };
 
-        if (types.includes('street_number')) {
-          streetNumber = component.long_name;
-        }
-        if (types.includes('route')) {
-          streetName = component.long_name;
-        }
-        if (types.includes('locality')) {
-          addressComponents.city = component.long_name;
-        }
-        if (types.includes('administrative_area_level_2')) {
-          // Province in Spain
-          if (!addressComponents.province) {
-            addressComponents.province = component.long_name;
+          let streetNumber = '';
+          let streetName = '';
+
+          if (place.addressComponents) {
+            for (const component of place.addressComponents) {
+              const types = component.types;
+              if (types.includes('street_number')) {
+                streetNumber = component.longText || '';
+              }
+              if (types.includes('route')) {
+                streetName = component.longText || '';
+              }
+              if (types.includes('locality')) {
+                addressComponents.city = component.longText || '';
+              }
+              if (types.includes('administrative_area_level_2')) {
+                if (!addressComponents.province) {
+                  addressComponents.province = component.longText || '';
+                }
+              }
+              if (types.includes('administrative_area_level_1')) {
+                if (!addressComponents.province) {
+                  addressComponents.province = component.longText || '';
+                }
+              }
+              if (types.includes('postal_code')) {
+                addressComponents.postal_code = component.longText || '';
+              }
+              if (types.includes('country')) {
+                addressComponents.country = component.longText || '';
+              }
+            }
           }
-        }
-        if (types.includes('administrative_area_level_1')) {
-          // Region/Autonomous Community
-          if (!addressComponents.province) {
-            addressComponents.province = component.long_name;
-          }
-        }
-        if (types.includes('postal_code')) {
-          addressComponents.postal_code = component.long_name;
-        }
-        if (types.includes('country')) {
-          addressComponents.country = component.long_name;
+
+          addressComponents.address_line1 = streetNumber
+            ? `${streetName}, ${streetNumber}`
+            : streetName;
+
+          onAddressSelectRef.current?.(addressComponents);
+        } catch (err) {
+          console.error('Error fetching place details:', err);
         }
       });
 
-      // Combine street name and number
-      addressComponents.address_line1 = streetNumber 
-        ? `${streetName}, ${streetNumber}` 
-        : streetName;
-
-      onAddressSelect?.(addressComponents);
-    });
-
-    setIsReady(true);
-  }, [countryRestriction, onAddressSelect]);
-
-  useEffect(() => {
-    if (loaded && inputRef.current) {
-      initAutocomplete();
-    }
-  }, [loaded, initAutocomplete]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (autocompleteRef.current) {
-        google.maps.event.clearInstanceListeners(autocompleteRef.current);
-      }
+      containerRef.current!.innerHTML = '';
+      containerRef.current!.appendChild(el);
+      autocompleteRef.current = el;
+      setIsReady(true);
     };
-  }, []);
+
+    init();
+
+    return () => {
+      if (autocompleteRef.current && containerRef.current) {
+        try { containerRef.current.removeChild(autocompleteRef.current); } catch {}
+      }
+      autocompleteRef.current = null;
+    };
+  }, [loaded, countryRestriction]);
 
   return {
-    inputRef,
+    containerRef,
     isReady: isReady && loaded,
     error,
     apiKeyMissing
