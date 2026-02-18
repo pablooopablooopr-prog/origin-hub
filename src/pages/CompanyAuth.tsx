@@ -11,8 +11,15 @@ import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Building, Loader2, CheckCircle2 } from "lucide-react";
+import { Building, Loader2, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import AddressAutocompleteInput, { AddressComponents } from "@/components/AddressAutocompleteInput";
+
+/** Capitalizes first letter of each word, lowercases the rest */
+const capitalizeName = (name: string) =>
+  name
+    .split(/\s+/)
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
 
 export default function CompanyAuth() {
   const [searchParams] = useSearchParams();
@@ -22,12 +29,13 @@ export default function CompanyAuth() {
   const [existingCompany, setExistingCompany] = useState<any>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
   const navigate = useNavigate();
   
-  // Get initial tab from URL parameter
   const initialTab = searchParams.get('tab') === 'signup' ? 'signup' : 'signin';
 
-  // Company registration form
   const [companyData, setCompanyData] = useState({
     business_name: "",
     business_type: "",
@@ -44,7 +52,6 @@ export default function CompanyAuth() {
     authenticity_story: ""
   });
 
-  // Handle address selection from autocomplete
   const handleAddressSelect = useCallback((addressComponents: AddressComponents) => {
     setCompanyData(prev => ({
       ...prev,
@@ -59,7 +66,6 @@ export default function CompanyAuth() {
   }, []);
 
   useEffect(() => {
-    // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user);
@@ -102,18 +108,41 @@ export default function CompanyAuth() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!fullName.trim() || !phone.trim()) {
+      toast.error("Nombre, teléfono, email y contraseña son obligatorios.");
+      return;
+    }
     setLoading(true);
 
+    const formattedName = capitalizeName(fullName);
+
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/company-auth`
+          emailRedirectTo: `${window.location.origin}/company-auth`,
+          data: {
+            full_name: formattedName,
+            phone: phone,
+          }
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message?.toLowerCase().includes('already registered') || error.message?.toLowerCase().includes('already been registered')) {
+          toast.error('Ya existe una cuenta con este email. Por favor, inicia sesión.');
+          return;
+        }
+        throw error;
+      }
+
+      // Supabase returns user with empty identities if already exists
+      if (data.user && data.user.identities && data.user.identities.length === 0) {
+        toast.error('Ya existe una cuenta con este email. Por favor, inicia sesión.');
+        return;
+      }
+
       toast.success('Revisa tu email para confirmar tu cuenta');
     } catch (error: any) {
       toast.error(error.message);
@@ -156,7 +185,6 @@ export default function CompanyAuth() {
         ? `${companyData.business_type ? `[${companyData.business_type}] ` : ''}${companyData.description}` 
         : companyData.business_type || null;
 
-      // Build full address from components
       const fullAddress = [
         companyData.address,
         companyData.city,
@@ -171,7 +199,7 @@ export default function CompanyAuth() {
           user_id: user.id,
           email: user.email!,
           business_name: companyData.business_name,
-          contact_person: companyData.contact_person,
+          contact_person: capitalizeName(companyData.contact_person),
           phone: companyData.phone || null,
           address: fullAddress || null,
           latitude: companyData.latitude,
@@ -184,8 +212,6 @@ export default function CompanyAuth() {
       if (error) throw error;
       
       toast.success('¡Solicitud enviada! Te notificaremos cuando sea aprobada.');
-      
-      // Refresh company status
       checkCompanyStatus(user.id);
     } catch (error: any) {
       toast.error(error.message);
@@ -194,7 +220,6 @@ export default function CompanyAuth() {
     }
   };
 
-  // Loading state
   if (checkingAuth) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -207,7 +232,6 @@ export default function CompanyAuth() {
     );
   }
 
-  // User logged in with existing company (pending/rejected)
   if (user && existingCompany) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -251,7 +275,6 @@ export default function CompanyAuth() {
     );
   }
 
-  // User logged in but needs to complete company profile
   if (user && !existingCompany) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -296,7 +319,7 @@ export default function CompanyAuth() {
                     <Label htmlFor="contact_person">Persona de contacto *</Label>
                     <Input
                       id="contact_person"
-                      placeholder="Tu nombre"
+                      placeholder="Ej: María García López"
                       required
                       value={companyData.contact_person}
                       onChange={(e) => setCompanyData({...companyData, contact_person: e.target.value})}
@@ -317,10 +340,9 @@ export default function CompanyAuth() {
                 <div className="space-y-2">
                   <Label htmlFor="address">Dirección</Label>
                   <AddressAutocompleteInput
-                    id="address"
-                    placeholder="Empieza a escribir tu dirección..."
                     onAddressSelect={handleAddressSelect}
                     countryRestriction="es"
+                    placeholder="Empieza a escribir tu dirección..."
                   />
                   {companyData.latitude && companyData.longitude && (
                     <p className="text-xs text-muted-foreground">
@@ -411,7 +433,7 @@ export default function CompanyAuth() {
                 <TabsContent value="signin">
                   <form onSubmit={handleSignIn} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
+                      <Label htmlFor="email">Email *</Label>
                       <Input
                         id="email"
                         type="email"
@@ -422,15 +444,25 @@ export default function CompanyAuth() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="password">Contraseña</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        placeholder="Tu contraseña"
-                        required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                      />
+                      <Label htmlFor="password">Contraseña *</Label>
+                      <div className="relative">
+                        <Input
+                          id="password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Tu contraseña"
+                          required
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <button
+                          type="button"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          onClick={() => setShowPassword(!showPassword)}
+                          tabIndex={-1}
+                        >
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
                     </div>
                     <Button type="submit" className="w-full" disabled={loading}>
                       {loading ? (
@@ -448,7 +480,18 @@ export default function CompanyAuth() {
                 <TabsContent value="signup">
                   <form onSubmit={handleSignUp} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="signup-email">Email</Label>
+                      <Label htmlFor="signup-name">Nombre y Apellidos *</Label>
+                      <Input
+                        id="signup-name"
+                        type="text"
+                        placeholder="Ej: María García López"
+                        required
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-email">Email *</Label>
                       <Input
                         id="signup-email"
                         type="email"
@@ -459,15 +502,37 @@ export default function CompanyAuth() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-password">Contraseña</Label>
+                      <Label htmlFor="signup-phone">Teléfono *</Label>
                       <Input
-                        id="signup-password"
-                        type="password"
-                        placeholder="Mínimo 6 caracteres"
+                        id="signup-phone"
+                        type="tel"
+                        placeholder="+34 600 000 000"
                         required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
                       />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-password">Contraseña *</Label>
+                      <div className="relative">
+                        <Input
+                          id="signup-password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Mínimo 6 caracteres"
+                          required
+                          minLength={6}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <button
+                          type="button"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          onClick={() => setShowPassword(!showPassword)}
+                          tabIndex={-1}
+                        >
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
                     </div>
                     <Button type="submit" className="w-full" disabled={loading}>
                       {loading ? (

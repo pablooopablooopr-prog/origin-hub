@@ -9,11 +9,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { User } from "lucide-react";
+import { User, Eye, EyeOff } from "lucide-react";
+
+/** Capitalizes first letter of each word, lowercases the rest */
+const capitalizeName = (name: string) =>
+  name
+    .split(/\s+/)
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
 
 const CustomerAuth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,7 +40,13 @@ const CustomerAuth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!fullName.trim() || !phone.trim()) {
+      toast({ title: "Campos obligatorios", description: "Nombre, teléfono, email y contraseña son obligatorios.", variant: "destructive" });
+      return;
+    }
     setLoading(true);
+
+    const formattedName = capitalizeName(fullName);
 
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -41,21 +55,33 @@ const CustomerAuth = () => {
         options: {
           emailRedirectTo: `${window.location.origin}/mi-cuenta`,
           data: {
-            full_name: fullName,
+            full_name: formattedName,
             phone: phone,
           }
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        // Detect duplicate account
+        if (error.message?.toLowerCase().includes('already registered') || error.message?.toLowerCase().includes('already been registered')) {
+          toast({ title: "Cuenta existente", description: "Ya existe una cuenta con este email. Por favor, inicia sesión.", variant: "destructive" });
+          return;
+        }
+        throw error;
+      }
+
+      // If user already exists (Supabase returns user with identities=[])
+      if (data.user && data.user.identities && data.user.identities.length === 0) {
+        toast({ title: "Cuenta existente", description: "Ya existe una cuenta con este email. Por favor, inicia sesión.", variant: "destructive" });
+        return;
+      }
 
       if (data.user) {
-        // Create customer profile
         const { error: profileError } = await supabase
           .from('customers')
           .insert({
             user_id: data.user.id,
-            full_name: fullName,
+            full_name: formattedName,
             email: email,
             phone: phone
           });
@@ -64,10 +90,9 @@ const CustomerAuth = () => {
           console.error('Error creating customer profile:', profileError);
         }
 
-        // Send welcome email
         try {
           await supabase.functions.invoke('send-welcome-email', {
-            body: { name: fullName, email, type: 'customer' }
+            body: { name: formattedName, email, type: 'customer' }
           });
         } catch (emailError) {
           console.error('Error sending welcome email:', emailError);
@@ -143,7 +168,7 @@ const CustomerAuth = () => {
                 <CardContent>
                   <form onSubmit={handleSignIn} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="login-email">Email</Label>
+                      <Label htmlFor="login-email">Email *</Label>
                       <Input
                         id="login-email"
                         type="email"
@@ -154,15 +179,25 @@ const CustomerAuth = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="login-password">Contraseña</Label>
-                      <Input
-                        id="login-password"
-                        type="password"
-                        placeholder="Tu contraseña"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                      />
+                      <Label htmlFor="login-password">Contraseña *</Label>
+                      <div className="relative">
+                        <Input
+                          id="login-password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Tu contraseña"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                        />
+                        <button
+                          type="button"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          onClick={() => setShowPassword(!showPassword)}
+                          tabIndex={-1}
+                        >
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
                     </div>
                     <Button
                       type="submit"
@@ -188,18 +223,18 @@ const CustomerAuth = () => {
                 <CardContent>
                   <form onSubmit={handleSignUp} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="register-name">Nombre Completo</Label>
+                      <Label htmlFor="register-name">Nombre y Apellidos *</Label>
                       <Input
                         id="register-name"
                         type="text"
-                        placeholder="Tu nombre y apellidos"
+                        placeholder="Ej: María García López"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-email">Email</Label>
+                      <Label htmlFor="register-email">Email *</Label>
                       <Input
                         id="register-email"
                         type="email"
@@ -210,26 +245,37 @@ const CustomerAuth = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-phone">Teléfono</Label>
+                      <Label htmlFor="register-phone">Teléfono *</Label>
                       <Input
                         id="register-phone"
                         type="tel"
                         placeholder="+34 600 000 000"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
+                        required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-password">Contraseña</Label>
-                      <Input
-                        id="register-password"
-                        type="password"
-                        placeholder="Mínimo 6 caracteres"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        minLength={6}
-                      />
+                      <Label htmlFor="register-password">Contraseña *</Label>
+                      <div className="relative">
+                        <Input
+                          id="register-password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Mínimo 6 caracteres"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                          minLength={6}
+                        />
+                        <button
+                          type="button"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          onClick={() => setShowPassword(!showPassword)}
+                          tabIndex={-1}
+                        >
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
                     </div>
                     <Button
                       type="submit"
