@@ -36,6 +36,7 @@ export const PlaceAutocompleteInput: React.FC<PlaceAutocompleteInputProps> = ({
   const autocompleteRef = useRef<google.maps.places.PlaceAutocompleteElement | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [internalValue, setInternalValue] = useState(value || '');
+  const [selectedPlace, setSelectedPlace] = useState<PlaceResult | null>(null);
   const onPlaceSelectRef = useRef(onPlaceSelect);
   const onChangeRef = useRef(onChange);
   onPlaceSelectRef.current = onPlaceSelect;
@@ -80,6 +81,7 @@ export const PlaceAutocompleteInput: React.FC<PlaceAutocompleteInputProps> = ({
 
           const displayValue = place.displayName || place.formattedAddress || '';
           setInternalValue(displayValue);
+          setSelectedPlace(placeResult);
           onChangeRef.current?.(displayValue);
           onPlaceSelectRef.current?.(placeResult);
         } catch (err) {
@@ -105,6 +107,7 @@ export const PlaceAutocompleteInput: React.FC<PlaceAutocompleteInputProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInternalValue(e.target.value);
+    setSelectedPlace(null);
     onChange?.(e.target.value);
   };
 
@@ -143,13 +146,22 @@ export const PlaceAutocompleteInput: React.FC<PlaceAutocompleteInputProps> = ({
   }
 
   return (
-    <div className="relative">
-      <div
-        ref={containerRef}
-        className={`place-autocomplete-container ${className || ''}`}
-      />
-      {isReady && (
-        <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+    <div className="space-y-2">
+      <div className="relative">
+        <div
+          ref={containerRef}
+          className={`place-autocomplete-container ${className || ''}`}
+        />
+        {isReady && (
+          <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+        )}
+      </div>
+      {selectedPlace && (
+        <div className="flex items-center gap-2 text-xs text-secondary bg-secondary/10 rounded-md px-3 py-1.5">
+          <MapPin className="w-3 h-3 flex-shrink-0" />
+          <span className="font-medium">{selectedPlace.name}</span>
+          <span className="text-muted-foreground">— {selectedPlace.address}</span>
+        </div>
       )}
     </div>
   );

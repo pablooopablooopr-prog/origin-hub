@@ -213,10 +213,26 @@ All colors MUST be HSL.
   }
 }
 
-/* Google Places Autocomplete (New API) styling */
+/* Google Places Autocomplete (New API) styling — full theme override */
 gmp-place-autocomplete {
   width: 100%;
   display: block;
+  background: hsl(var(--background)) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+gmp-place-autocomplete::part(base) {
+  background: hsl(var(--background));
+  border: none;
+  box-shadow: none;
+}
+
+gmp-place-autocomplete::part(input-wrapper) {
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--input));
+  border-radius: calc(var(--radius) - 2px);
+  box-shadow: none;
 }
 
 gmp-place-autocomplete::part(input) {
@@ -241,7 +257,14 @@ gmp-place-autocomplete::part(input)::placeholder {
   color: hsl(var(--muted-foreground));
 }
 
-/* Style the autocomplete suggestions dropdown to match the site theme */
+gmp-place-autocomplete::part(search-icon),
+gmp-place-autocomplete::part(clear-button),
+gmp-place-autocomplete::part(location-icon) {
+  color: hsl(var(--muted-foreground));
+  background: transparent;
+}
+
+/* Suggestions dropdown */
 gmp-place-autocomplete::part(list) {
   background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
@@ -275,4 +298,11 @@ gmp-place-autocomplete::part(prediction-attribution) {
 .address-autocomplete-container,
 .place-autocomplete-container {
   width: 100%;
+}
+
+/* Force override any inline black background from Google widget */
+.address-autocomplete-container gmp-place-autocomplete,
+.place-autocomplete-container gmp-place-autocomplete {
+  --gm-autocomplete-background: hsl(var(--background));
+  background-color: hsl(var(--background)) !important;
 }
