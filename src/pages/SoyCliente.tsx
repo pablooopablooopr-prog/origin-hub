@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 const SoyCliente = () => {
   const nearbyBusinesses = [
     {
+      id: "panaderia-el-horno",
       name: "Panadería El Horno",
       category: "Panadería tradicional",
       distance: "200m",
@@ -18,6 +19,7 @@ const SoyCliente = () => {
       tags: ["Sin aditivos", "Horno de leña", "Local"]
     },
     {
+      id: "carniceria-los-hermanos",
       name: "Carnicería Los Hermanos",
       category: "Carnicería",
       distance: "350m", 
@@ -26,6 +28,7 @@ const SoyCliente = () => {
       tags: ["Ecológico", "Km 0", "Familia"]
     },
     {
+      id: "verduras-de-la-huerta",
       name: "Verduras de la Huerta",
       category: "Frutería",
       distance: "450m",

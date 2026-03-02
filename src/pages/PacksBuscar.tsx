@@ -65,7 +65,15 @@ const PacksBuscar = () => {
         .eq('status', 'published');
 
       if (error) throw error;
-      setSupabasePacks(data || []);
+      setSupabasePacks((data || []).map((p: any) => {
+        const companyRaw = Array.isArray(p.company) ? p.company[0] : p.company;
+        const regionRaw = companyRaw ? (Array.isArray(companyRaw.region) ? companyRaw.region[0] : companyRaw.region) : null;
+        return {
+          ...p,
+          company: companyRaw ? { ...companyRaw, region: regionRaw } : null,
+          template: Array.isArray(p.template) ? p.template[0] : p.template
+        };
+      }));
     } catch (error) {
       console.error('Error loading packs:', error);
     } finally {

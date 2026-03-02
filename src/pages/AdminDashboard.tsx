@@ -115,7 +115,10 @@ const AdminDashboard = () => {
         .select('id, business_name, email, contact_person, status, created_at, region:regions(name)')
         .order('created_at', { ascending: false });
 
-      setCompanies(companiesData || []);
+      setCompanies((companiesData || []).map((c: any) => ({
+        ...c,
+        region: Array.isArray(c.region) ? c.region[0] ?? null : c.region
+      })));
 
       // Load packs
       const { data: packsData } = await supabase
@@ -123,7 +126,10 @@ const AdminDashboard = () => {
         .select('id, title, slug, status, price, created_at, company:companies(business_name)')
         .order('created_at', { ascending: false });
 
-      setPacks(packsData || []);
+      setPacks((packsData || []).map((p: any) => ({
+        ...p,
+        company: Array.isArray(p.company) ? p.company[0] ?? null : p.company
+      })));
 
       // Load customers
       const { data: customersData } = await supabase
