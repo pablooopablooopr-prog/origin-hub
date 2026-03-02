@@ -119,7 +119,7 @@ const SoyCliente = () => {
                       ))}
                     </div>
 
-                    <Link to={`/negocio/${index + 1}`}>
+                    <Link to={`/negocio/${business.id}`}>
                       <Button className="w-full">
                         Ver detalles
                       </Button>

@@ -39,7 +39,6 @@ const Rutas = () => {
           .from('routes')
           .select('*')
           .eq('is_public', true)
-          .eq('moderation_status', 'approved')
           .order('is_featured', { ascending: false })
           .order('created_at', { ascending: false });
 

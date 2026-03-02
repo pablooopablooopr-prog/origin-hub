@@ -27,6 +27,7 @@ import {
 const Cart = () => {
   const [searchParams] = useSearchParams();
   const productorId = searchParams.get('productor');
+  const cancelled = searchParams.get("cancelled");
   
   const { carts, loading, isLoggedIn, updateQuantity, removeFromCart, clearCartForCompany, refetch, customerId } = useProducerCarts();
   const { appliedCodeId, discount, loading: promoLoading, validateCode, removeCode, incrementCodeUsage } = usePromotionalCode();
@@ -50,7 +51,10 @@ const Cart = () => {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+    if (cancelled === "true") {
+      toast.info("Pago cancelado. Puedes reintentarlo cuando estés listo.");
+    }
+  }, [cancelled]);
 
   // If no productor param and multiple carts, redirect to mis-carritos
   useEffect(() => {
@@ -165,6 +169,43 @@ const Cart = () => {
       // Rollback
       await supabase.from('orders').delete().eq('id', order.id);
       toast.error("Error al crear los items del pedido");
+      setIsCheckingOut(false);
+      return;
+    }
+
+    try {
+      const successUrl = `${window.location.origin}/mis-carritos?purchased=true&order=${order.id}`;
+      const cancelUrl  = `${window.location.origin}/carrito?productor=${selectedCart.company.id}&cancelled=true`;
+
+      const { data: checkoutData, error: checkoutError } =
+        await supabase.functions.invoke("create-pack-checkout", {
+          body: { orderId: order.id, successUrl, cancelUrl },
+        });
+
+      const errAny = checkoutError as any;
+      const isNotOnboarded =
+        checkoutData?.code === "PRODUCER_NOT_ONBOARDED" ||
+        errAny?.context?.code === "PRODUCER_NOT_ONBOARDED" ||
+        errAny?.code === "PRODUCER_NOT_ONBOARDED" ||
+        errAny?.message?.includes?.("PRODUCER_NOT_ONBOARDED");
+
+      if (isNotOnboarded) {
+        toast.error("El productor no ha completado su configuración de pagos.");
+        setIsCheckingOut(false);
+        return;
+      }
+
+      if (checkoutError || !checkoutData?.url) {
+        toast.error("Error al iniciar el pago. Inténtalo de nuevo.");
+        setIsCheckingOut(false);
+        return;
+      }
+
+      window.location.href = checkoutData.url;
+      return;
+    } catch (stripeError) {
+      console.error("Error creating pack checkout:", stripeError);
+      toast.error("Error al iniciar el pago. Inténtalo de nuevo.");
       setIsCheckingOut(false);
       return;
     }

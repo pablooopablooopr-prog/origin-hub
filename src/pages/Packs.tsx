@@ -55,7 +55,6 @@ const Packs = () => {
             company:companies(business_name, address, region:regions(name))
           `)
           .eq('status', 'published')
-          .eq('moderation_status', 'approved')
           .order('created_at', { ascending: false });
 
         if (error) throw error;

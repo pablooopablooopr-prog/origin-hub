@@ -14,7 +14,7 @@ import { MapPin, Plus, X, Save, Trash2, Clock, Route, Users, Loader2, Check } fr
 import { useToast } from "@/hooks/use-toast";
 import RouteMap from "@/components/RouteMap";
 import { supabase } from "@/integrations/supabase/client";
-import { useRegions, useCategories } from "@/hooks/useSupabaseData";
+import { useRegions } from "@/hooks/useSupabaseData";
 import { ImageUpload } from "@/components/ImageUpload";
 import PlaceAutocompleteInput, { PlaceResult } from "@/components/PlaceAutocompleteInput";
 
@@ -28,7 +28,6 @@ interface Stop {
   latitude?: number | null;
   longitude?: number | null;
   placeId?: string;
-  images?: string[];
 }
 
 interface Recommendation {
@@ -41,19 +40,7 @@ interface LocalTip {
   text: string;
 }
 
-const toTitleCase = (str: string) => {
-  return str.replace(/\b\w+/g, (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
-};
-
-const timeSlots = [
-  "06:00", "06:30", "07:00", "07:30", "08:00", "08:30",
-  "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-  "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
-  "15:00", "15:30", "16:00", "16:30", "17:00", "17:30",
-  "18:00", "18:30", "19:00", "19:30", "20:00", "20:30",
-  "21:00", "21:30", "22:00", "22:30", "23:00", "23:30"
-];
-
+// Helper to parse JSON arrays
 const parseJsonArray = (value: unknown): string[] => {
   if (Array.isArray(value)) return value as string[];
   if (typeof value === 'string') {
@@ -86,7 +73,6 @@ const EditarRuta = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { regions } = useRegions();
-  const { categories } = useCategories();
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [routeId, setRouteId] = useState<string | null>(null);
@@ -103,32 +89,8 @@ const EditarRuta = () => {
   const [stops, setStops] = useState<Stop[]>([]);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [localTips, setLocalTips] = useState<LocalTip[]>([]);
-  const [stopSchedules, setStopSchedules] = useState<{ [key: string]: { open: string; close: string } }>({});
 
-  const updateStopSchedule = (stopId: string, field: 'open' | 'close', value: string) => {
-    const current = stopSchedules[stopId] || { open: '', close: '' };
-    const updated = { ...current, [field]: value };
-
-    // Validate: close must be after open
-    if (updated.open && updated.close && updated.close <= updated.open) {
-      toast({
-        title: "Horario inconsistente",
-        description: "La hora de cierre debe ser posterior a la de apertura",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setStopSchedules({ ...stopSchedules, [stopId]: updated });
-    const scheduleStr = updated.open && updated.close ? `${updated.open} - ${updated.close}` : updated.open || updated.close || '';
-    const newStops = [...stops];
-    const idx = newStops.findIndex(s => s.id === stopId);
-    if (idx >= 0) {
-      newStops[idx].schedule = scheduleStr;
-      setStops(newStops);
-    }
-  };
-
+  // Fetch the route data
   useEffect(() => {
     const fetchRoute = async () => {
       if (!slug) return;
@@ -140,15 +102,20 @@ const EditarRuta = () => {
           return;
         }
 
+        // Fetch the route
         const { data: route, error } = await supabase
           .from('routes')
           .select('*')
           .eq('slug', slug)
-          .eq('creator_id', user.id)
+          .eq('creator_id', user.id) // Only allow editing own routes
           .single();
 
         if (error || !route) {
-          toast({ title: "Ruta no encontrada", description: "No tienes permiso para editar esta ruta", variant: "destructive" });
+          toast({
+            title: "Ruta no encontrada",
+            description: "No tienes permiso para editar esta ruta",
+            variant: "destructive",
+          });
           navigate('/rutas');
           return;
         }
@@ -163,13 +130,16 @@ const EditarRuta = () => {
         setImageUrl(route.image_url || '');
         setIsPublic(route.is_public || false);
 
+        // Parse practical info
         const practicalInfo = parseJsonObject(route.practical_info);
         const tips = parseJsonArray(practicalInfo.localTips);
         setLocalTips(tips.map((t, i) => ({ id: i, text: t })));
 
+        // Parse daily recommendations
         const dailyRecs = parseJsonArray(route.daily_recommendations);
         setRecommendations(dailyRecs.map((r, i) => ({ id: i, text: r })));
 
+        // Fetch stops
         const { data: stopsData } = await supabase
           .from('route_stops')
           .select('*')
@@ -177,7 +147,7 @@ const EditarRuta = () => {
           .order('position');
 
         if (stopsData && stopsData.length > 0) {
-          const loadedStops = stopsData.map(stop => ({
+          setStops(stopsData.map(stop => ({
             id: stop.id,
             name: stop.name,
             category: stop.type || '',
@@ -185,26 +155,19 @@ const EditarRuta = () => {
             schedule: stop.schedule || '',
             address: stop.address || '',
             latitude: stop.latitude || null,
-            longitude: stop.longitude || null,
-            images: parseJsonArray(stop.images)
-          }));
-          setStops(loadedStops);
-          
-          // Parse existing schedules
-          const schedules: { [key: string]: { open: string; close: string } } = {};
-          loadedStops.forEach(stop => {
-            if (stop.schedule && stop.schedule.includes(' - ')) {
-              const [open, close] = stop.schedule.split(' - ');
-              schedules[stop.id] = { open: open.trim(), close: close.trim() };
-            }
-          });
-          setStopSchedules(schedules);
+            longitude: stop.longitude || null
+          })));
         } else {
-          setStops([{ id: 'new-1', name: '', category: '', whatToDo: [''], schedule: '', address: '', latitude: null, longitude: null, images: [] }]);
+          setStops([{ id: 'new-1', name: '', category: '', whatToDo: [''], schedule: '', address: '', latitude: null, longitude: null }]);
         }
+
       } catch (err) {
         console.error('Error fetching route:', err);
-        toast({ title: "Error", description: "No se pudo cargar la ruta", variant: "destructive" });
+        toast({
+          title: "Error",
+          description: "No se pudo cargar la ruta",
+          variant: "destructive",
+        });
       } finally {
         setIsLoading(false);
       }
@@ -218,7 +181,7 @@ const EditarRuta = () => {
       toast({ title: "Límite alcanzado", description: "Máximo 6 paradas", variant: "destructive" });
       return;
     }
-    setStops([...stops, { id: `new-${Date.now()}`, name: '', category: '', whatToDo: [''], schedule: '', address: '', latitude: null, longitude: null, images: [] }]);
+    setStops([...stops, { id: `new-${Date.now()}`, name: '', category: '', whatToDo: [''], schedule: '', address: '', latitude: null, longitude: null }]);
   };
 
   const removeStop = (id: string) => {
@@ -263,37 +226,18 @@ const EditarRuta = () => {
     }
   };
 
-  const validateForm = (): boolean => {
-    const errors: string[] = [];
-    if (!routeName) errors.push("Nombre de la ruta");
-    if (!description) errors.push("Descripción");
-    if (!duration) errors.push("Duración");
-    
-    for (let i = 0; i < stops.length; i++) {
-      const stop = stops[i];
-      if (!stop.name) errors.push(`Parada ${i + 1}: Nombre`);
-      if (!stop.category) errors.push(`Parada ${i + 1}: Categoría`);
-      if (!stop.schedule) errors.push(`Parada ${i + 1}: Horario`);
-    }
-
-    if (errors.length > 0) {
-      toast({
-        title: "Campos obligatorios incompletos",
-        description: `Completa: ${errors.slice(0, 3).join(", ")}${errors.length > 3 ? ` y ${errors.length - 3} más` : ""}`,
-        variant: "destructive",
-      });
-      return false;
-    }
-    return true;
-  };
-
   const handleSave = async (publish: boolean = false) => {
     if (!routeId) return;
-    if (!validateForm()) return;
+    
+    if (!routeName || !description) {
+      toast({ title: "Campos incompletos", description: "Completa nombre y descripción", variant: "destructive" });
+      return;
+    }
 
     setIsSubmitting(true);
 
     try {
+      // Update route
       const { error: routeError } = await supabase
         .from('routes')
         .update({
@@ -317,8 +261,10 @@ const EditarRuta = () => {
 
       if (routeError) throw routeError;
 
+      // Delete existing stops and recreate
       await supabase.from('route_stops').delete().eq('route_id', routeId);
 
+      // Insert new stops
       const stopsToInsert = stops.filter(s => s.name).map((stop, index) => ({
         route_id: routeId,
         name: stop.name,
@@ -328,8 +274,7 @@ const EditarRuta = () => {
         schedule: stop.schedule || null,
         latitude: stop.latitude || null,
         longitude: stop.longitude || null,
-        position: index,
-        images: stop.images || []
+        position: index
       }));
 
       if (stopsToInsert.length > 0) {
@@ -354,9 +299,11 @@ const EditarRuta = () => {
 
   const handleDelete = async () => {
     if (!routeId) return;
+
     try {
       await supabase.from('route_stops').delete().eq('route_id', routeId);
       await supabase.from('routes').delete().eq('id', routeId);
+      
       toast({ title: "Ruta eliminada", description: "La ruta ha sido eliminada" });
       navigate('/mi-cuenta');
     } catch (error) {
@@ -381,6 +328,7 @@ const EditarRuta = () => {
     <div className="min-h-screen">
       <Header />
       
+      {/* Hero Section - Editable */}
       <section className="py-8 bg-gradient-warm enso-watermark relative">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
@@ -406,7 +354,7 @@ const EditarRuta = () => {
                 <Input 
                   id="title"
                   value={routeName}
-                  onChange={(e) => setRouteName(toTitleCase(e.target.value))}
+                  onChange={(e) => setRouteName(e.target.value)}
                   placeholder="Ej: Mi Ruta Gastronómica"
                   className="text-3xl md:text-4xl font-bold text-center h-auto py-3"
                 />
@@ -424,10 +372,11 @@ const EditarRuta = () => {
               </div>
             </div>
             
+            {/* Quick metrics */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <div className="bg-card rounded-lg p-5 shadow-sm">
                 <Clock className="w-6 h-6 text-primary mx-auto mb-2" />
-                <p className="text-xs text-muted-foreground mb-1">Duración *</p>
+                <p className="text-xs text-muted-foreground mb-1">Duración</p>
                 <Select value={duration} onValueChange={setDuration}>
                   <SelectTrigger className="h-8 text-sm">
                     <SelectValue placeholder="Selecciona" />
@@ -466,6 +415,7 @@ const EditarRuta = () => {
               </div>
             </div>
 
+            {/* Region selector */}
             {regions && regions.length > 0 && (
               <div className="bg-card rounded-lg p-4 shadow-sm mb-6">
                 <Label className="text-sm mb-2 block">Región</Label>
@@ -482,21 +432,21 @@ const EditarRuta = () => {
               </div>
             )}
 
-            <div className="bg-card rounded-lg p-4 shadow-sm mb-6">
-              <h2 className="text-lg font-bold text-primary mb-2">Imagen de la Ruta</h2>
-              <div className="max-w-md mx-auto">
-                <ImageUpload
-                  bucket="route-images"
-                  currentImage={imageUrl}
-                  onImageUploaded={setImageUrl}
-                  onImageRemoved={() => setImageUrl("")}
-                  aspectRatio="video"
-                />
-              </div>
+            {/* Image */}
+            <div className="bg-card rounded-lg p-6 shadow-sm mb-6">
+              <h2 className="text-xl font-bold text-primary mb-3">Imagen de la Ruta</h2>
+              <ImageUpload
+                bucket="route-images"
+                currentImage={imageUrl}
+                onImageUploaded={setImageUrl}
+                onImageRemoved={() => setImageUrl("")}
+                aspectRatio="video"
+              />
             </div>
 
+            {/* Experience */}
             <div className="bg-card rounded-lg p-6 shadow-sm">
-              <h2 className="text-xl font-bold text-primary mb-3">La Experiencia *</h2>
+              <h2 className="text-xl font-bold text-primary mb-3">La Experiencia</h2>
               <Textarea 
                 value={experience}
                 onChange={(e) => setExperience(e.target.value)}
@@ -509,11 +459,14 @@ const EditarRuta = () => {
         </div>
       </section>
 
+      {/* Content */}
       <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           
+          {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             
+            {/* Stops */}
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-bold text-primary">Paradas de la Ruta</h2>
@@ -542,7 +495,7 @@ const EditarRuta = () => {
                       <div className="flex-1 space-y-3">
                         <div>
                           <Label className="text-sm flex items-center gap-2">
-                            Nombre del Lugar *
+                            Nombre *
                             {stop.latitude && stop.longitude && (
                               <span className="text-xs text-green-600 flex items-center gap-1">
                                 <Check className="w-3 h-3" />
@@ -570,11 +523,11 @@ const EditarRuta = () => {
                             searchTypes={['establishment']}
                           />
                           <p className="text-xs text-muted-foreground mt-1">
-                            Escribe y selecciona para guardar ubicación y dirección automáticamente
+                            Escribe y selecciona para guardar la ubicación
                           </p>
                         </div>
                         <div>
-                          <Label className="text-sm">Categoría *</Label>
+                          <Label className="text-sm">Categoría</Label>
                           <Select 
                             value={stop.category}
                             onValueChange={(value) => {
@@ -584,104 +537,47 @@ const EditarRuta = () => {
                             }}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Selecciona una categoría" />
+                              <SelectValue placeholder="Categoría" />
                             </SelectTrigger>
                             <SelectContent>
-                              {categories && categories.length > 0 ? (
-                                <>
-                                  {categories.map((cat: any) => (
-                                    <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
-                                  ))}
-                                  <SelectItem value="Otro">Otro</SelectItem>
-                                </>
-                              ) : (
-                                <>
-                                  <SelectItem value="Panadería artesanal">Panadería</SelectItem>
-                                  <SelectItem value="Quesería tradicional">Quesería</SelectItem>
-                                  <SelectItem value="Bodega familiar">Bodega</SelectItem>
-                                  <SelectItem value="Restaurante">Restaurante</SelectItem>
-                                  <SelectItem value="Carnicería">Carnicería</SelectItem>
-                                  <SelectItem value="Otro">Otro</SelectItem>
-                                </>
-                              )}
+                              <SelectItem value="Panadería artesanal">Panadería</SelectItem>
+                              <SelectItem value="Quesería tradicional">Quesería</SelectItem>
+                              <SelectItem value="Bodega familiar">Bodega</SelectItem>
+                              <SelectItem value="Mercado local">Mercado</SelectItem>
+                              <SelectItem value="Restaurante">Restaurante</SelectItem>
+                              <SelectItem value="Otro">Otro</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
-
-                        {/* Stop Image */}
-                        <div>
-                          <ImageUpload
-                            bucket="route-images"
-                            folder={`stops/${stop.id}`}
-                            currentImage={stop.images?.[0]}
-                            onImageUploaded={(url) => {
-                              const newStops = [...stops];
-                              newStops[index].images = [url];
-                              setStops(newStops);
-                            }}
-                            onImageRemoved={() => {
-                              const newStops = [...stops];
-                              newStops[index].images = [];
-                              setStops(newStops);
-                            }}
-                            aspectRatio="video"
-                            className="max-w-sm"
-                          />
-                          <p className="text-xs text-muted-foreground mt-1">Imagen (opcional)</p>
-                        </div>
-
                         <div className="grid grid-cols-2 gap-2">
                           <div>
-                            <Label className="text-sm flex items-center gap-1">
-                              <Clock className="w-3.5 h-3.5" />
-                              Horario *
-                            </Label>
-                            <div className="flex items-center gap-1">
-                              <Select 
-                                value={stopSchedules[stop.id]?.open || ""}
-                                onValueChange={(v) => updateStopSchedule(stop.id, 'open', v)}
-                              >
-                                <SelectTrigger className="h-9 text-sm">
-                                  <SelectValue placeholder="Apertura" />
-                                </SelectTrigger>
-                                <SelectContent className="max-h-48">
-                                  {timeSlots.map(t => (
-                                    <SelectItem key={t} value={t}>{t}</SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <span className="text-muted-foreground text-xs">-</span>
-                              <Select 
-                                value={stopSchedules[stop.id]?.close || ""}
-                                onValueChange={(v) => updateStopSchedule(stop.id, 'close', v)}
-                              >
-                                <SelectTrigger className="h-9 text-sm">
-                                  <SelectValue placeholder="Cierre" />
-                                </SelectTrigger>
-                                <SelectContent className="max-h-48">
-                                  {timeSlots.map(t => (
-                                    <SelectItem key={t} value={t}>{t}</SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
+                            <Label className="text-sm">Horario</Label>
+                            <Input 
+                              value={stop.schedule || ''}
+                              onChange={(e) => {
+                                const newStops = [...stops];
+                                newStops[index].schedule = e.target.value;
+                                setStops(newStops);
+                              }}
+                              placeholder="Ej: 9:00-18:00"
+                            />
                           </div>
                           <div>
-                            <Label className="text-sm flex items-center gap-1">
-                              <MapPin className="w-3.5 h-3.5" />
-                              Dirección
-                            </Label>
+                            <Label className="text-sm">Dirección</Label>
                             <Input 
                               value={stop.address || ''}
-                              readOnly
-                              placeholder="Se rellena automáticamente"
-                              className="bg-muted/50 text-muted-foreground"
+                              onChange={(e) => {
+                                const newStops = [...stops];
+                                newStops[index].address = e.target.value;
+                                setStops(newStops);
+                              }}
+                              placeholder="Dirección"
                             />
                           </div>
                         </div>
                         <div>
                           <div className="flex items-center justify-between mb-2">
-                            <Label className="text-sm">Qué puedes hacer *</Label>
+                            <Label className="text-sm">Qué puedes hacer</Label>
                             <Button 
                               variant="ghost" 
                               size="sm" 
@@ -698,7 +594,7 @@ const EditarRuta = () => {
                                 value={todo}
                                 onChange={(e) => {
                                   const newStops = [...stops];
-                                  newStops[index].whatToDo[todoIndex] = toTitleCase(e.target.value);
+                                  newStops[index].whatToDo[todoIndex] = e.target.value;
                                   setStops(newStops);
                                 }}
                                 placeholder="Actividad..."
@@ -722,6 +618,7 @@ const EditarRuta = () => {
               </div>
             </section>
 
+            {/* Recommendations */}
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -738,7 +635,7 @@ const EditarRuta = () => {
                       value={rec.text}
                       onChange={(e) => {
                         const newRecs = [...recommendations];
-                        newRecs[index].text = toTitleCase(e.target.value);
+                        newRecs[index].text = e.target.value;
                         setRecommendations(newRecs);
                       }}
                       placeholder="Recomendación..."
@@ -751,6 +648,7 @@ const EditarRuta = () => {
               </CardContent>
             </Card>
 
+            {/* Local Tips */}
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -767,7 +665,7 @@ const EditarRuta = () => {
                       value={tip.text}
                       onChange={(e) => {
                         const newTips = [...localTips];
-                        newTips[index].text = toTitleCase(e.target.value);
+                        newTips[index].text = e.target.value;
                         setLocalTips(newTips);
                       }}
                       placeholder="Consejo local..."
@@ -781,6 +679,7 @@ const EditarRuta = () => {
             </Card>
           </div>
 
+          {/* Sidebar */}
           <div className="lg:col-span-1 space-y-4">
             <RouteMap routeTitle={routeName || "Mi Ruta"} stopsCount={stops.length} />
             

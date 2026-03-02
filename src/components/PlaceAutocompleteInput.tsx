@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useRef, useImperativeHandle, useState, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { useGoogleMapsLoader } from '@/hooks/useGoogleMapsLoader';
 import { AlertTriangle, MapPin } from 'lucide-react';
@@ -12,160 +12,157 @@ export interface PlaceResult {
   place_id: string;
 }
 
-interface PlaceAutocompleteInputProps {
+interface PlaceAutocompleteInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   onPlaceSelect?: (place: PlaceResult) => void;
   onChange?: (value: string) => void;
   countryRestriction?: string | string[];
   searchTypes?: string[];
-  className?: string;
-  placeholder?: string;
-  value?: string;
 }
 
-export const PlaceAutocompleteInput: React.FC<PlaceAutocompleteInputProps> = ({
-  onPlaceSelect,
-  onChange,
-  countryRestriction = 'es',
-  searchTypes = ['establishment', 'geocode'],
-  className,
-  placeholder,
-  value,
-}) => {
-  const { loaded, error, apiKeyMissing } = useGoogleMapsLoader();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const autocompleteRef = useRef<google.maps.places.PlaceAutocompleteElement | null>(null);
-  const [isReady, setIsReady] = useState(false);
-  const [internalValue, setInternalValue] = useState(value || '');
-  const [selectedPlace, setSelectedPlace] = useState<PlaceResult | null>(null);
-  const onPlaceSelectRef = useRef(onPlaceSelect);
-  const onChangeRef = useRef(onChange);
-  onPlaceSelectRef.current = onPlaceSelect;
-  onChangeRef.current = onChange;
+export const PlaceAutocompleteInput = forwardRef<HTMLInputElement, PlaceAutocompleteInputProps>(
+  ({ 
+    onPlaceSelect, 
+    onChange,
+    countryRestriction = 'es', 
+    searchTypes = ['establishment', 'geocode'],
+    className, 
+    value,
+    ...props 
+  }, ref) => {
+    const { loaded, error, apiKeyMissing } = useGoogleMapsLoader();
+    const inputRef = useRef<HTMLInputElement>(null);
+    const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+    const [isReady, setIsReady] = useState(false);
+    const [internalValue, setInternalValue] = useState(value || '');
 
-  useEffect(() => {
-    if (value !== undefined) setInternalValue(value);
-  }, [value]);
+    // Sync internal value with external value
+    useEffect(() => {
+      if (value !== undefined) {
+        setInternalValue(value);
+      }
+    }, [value]);
 
-  useEffect(() => {
-    if (!loaded || !containerRef.current || autocompleteRef.current) return;
+    // Allow parent components to access the input ref
+    useImperativeHandle(ref, () => inputRef.current!);
 
-    const init = async () => {
-      await google.maps.importLibrary('places');
+    const initAutocomplete = useCallback(() => {
+      if (!inputRef.current || !window.google?.maps?.places) return;
 
-      const countries = Array.isArray(countryRestriction) ? countryRestriction : [countryRestriction];
+      // Clean up previous instance
+      if (autocompleteRef.current) {
+        google.maps.event.clearInstanceListeners(autocompleteRef.current);
+      }
 
-      const el = new google.maps.places.PlaceAutocompleteElement({
-        componentRestrictions: { country: countries },
-        types: searchTypes,
-      } as any);
+      const options: google.maps.places.AutocompleteOptions = {
+        componentRestrictions: { 
+          country: Array.isArray(countryRestriction) ? countryRestriction : [countryRestriction] 
+        },
+        fields: ['name', 'address_components', 'geometry', 'formatted_address', 'place_id'],
+        types: searchTypes
+      };
 
-      el.style.width = '100%';
-      el.style.display = 'block';
+      autocompleteRef.current = new google.maps.places.Autocomplete(inputRef.current, options);
 
-      el.addEventListener('gmp-select', async (event: any) => {
-        const placePrediction = event.placePrediction;
-        if (!placePrediction) return;
-
-        try {
-          const place = placePrediction.toPlace();
-          await place.fetchFields({ fields: ['displayName', 'location', 'formattedAddress', 'id'] });
-
-          const placeResult: PlaceResult = {
-            name: place.displayName || '',
-            address: place.formattedAddress || '',
-            latitude: place.location?.lat() ?? 0,
-            longitude: place.location?.lng() ?? 0,
-            formatted_address: place.formattedAddress || '',
-            place_id: place.id || ''
-          };
-
-          const displayValue = place.displayName || place.formattedAddress || '';
-          setInternalValue(displayValue);
-          setSelectedPlace(placeResult);
-          onChangeRef.current?.(displayValue);
-          onPlaceSelectRef.current?.(placeResult);
-        } catch (err) {
-          console.error('Error fetching place details:', err);
+      autocompleteRef.current.addListener('place_changed', () => {
+        const place = autocompleteRef.current?.getPlace();
+        
+        if (!place?.geometry?.location) {
+          console.warn('No valid place selected');
+          return;
         }
+
+        const placeResult: PlaceResult = {
+          name: place.name || '',
+          address: place.formatted_address || '',
+          latitude: place.geometry.location.lat(),
+          longitude: place.geometry.location.lng(),
+          formatted_address: place.formatted_address || '',
+          place_id: place.place_id || ''
+        };
+
+        setInternalValue(place.name || place.formatted_address || '');
+        onChange?.(place.name || place.formatted_address || '');
+        onPlaceSelect?.(placeResult);
       });
 
-      containerRef.current!.innerHTML = '';
-      containerRef.current!.appendChild(el);
-      autocompleteRef.current = el;
       setIsReady(true);
-    };
+    }, [countryRestriction, searchTypes, onPlaceSelect, onChange]);
 
-    init();
-
-    return () => {
-      if (autocompleteRef.current && containerRef.current) {
-        try { containerRef.current.removeChild(autocompleteRef.current); } catch {}
+    useEffect(() => {
+      if (loaded && inputRef.current) {
+        initAutocomplete();
       }
-      autocompleteRef.current = null;
+    }, [loaded, initAutocomplete]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+      return () => {
+        if (autocompleteRef.current) {
+          google.maps.event.clearInstanceListeners(autocompleteRef.current);
+        }
+      };
+    }, []);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInternalValue(e.target.value);
+      onChange?.(e.target.value);
     };
-  }, [loaded, countryRestriction, searchTypes]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInternalValue(e.target.value);
-    setSelectedPlace(null);
-    onChange?.(e.target.value);
-  };
+    if (apiKeyMissing) {
+      return (
+        <div className="space-y-2">
+          <div className="relative">
+            <Input
+              {...props}
+              value={internalValue}
+              onChange={handleInputChange}
+              className={className}
+              placeholder={props.placeholder || "Nombre del lugar"}
+            />
+          </div>
+          <p className="text-xs text-amber-600 flex items-center gap-1">
+            <AlertTriangle className="w-3 h-3" />
+            Autocompletado no disponible
+          </p>
+        </div>
+      );
+    }
 
-  if (apiKeyMissing) {
+    if (error) {
+      return (
+        <div className="space-y-2">
+          <Input
+            {...props}
+            value={internalValue}
+            onChange={handleInputChange}
+            className={className}
+            placeholder={props.placeholder || "Nombre del lugar"}
+          />
+          <p className="text-xs text-destructive flex items-center gap-1">
+            <AlertTriangle className="w-3 h-3" />
+            Error al cargar autocompletado
+          </p>
+        </div>
+      );
+    }
+
     return (
-      <div className="space-y-2">
-        <Input
-          value={internalValue}
-          onChange={handleInputChange}
-          className={className}
-          placeholder={placeholder || "Nombre del lugar"}
-        />
-        <p className="text-xs text-amber-600 flex items-center gap-1">
-          <AlertTriangle className="w-3 h-3" />
-          Autocompletado no disponible
-        </p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-2">
-        <Input
-          value={internalValue}
-          onChange={handleInputChange}
-          className={className}
-          placeholder={placeholder || "Nombre del lugar"}
-        />
-        <p className="text-xs text-destructive flex items-center gap-1">
-          <AlertTriangle className="w-3 h-3" />
-          Error al cargar autocompletado
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-2">
       <div className="relative">
-        <div
-          ref={containerRef}
-          className={`place-autocomplete-container ${className || ''}`}
+        <Input
+          ref={inputRef}
+          {...props}
+          value={internalValue}
+          onChange={handleInputChange}
+          className={className}
+          placeholder={props.placeholder || "Buscar lugar o empresa..."}
         />
         {isReady && (
           <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
         )}
       </div>
-      {selectedPlace && (
-        <div className="flex items-center gap-2 text-xs text-secondary bg-secondary/10 rounded-md px-3 py-1.5">
-          <MapPin className="w-3 h-3 flex-shrink-0" />
-          <span className="font-medium">{selectedPlace.name}</span>
-          <span className="text-muted-foreground">— {selectedPlace.address}</span>
-        </div>
-      )}
-    </div>
-  );
-};
+    );
+  }
+);
 
 PlaceAutocompleteInput.displayName = 'PlaceAutocompleteInput';
 

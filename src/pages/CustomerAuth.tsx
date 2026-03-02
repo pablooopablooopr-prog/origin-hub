@@ -9,100 +9,90 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { User, Eye, EyeOff } from "lucide-react";
-import ForgotPasswordDialog from "@/components/ForgotPasswordDialog";
-
-/** Capitalizes first letter of each word, lowercases the rest */
-const capitalizeName = (name: string) =>
-  name
-    .split(/\s+/)
-    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-    .join(' ');
+import { User } from "lucide-react";
 
 const CustomerAuth = () => {
+  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+
   const [loading, setLoading] = useState(false);
+  const [lastSignupEmail, setLastSignupEmail] = useState<string>("");
+  const [showResendOnLogin, setShowResendOnLogin] = useState(false);
+
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate("/mi-cuenta");
-      }
+      if (session) navigate("/mi-cuenta");
     };
     checkUser();
   }, [navigate]);
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!fullName.trim() || !phone.trim()) {
-      toast({ title: "Campos obligatorios", description: "Nombre, teléfono, email y contraseña son obligatorios.", variant: "destructive" });
+  const handleResendSignupEmail = async () => {
+    const targetEmail = (lastSignupEmail || email).trim();
+    if (!targetEmail) {
+      toast({
+        title: "Falta el email",
+        description: "Escribe tu email para poder reenviar la verificación.",
+        variant: "destructive",
+      });
       return;
     }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: targetEmail,
+      });
+      if (error) throw error;
+
+      toast({
+        title: "Email reenviado",
+        description: "Revisa tu bandeja de entrada y la carpeta de spam.",
+      });
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
 
-    const formattedName = capitalizeName(fullName);
-
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
+      const { error } = await supabase.auth.signUp({
+        email: email.trim(),
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/mi-cuenta`,
           data: {
-            full_name: formattedName,
-            phone: phone,
-          }
-        }
+            user_type: "customer",
+            full_name: fullName,
+            phone: phone || null,
+          },
+        },
       });
 
-      if (error) {
-        // Detect duplicate account
-        if (error.message?.toLowerCase().includes('already registered') || error.message?.toLowerCase().includes('already been registered')) {
-          toast({ title: "Cuenta existente", description: "Ya existe una cuenta con este email. Por favor, inicia sesión.", variant: "destructive" });
-          return;
-        }
-        throw error;
-      }
+      if (error) throw error;
 
-      // If user already exists (Supabase returns user with identities=[])
-      if (data.user && data.user.identities && data.user.identities.length === 0) {
-        toast({ title: "Cuenta existente", description: "Ya existe una cuenta con este email. Por favor, inicia sesión.", variant: "destructive" });
-        return;
-      }
-
-      if (data.user) {
-        const { error: profileError } = await supabase
-          .from('customers')
-          .insert({
-            user_id: data.user.id,
-            full_name: formattedName,
-            email: email,
-            phone: phone
-          });
-
-        if (profileError) {
-          console.error('Error creating customer profile:', profileError);
-        }
-
-        try {
-          await supabase.functions.invoke('send-welcome-email', {
-            body: { name: formattedName, email, type: 'customer' }
-          });
-        } catch (emailError) {
-          console.error('Error sending welcome email:', emailError);
-        }
-      }
+      setLastSignupEmail(email.trim());
 
       toast({
-        title: "¡Registro exitoso!",
-        description: "Verifica tu correo para activar tu cuenta.",
+        title: "¡Registro creado!",
+        description: "Te hemos enviado un correo. Verifica tu email para activar tu cuenta.",
       });
     } catch (error: any) {
       toast({
@@ -116,28 +106,60 @@ const CustomerAuth = () => {
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+  try {
+    setShowResendOnLogin(false);
 
-      if (error) throw error;
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
 
+    if (error) throw error;
+
+    if (data.session) {
       navigate("/mi-cuenta");
-    } catch (error: any) {
+      return;
+    }
+
+    toast({
+      title: "Verifica tu email",
+      description:
+        "Parece que tu cuenta no está confirmada aún. Revisa tu correo o reenvía la verificación.",
+      variant: "destructive",
+    });
+  } catch (error: any) {
+    const msg = (error?.message || "").toLowerCase();
+
+    const notConfirmed =
+      msg.includes("email not confirmed") ||
+      msg.includes("not confirmed") ||
+      msg.includes("confirm");
+
+    if (notConfirmed) {
+      setShowResendOnLogin(true);
       toast({
-        title: "Error",
-        description: error.message,
+        title: "Verifica tu email",
+        description:
+          "Tu cuenta está creada pero falta confirmar el email. Pulsa “Reenviar verificación”.",
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
+      return;
     }
-  };
+
+    toast({
+      title: "Error",
+      description: error?.message ?? "No se pudo iniciar sesión.",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -145,14 +167,17 @@ const CustomerAuth = () => {
       <main className="flex-1 container mx-auto px-6 py-16">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style={{ backgroundColor: "hsl(var(--cliente))" }}>
+            <div
+              className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4"
+              style={{ backgroundColor: "hsl(var(--cliente))" }}
+            >
               <User className="w-8 h-8" style={{ color: "hsl(var(--cliente-foreground))" }} />
             </div>
             <h1 className="text-3xl font-bold mb-2">Zona de Cliente</h1>
             <p className="text-muted-foreground">Accede a tu cuenta o regístrate</p>
           </div>
 
-          <Tabs defaultValue="login">
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "login" | "register")}>
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="login">Iniciar Sesión</TabsTrigger>
               <TabsTrigger value="register">Registrarse</TabsTrigger>
@@ -162,14 +187,12 @@ const CustomerAuth = () => {
               <Card>
                 <CardHeader>
                   <CardTitle>Iniciar Sesión</CardTitle>
-                  <CardDescription>
-                    Ingresa tus credenciales para acceder
-                  </CardDescription>
+                  <CardDescription>Ingresa tus credenciales para acceder</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSignIn} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="login-email">Email *</Label>
+                      <Label htmlFor="login-email">Email</Label>
                       <Input
                         id="login-email"
                         type="email"
@@ -180,26 +203,17 @@ const CustomerAuth = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="login-password">Contraseña *</Label>
-                      <div className="relative">
-                        <Input
-                          id="login-password"
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Tu contraseña"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          required
-                        />
-                        <button
-                          type="button"
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                          onClick={() => setShowPassword(!showPassword)}
-                          tabIndex={-1}
-                        >
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
+                      <Label htmlFor="login-password">Contraseña</Label>
+                      <Input
+                        id="login-password"
+                        type="password"
+                        placeholder="Tu contraseña"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
                     </div>
+
                     <Button
                       type="submit"
                       className="w-full"
@@ -208,9 +222,19 @@ const CustomerAuth = () => {
                     >
                       {loading ? "Cargando..." : "Iniciar Sesión"}
                     </Button>
-                    <div className="text-center mt-2">
-                      <ForgotPasswordDialog />
-                    </div>
+
+                    {showResendOnLogin && (
+  <Button
+    type="button"
+    variant="outline"
+    className="w-full"
+    disabled={loading || !email.trim()}
+    onClick={handleResendSignupEmail}
+  >
+    Reenviar verificación
+  </Button>
+)}
+
                   </form>
                 </CardContent>
               </Card>
@@ -220,25 +244,23 @@ const CustomerAuth = () => {
               <Card>
                 <CardHeader>
                   <CardTitle>Crear Cuenta</CardTitle>
-                  <CardDescription>
-                    Completa tus datos para registrarte
-                  </CardDescription>
+                  <CardDescription>Completa tus datos para registrarte</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSignUp} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="register-name">Nombre y Apellidos *</Label>
+                      <Label htmlFor="register-name">Nombre Completo</Label>
                       <Input
                         id="register-name"
                         type="text"
-                        placeholder="Ej: María García López"
+                        placeholder="Tu nombre y apellidos"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-email">Email *</Label>
+                      <Label htmlFor="register-email">Email</Label>
                       <Input
                         id="register-email"
                         type="email"
@@ -249,38 +271,28 @@ const CustomerAuth = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-phone">Teléfono *</Label>
+                      <Label htmlFor="register-phone">Teléfono</Label>
                       <Input
                         id="register-phone"
                         type="tel"
                         placeholder="+34 600 000 000"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-password">Contraseña *</Label>
-                      <div className="relative">
-                        <Input
-                          id="register-password"
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Mínimo 6 caracteres"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          required
-                          minLength={6}
-                        />
-                        <button
-                          type="button"
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                          onClick={() => setShowPassword(!showPassword)}
-                          tabIndex={-1}
-                        >
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
+                      <Label htmlFor="register-password">Contraseña</Label>
+                      <Input
+                        id="register-password"
+                        type="password"
+                        placeholder="Mínimo 6 caracteres"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        minLength={6}
+                      />
                     </div>
+
                     <Button
                       type="submit"
                       className="w-full"
@@ -289,6 +301,20 @@ const CustomerAuth = () => {
                     >
                       {loading ? "Cargando..." : "Crear Cuenta"}
                     </Button>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      disabled={loading || !(lastSignupEmail || email).trim()}
+                      onClick={handleResendSignupEmail}
+                    >
+                      Reenviar verificación
+                    </Button>
+
+                    <p className="text-xs text-muted-foreground text-center">
+                      Si no lo ves, revisa “Promociones” o “Spam”.
+                    </p>
                   </form>
                 </CardContent>
               </Card>

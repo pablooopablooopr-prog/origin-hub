@@ -22,3 +22,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Env
+.env
+
+# Supabase temp
+supabase/.temp/
+
+# Remote placeholders (si aparecen)
+supabase/migrations/*_remote_placeholder.sql
+
+# Optional: Bun lockfile (si NO usas bun)
+bun.lockb

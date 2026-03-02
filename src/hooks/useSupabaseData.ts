@@ -68,7 +68,7 @@ export function usePacks(options?: {
           `);
         
         if (options?.published !== false) {
-          query = query.eq('status', 'published').eq('moderation_status', 'approved');
+          query = query.eq('status', 'published');
         }
         if (options?.companyId) {
           query = query.eq('company_id', options.companyId);
@@ -110,7 +110,7 @@ export function useRoutes(options?: {
         let query = supabase.from('routes').select('*');
         
         if (options?.public !== false) {
-          query = query.eq('is_public', true).eq('moderation_status', 'approved');
+          query = query.eq('is_public', true);
         }
         if (options?.featured) {
           query = query.eq('is_featured', true);

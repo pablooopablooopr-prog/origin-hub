@@ -74,9 +74,16 @@ const InteractiveMap = ({
         const {
           data,
           error
-        } = await (supabase.from('companies_public' as any).select(
-            'id, business_name, description, address, latitude, longitude, avg_rating, category_id'
-          ) as any).eq('status', 'approved');
+        } = await supabase.from('companies_public').select(`
+            id,
+            business_name,
+            description,
+            address,
+            latitude,
+            longitude,
+            avg_rating,
+            category_id
+          `).eq('status', 'approved');
         if (error) throw error;
         if (data && data.length > 0) {
           // Transform DB data to Business format
