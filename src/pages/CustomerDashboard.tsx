@@ -165,7 +165,7 @@ const CustomerDashboard = () => {
         .order('order_date', { ascending: false });
 
       if (ordersError) throw ordersError;
-      setOrders(ordersData || []);
+      setOrders((ordersData || []) as any);
 
       // Load favorites
       const { data: favoritesData, error: favoritesError } = await supabase
@@ -191,7 +191,11 @@ const CustomerDashboard = () => {
         .eq('customer_id', customerData.id);
 
       if (savedRoutesError) throw savedRoutesError;
-      setSavedRoutes(savedRoutesData || []);
+      setSavedRoutes((savedRoutesData || []).map((r: any) => {
+        const routeRaw = Array.isArray(r.route) ? r.route[0] : r.route;
+        const regionRaw = routeRaw ? (Array.isArray(routeRaw.region) ? routeRaw.region[0] : routeRaw.region) : null;
+        return { ...r, route: routeRaw ? { ...routeRaw, region: regionRaw } : null };
+      }));
     } catch (error: any) {
       toast({
         title: "Error",

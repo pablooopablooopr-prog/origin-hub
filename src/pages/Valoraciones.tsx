@@ -48,7 +48,10 @@ const Valoraciones = () => {
       if (error) {
         console.error("Error fetching reviews:", error);
       } else {
-        setReviews(data || []);
+        setReviews((data || []).map((r: any) => ({
+          ...r,
+          company: Array.isArray(r.company) ? r.company[0] ?? null : r.company
+        })));
       }
       setLoading(false);
     };
