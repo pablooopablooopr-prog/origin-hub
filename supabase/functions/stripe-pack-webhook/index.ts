@@ -91,25 +91,21 @@ serve(async (req) => {
       }
 
       // Idempotency: if already paid, skip
-      const { data: existing, error: existingErr } = await supabase
+      const { data: existing } = await supabase
         .from("pack_payments")
         .select("id, status")
         .eq("order_id", orderId)
         .maybeSingle();
 
-      if (existingErr) {
-        console.error("pack_payments read error:", { orderId, error: existingErr });
-      }
-
       if (existing?.status === "paid") {
-        console.log("[idempotent] already paid -> skip side-effects", { orderId });
+        console.log("[idempotent] already paid", { orderId });
         return new Response(JSON.stringify({ received: true }), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         });
       }
 
-      // C) Mark/create pack_payments as paid + stripe_payment_intent_id
+      // If pack_payments missing, create fallback
       if (!existing) {
         const { data: order } = await supabase
           .from("orders")
@@ -139,7 +135,7 @@ serve(async (req) => {
           if (insErr) console.error("fallback pack_payments insert error:", insErr);
         }
       } else {
-        // Update existing pack_payments to paid
+        // Update existing pack_payments
         const { error: updErr } = await supabase
           .from("pack_payments")
           .update({
@@ -152,7 +148,7 @@ serve(async (req) => {
         if (updErr) console.error("pack_payments update error:", updErr);
       }
 
-      // D) Update orders
+      // Update orders
       const { error: ordErr } = await supabase
         .from("orders")
         .update({
@@ -164,133 +160,7 @@ serve(async (req) => {
 
       if (ordErr) console.error("orders update error:", ordErr);
 
-      // E) Read order
-      const { data: orderData, error: orderReadErr } = await supabase
-        .from("orders")
-        .select("id, customer_id, company_id, total_amount")
-        .eq("id", orderId)
-        .maybeSingle();
-
-      if (orderReadErr || !orderData?.id) {
-        console.error("order read error after payment:", { orderId, error: orderReadErr });
-        return new Response(JSON.stringify({ received: true }), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-
-      const customerId = orderData.customer_id;
-      const companyId = orderData.company_id;
-
-      console.log("Pack order marked paid", { orderId, customerId, companyId });
-
-      // F) Clear cart only for this customer + company
-      if (customerId && companyId) {
-        const { error: clearCartError } = await supabase
-          .from("cart_items")
-          .delete()
-          .eq("customer_id", customerId)
-          .eq("company_id", companyId);
-
-        if (clearCartError) {
-          console.error("cart cleared failed", { orderId, customerId, companyId, error: clearCartError });
-        } else {
-          console.log("cart cleared ok", { orderId, customerId, companyId });
-        }
-      } else {
-        console.error("cart clear skipped: missing customer_id/company_id", { orderId, customerId, companyId });
-      }
-
-      // G) Read customer
-      const { data: customerData, error: customerErr } = await supabase
-        .from("customers")
-        .select("email, full_name")
-        .eq("id", customerId)
-        .maybeSingle();
-
-      if (customerErr) {
-        console.error("customer read error", { orderId, customerId, error: customerErr });
-      }
-
-      // H) Read company
-      const { data: companyData, error: companyErr } = await supabase
-        .from("companies")
-        .select("business_name")
-        .eq("id", companyId)
-        .maybeSingle();
-
-      if (companyErr) {
-        console.error("company read error", { orderId, companyId, error: companyErr });
-      }
-
-      // I) Read order_items with pack/product names
-      const { data: orderItemsData, error: orderItemsErr } = await supabase
-        .from("order_items")
-        .select(`
-          quantity,
-          unit_price,
-          total_price,
-          pack:company_packs!order_items_pack_id_fkey(title),
-          product:products!order_items_product_id_fkey(name)
-        `)
-        .eq("order_id", orderId);
-
-      if (orderItemsErr) {
-        console.error("order_items read error", { orderId, error: orderItemsErr });
-      }
-
-      const emailItems = (orderItemsData ?? []).map((item: any) => ({
-        name: item?.pack?.title || item?.product?.name || "Producto",
-        quantity: Number(item?.quantity) || 0,
-        price: Number(item?.unit_price) || 0,
-      }));
-
-      let total = Number(orderData.total_amount) || 0;
-      if (total <= 0) {
-        total = (orderItemsData ?? []).reduce(
-          (sum: number, item: any) => sum + (Number(item?.total_price) || 0),
-          0,
-        );
-      }
-
-      // J) Invoke send-order-confirmation (best-effort; do not fail webhook)
-      if (!customerData?.email) {
-        console.error("email sent failed: missing customer email", { orderId, customerId });
-      } else {
-        try {
-          const emailResponse = await fetch(`${supabaseUrl}/functions/v1/send-order-confirmation`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${serviceKey}`,
-              "apikey": serviceKey,
-            },
-            body: JSON.stringify({
-              to: customerData.email,
-              customerName: customerData.full_name ?? "Cliente",
-              orderId,
-              producerName: companyData?.business_name ?? "Productor",
-              items: emailItems,
-              total,
-            }),
-          });
-
-          if (!emailResponse.ok) {
-            const emailErrorBody = await emailResponse.text();
-            console.error("email sent failed", {
-              orderId,
-              customerId,
-              companyId,
-              status: emailResponse.status,
-              body: emailErrorBody,
-            });
-          } else {
-            console.log("email sent ok", { orderId, customerId, companyId });
-          }
-        } catch (emailErr) {
-          console.error("email sent failed", { orderId, customerId, companyId, error: emailErr });
-        }
-      }
+      console.log("Pack order marked paid:", orderId);
     }
 
     // charge.refunded / charge.refund.updated
