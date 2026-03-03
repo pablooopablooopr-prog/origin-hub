@@ -21,6 +21,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   selectedCategory,
   onLocationClick 
 }) => {
+  const navigate = useNavigate();
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
@@ -279,7 +280,21 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                   <span className="text-sm">⭐</span>
                   <span className="text-sm font-medium text-primary-foreground">{selectedBusiness.rating}</span>
                 </div>
-                <Button size="sm" variant="secondary" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.debug("[Map] Ver detalles CLICK OK", { selectedBusiness });
+                    const id = selectedBusiness?.id;
+                    const slug = (selectedBusiness as any)?.slug;
+                    if (id) navigate(`/negocio/${id}`);
+                    else if (slug) navigate(`/negocio/${slug}`);
+                    else console.error("[Map] selectedBusiness sin id/slug", selectedBusiness);
+                  }}
+                >
                   Ver detalles
                 </Button>
               </div>

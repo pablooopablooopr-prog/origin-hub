@@ -28,6 +28,7 @@ import Valoraciones from "./pages/Valoraciones";
 import EscribirValoracion from "./pages/EscribirValoracion";
 import CompanyAuth from "./pages/CompanyAuth";
 import CompanyDashboard from "./pages/CompanyDashboard";
+import CompanyPendingApproval from "./pages/CompanyPendingApproval";
 import PackBuilder from "./pages/PackBuilder";
 import CustomerAuth from "./pages/CustomerAuth";
 import CustomerDashboard from "./pages/CustomerDashboard";
@@ -72,6 +73,7 @@ const App = () => (
           <Route path="/negocio/:id" element={<BusinessDetail />} />
           <Route path="/crear-ruta" element={<CreateRoute />} />
           <Route path="/company-auth" element={<CompanyAuth />} />
+          <Route path="/company-pending" element={<CompanyPendingApproval />} />
           <Route path="/company-dashboard" element={<CompanyDashboard />} />
           <Route path="/pack-builder" element={<PackBuilder />} />
           <Route path="/pack-builder/:packId" element={<PackBuilder />} />

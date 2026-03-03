@@ -191,6 +191,7 @@ const Packs = () => {
       // Fallback pack
       return {
         id: pack.id,
+        routeParam: pack.id,
         name: pack.name.replace(/^Pack (Raíz|Esencia|Gourmet) - /, ''),
         type: pack.type,
         price: pack.price,
@@ -205,6 +206,7 @@ const Packs = () => {
     // Database pack
     return {
       id: pack.slug,
+      routeParam: pack.slug,
       name: pack.title,
       type: getPackType(pack),
       price: pack.price || 0,
@@ -326,7 +328,7 @@ const Packs = () => {
                           <Button 
                             className="w-full" 
                             size="sm"
-                            onClick={() => navigate(`/packs/${data.id}`)}
+                            onClick={() => navigate(`/packs/${data.routeParam}`)}
                           >
                             Ver más
                           </Button>

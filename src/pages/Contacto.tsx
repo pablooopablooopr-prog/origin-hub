@@ -123,19 +123,19 @@ const Contacto = () => {
             <div className="bg-card p-6 rounded-lg shadow-soft text-center">
               <Mail className="w-8 h-8 text-secondary mx-auto mb-3" />
               <p className="font-semibold text-primary mb-1">Email</p>
-              <p className="text-sm text-muted-foreground">hola@origen.es</p>
+              <p className="text-sm text-muted-foreground">info@origen.it.com</p>
             </div>
             
             <div className="bg-card p-6 rounded-lg shadow-soft text-center">
               <Phone className="w-8 h-8 text-secondary mx-auto mb-3" />
               <p className="font-semibold text-primary mb-1">Teléfono</p>
-              <p className="text-sm text-muted-foreground">+34 900 123 456</p>
+              <p className="text-sm text-muted-foreground">+34 633804448</p>
             </div>
             
             <div className="bg-card p-6 rounded-lg shadow-soft text-center">
               <MapPin className="w-8 h-8 text-secondary mx-auto mb-3" />
               <p className="font-semibold text-primary mb-1">Ubicación</p>
-              <p className="text-sm text-muted-foreground">Madrid, España</p>
+              <p className="text-sm text-muted-foreground">Ciudad Real, España</p>
             </div>
             
             <div className="bg-card p-6 rounded-lg shadow-soft text-center">

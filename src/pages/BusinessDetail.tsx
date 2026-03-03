@@ -41,6 +41,7 @@ interface Review {
 
 const BusinessDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const param = id;
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -58,15 +59,23 @@ const BusinessDetail = () => {
 
   const loadCompanyData = async () => {
     try {
-      // Use companies_public view for public access (no email/phone exposure)
-      const { data: companyData, error: companyError } = await supabase
+      if (!param) return;
+
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      const isUuid = uuidRegex.test(param);
+
+      let companyQuery = supabase
         .from('companies_public')
-        .select('*')
-        .eq('id', id)
-        .single();
+        .select('*');
+
+      companyQuery = isUuid ? companyQuery.eq('id', param) : companyQuery.eq('slug', param);
+
+      // Use companies_public view for public access (no email/phone exposure)
+      const { data: companyData, error: companyError } = await companyQuery.single();
 
       if (companyError) throw companyError;
       setCompany(companyData);
+      const companyId = companyData.id;
 
       // Check ownership via auth session comparison with companies table
       const { data: { session } } = await supabase.auth.getSession();
@@ -74,7 +83,7 @@ const BusinessDetail = () => {
         const { data: ownerCheck } = await supabase
           .from('companies')
           .select('user_id')
-          .eq('id', id)
+          .eq('id', companyId)
           .eq('user_id', session.user.id)
           .single();
         setIsOwner(!!ownerCheck);
@@ -84,7 +93,7 @@ const BusinessDetail = () => {
       const { data: packsData, error: packsError } = await supabase
         .from('company_packs')
         .select('*')
-        .eq('company_id', id)
+        .eq('company_id', companyId)
         .eq('status', 'published')
         .limit(6);
 
@@ -98,7 +107,7 @@ const BusinessDetail = () => {
           *,
           company_packs!inner(company_id)
         `)
-        .eq('company_packs.company_id', id)
+        .eq('company_packs.company_id', companyId)
         .order('created_at', { ascending: false })
         .limit(6);
 

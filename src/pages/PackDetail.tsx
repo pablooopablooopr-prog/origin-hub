@@ -23,7 +23,8 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
 const PackDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id, slug } = useParams<{ id?: string; slug?: string }>();
+  const param = slug ?? id ?? '';
   const navigate = useNavigate();
   const { toast } = useToast();
   const [relatedPacksIndex, setRelatedPacksIndex] = useState(0);
@@ -31,6 +32,8 @@ const PackDetail = () => {
   const [reviewForm, setReviewForm] = useState({ name: "", rating: 0, comment: "" });
   const [submittingReview, setSubmittingReview] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
+  const [pack, setPack] = useState<any | null>(null);
+  const [packLoading, setPackLoading] = useState(true);
   
   // Producer conflict modal state
   const [showConflictModal, setShowConflictModal] = useState(false);
@@ -41,17 +44,105 @@ const PackDetail = () => {
   }>({ currentCompany: null, newCompany: null, packId: "" });
   
   // Hooks for Supabase integration
-  const { isFavorite, loading: favoriteLoading, toggleFavorite } = usePackFavorites(id);
-  const { trackClick } = usePackAnalytics(id);
-  const { reviews, loading: reviewsLoading, averageRating, submitReview } = usePackReviews(id);
+  const { isFavorite, loading: favoriteLoading, toggleFavorite } = usePackFavorites(param);
+  const { trackClick } = usePackAnalytics(param);
+  const { reviews, loading: reviewsLoading, averageRating, submitReview } = usePackReviews(param);
   const { addToCart, isLoggedIn } = useProducerCarts();
 
+  useEffect(() => {
+    const loadPack = async () => {
+      if (!param) {
+        setPackLoading(false);
+        return;
+      }
+
+      try {
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+        const isUuid = uuidRegex.test(param);
+
+        let query = supabase
+          .from("company_packs")
+          .select(`
+            id,
+            slug,
+            title,
+            price,
+            tags,
+            template_id,
+            status,
+            is_active,
+            is_published,
+            shipping_policy,
+            sustainability_info,
+            company_id,
+            companies:companies(business_name, address, logo_url)
+          `)
+          .eq("status", "published")
+          .eq("is_active", true)
+          .eq("is_published", true);
+
+        query = isUuid ? query.eq("id", param) : query.eq("slug", param);
+
+        const { data, error } = await query.maybeSingle();
+
+        if (error || !data) {
+          setPack(null);
+          return;
+        }
+
+        const inferredType = (() => {
+          const title = (data.title || "").toLowerCase();
+          if (title.includes("raíz") || title.includes("raiz")) return "raiz";
+          if (title.includes("gourmet")) return "gourmet";
+          return "esencia";
+        })();
+
+        const fallbackByType = companyPacks.find((p) => p.type === inferredType) || companyPacks[0];
+
+        setPack({
+          ...fallbackByType,
+          id: data.id,
+          name: data.title || fallbackByType.name,
+          description: fallbackByType.description,
+          expandedDescription: fallbackByType.expandedDescription,
+          price: data.price ?? fallbackByType.price,
+          type: inferredType,
+          company: {
+            ...fallbackByType.company,
+            name: (data.companies as any)?.business_name || fallbackByType.company.name,
+            location: (data.companies as any)?.address || fallbackByType.company.location,
+            logo: (data.companies as any)?.logo_url || fallbackByType.company.logo,
+          },
+          addedValue: data.tags || fallbackByType.addedValue,
+        });
+      } catch {
+        setPack(null);
+      } finally {
+        setPackLoading(false);
+      }
+    };
+
+    loadPack();
+  }, [param]);
+
   
-  if (!id) {
+  if (!param) {
     return <Navigate to="/packs" replace />;
   }
 
-  const pack = getPackById(id);
+  if (packLoading) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <main className="container mx-auto px-6 py-12">
+          <div className="flex items-center justify-center">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!pack) {
     return (
@@ -116,11 +207,19 @@ const PackDetail = () => {
     trackClick();
     
     // Get pack UUID from slug
-    const { data: packData } = await supabase
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const isUuid = uuidRegex.test(param);
+
+    let addToCartQuery = supabase
       .from("company_packs")
       .select("id")
-      .eq("slug", id)
-      .single();
+      .eq("status", "published")
+      .eq("is_active", true)
+      .eq("is_published", true);
+
+    addToCartQuery = isUuid ? addToCartQuery.eq("id", param) : addToCartQuery.eq("slug", param);
+
+    const { data: packData } = await addToCartQuery.maybeSingle();
     
     if (packData) {
       const result = await addToCart(packData.id);

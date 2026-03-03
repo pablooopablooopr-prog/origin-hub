@@ -29,6 +29,12 @@ type CompanyRow = {
   status: "pending" | "approved" | "rejected" | string;
 };
 
+type CompanyApprovalStatusRow = {
+  company_id: string;
+  business_name: string;
+  status: "pending" | "approved" | "rejected" | string;
+};
+
 export default function CompanyAuth() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -81,11 +87,7 @@ export default function CompanyAuth() {
   }, []);
 
   const checkCompanyStatus = useCallback(async (userId: string) => {
-    const { data, error } = await supabase
-      .from("companies")
-      .select("*")
-      .eq("user_id", userId)
-      .maybeSingle();
+    const { data, error } = await supabase.rpc("get_my_company_approval_status");
 
     if (error) {
       console.error("checkCompanyStatus error:", error);
@@ -93,15 +95,33 @@ export default function CompanyAuth() {
       return;
     }
 
-    if (data) {
-      setExistingCompany(data as CompanyRow);
-      if ((data as CompanyRow).status === "approved") {
+    const row = (Array.isArray(data) ? data[0] : data) as CompanyApprovalStatusRow | null;
+
+    if (row) {
+      setExistingCompany({
+        id: row.company_id,
+        user_id: userId,
+        business_name: row.business_name,
+        contact_person: "",
+        email: user?.email || "",
+        phone: null,
+        address: null,
+        latitude: null,
+        longitude: null,
+        description: null,
+        authenticity_story: null,
+        status: row.status,
+      });
+
+      if (row.status === "approved") {
         navigate("/company-dashboard");
+      } else {
+        navigate("/company-pending");
       }
     } else {
       setExistingCompany(null);
     }
-  }, [navigate]);
+  }, [navigate, user?.email]);
 
   useEffect(() => {
     let mounted = true;
@@ -213,14 +233,11 @@ export default function CompanyAuth() {
 
     try {
       // Si ya existe empresa, no insertes otra
-      const { data: existing, error: exErr } = await supabase
-        .from("companies")
-        .select("id,status,business_name")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      const { data: statusData, error: exErr } = await supabase.rpc("get_my_company_approval_status");
 
       if (exErr) throw exErr;
-      if (existing?.id) {
+      const existing = (Array.isArray(statusData) ? statusData[0] : statusData) as CompanyApprovalStatusRow | null;
+      if (existing?.company_id) {
         toast.success("Ya tienes una solicitud creada. Te llevamos al estado.");
         await checkCompanyStatus(user.id);
         return;

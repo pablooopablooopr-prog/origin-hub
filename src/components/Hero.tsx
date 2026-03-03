@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Map, Building } from "lucide-react";
 import { Link } from "react-router-dom";
 const Hero = () => {
-  return <section className="min-h-screen bg-gradient-warm enso-watermark flex items-center justify-center relative overflow-hidden pt-4">
+  return <section className="min-h-screen bg-gradient-warm enso-watermark flex items-center justify-center relative overflow-hidden pt-0">
       {/* Fondo sutil con textura */}
       <div className="absolute inset-0 bg-gradient-to-br from-earth-light/20 via-transparent to-moss-light/20"></div>
       
@@ -21,13 +21,11 @@ const Hero = () => {
 
         {/* Descripción adicional */}
         <p className="text-muted-foreground mb-16 max-w-3xl mx-auto opacity-90 text-lg font-normal font-sans text-center leading-relaxed">
-  Conectamos sin intermediarios consumidores con productores artesanos que cuidan de tu alimentación y de su tierra
-  <br />
-  junto a experiencias rurales por toda España preservando y fomentando el crecimiento del sector primario nacional.
+  Conectamos sin intermediarios consumidores con productores artesanos que cuidan de tu alimentación y de su tierra junto a experiencias rurales por toda España preservando y fomentando el crecimiento del sector primario nacional.
 </p>
 
         {/* Botones de acción */}
-        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-4xl mx-auto">
+        <div className="-mt-4 flex flex-col sm:flex-row gap-6 justify-center items-center max-w-4xl mx-auto">
           <Link to="/mapa">
             <Button size="lg" className="group px-8 py-4 text-lg shadow-earth">
               <Map className="w-5 h-5 mr-3" />
