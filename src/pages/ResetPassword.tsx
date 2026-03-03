@@ -1,115 +1,142 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Eye, EyeOff, KeyRound, Loader2 } from "lucide-react";
+import PasswordInput from "@/components/PasswordInput";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isRecovery, setIsRecovery] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [recoveryError, setRecoveryError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Listen for the PASSWORD_RECOVERY event from the magic link
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") {
-        setIsRecovery(true);
+    let mounted = true;
+
+    const run = async () => {
+      // 1) Si ya hay sesión -> listo
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!mounted) return;
+      if (session) {
+        setReady(true);
+        setRecoveryError(null);
+        return;
+      }
+
+      // 2) Si viene code -> exchange
+      const url = window.location.href;
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(url);
+        if (!mounted) return;
+        if (error) {
+          setReady(false);
+          setRecoveryError("Enlace inválido o caducado");
+          return;
+        }
+        setReady(true);
+        setRecoveryError(null);
+        return;
+      }
+
+      // 3) Si no hay session ni code -> no listo
+      setReady(false);
+      setRecoveryError("Enlace inválido o caducado");
+    };
+
+    run();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+      if (event === "PASSWORD_RECOVERY" || session) {
+        setReady(true);
+        setRecoveryError(null);
       }
     });
 
-    // Also check hash for type=recovery
-    const hash = window.location.hash;
-    if (hash.includes("type=recovery")) {
-      setIsRecovery(true);
-    }
-
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length < 6) {
-      toast.error("La contraseña debe tener al menos 6 caracteres");
+
+    if (password.length < 8) {
+      toast.error("La contraseña debe tener al menos 8 caracteres");
       return;
     }
+
+    if (password !== confirmPassword) {
+      toast.error("Las contraseñas no coinciden");
+      return;
+    }
+
     setLoading(true);
     try {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
       toast.success("Contraseña actualizada correctamente");
-      navigate("/");
+      navigate("/customer-auth");
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error?.message ?? "No se pudo actualizar la contraseña");
     } finally {
       setLoading(false);
     }
   };
-
-  if (!isRecovery) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <Card className="w-full max-w-md mx-4">
-            <CardHeader className="text-center">
-              <CardTitle>Enlace no válido</CardTitle>
-              <CardDescription>Este enlace de recuperación no es válido o ha expirado.</CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              <Button variant="outline" onClick={() => navigate("/")}>Volver al inicio</Button>
-            </CardContent>
-          </Card>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 container mx-auto px-6 py-16">
         <Card className="w-full max-w-md mx-auto">
-          <CardHeader className="text-center">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              <KeyRound className="w-8 h-8 text-primary" />
-            </div>
+          <CardHeader>
             <CardTitle>Nueva contraseña</CardTitle>
-            <CardDescription>Introduce tu nueva contraseña</CardDescription>
+            <CardDescription>Escribe y confirma tu nueva contraseña</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleReset} className="space-y-4">
+              {!ready && (
+                <p className="text-sm text-muted-foreground">Validando enlace de recuperación...</p>
+              )}
+
+              {recoveryError && (
+                <p className="text-sm text-destructive">{recoveryError}</p>
+              )}
+
               <div className="space-y-2">
-                <Label htmlFor="new-password">Nueva contraseña *</Label>
-                <div className="relative">
-                  <Input
-                    id="new-password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Mínimo 6 caracteres"
-                    required
-                    minLength={6}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    onClick={() => setShowPassword(!showPassword)}
-                    tabIndex={-1}
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
+                <Label htmlFor="new-password">Nueva contraseña</Label>
+                <PasswordInput
+                  id="new-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
-              <Button type="submit" className="w-full" disabled={loading}>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password">Confirmar contraseña</Label>
+                <PasswordInput
+                  id="confirm-password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+
+              <Button type="submit" className="w-full" disabled={loading || !ready}>
                 {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Actualizando...</> : "Actualizar contraseña"}
               </Button>
             </form>

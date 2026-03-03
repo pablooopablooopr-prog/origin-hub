@@ -10,6 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { User } from "lucide-react";
+import { postLoginRedirect } from "@/lib/auth/postLoginRedirect";
+import PasswordInput from "@/components/PasswordInput";
 
 const CustomerAuth = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
@@ -22,6 +24,8 @@ const CustomerAuth = () => {
   const [loading, setLoading] = useState(false);
   const [lastSignupEmail, setLastSignupEmail] = useState<string>("");
   const [showResendOnLogin, setShowResendOnLogin] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
 
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -29,7 +33,10 @@ const CustomerAuth = () => {
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session) navigate("/mi-cuenta");
+      if (session) {
+        await postLoginRedirect(navigate, "/mi-cuenta");
+        return;
+      }
     };
     checkUser();
   }, [navigate]);
@@ -112,24 +119,12 @@ const CustomerAuth = () => {
   try {
     setShowResendOnLogin(false);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
 
     if (error) throw error;
 
-    if (data.session) {
-      navigate("/mi-cuenta");
-      return;
-    }
-
-    toast({
-      title: "Verifica tu email",
-      description:
-        "Parece que tu cuenta no está confirmada aún. Revisa tu correo o reenvía la verificación.",
-      variant: "destructive",
-    });
+    await postLoginRedirect(navigate, "/mi-cuenta");
+    return;
   } catch (error: any) {
     const msg = (error?.message || "").toLowerCase();
 
@@ -158,6 +153,42 @@ const CustomerAuth = () => {
     setLoading(false);
   }
 };
+
+  const handlePasswordReset = async () => {
+    const targetEmail = (resetEmail || email).trim();
+
+    if (!targetEmail) {
+      toast({
+        title: "Falta el email",
+        description: "Escribe tu email para enviar el enlace de recuperación.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(targetEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Enlace enviado",
+        description: "Revisa tu correo para restablecer la contraseña.",
+      });
+      setShowResetPassword(false);
+    } catch (e: any) {
+      toast({
+        title: "Error",
+        description: e?.message ?? "No se pudo enviar el enlace.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
 
@@ -204,15 +235,55 @@ const CustomerAuth = () => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="login-password">Contraseña</Label>
-                      <Input
+                      <PasswordInput
                         id="login-password"
-                        type="password"
                         placeholder="Tu contraseña"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                       />
                     </div>
+
+                    <button
+                      type="button"
+                      className="text-sm text-primary hover:underline"
+                      onClick={() => {
+                        setResetEmail(email);
+                        setShowResetPassword(true);
+                      }}
+                    >
+                      ¿Olvidaste tu contraseña?
+                    </button>
+
+                    {showResetPassword && (
+                      <div className="space-y-2">
+                        <Label htmlFor="reset-email">Email</Label>
+                        <Input
+                          id="reset-email"
+                          type="email"
+                          placeholder="tuemail@ejemplo.com"
+                          value={resetEmail}
+                          onChange={(e) => setResetEmail(e.target.value)}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full"
+                          disabled={loading}
+                          onClick={handlePasswordReset}
+                        >
+                          Enviar enlace
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          className="w-full"
+                          onClick={() => setShowResetPassword(false)}
+                        >
+                          Volver
+                        </Button>
+                      </div>
+                    )}
 
                     <Button
                       type="submit"
@@ -282,14 +353,12 @@ const CustomerAuth = () => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="register-password">Contraseña</Label>
-                      <Input
+                      <PasswordInput
                         id="register-password"
-                        type="password"
                         placeholder="Mínimo 6 caracteres"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        minLength={6}
                       />
                     </div>
 

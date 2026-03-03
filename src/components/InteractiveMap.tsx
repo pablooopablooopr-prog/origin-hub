@@ -83,7 +83,7 @@ const InteractiveMap = ({
             longitude,
             avg_rating,
             category_id
-          `).eq('status', 'approved');
+          `);
         if (error) throw error;
         if (data && data.length > 0) {
           // Transform DB data to Business format

@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PasswordInput from "@/components/PasswordInput";
 import { User, Package, Heart, MapPin, Mail, Phone, LogOut, Truck, Download, RepeatIcon, Settings, Bell, Lock, Bookmark, Route, Store, Calendar, FileText, Camera } from "lucide-react";
 
 interface Customer {
@@ -101,6 +102,35 @@ const CustomerDashboard = () => {
   
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    let mounted = true;
+
+    const redirectAdmin = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      if (!mounted) return;
+
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+
+      if (!mounted) return;
+
+      if (data) {
+        navigate("/admin/companies", { replace: true });
+      }
+    };
+
+    redirectAdmin();
+
+    return () => {
+      mounted = false;
+    };
+  }, [navigate]);
 
   useEffect(() => {
     checkAuth();
@@ -1048,9 +1078,8 @@ const CustomerDashboard = () => {
                 <div className="space-y-4 max-w-md">
                   <div className="space-y-2">
                     <Label htmlFor="new-password">Nueva Contraseña</Label>
-                    <Input
+                    <PasswordInput
                       id="new-password"
-                      type="password"
                       value={passwordData.new}
                       onChange={(e) => setPasswordData({ ...passwordData, new: e.target.value })}
                       placeholder="Mínimo 6 caracteres"
@@ -1058,9 +1087,8 @@ const CustomerDashboard = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="confirm-password">Confirmar Contraseña</Label>
-                    <Input
+                    <PasswordInput
                       id="confirm-password"
-                      type="password"
                       value={passwordData.confirm}
                       onChange={(e) => setPasswordData({ ...passwordData, confirm: e.target.value })}
                       placeholder="Repite la contraseña"

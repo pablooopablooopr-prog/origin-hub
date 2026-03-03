@@ -4,26 +4,33 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { isAdminUser } from "@/lib/auth/isAdmin";
 import { NotificationsDropdown } from "@/components/NotificationsDropdown";
 import { useProducerCarts } from "@/hooks/useProducerCarts";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { totalItemCount: itemCount } = useProducerCarts();
 
+  const refreshAdmin = async (sessionUserId?: string) => {
+    const admin = await isAdminUser(sessionUserId);
+    setIsAdmin(admin);
+  };
+
   useEffect(() => {
-    // Check auth status
-    const checkAuth = async () => {
+    const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
+      await refreshAdmin(session?.user?.id);
     };
-    
-    checkAuth();
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    checkSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setIsAuthenticated(!!session);
+      await refreshAdmin(session?.user?.id);
     });
 
     return () => subscription.unsubscribe();
@@ -57,6 +64,11 @@ const Header = () => {
             <Link to="/sobre-origen" className="text-muted-foreground hover:text-primary transition-colors">
               Historia
             </Link>
+            {isAdmin && (
+              <Link to="/admin/companies" className="text-muted-foreground hover:text-primary transition-colors">
+                Admin
+              </Link>
+            )}
           </nav>
 
           {/* Botones de acción */}
@@ -82,6 +94,7 @@ const Header = () => {
                 <Button variant="default" size="sm">
                   <User className="w-4 h-4 mr-2" />
                   Mi Cuenta
+                  {isAdmin && <span className="ml-2 rounded border px-2 py-0.5 text-[10px] font-semibold tracking-wide">ADMIN</span>}
                 </Button>
               </Link>
             ) : (
@@ -115,6 +128,11 @@ const Header = () => {
               <Link to="/sobre-origen" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                 Historia
               </Link>
+              {isAdmin && (
+                <Link to="/admin/companies" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
+                  Admin
+                </Link>
+              )}
               <div className="flex flex-col space-y-2 pt-4">
                 <Link to="/mis-carritos" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="outline" size="sm" className="w-full relative">
@@ -132,6 +150,7 @@ const Header = () => {
                     <Button variant="default" size="sm" className="w-full">
                       <User className="w-4 h-4 mr-2" />
                       Mi Cuenta
+                      {isAdmin && <span className="ml-2 rounded border px-2 py-0.5 text-[10px] font-semibold tracking-wide">ADMIN</span>}
                     </Button>
                   </Link>
                 ) : (

@@ -13,6 +13,8 @@ import { toast } from "sonner";
 import { Building, Loader2, CheckCircle2, Mail } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import AddressAutocompleteInput, { AddressComponents } from "@/components/AddressAutocompleteInput";
+import { postLoginRedirect } from "@/lib/auth/postLoginRedirect";
+import PasswordInput from "@/components/PasswordInput";
 
 type CompanyRow = {
   id: string;
@@ -48,6 +50,8 @@ export default function CompanyAuth() {
   const [existingCompany, setExistingCompany] = useState<CompanyRow | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -211,10 +215,35 @@ export default function CompanyAuth() {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-
-      // onAuthStateChange hará el routing/checkCompanyStatus
+      await postLoginRedirect(navigate, "/company-dashboard");
+      return;
     } catch (err: any) {
       toast.error(err.message ?? "Error al iniciar sesión.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePasswordReset = async () => {
+    const targetEmail = (resetEmail || email).trim();
+
+    if (!targetEmail) {
+      toast.error("Escribe tu email para enviar el enlace de recuperación.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(targetEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) throw error;
+
+      toast.success("Enlace enviado. Revisa tu correo.");
+      setShowResetPassword(false);
+    } catch (e: any) {
+      toast.error(e?.message ?? "No se pudo enviar el enlace.");
     } finally {
       setLoading(false);
     }
@@ -521,8 +550,47 @@ export default function CompanyAuth() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="password">Contraseña</Label>
-                      <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+                      <PasswordInput id="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
                     </div>
+                    <button
+                      type="button"
+                      className="text-sm text-primary hover:underline"
+                      onClick={() => {
+                        setResetEmail(email);
+                        setShowResetPassword(true);
+                      }}
+                    >
+                      ¿Olvidaste tu contraseña?
+                    </button>
+                    {showResetPassword && (
+                      <div className="space-y-2">
+                        <Label htmlFor="reset-email">Email</Label>
+                        <Input
+                          id="reset-email"
+                          type="email"
+                          value={resetEmail}
+                          onChange={(e) => setResetEmail(e.target.value)}
+                          placeholder="tu@email.com"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full"
+                          disabled={loading}
+                          onClick={handlePasswordReset}
+                        >
+                          Enviar enlace
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          className="w-full"
+                          onClick={() => setShowResetPassword(false)}
+                        >
+                          Volver
+                        </Button>
+                      </div>
+                    )}
                     <Button type="submit" className="w-full" disabled={loading}>
                       {loading ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />Iniciando...</>) : "Iniciar Sesión"}
                     </Button>
@@ -537,7 +605,7 @@ export default function CompanyAuth() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="signup-password">Contraseña</Label>
-                      <Input id="signup-password" type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
+                      <PasswordInput id="signup-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
                       <p className="text-xs text-muted-foreground">Recomendado mínimo 8 caracteres.</p>
                     </div>
 

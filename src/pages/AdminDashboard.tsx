@@ -77,8 +77,8 @@ const AdminDashboard = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    checkAdminAccess();
-  }, []);
+    navigate("/admin/companies", { replace: true });
+  }, [navigate]);
 
   const checkAdminAccess = async () => {
     const { data: { session } } = await supabase.auth.getSession();
