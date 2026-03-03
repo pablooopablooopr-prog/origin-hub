@@ -16,6 +16,23 @@ import AddressAutocompleteInput, { AddressComponents } from "@/components/Addres
 import { postLoginRedirect } from "@/lib/auth/postLoginRedirect";
 import PasswordInput from "@/components/PasswordInput";
 
+const withPhonePrefix = (value: string) => {
+  const raw = value.replace(/^\s+/, "");
+  if (!raw) return "+34 ";
+
+  if (raw.startsWith("+34")) return raw;
+
+  const withoutPrefix = raw.replace(/^\+?34\s*/, "");
+  return `+34 ${withoutPrefix}`;
+};
+
+const toE164ES = (value: string) => {
+  const digits = value.replace(/\D/g, "");
+  const local = digits.startsWith("34") ? digits.slice(2) : digits;
+  if (!local) return "";
+  return `+34${local}`;
+};
+
 type CompanyRow = {
   id: string;
   user_id: string | null;
@@ -60,7 +77,7 @@ export default function CompanyAuth() {
     business_name: "",
     business_type: "",
     contact_person: "",
-    phone: "",
+    phone: "+34 ",
     address: "",
     city: "",
     province: "",
@@ -73,7 +90,8 @@ export default function CompanyAuth() {
   });
 
   const emailRedirectTo = useMemo(
-    () => `${window.location.origin}/company-auth`,
+    // CAMBIO emailRedirectTo
+    () => `${window.location.origin}/auth/callback?redirect_to=/company-dashboard`,
     []
   );
 
@@ -168,7 +186,14 @@ export default function CompanyAuth() {
     }
     setLoading(true);
     try {
-      const { error } = await supabase.auth.resend({ type: "signup", email });
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email,
+        options: {
+          // CAMBIO emailRedirectTo
+          emailRedirectTo,
+        },
+      });
       if (error) throw error;
       toast.success("Email reenviado. Revisa spam/promociones también.");
     } catch (e: any) {
@@ -182,11 +207,23 @@ export default function CompanyAuth() {
     e.preventDefault();
     setLoading(true);
 
+    // CAMBIO normalización de phone (E.164)
+    const phoneE164 = toE164ES(companyData.phone);
+
     try {
       const { error } = await supabase.auth.signUp({
   email,
   password,
-  options: { emailRedirectTo }
+  options: {
+    // CAMBIO emailRedirectTo
+    emailRedirectTo,
+    data: {
+      company_name: companyData.business_name || null,
+      // CAMBIO normalización de phone (E.164)
+      phone: phoneE164 || null,
+      user_type: "company",
+    },
+  }
 });
 
 
@@ -441,7 +478,13 @@ export default function CompanyAuth() {
                       id="phone"
                       type="tel"
                       value={companyData.phone}
-                      onChange={(e) => setCompanyData({ ...companyData, phone: e.target.value })}
+                      onFocus={() => {
+                        if (!companyData.phone.trim()) {
+                          setCompanyData({ ...companyData, phone: "+34 " });
+                        }
+                      }}
+                      // CAMBIO normalización de phone en input
+                      onChange={(e) => setCompanyData({ ...companyData, phone: withPhonePrefix(e.target.value) })}
                       placeholder="+34 600 000 000"
                     />
                   </div>

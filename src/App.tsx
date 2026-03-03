@@ -33,6 +33,7 @@ import CompanyPending from "./pages/CompanyPending";
 import CompanyRejected from "./pages/CompanyRejected";
 import PackBuilder from "./pages/PackBuilder";
 import CustomerAuth from "./pages/CustomerAuth";
+import AuthCallback from "./pages/AuthCallback";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
@@ -82,6 +83,7 @@ const App = () => (
           <Route path="/pack-builder" element={<PackBuilder />} />
           <Route path="/pack-builder/:packId" element={<PackBuilder />} />
           <Route path="/customer-auth" element={<CustomerAuth />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/mi-cuenta" element={<CustomerDashboard />} />
           <Route path="/faq" element={<FAQ />} />

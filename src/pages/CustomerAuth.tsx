@@ -13,13 +13,35 @@ import { User } from "lucide-react";
 import { postLoginRedirect } from "@/lib/auth/postLoginRedirect";
 import PasswordInput from "@/components/PasswordInput";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const AUTH_CALLBACK_REDIRECT = `${window.location.origin}/auth/callback?redirect_to=/mi-cuenta`;
+
+const withPhonePrefix = (value: string) => {
+  const raw = value.replace(/^\s+/, "");
+  if (!raw) return "+34 ";
+
+  if (raw.startsWith("+34")) {
+    return raw;
+  }
+
+  const withoutPrefix = raw.replace(/^\+?34\s*/, "");
+  return `+34 ${withoutPrefix}`;
+};
+
+const toE164ES = (value: string) => {
+  const digits = value.replace(/\D/g, "");
+  const local = digits.startsWith("34") ? digits.slice(2) : digits;
+  if (!local) return "";
+  return `+34${local}`;
+};
+
 const CustomerAuth = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("+34 ");
 
   const [loading, setLoading] = useState(false);
   const [lastSignupEmail, setLastSignupEmail] = useState<string>("");
@@ -52,11 +74,23 @@ const CustomerAuth = () => {
       return;
     }
 
+    if (!EMAIL_REGEX.test(targetEmail)) {
+      toast({
+        title: "Email inválido",
+        description: "Introduce un email válido.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const { error } = await supabase.auth.resend({
         type: "signup",
         email: targetEmail,
+        options: {
+          emailRedirectTo: AUTH_CALLBACK_REDIRECT,
+        },
       });
       if (error) throw error;
 
@@ -77,29 +111,51 @@ const CustomerAuth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const trimmedEmail = email.trim();
+    const phoneE164 = toE164ES(phone);
+
+    if (!EMAIL_REGEX.test(trimmedEmail)) {
+      toast({
+        title: "Email inválido",
+        description: "Introduce un email válido.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!phoneE164) {
+      toast({
+        title: "Teléfono requerido",
+        description: "Introduce un teléfono de contacto.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
       const { error } = await supabase.auth.signUp({
-        email: email.trim(),
+        email: trimmedEmail,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/mi-cuenta`,
+          emailRedirectTo: AUTH_CALLBACK_REDIRECT,
           data: {
-            user_type: "customer",
             full_name: fullName,
-            phone: phone || null,
+            phone: phoneE164,
+            user_type: "customer",
           },
         },
       });
 
       if (error) throw error;
 
-      setLastSignupEmail(email.trim());
+      setLastSignupEmail(trimmedEmail);
 
       toast({
-        title: "¡Registro creado!",
-        description: "Te hemos enviado un correo. Verifica tu email para activar tu cuenta.",
+        title: "Revisa tu correo",
+        description: "Te hemos enviado un correo para verificar tu cuenta.",
       });
     } catch (error: any) {
       toast({
@@ -138,7 +194,7 @@ const CustomerAuth = () => {
       toast({
         title: "Verifica tu email",
         description:
-          "Tu cuenta está creada pero falta confirmar el email. Pulsa “Reenviar verificación”.",
+          "Tu cuenta existe pero el email no está confirmado. Revisa tu bandeja de entrada o pulsa “Reenviar verificación”.",
         variant: "destructive",
       });
       return;
@@ -348,7 +404,11 @@ const CustomerAuth = () => {
                         type="tel"
                         placeholder="+34 600 000 000"
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        onFocus={() => {
+                          if (!phone.trim()) setPhone("+34 ");
+                        }}
+                        onChange={(e) => setPhone(withPhonePrefix(e.target.value))}
+                        required
                       />
                     </div>
                     <div className="space-y-2">
