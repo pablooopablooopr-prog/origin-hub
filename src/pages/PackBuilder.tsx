@@ -79,12 +79,14 @@ export default function PackBuilder() {
         return;
       }
 
-      const { data: company } = await supabase
+      const { data: companyList } = await supabase
         .from('companies')
-        .select('id, cover_image_url')
-        .eq('user_id', session.user.id)
-        .eq('status', 'approved')
-        .single();
+        .select('id, cover_image_url, status')
+        .eq('user_id', session.user.id);
+
+      const company = (companyList || []).find(
+        (c: any) => String(c.status ?? '').trim().toUpperCase() === 'APPROVED'
+      );
 
       if (!company) {
         toast.error('No tienes permisos para acceder');
