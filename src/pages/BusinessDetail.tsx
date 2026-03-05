@@ -127,6 +127,7 @@ const BusinessDetail = () => {
           .single();
         if (ownerCheck) {
           setIsOwner(true);
+          setEditing(true);
           const sm = (companyResult.social_media as any) || {};
           setEditForm({
             business_name: companyResult.business_name || "",
