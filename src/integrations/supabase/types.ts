@@ -32,6 +32,24 @@ export type Database = {
         }
         Relationships: []
       }
+      blocked_email_domains: {
+        Row: {
+          created_at: string
+          domain: string
+          reason: string | null
+        }
+        Insert: {
+          created_at?: string
+          domain: string
+          reason?: string | null
+        }
+        Update: {
+          created_at?: string
+          domain?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
       cart_items: {
         Row: {
           company_id: string | null
@@ -104,6 +122,13 @@ export type Database = {
             columns: ["pack_id"]
             isOneToOne: false
             referencedRelation: "company_packs_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cart_items_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public_enriched"
             referencedColumns: ["id"]
           },
           {
@@ -329,6 +354,48 @@ export type Database = {
             columns: ["region_id"]
             isOneToOne: false
             referencedRelation: "regions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_admin_audit: {
+        Row: {
+          action: string
+          admin_user_id: string
+          company_id: string
+          created_at: string
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          action: string
+          admin_user_id: string
+          company_id: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          action?: string
+          admin_user_id?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_admin_audit_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_admin_audit_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
             referencedColumns: ["id"]
           },
         ]
@@ -680,6 +747,13 @@ export type Database = {
             referencedRelation: "company_packs_public"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "favorites_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public_enriched"
+            referencedColumns: ["id"]
+          },
         ]
       }
       notifications: {
@@ -772,6 +846,13 @@ export type Database = {
             columns: ["pack_id"]
             isOneToOne: false
             referencedRelation: "company_packs_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public_enriched"
             referencedColumns: ["id"]
           },
           {
@@ -888,6 +969,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "orders_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public_enriched"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "orders_shipping_address_id_fkey"
             columns: ["shipping_address_id"]
             isOneToOne: false
@@ -931,6 +1019,13 @@ export type Database = {
             columns: ["pack_id"]
             isOneToOne: false
             referencedRelation: "company_packs_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pack_analytics_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public_enriched"
             referencedColumns: ["id"]
           },
         ]
@@ -979,6 +1074,13 @@ export type Database = {
             columns: ["pack_id"]
             isOneToOne: false
             referencedRelation: "company_packs_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pack_elements_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public_enriched"
             referencedColumns: ["id"]
           },
         ]
@@ -1088,6 +1190,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "pack_products_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public_enriched"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "pack_products_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -1151,6 +1260,13 @@ export type Database = {
             columns: ["pack_id"]
             isOneToOne: false
             referencedRelation: "company_packs_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pack_reviews_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public_enriched"
             referencedColumns: ["id"]
           },
         ]
@@ -1437,6 +1553,13 @@ export type Database = {
             columns: ["company_pack_id"]
             isOneToOne: false
             referencedRelation: "company_packs_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_company_packs_company_pack_id_fkey"
+            columns: ["company_pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public_enriched"
             referencedColumns: ["id"]
           },
           {
@@ -1861,6 +1984,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "stop_company_packs_company_pack_id_fkey"
+            columns: ["company_pack_id"]
+            isOneToOne: false
+            referencedRelation: "company_packs_public_enriched"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "stop_company_packs_stop_id_fkey"
             columns: ["stop_id"]
             isOneToOne: false
@@ -2024,6 +2154,32 @@ export type Database = {
           },
         ]
       }
+      company_admin_audit_view: {
+        Row: {
+          action: string | null
+          admin_user_id: string | null
+          business_name: string | null
+          company_id: string | null
+          created_at: string | null
+          reason: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_admin_audit_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_admin_audit_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_packs_public: {
         Row: {
           company_id: string | null
@@ -2078,6 +2234,50 @@ export type Database = {
           template_id?: string | null
           title?: string | null
           updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_packs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_packs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_packs_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "pack_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_packs_public_enriched: {
+        Row: {
+          business_name: string | null
+          company_id: string | null
+          created_at: string | null
+          id: string | null
+          is_active: boolean | null
+          is_published: boolean | null
+          price: number | null
+          published_at: string | null
+          region_name: string | null
+          shipping_policy: string | null
+          slug: string | null
+          status: string | null
+          sustainability_info: string | null
+          tags: string[] | null
+          template_id: string | null
+          title: string | null
+          updated_at: string | null
         }
         Relationships: [
           {
@@ -2200,6 +2400,22 @@ export type Database = {
       }
     }
     Functions: {
+      am_i_email_verified: { Args: never; Returns: boolean }
+      approve_company: { Args: { p_company_id: string }; Returns: undefined }
+      current_user_owns_approved_company: {
+        Args: { p_company_id: string }
+        Returns: boolean
+      }
+      current_user_owns_company: {
+        Args: { p_company_id: string }
+        Returns: boolean
+      }
+      drop_all_policies: {
+        Args: { p_schema: string; p_table: string }
+        Returns: undefined
+      }
+      extract_email_domain: { Args: { p_email: string }; Returns: string }
+      get_my_company_status: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2207,10 +2423,13 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_pack_view: { Args: { p_pack_id: string }; Returns: number }
       increment_promo_code_safe: { Args: { code_id: string }; Returns: boolean }
       is_admin: { Args: never; Returns: boolean }
+      is_company_approved: { Args: { p_company_id: string }; Returns: boolean }
       is_company_owner: { Args: { p_company_id: string }; Returns: boolean }
       is_pack_owner: { Args: { p_pack_id: string }; Returns: boolean }
+      is_service_or_postgres: { Args: never; Returns: boolean }
       log_webhook_context: { Args: { p_source?: string }; Returns: undefined }
       log_webhook_whoami: { Args: never; Returns: undefined }
       mark_company_welcome_sent: {
@@ -2224,6 +2443,10 @@ export type Database = {
       my_company_id: { Args: never; Returns: string }
       owns_route: { Args: { p_route_id: string }; Returns: boolean }
       owns_stop: { Args: { p_stop_id: string }; Returns: boolean }
+      reject_company: {
+        Args: { p_company_id: string; p_reason?: string }
+        Returns: undefined
+      }
       route_owner_id: {
         Args: { r: Database["public"]["Tables"]["routes"]["Row"] }
         Returns: string
