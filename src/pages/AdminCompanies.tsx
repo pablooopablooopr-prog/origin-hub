@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { LogOut, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type CompanyRow = {
   id: string;
@@ -20,14 +21,25 @@ type CompanyRow = {
 const isApprovedStatus = (status: string | null) =>
   String(status ?? "").trim().toLowerCase() === "approved";
 
+const isRejectedStatus = (status: string | null) =>
+  String(status ?? "").trim().toLowerCase() === "rejected";
+
+const isPendingStatus = (status: string | null) =>
+  !isApprovedStatus(status) && !isRejectedStatus(status);
+
 export default function AdminCompanies() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [companies, setCompanies] = useState<CompanyRow[]>([]);
+  const [allCompanies, setAllCompanies] = useState<CompanyRow[]>([]);
   const [approvingId, setApprovingId] = useState<string | null>(null);
   const [rejectingId, setRejectingId] = useState<string | null>(null);
+
+  const pendingCompanies = allCompanies.filter((c) => isPendingStatus(c.status));
+  const processedCompanies = allCompanies.filter(
+    (c) => isApprovedStatus(c.status) || isRejectedStatus(c.status)
+  );
 
   const checkAdmin = useCallback(async (): Promise<boolean> => {
     const { data: userData } = await supabase.auth.getUser();
@@ -67,12 +79,11 @@ export default function AdminCompanies() {
         description: "No se pudieron cargar las empresas.",
         variant: "destructive",
       });
-      setCompanies([]);
+      setAllCompanies([]);
       return;
     }
 
-    const rows = (data || []) as CompanyRow[];
-    setCompanies(rows.filter((company) => !isApprovedStatus(company.status)));
+    setAllCompanies((data || []) as CompanyRow[]);
   }, [toast]);
 
   useEffect(() => {
@@ -187,6 +198,13 @@ export default function AdminCompanies() {
     navigate("/");
   };
 
+  const statusLabel = (status: string | null) => {
+    const s = String(status ?? "").trim().toUpperCase();
+    if (s === "APPROVED") return <span className="text-green-600 font-medium">Aprobada</span>;
+    if (s === "REJECTED") return <span className="text-red-600 font-medium">Rechazada</span>;
+    return <span className="text-yellow-600 font-medium">Pendiente</span>;
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -201,37 +219,45 @@ export default function AdminCompanies() {
             Cerrar sesión
           </Button>
         </div>
-        <Card>
-          <CardHeader>
-            <CardTitle>Empresas pendientes</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {companies.length === 0 ? (
-              <p>No hay empresas pendientes.</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left py-2 pr-3">Negocio</th>
-                      <th className="text-left py-2 pr-3">Contacto</th>
-                      <th className="text-left py-2 pr-3">Email</th>
-                      <th className="text-left py-2 pr-3">Estado</th>
-                      <th className="text-left py-2 pr-3">Fecha</th>
-                      <th className="text-left py-2">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {companies.map((company) => (
-                      <tr key={company.id} className="border-b">
-                        <td className="py-2 pr-3">{company.business_name}</td>
-                        <td className="py-2 pr-3">{company.contact_person}</td>
-                        <td className="py-2 pr-3">{company.email}</td>
-                        <td className="py-2 pr-3">{company.status || "pending"}</td>
-                        <td className="py-2 pr-3">{new Date(company.created_at).toLocaleString()}</td>
-                        <td className="py-2">
-                          {!isApprovedStatus(company.status) && (
-                            <>
+
+        <Tabs defaultValue="pending">
+          <TabsList className="mb-4">
+            <TabsTrigger value="pending">
+              Pendientes {pendingCompanies.length > 0 && `(${pendingCompanies.length})`}
+            </TabsTrigger>
+            <TabsTrigger value="processed">
+              Verificadas / Rechazadas {processedCompanies.length > 0 && `(${processedCompanies.length})`}
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="pending">
+            <Card>
+              <CardHeader>
+                <CardTitle>Empresas pendientes de aprobación</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {pendingCompanies.length === 0 ? (
+                  <p>No hay empresas pendientes.</p>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-2 pr-3">Negocio</th>
+                          <th className="text-left py-2 pr-3">Contacto</th>
+                          <th className="text-left py-2 pr-3">Email</th>
+                          <th className="text-left py-2 pr-3">Fecha</th>
+                          <th className="text-left py-2">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pendingCompanies.map((company) => (
+                          <tr key={company.id} className="border-b">
+                            <td className="py-2 pr-3">{company.business_name}</td>
+                            <td className="py-2 pr-3">{company.contact_person}</td>
+                            <td className="py-2 pr-3">{company.email}</td>
+                            <td className="py-2 pr-3">{new Date(company.created_at).toLocaleString()}</td>
+                            <td className="py-2 flex gap-2">
                               <Button
                                 size="sm"
                                 onClick={() => handleApprove(company.id)}
@@ -242,23 +268,60 @@ export default function AdminCompanies() {
                               <Button
                                 variant="destructive"
                                 size="sm"
-                                className="ml-2"
                                 onClick={() => handleReject(company)}
                                 disabled={rejectingId === company.id || approvingId === company.id}
                               >
                                 {rejectingId === company.id ? "Rechazando..." : "Rechazar"}
                               </Button>
-                            </>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="processed">
+            <Card>
+              <CardHeader>
+                <CardTitle>Empresas verificadas y rechazadas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {processedCompanies.length === 0 ? (
+                  <p>No hay empresas verificadas o rechazadas todavía.</p>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-2 pr-3">Negocio</th>
+                          <th className="text-left py-2 pr-3">Contacto</th>
+                          <th className="text-left py-2 pr-3">Email</th>
+                          <th className="text-left py-2 pr-3">Estado</th>
+                          <th className="text-left py-2 pr-3">Fecha</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {processedCompanies.map((company) => (
+                          <tr key={company.id} className="border-b">
+                            <td className="py-2 pr-3">{company.business_name}</td>
+                            <td className="py-2 pr-3">{company.contact_person}</td>
+                            <td className="py-2 pr-3">{company.email}</td>
+                            <td className="py-2 pr-3">{statusLabel(company.status)}</td>
+                            <td className="py-2 pr-3">{new Date(company.created_at).toLocaleString()}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </main>
       <Footer />
     </div>
