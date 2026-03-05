@@ -5,6 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { LogOut, Shield } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type CompanyRow = {
   id: string;
@@ -19,6 +21,7 @@ const isApprovedStatus = (status: string | null) =>
   String(status ?? "").trim().toLowerCase() === "approved";
 
 export default function AdminCompanies() {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -179,10 +182,25 @@ export default function AdminCompanies() {
     );
   }
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 container mx-auto px-6 py-10">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <Shield className="w-7 h-7 text-primary" />
+            <h1 className="text-2xl font-bold">Panel de Administración</h1>
+          </div>
+          <Button variant="outline" onClick={handleLogout} className="gap-2">
+            <LogOut className="w-4 h-4" />
+            Cerrar sesión
+          </Button>
+        </div>
         <Card>
           <CardHeader>
             <CardTitle>Empresas pendientes</CardTitle>

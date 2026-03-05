@@ -72,7 +72,7 @@ export const RoutePurchaseCard = ({
     setIsLoading(false);
   };
 
-  const handlePurchase = () => {
+  const handlePurchase = async () => {
     if (!isAuthenticated) {
       toast({
         title: "Inicia sesión",
@@ -81,6 +81,20 @@ export const RoutePurchaseCard = ({
       navigate("/customer-auth", { state: { returnTo: `/rutas/${routeSlug}` } });
       return;
     }
+
+    // Block admin and company accounts
+    try {
+      const { data: isAdmin } = await supabase.rpc("is_admin");
+      if (isAdmin === true) {
+        toast({ title: "No disponible", description: "Los administradores no pueden comprar rutas", variant: "destructive" });
+        return;
+      }
+      const { data: companyStatus } = await supabase.rpc("get_my_company_status");
+      if (companyStatus && String(companyStatus).trim() !== "") {
+        toast({ title: "No disponible", description: "Las cuentas de empresa no pueden comprar rutas", variant: "destructive" });
+        return;
+      }
+    } catch { /* continue */ }
 
     // Navigate to checkout with route info
     navigate(`/comprar-ruta/${routeSlug}`, {
