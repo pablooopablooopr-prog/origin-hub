@@ -238,9 +238,11 @@ export default function CompanyAuth() {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        phone: phoneE164 || undefined,
         options: {
           emailRedirectTo,
           data: {
+            full_name: companyData.contact_person || companyData.business_name || null,
             company_name: companyData.business_name || null,
             phone: phoneE164 || null,
             user_type: "company",
