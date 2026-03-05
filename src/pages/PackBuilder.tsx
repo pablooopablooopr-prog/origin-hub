@@ -5,11 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Save, Eye, ArrowLeft, Plus, Trash2, GripVertical } from "lucide-react";
+import { Save, Eye, ArrowLeft, Trash2, GripVertical } from "lucide-react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import PackBuilderSidebar from "@/components/PackBuilderSidebar";
 import ElementEditor from "@/components/ElementEditor";
@@ -31,6 +30,19 @@ interface PackTemplate {
   requirements: any;
 }
 
+// Fixed prices per pack type
+const FIXED_PRICES: Record<string, number> = {
+  raiz: 35,
+  esencia: 60,
+  gourmet: 90,
+};
+
+const TEMPLATE_DEFAULTS: Record<string, { name: string; color: string }> = {
+  raiz: { name: "Pack Raíz", color: "#b45309" },
+  esencia: { name: "Pack Esencia", color: "#c2410c" },
+  gourmet: { name: "Pack Gourmet", color: "#7c3aed" },
+};
+
 export default function PackBuilder() {
   const { packId } = useParams();
   const [searchParams] = useSearchParams();
@@ -40,7 +52,6 @@ export default function PackBuilder() {
   const [saving, setSaving] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
   
-  // Pack data
   const [packData, setPackData] = useState({
     title: "",
     price: "",
@@ -54,6 +65,7 @@ export default function PackBuilder() {
   const [elements, setElements] = useState<PackElement[]>([]);
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const [companyId, setCompanyId] = useState<string>("");
+  const [companyCoverImage, setCompanyCoverImage] = useState<string | null>(null);
 
   useEffect(() => {
     initializeBuilder();
@@ -61,17 +73,15 @@ export default function PackBuilder() {
 
   const initializeBuilder = async () => {
     try {
-      // Check authentication
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         navigate('/company-auth');
         return;
       }
 
-      // Get company
       const { data: company } = await supabase
         .from('companies')
-        .select('id')
+        .select('id, cover_image_url')
         .eq('user_id', session.user.id)
         .eq('status', 'approved')
         .single();
@@ -83,12 +93,11 @@ export default function PackBuilder() {
       }
 
       setCompanyId(company.id);
+      setCompanyCoverImage(company.cover_image_url || null);
 
       if (packId) {
-        // Edit existing pack
         await loadExistingPack(packId, company.id);
       } else {
-        // Create new pack
         const templateType = searchParams.get('template');
         if (templateType) {
           await loadTemplate(templateType);
@@ -102,7 +111,7 @@ export default function PackBuilder() {
     }
   };
 
-  const loadExistingPack = async (id: string, companyId: string) => {
+  const loadExistingPack = async (id: string, cId: string) => {
     const { data: pack, error } = await supabase
       .from('company_packs')
       .select(`
@@ -111,7 +120,7 @@ export default function PackBuilder() {
         elements:pack_elements(*)
       `)
       .eq('id', id)
-      .eq('company_id', companyId)
+      .eq('company_id', cId)
       .single();
 
     if (error) throw error;
@@ -126,23 +135,43 @@ export default function PackBuilder() {
     });
 
     setTemplate(pack.template);
-    setElements(pack.elements?.sort((a, b) => a.position - b.position) || []);
+    setElements(pack.elements?.sort((a: any, b: any) => a.position - b.position) || []);
   };
 
   const loadTemplate = async (templateType: string) => {
-    const { data: templateData, error } = await supabase
+    // Try to load from DB first
+    const { data: templateData } = await supabase
       .from('pack_templates')
       .select('*')
       .eq('type', templateType)
-      .single();
+      .maybeSingle();
 
-    if (error) throw error;
+    const fixedPrice = FIXED_PRICES[templateType] || 35;
 
-    setTemplate(templateData);
-    setPackData(prev => ({
-      ...prev,
-      title: `Mi ${templateData.name}`
-    }));
+    if (templateData) {
+      setTemplate(templateData);
+      setPackData(prev => ({
+        ...prev,
+        title: `Mi ${templateData.name}`,
+        price: fixedPrice.toString()
+      }));
+    } else {
+      // Use local defaults if template doesn't exist in DB
+      const defaults = TEMPLATE_DEFAULTS[templateType] || TEMPLATE_DEFAULTS.raiz;
+      const localTemplate: PackTemplate = {
+        id: `local-${templateType}`,
+        name: defaults.name,
+        type: templateType,
+        color: defaults.color,
+        requirements: []
+      };
+      setTemplate(localTemplate);
+      setPackData(prev => ({
+        ...prev,
+        title: `Mi ${defaults.name}`,
+        price: fixedPrice.toString()
+      }));
+    }
   };
 
   const savePack = async () => {
@@ -150,17 +179,33 @@ export default function PackBuilder() {
 
     setSaving(true);
     try {
+      // Resolve template_id (only if it's a real DB template)
+      const templateId = template.id.startsWith('local-') ? null : template.id;
+      
+      // If no DB template, try to find or create one
+      let finalTemplateId = templateId;
+      if (!finalTemplateId) {
+        const { data: existingTemplate } = await supabase
+          .from('pack_templates')
+          .select('id')
+          .eq('type', template.type)
+          .maybeSingle();
+        
+        if (existingTemplate) {
+          finalTemplateId = existingTemplate.id;
+        }
+      }
+
       let currentPackId = packId;
 
       if (!currentPackId) {
-        // Create new pack
         const { data: newPack, error: createError } = await supabase
           .from('company_packs')
           .insert({
             company_id: companyId,
-            template_id: template.id,
+            template_id: finalTemplateId,
             title: packData.title,
-            slug: packData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+            slug: packData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') + '-' + Date.now(),
             price: packData.price ? parseFloat(packData.price) : null,
             shipping_policy: packData.shipping_policy,
             sustainability_info: packData.sustainability_info,
@@ -173,7 +218,6 @@ export default function PackBuilder() {
         if (createError) throw createError;
         currentPackId = newPack.id;
       } else {
-        // Update existing pack
         const { error: updateError } = await supabase
           .from('company_packs')
           .update({
@@ -191,13 +235,11 @@ export default function PackBuilder() {
 
       // Save elements
       if (currentPackId) {
-        // Delete existing elements
         await supabase
           .from('pack_elements')
           .delete()
           .eq('pack_id', currentPackId);
 
-        // Insert new elements
         if (elements.length > 0) {
           const elementsToInsert = elements.map((element, index) => ({
             pack_id: currentPackId,
@@ -218,7 +260,6 @@ export default function PackBuilder() {
       toast.success('Pack guardado exitosamente');
       
       if (!packId && currentPackId) {
-        // Redirect to edit mode
         navigate(`/pack-builder/${currentPackId}`);
       }
     } catch (error: any) {
@@ -311,8 +352,16 @@ export default function PackBuilder() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Company cover as background */}
+      {companyCoverImage && (
+        <div 
+          className="absolute inset-0 h-64 bg-cover bg-center opacity-10 pointer-events-none"
+          style={{ backgroundImage: `url(${companyCoverImage})` }}
+        />
+      )}
+
       {/* Header */}
-      <div className="border-b bg-card">
+      <div className="border-b bg-card relative z-10">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-4">
             <Button 
@@ -356,7 +405,7 @@ export default function PackBuilder() {
         </div>
       </div>
 
-      <div className="flex h-[calc(100vh-73px)]">
+      <div className="flex h-[calc(100vh-73px)] relative z-10">
         {/* Sidebar */}
         <PackBuilderSidebar onAddElement={addElement} />
 
@@ -386,11 +435,13 @@ export default function PackBuilder() {
                       <Input
                         id="price"
                         type="number"
-                        step="0.01"
                         value={packData.price}
-                        onChange={(e) => setPackData({...packData, price: e.target.value})}
-                        placeholder="29.99"
+                        readOnly
+                        className="bg-muted/50 cursor-not-allowed"
                       />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Precio fijo según tipo de pack
+                      </p>
                     </div>
                   </div>
                   <div>

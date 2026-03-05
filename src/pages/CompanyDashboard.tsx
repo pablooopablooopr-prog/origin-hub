@@ -627,7 +627,28 @@ export default function CompanyDashboard() {
 
 
           <TabsContent value="routes">
-            <div className="space-y-4">
+            <div className="space-y-8">
+              {/* Crear Ruta */}
+              <div className="space-y-4">
+                <h2 className="text-2xl font-semibold">Crear Ruta</h2>
+                <Card 
+                  className="border-2 border-dashed border-muted-foreground/25 hover:border-primary/50 transition-colors cursor-pointer"
+                  onClick={() => navigate('/crear-ruta')}
+                >
+                  <CardContent className="flex flex-col items-center justify-center p-8 text-center">
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                      <Plus className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="font-semibold mb-2">Crear Nueva Ruta</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Diseña una ruta gastronómica con paradas, actividades y recomendaciones
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Rutas donde apareces */}
+              <div className="space-y-4">
               <h2 className="text-2xl font-semibold">Rutas donde apareces</h2>
               {companyRoutes.length === 0 ? (
                 <Card>
@@ -681,6 +702,7 @@ export default function CompanyDashboard() {
                   ))}
                 </div>
               )}
+            </div>
             </div>
           </TabsContent>
 
