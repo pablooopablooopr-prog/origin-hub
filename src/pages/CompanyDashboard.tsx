@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Eye, Edit, Copy, BarChart3, Package, Settings, Trash2, ShoppingBag, Loader2, Save, X } from "lucide-react";
+import { Plus, Eye, Edit, Copy, BarChart3, Package, Settings, Trash2, ShoppingBag, Loader2, Save, X, Route, Clock, Users, ChevronRight } from "lucide-react";
 import { User } from "@supabase/supabase-js";
 import {
   Dialog,
@@ -64,11 +64,22 @@ interface Product {
   weight?: string;
 }
 
+interface CompanyRoute {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  duration: string | null;
+  difficulty: string | null;
+  image_url: string | null;
+}
+
 export default function CompanyDashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [company, setCompany] = useState<Company | null>(null);
   const [packs, setPacks] = useState<CompanyPack[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [companyRoutes, setCompanyRoutes] = useState<CompanyRoute[]>([]);
   const [loading, setLoading] = useState(true);
   const [showProductDialog, setShowProductDialog] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -187,6 +198,22 @@ export default function CompanyDashboard() {
 
       if (productsError) throw productsError;
       setProducts(productsData || []);
+
+      // Load routes where company appears
+      const { data: routeStopsData } = await supabase
+        .from('route_stops')
+        .select('route_id, routes!inner(id, title, slug, description, duration, difficulty, image_url, is_public, is_active)')
+        .eq('company_id', companyData.id)
+        .limit(50);
+
+      const routeMap = new Map<string, CompanyRoute>();
+      (routeStopsData || []).forEach((stop: any) => {
+        const r = stop.routes;
+        if (r && r.is_public && r.is_active && !routeMap.has(r.id)) {
+          routeMap.set(r.id, r);
+        }
+      });
+      setCompanyRoutes(Array.from(routeMap.values()));
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -448,6 +475,10 @@ export default function CompanyDashboard() {
               <ShoppingBag className="h-4 w-4" />
               Productos
             </TabsTrigger>
+            <TabsTrigger value="routes" className="flex items-center gap-2">
+              <Route className="h-4 w-4" />
+              Rutas
+            </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
               Estadísticas
@@ -653,6 +684,65 @@ export default function CompanyDashboard() {
                             </Button>
                           </div>
                         </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+          {/* Routes Tab */}
+          <TabsContent value="routes">
+            <div className="space-y-4">
+              <h2 className="text-2xl font-semibold">Rutas donde apareces</h2>
+              {companyRoutes.length === 0 ? (
+                <Card>
+                  <CardContent className="p-12 text-center">
+                    <Route className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">No apareces en ninguna ruta</h3>
+                    <p className="text-muted-foreground">
+                      Cuando tu empresa sea incluida en una ruta gastronómica, aparecerá aquí
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-4">
+                  {companyRoutes.map((route) => (
+                    <Card
+                      key={route.id}
+                      className="hover:shadow-lg transition-all cursor-pointer group"
+                      onClick={() => navigate(`/rutas/${route.slug || route.id}`)}
+                    >
+                      <CardContent className="p-4 flex gap-4 items-center">
+                        <div className="w-20 h-20 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
+                          {route.image_url ? (
+                            <img src={route.image_url} alt={route.title} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Route className="w-8 h-8 text-muted-foreground/40" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold group-hover:text-primary transition-colors truncate">{route.title}</h3>
+                          {route.description && (
+                            <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{route.description}</p>
+                          )}
+                          <div className="flex gap-3 mt-2">
+                            {route.duration && (
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Clock className="w-3 h-3" /> {route.duration}
+                              </span>
+                            )}
+                            {route.difficulty && (
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Users className="w-3 h-3" /> {route.difficulty}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                       </CardContent>
                     </Card>
                   ))}
