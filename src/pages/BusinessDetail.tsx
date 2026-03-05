@@ -509,8 +509,8 @@ const BusinessDetail = () => {
               </Badge>
             )}
 
-            {/* Website & Social - always editable for owners */}
-            {isOwner ? (
+            {/* Website & Social - editable only in edit mode */}
+            {isOwner && editing ? (
               <>
                 <div className="flex items-center gap-2">
                   <Globe className="w-4 h-4 text-muted-foreground" />
@@ -592,7 +592,7 @@ const BusinessDetail = () => {
                 <Leaf className="w-6 h-6 text-primary" />
                 Sobre nosotros
               </h2>
-              {isOwner ? (
+              {isOwner && editing ? (
                 <Textarea
                   value={editForm.description}
                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
@@ -613,7 +613,7 @@ const BusinessDetail = () => {
                 <History className="w-6 h-6 text-primary" />
                 Nuestra historia
               </h2>
-              {isOwner ? (
+              {isOwner && editing ? (
                 <Card className="bg-muted/30 border-dashed">
                   <CardContent className="p-6">
                     <Textarea
@@ -800,8 +800,8 @@ const BusinessDetail = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {/* Owner: show editable email & phone */}
-                {isOwner ? (
+                {/* Owner: show editable email & phone only in edit mode */}
+                {isOwner && editing ? (
                   <>
                     <div className="flex items-center gap-3">
                       <Mail className="w-4 h-4 text-primary flex-shrink-0" />
@@ -823,6 +823,22 @@ const BusinessDetail = () => {
                     </div>
                   </>
                 ) : (
+                  <>
+                    {company.email && (
+                      <div className="flex items-center gap-3">
+                        <Mail className="w-4 h-4 text-primary flex-shrink-0" />
+                        <span className="text-sm">{company.email}</span>
+                      </div>
+                    )}
+                    {company.phone && (
+                      <div className="flex items-center gap-3">
+                        <Phone className="w-4 h-4 text-primary flex-shrink-0" />
+                        <span className="text-sm">{company.phone}</span>
+                      </div>
+                    )}
+                  </>
+                )}
+                {!(isOwner && editing) && (
                   <>
                     {company.address && (
                       <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
