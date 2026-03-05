@@ -586,32 +586,10 @@ const BusinessDetail = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Left Column - Main content */}
           <div className="lg:col-span-2 space-y-10">
-            {/* About */}
+            {/* Story - first */}
             <section>
               <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                <Leaf className="w-6 h-6 text-primary" />
-                Sobre nosotros
-              </h2>
-              {isOwner ? (
-                <Textarea
-                  value={editing ? editForm.description : (company.description || "")}
-                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                  readOnly={!editing}
-                  rows={6}
-                  placeholder="Describe tu empresa, qué productos ofreces y qué te hace único..."
-                  className={`text-base leading-relaxed ${!editing ? 'cursor-default focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0' : ''}`}
-                />
-              ) : company.description ? (
-                <p className="text-muted-foreground leading-relaxed text-base whitespace-pre-line">
-                  {company.description}
-                </p>
-              ) : null}
-            </section>
-
-            {/* Story */}
-            <section>
-              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                <History className="w-6 h-6 text-primary" />
+                <Award className="w-6 h-6 text-primary" />
                 Nuestra historia
               </h2>
               {isOwner ? (
@@ -635,6 +613,28 @@ const BusinessDetail = () => {
                     </p>
                   </CardContent>
                 </Card>
+              ) : null}
+            </section>
+
+            {/* About - second */}
+            <section>
+              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                <Leaf className="w-6 h-6 text-primary" />
+                Sobre nosotros
+              </h2>
+              {isOwner ? (
+                <Textarea
+                  value={editing ? editForm.description : (company.description || "")}
+                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                  readOnly={!editing}
+                  rows={6}
+                  placeholder="Describe tu empresa, qué productos ofreces y qué te hace único..."
+                  className={`text-base leading-relaxed ${!editing ? 'cursor-default focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0' : ''}`}
+                />
+              ) : company.description ? (
+                <p className="text-muted-foreground leading-relaxed text-base whitespace-pre-line">
+                  {company.description}
+                </p>
               ) : null}
             </section>
 
@@ -808,11 +808,9 @@ const BusinessDetail = () => {
                     <div className="flex items-center gap-3">
                       <Mail className="w-4 h-4 text-primary flex-shrink-0" />
                       <Input
-                        value={editing ? editForm.email : (company.email || "")}
-                        onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                        readOnly={!editing}
-                        className={`h-9 text-sm ${!editing ? 'border-transparent bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0' : ''}`}
-                        placeholder="correo@tuempresa.com"
+                        value={company.email || ""}
+                        readOnly
+                        className="h-9 text-sm border-transparent bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-default"
                       />
                     </div>
                     <div className="flex items-center gap-3">
