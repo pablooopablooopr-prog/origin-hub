@@ -76,6 +76,14 @@ export const useCart = () => {
   const addToCart = useCallback(async (packId?: string, productId?: string, quantity = 1) => {
     if (!customerId) return false;
 
+    // Block admin and company accounts
+    try {
+      const { data: isAdmin } = await supabase.rpc("is_admin");
+      if (isAdmin === true) return false;
+      const { data: companyStatus } = await supabase.rpc("get_my_company_status");
+      if (companyStatus && String(companyStatus).trim() !== "") return false;
+    } catch { /* continue */ }
+
     const { error } = await supabase
       .from("cart_items")
       .insert({

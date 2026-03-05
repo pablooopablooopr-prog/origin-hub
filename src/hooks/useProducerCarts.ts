@@ -181,6 +181,18 @@ export const useProducerCarts = () => {
   ): Promise<AddToCartResult> => {
     if (!customerId) return { success: false, error: "No has iniciado sesión" };
 
+    // Check if user is admin or company — they cannot add to cart
+    try {
+      const { data: isAdmin } = await supabase.rpc("is_admin");
+      if (isAdmin === true) {
+        return { success: false, error: "Los administradores no pueden añadir productos al carrito" };
+      }
+      const { data: companyStatus } = await supabase.rpc("get_my_company_status");
+      if (companyStatus && String(companyStatus).trim() !== "") {
+        return { success: false, error: "Las cuentas de empresa no pueden añadir productos al carrito" };
+      }
+    } catch { /* continue as customer */ }
+
     // Get company_id from pack or product
     let companyId: string | null = null;
     
