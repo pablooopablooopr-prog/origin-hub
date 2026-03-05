@@ -130,7 +130,7 @@ export default function CompanyDashboard() {
         return;
       }
 
-      if (companyData.status !== 'approved') {
+      if (String(companyData.status ?? '').trim().toUpperCase() !== 'APPROVED') {
         toast.error('Tu empresa aún no ha sido aprobada');
         navigate('/company-auth');
         return;
