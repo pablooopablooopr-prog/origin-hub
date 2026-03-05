@@ -8,7 +8,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { MapPin, Star, Phone, Globe, Mail, Package, Edit, Plus, MessageCircle, Building2, Award, History, ChevronRight } from "lucide-react";
+import {
+  MapPin, Star, Phone, Globe, Mail, Package, Edit, Plus,
+  MessageCircle, Building2, Award, History, ChevronRight,
+  Clock, Instagram, Facebook, Twitter, ExternalLink, Route, Users, Leaf
+} from "lucide-react";
 
 interface Company {
   id: string;
@@ -21,14 +25,34 @@ interface Company {
   cover_image_url: string | null;
   avg_rating: number | null;
   total_reviews: number | null;
+  social_media: any;
+  slug: string | null;
+  latitude: number | null;
+  longitude: number | null;
+}
+
+interface CompanyPrivate {
+  email: string;
+  phone: string | null;
 }
 
 interface CompanyPack {
   id: string;
   title: string;
+  slug: string;
   price: number | null;
-  template_id: string | null;
   tags: string[] | null;
+  status: string | null;
+}
+
+interface CompanyRoute {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  duration: string | null;
+  difficulty: string | null;
+  image_url: string | null;
 }
 
 interface Review {
@@ -36,6 +60,7 @@ interface Review {
   customer_name: string;
   rating: number;
   comment: string | null;
+  title: string | null;
   created_at: string;
 }
 
@@ -44,17 +69,17 @@ const BusinessDetail = () => {
   const param = id;
   const navigate = useNavigate();
   const { toast } = useToast();
-  
+
   const [company, setCompany] = useState<Company | null>(null);
+  const [companyPrivate, setCompanyPrivate] = useState<CompanyPrivate | null>(null);
   const [packs, setPacks] = useState<CompanyPack[]>([]);
+  const [routes, setRoutes] = useState<CompanyRoute[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      loadCompanyData();
-    }
+    if (id) loadCompanyData();
   }, [id]);
 
   const loadCompanyData = async () => {
@@ -64,55 +89,65 @@ const BusinessDetail = () => {
       const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
       const isUuid = uuidRegex.test(param);
 
-      let companyQuery = supabase
-        .from('companies_public')
-        .select('*');
-
+      let companyQuery = supabase.from('companies_public').select('*');
       companyQuery = isUuid ? companyQuery.eq('id', param) : companyQuery.eq('slug', param);
 
-      // Use companies_public view for public access (no email/phone exposure)
       const { data: companyData, error: companyError } = await companyQuery.single();
-
       if (companyError) throw companyError;
-      setCompany({ ...companyData, address: null });
+
+      setCompany(companyData as unknown as Company);
       const companyId = companyData.id;
 
-      // Check ownership via auth session comparison with companies table
+      // Check ownership & get private contact info
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         const { data: ownerCheck } = await supabase
           .from('companies')
-          .select('user_id')
+          .select('user_id, email, phone')
           .eq('id', companyId)
           .eq('user_id', session.user.id)
           .single();
-        setIsOwner(!!ownerCheck);
+        if (ownerCheck) {
+          setIsOwner(true);
+          setCompanyPrivate({ email: ownerCheck.email, phone: ownerCheck.phone });
+        }
       }
 
-      // Load company packs
-      const { data: packsData, error: packsError } = await supabase
-        .from('company_packs')
-        .select('*')
-        .eq('company_id', companyId)
-        .eq('status', 'published')
-        .limit(6);
+      // Load packs, routes, and reviews in parallel
+      const [packsRes, routesRes, reviewsRes] = await Promise.all([
+        supabase
+          .from('company_packs')
+          .select('id, title, slug, price, tags, status')
+          .eq('company_id', companyId)
+          .eq('status', 'published')
+          .limit(9),
+        supabase
+          .from('route_stops')
+          .select('route_id, routes!inner(id, title, slug, description, duration, difficulty, image_url, is_public, is_active)')
+          .eq('company_id', companyId)
+          .limit(20),
+        supabase
+          .from('company_reviews')
+          .select('*')
+          .eq('company_id', companyId)
+          .eq('is_approved', true)
+          .order('created_at', { ascending: false })
+          .limit(6),
+      ]);
 
-      if (packsError) throw packsError;
-      setPacks(packsData || []);
+      setPacks(packsRes.data || []);
 
-      // Load reviews (from pack_reviews)
-      const { data: reviewsData, error: reviewsError } = await supabase
-        .from('pack_reviews')
-        .select(`
-          *,
-          company_packs!inner(company_id)
-        `)
-        .eq('company_packs.company_id', companyId)
-        .order('created_at', { ascending: false })
-        .limit(6);
+      // Dedupe routes
+      const routeMap = new Map<string, CompanyRoute>();
+      (routesRes.data || []).forEach((stop: any) => {
+        const r = stop.routes;
+        if (r && r.is_public && r.is_active && !routeMap.has(r.id)) {
+          routeMap.set(r.id, r);
+        }
+      });
+      setRoutes(Array.from(routeMap.values()));
 
-      if (reviewsError) throw reviewsError;
-      setReviews(reviewsData || []);
+      setReviews(reviewsRes.data || []);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -124,14 +159,9 @@ const BusinessDetail = () => {
     }
   };
 
-  const handleContact = () => {
-    // Redirect to contact page since email is not publicly exposed
-    navigate('/contacto');
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAF6F0]">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <Building2 className="w-16 h-16 mx-auto mb-4 text-primary animate-pulse" />
           <p className="text-lg text-muted-foreground">Cargando empresa...</p>
@@ -142,12 +172,12 @@ const BusinessDetail = () => {
 
   if (!company) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#FAF6F0]">
+      <div className="min-h-screen flex flex-col bg-background">
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-2">Empresa no encontrada</h1>
-            <Button onClick={() => navigate('/packs')}>Ver Packs</Button>
+            <Button onClick={() => navigate('/mapa')}>Volver al mapa</Button>
           </div>
         </main>
         <Footer />
@@ -155,293 +185,406 @@ const BusinessDetail = () => {
     );
   }
 
-  const averageRating = reviews.length > 0
-    ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
-    : "0";
+  const avgRating = company.avg_rating || (reviews.length > 0
+    ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
+    : 0);
+
+  const socialMedia = company.social_media || {};
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF6F0]">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#8B7355] to-[#A0826D] text-white">
-        <div className="container mx-auto px-6 py-12 max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-            {/* Company Info */}
-            <div className="lg:col-span-2 space-y-4">
-              <div className="flex items-start gap-3">
-                <Building2 className="w-12 h-12 flex-shrink-0" />
-                <div>
-                  <h1 className="text-4xl md:text-5xl font-bold mb-2">
-                    {company.business_name}
-                  </h1>
-                  {company.address && (
-                    <p className="text-white/90 flex items-center gap-2 text-lg">
-                      <MapPin className="w-5 h-5" />
-                      {company.address}
-                    </p>
-                  )}
-                </div>
-              </div>
-              
-              {company.description && (
-                <p className="text-white/90 text-lg leading-relaxed">
-                  {company.description}
-                </p>
-              )}
+      {/* Hero / Cover */}
+      <section className="relative">
+        {company.cover_image_url ? (
+          <div className="h-64 md:h-80 w-full overflow-hidden">
+            <img
+              src={company.cover_image_url}
+              alt={company.business_name}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+          </div>
+        ) : (
+          <div className="h-64 md:h-80 w-full bg-gradient-to-br from-primary/80 to-primary-foreground/20" />
+        )}
 
-              <div className="flex flex-wrap gap-3 pt-2">
-                {reviews.length > 0 && (
-                  <Badge variant="secondary" className="bg-white/20 text-white border-white/30 px-3 py-1">
-                    <Star className="w-4 h-4 mr-1 fill-current" />
-                    {averageRating} ({reviews.length} valoraciones)
-                  </Badge>
+        {/* Overlay content */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <div className="container mx-auto px-6 pb-8 max-w-6xl">
+            <div className="flex items-end gap-5">
+              {/* Logo */}
+              <div className="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-card border-4 border-background shadow-lg flex items-center justify-center overflow-hidden -mb-4">
+                {company.logo_url ? (
+                  <img src={company.logo_url} alt={company.business_name} className="w-full h-full object-cover" />
+                ) : (
+                  <Building2 className="w-12 h-12 text-muted-foreground" />
                 )}
-                {packs.length > 0 && (
-                  <Badge variant="secondary" className="bg-white/20 text-white border-white/30 px-3 py-1">
-                    <Package className="w-4 h-4 mr-1" />
-                    {packs.length} packs disponibles
-                  </Badge>
+              </div>
+              <div className="flex-1 pb-1">
+                <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
+                  {company.business_name}
+                </h1>
+                {company.address && (
+                  <p className="text-white/90 flex items-center gap-1.5 mt-1 text-sm md:text-base drop-shadow">
+                    <MapPin className="w-4 h-4 flex-shrink-0" />
+                    {company.address}
+                  </p>
                 )}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Company Image */}
-            <div className="lg:col-span-1">
-              <div className="aspect-square bg-white/10 rounded-2xl border-4 border-white/20 flex items-center justify-center backdrop-blur-sm">
-                <Building2 className="w-24 h-24 text-white/50" />
-              </div>
-            </div>
+      {/* Quick Stats Bar */}
+      <div className="bg-card border-b">
+        <div className="container mx-auto px-6 max-w-6xl py-4">
+          <div className="flex flex-wrap items-center gap-4 ml-0 md:ml-36">
+            {avgRating > 0 && (
+              <Badge variant="secondary" className="px-3 py-1.5 text-sm">
+                <Star className="w-4 h-4 mr-1 fill-yellow-500 text-yellow-500" />
+                {avgRating.toFixed(1)} ({company.total_reviews || reviews.length} valoraciones)
+              </Badge>
+            )}
+            {packs.length > 0 && (
+              <Badge variant="outline" className="px-3 py-1.5 text-sm">
+                <Package className="w-4 h-4 mr-1" />
+                {packs.length} packs
+              </Badge>
+            )}
+            {routes.length > 0 && (
+              <Badge variant="outline" className="px-3 py-1.5 text-sm">
+                <Route className="w-4 h-4 mr-1" />
+                {routes.length} rutas
+              </Badge>
+            )}
+            {company.website && (
+              <a href={company.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+                <Globe className="w-4 h-4" />
+                Sitio web
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            )}
+            {/* Social links */}
+            {socialMedia.instagram && (
+              <a href={socialMedia.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <Instagram className="w-5 h-5" />
+              </a>
+            )}
+            {socialMedia.facebook && (
+              <a href={socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <Facebook className="w-5 h-5" />
+              </a>
+            )}
+            {socialMedia.twitter && (
+              <a href={socialMedia.twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <Twitter className="w-5 h-5" />
+              </a>
+            )}
           </div>
 
           {/* Owner Actions */}
           {isOwner && (
-            <div className="mt-6 flex gap-3">
-              <Button 
-                variant="outline"
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-                onClick={() => navigate(`/company-dashboard`)}
-              >
+            <div className="mt-4 ml-0 md:ml-36 flex gap-3">
+              <Button variant="outline" size="sm" onClick={() => navigate('/company-dashboard')}>
                 <Edit className="w-4 h-4 mr-2" />
                 Editar Empresa
               </Button>
-              <Button 
-                variant="outline"
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-                onClick={() => navigate(`/pack-builder`)}
-              >
+              <Button variant="outline" size="sm" onClick={() => navigate('/pack-builder')}>
                 <Plus className="w-4 h-4 mr-2" />
-                Añadir Nuevo Pack
+                Nuevo Pack
               </Button>
             </div>
           )}
         </div>
-      </section>
+      </div>
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-12 max-w-6xl space-y-12">
-        
-        {/* Historia de la Empresa */}
-        {company.authenticity_story && (
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-2xl flex items-center gap-2">
-                <History className="w-6 h-6 text-[#8B7355]" />
-                Historia de la Empresa
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground leading-relaxed text-lg whitespace-pre-line">
-                {company.authenticity_story}
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Packs que Ofrece */}
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold flex items-center gap-2">
-              <Package className="w-8 h-8 text-[#8B7355]" />
-              Packs que Ofrece
-            </h2>
-            {packs.length > 6 && (
-              <Button
-                variant="outline"
-                onClick={() => navigate(`/packs?company=${id}`)}
-              >
-                Ver todos sus packs
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
-            )}
-          </div>
-
-          {packs.length === 0 ? (
-            <Card className="shadow-md">
-              <CardContent className="py-12 text-center">
-                <Package className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-30" />
-                <p className="text-muted-foreground text-lg">
-                  Esta empresa aún no tiene packs publicados
+      <main className="container mx-auto px-6 py-10 max-w-6xl">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          {/* Left Column - Main content */}
+          <div className="lg:col-span-2 space-y-10">
+            {/* About */}
+            {company.description && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <Leaf className="w-6 h-6 text-primary" />
+                  Sobre nosotros
+                </h2>
+                <p className="text-muted-foreground leading-relaxed text-base whitespace-pre-line">
+                  {company.description}
                 </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {packs.map((pack) => (
-                <Card 
-                  key={pack.id} 
-                  className="hover:shadow-xl transition-all cursor-pointer group"
-                  onClick={() => navigate(`/packs/${pack.id}`)}
-                >
-                  <div className="aspect-square bg-gradient-to-br from-[#8B7355]/10 to-[#A0826D]/10 flex items-center justify-center">
-                    <Package className="w-20 h-20 text-[#8B7355] group-hover:scale-110 transition-transform" />
-                  </div>
-                  <CardHeader>
-                    <CardTitle className="text-lg">{pack.title}</CardTitle>
-                    {pack.price && (
-                      <CardDescription className="text-2xl font-bold text-[#8B7355]">
-                        {pack.price}€
-                      </CardDescription>
-                    )}
-                  </CardHeader>
-                  <CardContent>
-                    {pack.tags && pack.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {pack.tags.slice(0, 3).map((tag, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
+              </section>
+            )}
+
+            {/* Story */}
+            {company.authenticity_story && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <History className="w-6 h-6 text-primary" />
+                  Nuestra historia
+                </h2>
+                <Card className="bg-muted/30 border-dashed">
+                  <CardContent className="p-6">
+                    <p className="text-muted-foreground leading-relaxed italic whitespace-pre-line">
+                      "{company.authenticity_story}"
+                    </p>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-          )}
-
-          {packs.length > 0 && packs.length <= 6 && (
-            <div className="text-center mt-8">
-              <Button
-                size="lg"
-                className="bg-[#8B7355] hover:bg-[#7A6449]"
-                onClick={() => navigate(`/packs?company=${id}`)}
-              >
-                Ver Todos los Packs
-                <ChevronRight className="w-5 h-5 ml-2" />
-              </Button>
-            </div>
-          )}
-        </section>
-
-        {/* Valoraciones */}
-        <section>
-          <div className="mb-6">
-            <h2 className="text-3xl font-bold flex items-center gap-2">
-              <Award className="w-8 h-8 text-[#8B7355]" />
-              Valoraciones de Clientes
-            </h2>
-            {reviews.length > 0 && (
-              <p className="text-muted-foreground mt-2">
-                Valoración media: <span className="font-bold text-[#8B7355] text-lg">{averageRating}/5</span> basada en {reviews.length} opiniones
-              </p>
+              </section>
             )}
+
+            {/* Packs */}
+            <section>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <Package className="w-6 h-6 text-primary" />
+                  Packs que ofrece
+                </h2>
+              </div>
+
+              {packs.length === 0 ? (
+                <Card>
+                  <CardContent className="py-10 text-center">
+                    <Package className="w-12 h-12 mx-auto mb-3 text-muted-foreground/30" />
+                    <p className="text-muted-foreground">Esta empresa aún no tiene packs publicados</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {packs.map((pack) => (
+                    <Card
+                      key={pack.id}
+                      className="hover:shadow-lg transition-all cursor-pointer group"
+                      onClick={() => navigate(`/packs/${pack.slug || pack.id}`)}
+                    >
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base group-hover:text-primary transition-colors">{pack.title}</CardTitle>
+                        {pack.price && (
+                          <p className="text-xl font-bold text-primary">{pack.price}€</p>
+                        )}
+                      </CardHeader>
+                      <CardContent>
+                        {pack.tags && pack.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5">
+                            {pack.tags.slice(0, 3).map((tag, i) => (
+                              <Badge key={i} variant="secondary" className="text-xs">{tag}</Badge>
+                            ))}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </section>
+
+            {/* Routes */}
+            <section>
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                <Route className="w-6 h-6 text-primary" />
+                Rutas donde aparece
+              </h2>
+
+              {routes.length === 0 ? (
+                <Card>
+                  <CardContent className="py-10 text-center">
+                    <Route className="w-12 h-12 mx-auto mb-3 text-muted-foreground/30" />
+                    <p className="text-muted-foreground">Esta empresa aún no forma parte de ninguna ruta</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-4">
+                  {routes.map((route) => (
+                    <Card
+                      key={route.id}
+                      className="hover:shadow-lg transition-all cursor-pointer group"
+                      onClick={() => navigate(`/rutas/${route.slug || route.id}`)}
+                    >
+                      <CardContent className="p-4 flex gap-4 items-center">
+                        <div className="w-20 h-20 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
+                          {route.image_url ? (
+                            <img src={route.image_url} alt={route.title} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Route className="w-8 h-8 text-muted-foreground/40" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold group-hover:text-primary transition-colors truncate">{route.title}</h3>
+                          {route.description && (
+                            <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{route.description}</p>
+                          )}
+                          <div className="flex gap-3 mt-2">
+                            {route.duration && (
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Clock className="w-3 h-3" /> {route.duration}
+                              </span>
+                            )}
+                            {route.difficulty && (
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Users className="w-3 h-3" /> {route.difficulty}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </section>
+
+            {/* Reviews */}
+            <section>
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                <Award className="w-6 h-6 text-primary" />
+                Valoraciones
+                {avgRating > 0 && (
+                  <span className="text-base font-normal text-muted-foreground ml-2">
+                    {avgRating.toFixed(1)}/5
+                  </span>
+                )}
+              </h2>
+
+              {reviews.length === 0 ? (
+                <Card>
+                  <CardContent className="py-10 text-center">
+                    <Star className="w-12 h-12 mx-auto mb-3 text-muted-foreground/30" />
+                    <p className="text-muted-foreground">Aún no hay valoraciones</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {reviews.map((review) => (
+                    <Card key={review.id}>
+                      <CardHeader className="pb-2">
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-sm">{review.customer_name}</CardTitle>
+                          <div className="flex items-center gap-0.5">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <Star key={i} className={`w-3.5 h-3.5 ${i < review.rating ? "fill-yellow-500 text-yellow-500" : "text-muted-foreground/30"}`} />
+                            ))}
+                          </div>
+                        </div>
+                        <CardDescription className="text-xs">
+                          {new Date(review.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </CardDescription>
+                      </CardHeader>
+                      {(review.title || review.comment) && (
+                        <CardContent className="pt-0">
+                          {review.title && <p className="font-medium text-sm mb-1">{review.title}</p>}
+                          {review.comment && <p className="text-sm text-muted-foreground italic">"{review.comment}"</p>}
+                        </CardContent>
+                      )}
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </section>
           </div>
 
-          {reviews.length === 0 ? (
-            <Card className="shadow-md">
-              <CardContent className="py-12 text-center">
-                <Star className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-30" />
-                <p className="text-muted-foreground text-lg">
-                  Aún no hay valoraciones para esta empresa
-                </p>
+          {/* Right Column - Sidebar */}
+          <div className="space-y-6">
+            {/* Contact Card */}
+            <Card className="sticky top-24">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <MessageCircle className="w-5 h-5 text-primary" />
+                  Información de contacto
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {company.address && (
+                  <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                    <MapPin className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Dirección</p>
+                      <p className="text-sm font-medium">{company.address}</p>
+                    </div>
+                  </div>
+                )}
+
+                {isOwner && companyPrivate?.email && (
+                  <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                    <Mail className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Email</p>
+                      <a href={`mailto:${companyPrivate.email}`} className="text-sm font-medium text-primary hover:underline">
+                        {companyPrivate.email}
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {isOwner && companyPrivate?.phone && (
+                  <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                    <Phone className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Teléfono</p>
+                      <a href={`tel:${companyPrivate.phone}`} className="text-sm font-medium text-primary hover:underline">
+                        {companyPrivate.phone}
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {company.website && (
+                  <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                    <Globe className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Web</p>
+                      <a href={company.website} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline truncate block max-w-[200px]">
+                        {company.website.replace(/^https?:\/\//, '')}
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                <Separator />
+
+                <Button
+                  className="w-full"
+                  onClick={() => navigate('/contacto')}
+                >
+                  <Mail className="w-4 h-4 mr-2" />
+                  Contactar empresa
+                </Button>
               </CardContent>
             </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {reviews.map((review) => (
-                <Card key={review.id} className="shadow-md hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-base">{review.customer_name}</CardTitle>
-                      <div className="flex items-center gap-1">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${
-                              i < review.rating
-                                ? "fill-[#8B7355] text-[#8B7355]"
-                                : "text-muted-foreground"
-                            }`}
-                          />
-                        ))}
+
+            {/* Map preview if coordinates available */}
+            {company.latitude && company.longitude && (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-primary" />
+                    Ubicación
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <a
+                    href={`https://www.google.com/maps?q=${company.latitude},${company.longitude}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    <div className="h-48 rounded-lg bg-muted flex items-center justify-center hover:bg-muted/70 transition-colors cursor-pointer">
+                      <div className="text-center">
+                        <MapPin className="w-8 h-8 text-primary mx-auto mb-2" />
+                        <p className="text-sm text-primary font-medium">Ver en Google Maps</p>
                       </div>
                     </div>
-                    <CardDescription className="text-xs">
-                      {new Date(review.created_at).toLocaleDateString('es-ES', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric'
-                      })}
-                    </CardDescription>
-                  </CardHeader>
-                  {review.comment && (
-                    <CardContent>
-                      <p className="text-muted-foreground italic">"{review.comment}"</p>
-                    </CardContent>
-                  )}
-                </Card>
-              ))}
-            </div>
-          )}
-        </section>
-
-        <Separator />
-
-        {/* Contact Section */}
-        <section className="text-center py-8">
-          <Card className="shadow-lg max-w-2xl mx-auto">
-            <CardHeader>
-              <CardTitle className="text-2xl flex items-center justify-center gap-2">
-                <MessageCircle className="w-6 h-6 text-[#8B7355]" />
-                Contacta con {company.business_name}
-              </CardTitle>
-              <CardDescription>
-                ¿Tienes alguna pregunta? Ponte en contacto directamente
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {company.website && (
-                <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-                  <Globe className="w-5 h-5 text-primary" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">Web</p>
-                    <a href={company.website} target="_blank" rel="noopener noreferrer" className="font-medium text-sm text-primary hover:underline">
-                      {company.website}
-                    </a>
-                  </div>
-                </div>
-              )}
-              {company.address && (
-                <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-                  <MapPin className="w-5 h-5 text-primary" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">Dirección</p>
-                    <p className="font-medium text-sm">{company.address}</p>
-                  </div>
-                </div>
-              )}
-              <Button
-                size="lg"
-                className="w-full bg-[#8B7355] hover:bg-[#7A6449]"
-                onClick={handleContact}
-              >
-                <Mail className="w-5 h-5 mr-2" />
-                Contactar Empresa
-              </Button>
-            </CardContent>
-          </Card>
-        </section>
+                  </a>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
       </main>
 
       <Footer />

@@ -287,12 +287,17 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.debug("[Map] Ver detalles CLICK OK", { selectedBusiness });
-                    const id = selectedBusiness?.id;
+                    const dbId = selectedBusiness?.id;
                     const slug = (selectedBusiness as any)?.slug;
-                    if (id) navigate(`/negocio/${id}`);
-                    else if (slug) navigate(`/negocio/${slug}`);
-                    else console.error("[Map] selectedBusiness sin id/slug", selectedBusiness);
+                    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+                    if (dbId && uuidRegex.test(dbId)) {
+                      navigate(`/negocio/${dbId}`);
+                    } else if (slug) {
+                      navigate(`/negocio/${slug}`);
+                    } else {
+                      const showcaseSlugs = ['aceites-sierra-del-sur', 'quesos-artesanos-la-mancha'];
+                      navigate(`/negocio/${showcaseSlugs[Math.floor(Math.random() * 2)]}`);
+                    }
                   }}
                 >
                   Ver detalles
