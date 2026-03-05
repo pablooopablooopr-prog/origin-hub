@@ -13,9 +13,9 @@ import { useToast } from "@/hooks/use-toast";
 import { AddressAutocompleteInput, AddressComponents } from "@/components/AddressAutocompleteInput";
 import {
   MapPin, Star, Phone, Globe, Mail, Package, Edit, Plus,
-  MessageCircle, Building2, Award, History, ChevronRight,
+  Building2, Award, History, ChevronRight,
   Clock, Instagram, Facebook, Twitter, ExternalLink, Route, Users, Leaf,
-  Camera, Save, X, Loader2, Check
+  Camera, Save, X, Loader2
 } from "lucide-react";
 
 interface Company {
@@ -33,6 +33,8 @@ interface Company {
   slug: string | null;
   latitude: number | null;
   longitude: number | null;
+  email?: string | null;
+  phone?: string | null;
 }
 
 interface CompanyPack {
@@ -85,6 +87,8 @@ const BusinessDetail = () => {
     authenticity_story: "",
     address: "",
     website: "",
+    email: "",
+    phone: "",
     social_instagram: "",
     social_facebook: "",
     social_twitter: "",
@@ -121,7 +125,7 @@ const BusinessDetail = () => {
       if (session) {
         const { data: ownerCheck } = await supabase
           .from('companies')
-          .select('user_id')
+          .select('user_id, email, phone')
           .eq('id', companyId)
           .eq('user_id', session.user.id)
           .single();
@@ -134,10 +138,14 @@ const BusinessDetail = () => {
             authenticity_story: companyResult.authenticity_story || "",
             address: companyResult.address || "",
             website: companyResult.website || "",
+            email: (ownerCheck as any).email || "",
+            phone: (ownerCheck as any).phone || "",
             social_instagram: sm.instagram || "",
             social_facebook: sm.facebook || "",
             social_twitter: sm.twitter || "",
           });
+          // Store email/phone on company for display
+          setCompany(prev => prev ? { ...prev, email: (ownerCheck as any).email, phone: (ownerCheck as any).phone } : prev);
         }
       }
 
@@ -237,6 +245,8 @@ const BusinessDetail = () => {
         authenticity_story: editForm.authenticity_story || null,
         address: editForm.address || null,
         website: editForm.website || null,
+        email: editForm.email || null,
+        phone: editForm.phone || null,
         social_media: socialMedia,
       };
       if (editLatLng.lat !== null && editLatLng.lng !== null) {
@@ -258,6 +268,8 @@ const BusinessDetail = () => {
         authenticity_story: editForm.authenticity_story || null,
         address: editForm.address || null,
         website: editForm.website || null,
+        email: editForm.email || null,
+        phone: editForm.phone || null,
         social_media: socialMedia,
       });
 
@@ -268,6 +280,23 @@ const BusinessDetail = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const cancelEditing = () => {
+    setEditing(false);
+    const sm = company?.social_media || {};
+    setEditForm({
+      business_name: company?.business_name || "",
+      description: company?.description || "",
+      authenticity_story: company?.authenticity_story || "",
+      address: company?.address || "",
+      website: company?.website || "",
+      email: company?.email || "",
+      phone: company?.phone || "",
+      social_instagram: sm.instagram || "",
+      social_facebook: sm.facebook || "",
+      social_twitter: sm.twitter || "",
+    });
   };
 
   if (loading) {
@@ -345,8 +374,8 @@ const BusinessDetail = () => {
           <div className="h-64 md:h-80 w-full bg-gradient-to-br from-primary/80 to-primary-foreground/20" />
         )}
 
-        {/* Owner: cover image upload button */}
-        {isOwner && editing && (
+        {/* Owner: cover image upload button - always visible for owners */}
+        {isOwner && (
           <button
             onClick={() => coverInputRef.current?.click()}
             disabled={uploadingCover}
@@ -375,20 +404,7 @@ const BusinessDetail = () => {
                   variant="outline"
                   size="sm"
                   className="bg-background shadow-lg"
-                  onClick={() => {
-                    setEditing(false);
-                    const sm = company.social_media || {};
-                    setEditForm({
-                      business_name: company.business_name || "",
-                      description: company.description || "",
-                      authenticity_story: company.authenticity_story || "",
-                      address: company.address || "",
-                      website: company.website || "",
-                      social_instagram: sm.instagram || "",
-                      social_facebook: sm.facebook || "",
-                      social_twitter: sm.twitter || "",
-                    });
-                  }}
+                  onClick={cancelEditing}
                 >
                   <X className="w-4 h-4 mr-2" />
                   Cancelar
@@ -418,7 +434,7 @@ const BusinessDetail = () => {
                 ) : (
                   <Building2 className="w-12 h-12 text-muted-foreground" />
                 )}
-                {isOwner && editing && (
+                {isOwner && (
                   <button
                     onClick={() => logoInputRef.current?.click()}
                     disabled={uploadingLogo}
@@ -493,58 +509,57 @@ const BusinessDetail = () => {
               </Badge>
             )}
 
-            {editing ? (
-              <div className="flex items-center gap-2">
-                <Globe className="w-4 h-4 text-muted-foreground" />
-                <Input
-                  value={editForm.website}
-                  onChange={(e) => setEditForm({ ...editForm, website: e.target.value })}
-                  className="h-8 text-sm w-56"
-                  placeholder="https://www.tuempresa.com"
-                />
-              </div>
-            ) : (
-              company.website && (
-                <a href={company.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
-                  <Globe className="w-4 h-4" />
-                  Sitio web
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              )
-            )}
-
-            {editing ? (
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1">
-                  <Instagram className="w-4 h-4 text-muted-foreground" />
+            {/* Website & Social - always editable for owners */}
+            {isOwner ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-muted-foreground" />
                   <Input
-                    value={editForm.social_instagram}
-                    onChange={(e) => setEditForm({ ...editForm, social_instagram: e.target.value })}
-                    className="h-8 text-sm w-40"
-                    placeholder="URL Instagram"
+                    value={editForm.website}
+                    onChange={(e) => setEditForm({ ...editForm, website: e.target.value })}
+                    className="h-8 text-sm w-56"
+                    placeholder="https://www.tuempresa.com"
                   />
                 </div>
-                <div className="flex items-center gap-1">
-                  <Facebook className="w-4 h-4 text-muted-foreground" />
-                  <Input
-                    value={editForm.social_facebook}
-                    onChange={(e) => setEditForm({ ...editForm, social_facebook: e.target.value })}
-                    className="h-8 text-sm w-40"
-                    placeholder="URL Facebook"
-                  />
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1">
+                    <Instagram className="w-4 h-4 text-muted-foreground" />
+                    <Input
+                      value={editForm.social_instagram}
+                      onChange={(e) => setEditForm({ ...editForm, social_instagram: e.target.value })}
+                      className="h-8 text-sm w-40"
+                      placeholder="URL Instagram"
+                    />
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Facebook className="w-4 h-4 text-muted-foreground" />
+                    <Input
+                      value={editForm.social_facebook}
+                      onChange={(e) => setEditForm({ ...editForm, social_facebook: e.target.value })}
+                      className="h-8 text-sm w-40"
+                      placeholder="URL Facebook"
+                    />
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Twitter className="w-4 h-4 text-muted-foreground" />
+                    <Input
+                      value={editForm.social_twitter}
+                      onChange={(e) => setEditForm({ ...editForm, social_twitter: e.target.value })}
+                      className="h-8 text-sm w-40"
+                      placeholder="URL Twitter"
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Twitter className="w-4 h-4 text-muted-foreground" />
-                  <Input
-                    value={editForm.social_twitter}
-                    onChange={(e) => setEditForm({ ...editForm, social_twitter: e.target.value })}
-                    className="h-8 text-sm w-40"
-                    placeholder="URL Twitter"
-                  />
-                </div>
-              </div>
+              </>
             ) : (
               <>
+                {company.website && (
+                  <a href={company.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+                    <Globe className="w-4 h-4" />
+                    Sitio web
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
                 {socialMedia.instagram && (
                   <a href={socialMedia.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                     <Instagram className="w-5 h-5" />
@@ -577,7 +592,7 @@ const BusinessDetail = () => {
                 <Leaf className="w-6 h-6 text-primary" />
                 Sobre nosotros
               </h2>
-              {editing ? (
+              {isOwner ? (
                 <Textarea
                   value={editForm.description}
                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
@@ -589,15 +604,6 @@ const BusinessDetail = () => {
                 <p className="text-muted-foreground leading-relaxed text-base whitespace-pre-line">
                   {company.description}
                 </p>
-              ) : isOwner ? (
-                <Card className="border-dashed">
-                  <CardContent className="py-8 text-center">
-                    <p className="text-muted-foreground mb-3">Aún no has añadido una descripción</p>
-                    <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
-                      <Edit className="w-4 h-4 mr-2" /> Añadir descripción
-                    </Button>
-                  </CardContent>
-                </Card>
               ) : null}
             </section>
 
@@ -607,7 +613,7 @@ const BusinessDetail = () => {
                 <History className="w-6 h-6 text-primary" />
                 Nuestra historia
               </h2>
-              {editing ? (
+              {isOwner ? (
                 <Card className="bg-muted/30 border-dashed">
                   <CardContent className="p-6">
                     <Textarea
@@ -625,15 +631,6 @@ const BusinessDetail = () => {
                     <p className="text-muted-foreground leading-relaxed italic whitespace-pre-line">
                       {company.authenticity_story}
                     </p>
-                  </CardContent>
-                </Card>
-              ) : isOwner ? (
-                <Card className="border-dashed">
-                  <CardContent className="py-8 text-center">
-                    <p className="text-muted-foreground mb-3">Aún no has contado tu historia</p>
-                    <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
-                      <Edit className="w-4 h-4 mr-2" /> Añadir historia
-                    </Button>
                   </CardContent>
                 </Card>
               ) : null}
@@ -655,11 +652,6 @@ const BusinessDetail = () => {
                     <p className="text-muted-foreground">
                       {isOwner ? "Aún no tienes packs publicados" : "Esta empresa aún no tiene packs publicados"}
                     </p>
-                    {isOwner && (
-                      <Button variant="outline" size="sm" className="mt-3" onClick={() => navigate('/pack-builder')}>
-                        <Plus className="w-4 h-4 mr-2" /> Crear tu primer pack
-                      </Button>
-                    )}
                   </CardContent>
                 </Card>
               ) : (
@@ -800,56 +792,80 @@ const BusinessDetail = () => {
 
           {/* Right Column - Sidebar */}
           <div className="space-y-6">
-            {/* Contact Card - NO sensitive data for non-owners */}
+            {/* Contact Card */}
             <Card className="sticky top-24">
               <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <MessageCircle className="w-5 h-5 text-primary" />
+                <CardTitle className="text-lg">
                   Información de contacto
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {company.address && (
-                  <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-                    <MapPin className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Dirección</p>
-                      <p className="text-sm font-medium">{company.address}</p>
+                {/* Owner: show editable email & phone */}
+                {isOwner ? (
+                  <>
+                    <div className="flex items-center gap-3">
+                      <Mail className="w-4 h-4 text-primary flex-shrink-0" />
+                      <Input
+                        value={editForm.email}
+                        onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                        className="h-9 text-sm"
+                        placeholder="correo@tuempresa.com"
+                      />
                     </div>
-                  </div>
-                )}
-
-                {company.website && (
-                  <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-                    <Globe className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Web</p>
-                      <a href={company.website} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline truncate block max-w-[200px]">
-                        {company.website.replace(/^https?:\/\//, '')}
-                      </a>
+                    <div className="flex items-center gap-3">
+                      <Phone className="w-4 h-4 text-primary flex-shrink-0" />
+                      <Input
+                        value={editForm.phone}
+                        onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                        className="h-9 text-sm"
+                        placeholder="Teléfono de contacto"
+                      />
                     </div>
-                  </div>
-                )}
+                  </>
+                ) : (
+                  <>
+                    {company.address && (
+                      <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                        <MapPin className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Dirección</p>
+                          <p className="text-sm font-medium">{company.address}</p>
+                        </div>
+                      </div>
+                    )}
 
-                {/* Social media in sidebar */}
-                {(socialMedia.instagram || socialMedia.facebook || socialMedia.twitter) && (
-                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                    {socialMedia.instagram && (
-                      <a href={socialMedia.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                        <Instagram className="w-5 h-5" />
-                      </a>
+                    {company.website && (
+                      <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                        <Globe className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Web</p>
+                          <a href={company.website} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline truncate block max-w-[200px]">
+                            {company.website.replace(/^https?:\/\//, '')}
+                          </a>
+                        </div>
+                      </div>
                     )}
-                    {socialMedia.facebook && (
-                      <a href={socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                        <Facebook className="w-5 h-5" />
-                      </a>
+
+                    {(socialMedia.instagram || socialMedia.facebook || socialMedia.twitter) && (
+                      <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                        {socialMedia.instagram && (
+                          <a href={socialMedia.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                            <Instagram className="w-5 h-5" />
+                          </a>
+                        )}
+                        {socialMedia.facebook && (
+                          <a href={socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                            <Facebook className="w-5 h-5" />
+                          </a>
+                        )}
+                        {socialMedia.twitter && (
+                          <a href={socialMedia.twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                            <Twitter className="w-5 h-5" />
+                          </a>
+                        )}
+                      </div>
                     )}
-                    {socialMedia.twitter && (
-                      <a href={socialMedia.twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                        <Twitter className="w-5 h-5" />
-                      </a>
-                    )}
-                  </div>
+                  </>
                 )}
 
                 <Separator />
