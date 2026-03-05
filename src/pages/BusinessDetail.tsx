@@ -127,7 +127,6 @@ const BusinessDetail = () => {
           .single();
         if (ownerCheck) {
           setIsOwner(true);
-          setEditing(true);
           const sm = (companyResult.social_media as any) || {};
           setEditForm({
             business_name: companyResult.business_name || "",
@@ -347,15 +346,65 @@ const BusinessDetail = () => {
         )}
 
         {/* Owner: cover image upload button */}
-        {isOwner && (
+        {isOwner && editing && (
           <button
             onClick={() => coverInputRef.current?.click()}
             disabled={uploadingCover}
-            className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-colors disabled:opacity-50"
+            className="absolute top-4 left-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-colors disabled:opacity-50"
             title="Cambiar imagen de portada"
           >
             {uploadingCover ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
           </button>
+        )}
+
+        {/* Owner action buttons - top right */}
+        {isOwner && (
+          <div className="absolute top-4 right-4 z-10 flex gap-2">
+            {editing ? (
+              <>
+                <Button
+                  onClick={saveProfile}
+                  disabled={saving}
+                  size="sm"
+                  className="shadow-lg"
+                >
+                  {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                  Guardar cambios
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="bg-background shadow-lg"
+                  onClick={() => {
+                    setEditing(false);
+                    const sm = company.social_media || {};
+                    setEditForm({
+                      business_name: company.business_name || "",
+                      description: company.description || "",
+                      authenticity_story: company.authenticity_story || "",
+                      address: company.address || "",
+                      website: company.website || "",
+                      social_instagram: sm.instagram || "",
+                      social_facebook: sm.facebook || "",
+                      social_twitter: sm.twitter || "",
+                    });
+                  }}
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Cancelar
+                </Button>
+              </>
+            ) : (
+              <Button
+                size="sm"
+                className="shadow-lg"
+                onClick={() => setEditing(true)}
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                Editar datos
+              </Button>
+            )}
+          </div>
         )}
 
         {/* Overlay content */}
@@ -369,7 +418,7 @@ const BusinessDetail = () => {
                 ) : (
                   <Building2 className="w-12 h-12 text-muted-foreground" />
                 )}
-                {isOwner && (
+                {isOwner && editing && (
                   <button
                     onClick={() => logoInputRef.current?.click()}
                     disabled={uploadingLogo}
@@ -514,53 +563,6 @@ const BusinessDetail = () => {
               </>
             )}
           </div>
-
-          {/* Owner Actions */}
-          {isOwner && (
-            <div className="mt-4 ml-0 md:ml-36 flex gap-3">
-              {editing ? (
-                <>
-                  <Button onClick={saveProfile} disabled={saving} size="sm">
-                    {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                    Guardar cambios
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => {
-                    setEditing(false);
-                    // Reset form
-                    const sm = company.social_media || {};
-                    setEditForm({
-                      business_name: company.business_name || "",
-                      description: company.description || "",
-                      authenticity_story: company.authenticity_story || "",
-                      address: company.address || "",
-                      website: company.website || "",
-                      social_instagram: sm.instagram || "",
-                      social_facebook: sm.facebook || "",
-                      social_twitter: sm.twitter || "",
-                    });
-                  }}>
-                    <X className="w-4 h-4 mr-2" />
-                    Cancelar
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
-                    <Edit className="w-4 h-4 mr-2" />
-                    Editar Perfil
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => navigate('/company-dashboard')}>
-                    <Building2 className="w-4 h-4 mr-2" />
-                    Panel de gestión
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => navigate('/pack-builder')}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Nuevo Pack
-                  </Button>
-                </>
-              )}
-            </div>
-          )}
         </div>
       </div>
 
@@ -621,7 +623,7 @@ const BusinessDetail = () => {
                 <Card className="bg-muted/30 border-dashed">
                   <CardContent className="p-6">
                     <p className="text-muted-foreground leading-relaxed italic whitespace-pre-line">
-                      "{company.authenticity_story}"
+                      {company.authenticity_story}
                     </p>
                   </CardContent>
                 </Card>
