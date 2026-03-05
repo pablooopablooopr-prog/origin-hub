@@ -139,6 +139,7 @@ const CustomerAuth = () => {
       const { data, error } = await supabase.auth.signUp({
         email: trimmedEmail,
         password,
+        phone: phoneE164 || undefined,
         options: {
           emailRedirectTo: AUTH_CALLBACK_REDIRECT,
           data: {
