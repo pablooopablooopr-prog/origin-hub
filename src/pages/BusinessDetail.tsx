@@ -411,14 +411,25 @@ const BusinessDetail = () => {
                 </Button>
               </>
             ) : (
-              <Button
-                size="sm"
-                className="shadow-lg"
-                onClick={() => setEditing(true)}
-              >
-                <Edit className="w-4 h-4 mr-2" />
-                Editar datos
-              </Button>
+              <>
+                <Button
+                  size="sm"
+                  className="shadow-lg"
+                  onClick={() => setEditing(true)}
+                >
+                  <Edit className="w-4 h-4 mr-2" />
+                  Editar datos
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="bg-background shadow-lg"
+                  onClick={() => navigate('/company-dashboard')}
+                >
+                  <ChevronRight className="w-4 h-4 mr-2 rotate-180" />
+                  Volver
+                </Button>
+              </>
             )}
           </div>
         )}
