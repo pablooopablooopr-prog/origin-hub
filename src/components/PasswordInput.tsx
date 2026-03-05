@@ -39,15 +39,17 @@ export default function PasswordInput({
         required={required}
         className={cn("pr-10", className)}
       />
-      <button
-        type="button"
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-        onClick={() => setShowPassword((prev) => !prev)}
-        aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-        disabled={disabled}
-      >
-        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-      </button>
+      {value.length > 0 && (
+        <button
+          type="button"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          onClick={() => setShowPassword((prev) => !prev)}
+          aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+          disabled={disabled}
+        >
+          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+        </button>
+      )}
     </div>
   );
 }
