@@ -136,7 +136,7 @@ const CustomerAuth = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: trimmedEmail,
         password,
         options: {
@@ -149,7 +149,30 @@ const CustomerAuth = () => {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        const msg = (error.message || "").toLowerCase();
+        if (msg.includes("already") || msg.includes("registered")) {
+          toast({
+            title: "Cuenta existente",
+            description: "Ya existe una cuenta con este email. Inicia sesión en su lugar.",
+            variant: "destructive",
+          });
+          setActiveTab("login");
+          return;
+        }
+        throw error;
+      }
+
+      // Supabase returns empty identities when the user already exists (email confirmation enabled)
+      if (data?.user && data.user.identities && data.user.identities.length === 0) {
+        toast({
+          title: "Cuenta existente",
+          description: "Ya existe una cuenta con este email. Inicia sesión o recupera tu contraseña.",
+          variant: "destructive",
+        });
+        setActiveTab("login");
+        return;
+      }
 
       setLastSignupEmail(trimmedEmail);
 

@@ -235,30 +235,32 @@ export default function CompanyAuth() {
     const phoneE164 = toE164ES(companyData.phone);
 
     try {
-      const { error } = await supabase.auth.signUp({
-  email,
-  password,
-  options: {
-    // CAMBIO emailRedirectTo
-    emailRedirectTo,
-    data: {
-      company_name: companyData.business_name || null,
-      // CAMBIO normalización de phone (E.164)
-      phone: phoneE164 || null,
-      user_type: "company",
-    },
-  }
-});
-
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo,
+          data: {
+            company_name: companyData.business_name || null,
+            phone: phoneE164 || null,
+            user_type: "company",
+          },
+        },
+      });
 
       if (error) {
-        // Mensaje típico cuando el email ya existe
         const msg = (error.message || "").toLowerCase();
         if (msg.includes("already") || msg.includes("registered")) {
-          toast.error("Ese email ya tiene cuenta. Inicia sesión.");
+          toast.error("Ya existe una cuenta con este email. Inicia sesión en su lugar.");
           return;
         }
         throw error;
+      }
+
+      // Supabase returns empty identities when the user already exists
+      if (data?.user && data.user.identities && data.user.identities.length === 0) {
+        toast.error("Ya existe una cuenta con este email. Inicia sesión o recupera tu contraseña.");
+        return;
       }
 
       toast.success("Revisa tu email para confirmar tu cuenta.");
