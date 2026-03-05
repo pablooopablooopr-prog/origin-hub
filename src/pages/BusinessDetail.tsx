@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { AddressAutocompleteInput, AddressComponents } from "@/components/AddressAutocompleteInput";
 import {
   MapPin, Star, Phone, Globe, Mail, Package, Edit, Plus,
   MessageCircle, Building2, Award, History, ChevronRight,
@@ -88,6 +89,7 @@ const BusinessDetail = () => {
     social_facebook: "",
     social_twitter: "",
   });
+  const [editLatLng, setEditLatLng] = useState<{ lat: number | null; lng: number | null }>({ lat: null, lng: null });
   const [uploadingCover, setUploadingCover] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const coverInputRef = useRef<HTMLInputElement>(null);
@@ -229,16 +231,22 @@ const BusinessDetail = () => {
       if (editForm.social_facebook) socialMedia.facebook = editForm.social_facebook;
       if (editForm.social_twitter) socialMedia.twitter = editForm.social_twitter;
 
+      const updateData: any = {
+        business_name: editForm.business_name,
+        description: editForm.description || null,
+        authenticity_story: editForm.authenticity_story || null,
+        address: editForm.address || null,
+        website: editForm.website || null,
+        social_media: socialMedia,
+      };
+      if (editLatLng.lat !== null && editLatLng.lng !== null) {
+        updateData.latitude = editLatLng.lat;
+        updateData.longitude = editLatLng.lng;
+      }
+
       const { error } = await supabase
         .from('companies')
-        .update({
-          business_name: editForm.business_name,
-          description: editForm.description || null,
-          authenticity_story: editForm.authenticity_story || null,
-          address: editForm.address || null,
-          website: editForm.website || null,
-          social_media: socialMedia,
-        })
+        .update(updateData)
         .eq('id', company.id);
 
       if (error) throw error;
@@ -387,11 +395,15 @@ const BusinessDetail = () => {
                 {editing ? (
                   <div className="flex items-center gap-2 mt-2">
                     <MapPin className="w-4 h-4 text-white/80 flex-shrink-0" />
-                    <Input
+                    <AddressAutocompleteInput
                       value={editForm.address}
                       onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
+                      onAddressSelect={(addr: AddressComponents) => {
+                        setEditForm(prev => ({ ...prev, address: addr.formatted_address }));
+                        setEditLatLng({ lat: addr.latitude, lng: addr.longitude });
+                      }}
                       className="bg-white/20 text-white border-white/40 placeholder:text-white/50 text-sm"
-                      placeholder="Dirección completa"
+                      placeholder="Busca tu dirección o nombre de empresa..."
                     />
                   </div>
                 ) : (

@@ -39,7 +39,7 @@ export const useAddressAutocomplete = ({
         country: Array.isArray(countryRestriction) ? countryRestriction : [countryRestriction] 
       },
       fields: ['address_components', 'geometry', 'formatted_address'],
-      types: ['address']
+      types: ['geocode', 'establishment']
     };
 
     autocompleteRef.current = new google.maps.places.Autocomplete(inputRef.current, options);
