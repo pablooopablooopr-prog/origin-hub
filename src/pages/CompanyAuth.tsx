@@ -153,6 +153,20 @@ export default function CompanyAuth() {
     }
   }, [navigate, user?.email]);
 
+  const checkAdminAndRedirect = useCallback(async (userId: string): Promise<boolean> => {
+    const { data } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (data) {
+      navigate("/admin/companies", { replace: true });
+      return true;
+    }
+    return false;
+  }, [navigate]);
+
   useEffect(() => {
     let mounted = true;
 
@@ -160,7 +174,8 @@ export default function CompanyAuth() {
       if (!mounted) return;
       if (session?.user) {
         setUser(session.user);
-        await checkCompanyStatus(session.user.id);
+        const isAdmin = await checkAdminAndRedirect(session.user.id);
+        if (!isAdmin) await checkCompanyStatus(session.user.id);
       } else {
         setUser(null);
         setExistingCompany(null);
@@ -173,7 +188,8 @@ export default function CompanyAuth() {
 
       if (session?.user) {
         setUser(session.user);
-        await checkCompanyStatus(session.user.id);
+        const isAdmin = await checkAdminAndRedirect(session.user.id);
+        if (!isAdmin) await checkCompanyStatus(session.user.id);
       } else {
         setUser(null);
         setExistingCompany(null);
