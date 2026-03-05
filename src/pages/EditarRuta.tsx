@@ -102,13 +102,21 @@ const EditarRuta = () => {
           return;
         }
 
-        // Fetch the route
-        const { data: route, error } = await supabase
+        // Fetch the route - allow editing if user is creator (via creator_id or created_by)
+        const { data: routesByCreatorId } = await supabase
           .from('routes')
           .select('*')
           .eq('slug', slug)
-          .eq('creator_id', user.id) // Only allow editing own routes
-          .single();
+          .eq('creator_id', user.id);
+
+        const { data: routesByCreatedBy } = await supabase
+          .from('routes')
+          .select('*')
+          .eq('slug', slug)
+          .eq('created_by', user.id);
+
+        const route = routesByCreatorId?.[0] || routesByCreatedBy?.[0] || null;
+        const error = !route;
 
         if (error || !route) {
           toast({
