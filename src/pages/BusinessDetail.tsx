@@ -74,7 +74,7 @@ const BusinessDetail = () => {
       const { data: companyData, error: companyError } = await companyQuery.single();
 
       if (companyError) throw companyError;
-      setCompany(companyData);
+      setCompany({ ...companyData, address: null });
       const companyId = companyData.id;
 
       // Check ownership via auth session comparison with companies table
