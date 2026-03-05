@@ -106,12 +106,17 @@ const CustomerDashboard = () => {
   useEffect(() => {
     let mounted = true;
 
-    const redirectAdmin = async () => {
+    const init = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
       if (!mounted) return;
 
-      const { data } = await supabase
+      if (!user) {
+        navigate("/customer-auth");
+        return;
+      }
+
+      // Check admin FIRST — redirect before loading customer data
+      const { data: adminRole } = await supabase
         .from("user_roles")
         .select("role")
         .eq("user_id", user.id)
@@ -120,31 +125,21 @@ const CustomerDashboard = () => {
 
       if (!mounted) return;
 
-      if (data) {
+      if (adminRole) {
         navigate("/admin/companies", { replace: true });
+        return;
       }
+
+      // Not admin — load customer data
+      loadCustomerData(user.id);
     };
 
-    redirectAdmin();
+    init();
 
     return () => {
       mounted = false;
     };
   }, [navigate]);
-
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      navigate("/customer-auth");
-      return;
-    }
-
-    loadCustomerData(session.user.id);
-  };
 
   const loadCustomerData = async (userId: string) => {
     try {
