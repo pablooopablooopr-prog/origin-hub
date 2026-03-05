@@ -37,7 +37,10 @@ export default function PasswordInput({
         autoComplete={autoComplete}
         disabled={disabled}
         required={required}
-        className={cn("pr-10", className)}
+        className={cn(
+          "pr-10 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-credentials-auto-fill-button]:hidden",
+          className
+        )}
       />
       {value.length > 0 && (
         <button
