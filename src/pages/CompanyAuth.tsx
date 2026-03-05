@@ -33,6 +33,9 @@ const toE164ES = (value: string) => {
   return `+34${local}`;
 };
 
+const toTitleCase = (value: string) =>
+  value.replace(/\b\w/g, (char) => char.toUpperCase());
+
 type CompanyRow = {
   id: string;
   user_id: string | null;
@@ -283,7 +286,11 @@ export default function CompanyAuth() {
       await postLoginRedirect(navigate, "/company-dashboard");
       return;
     } catch (err: any) {
-      toast.error(err.message ?? "Error al iniciar sesión.");
+      const msg = (err?.message || "").toLowerCase();
+      const isInvalidCredentials = msg.includes("invalid login credentials") || msg.includes("invalid");
+      toast.error(isInvalidCredentials
+        ? "Email o contraseña incorrectos. Revisa tus datos e inténtalo de nuevo."
+        : (err.message ?? "Error al iniciar sesión."));
     } finally {
       setLoading(false);
     }
@@ -480,17 +487,18 @@ export default function CompanyAuth() {
                       id="business_name"
                       required
                       value={companyData.business_name}
-                      onChange={(e) => setCompanyData({ ...companyData, business_name: e.target.value })}
+                      onChange={(e) => setCompanyData({ ...companyData, business_name: toTitleCase(e.target.value) })}
                       placeholder="Ej: Quesería La Dehesa"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="business_type">Tipo de negocio</Label>
+                    <Label htmlFor="business_type">Tipo de negocio *</Label>
                     <Input
                       id="business_type"
+                      required
                       value={companyData.business_type}
-                      onChange={(e) => setCompanyData({ ...companyData, business_type: e.target.value })}
+                      onChange={(e) => setCompanyData({ ...companyData, business_type: toTitleCase(e.target.value) })}
                       placeholder="Ej: Ganadería ecológica"
                     />
                   </div>
@@ -503,23 +511,23 @@ export default function CompanyAuth() {
                       id="contact_person"
                       required
                       value={companyData.contact_person}
-                      onChange={(e) => setCompanyData({ ...companyData, contact_person: e.target.value })}
+                      onChange={(e) => setCompanyData({ ...companyData, contact_person: toTitleCase(e.target.value) })}
                       placeholder="Tu nombre"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Teléfono</Label>
+                    <Label htmlFor="phone">Teléfono *</Label>
                     <Input
                       id="phone"
                       type="tel"
+                      required
                       value={companyData.phone}
                       onFocus={() => {
                         if (!companyData.phone.trim()) {
                           setCompanyData({ ...companyData, phone: "+34 " });
                         }
                       }}
-                      // CAMBIO normalización de phone en input
                       onChange={(e) => setCompanyData({ ...companyData, phone: withPhonePrefix(e.target.value) })}
                       placeholder="+34 600 000 000"
                     />
@@ -583,6 +591,10 @@ export default function CompanyAuth() {
                     </>
                   )}
                 </Button>
+
+                <p className="text-[11px] text-muted-foreground text-center mt-2">
+                  * Los campos con asterisco son obligatorios.
+                </p>
               </form>
             </CardContent>
           </Card>
@@ -679,11 +691,36 @@ export default function CompanyAuth() {
                 <TabsContent value="signup">
                   <form onSubmit={handleSignUp} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="signup-email">Email</Label>
+                      <Label htmlFor="signup-name">Nombre de contacto *</Label>
+                      <Input
+                        id="signup-name"
+                        type="text"
+                        required
+                        placeholder="Tu nombre y apellidos"
+                        value={companyData.contact_person}
+                        onChange={(e) => setCompanyData({ ...companyData, contact_person: toTitleCase(e.target.value) })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-email">Email *</Label>
                       <Input id="signup-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-password">Contraseña</Label>
+                      <Label htmlFor="signup-phone">Teléfono *</Label>
+                      <Input
+                        id="signup-phone"
+                        type="tel"
+                        required
+                        placeholder="+34 600 000 000"
+                        value={companyData.phone}
+                        onFocus={() => {
+                          if (!companyData.phone.trim()) setCompanyData({ ...companyData, phone: "+34 " });
+                        }}
+                        onChange={(e) => setCompanyData({ ...companyData, phone: withPhonePrefix(e.target.value) })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-password">Contraseña *</Label>
                       <PasswordInput id="signup-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
                       <p className="text-xs text-muted-foreground">Recomendado mínimo 8 caracteres.</p>
                     </div>
@@ -699,6 +736,10 @@ export default function CompanyAuth() {
 
                     <p className="text-xs text-muted-foreground text-center">
                       Te llegará un email de confirmación para activar tu cuenta.
+                    </p>
+
+                    <p className="text-[11px] text-muted-foreground text-center mt-2">
+                      * Los campos con asterisco son obligatorios.
                     </p>
                   </form>
                 </TabsContent>
