@@ -592,13 +592,14 @@ const BusinessDetail = () => {
                 <Leaf className="w-6 h-6 text-primary" />
                 Sobre nosotros
               </h2>
-              {isOwner && editing ? (
+              {isOwner ? (
                 <Textarea
-                  value={editForm.description}
+                  value={editing ? editForm.description : (company.description || "")}
                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                  readOnly={!editing}
                   rows={6}
                   placeholder="Describe tu empresa, qué productos ofreces y qué te hace único..."
-                  className="text-base leading-relaxed"
+                  className={`text-base leading-relaxed ${!editing ? 'cursor-default focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0' : ''}`}
                 />
               ) : company.description ? (
                 <p className="text-muted-foreground leading-relaxed text-base whitespace-pre-line">
@@ -613,15 +614,16 @@ const BusinessDetail = () => {
                 <History className="w-6 h-6 text-primary" />
                 Nuestra historia
               </h2>
-              {isOwner && editing ? (
+              {isOwner ? (
                 <Card className="bg-muted/30 border-dashed">
                   <CardContent className="p-6">
                     <Textarea
-                      value={editForm.authenticity_story}
+                      value={editing ? editForm.authenticity_story : (company.authenticity_story || "")}
                       onChange={(e) => setEditForm({ ...editForm, authenticity_story: e.target.value })}
+                      readOnly={!editing}
                       rows={5}
                       placeholder="Cuenta la historia de tu empresa, tu tradición familiar, valores..."
-                      className="italic text-base leading-relaxed"
+                      className={`italic text-base leading-relaxed ${!editing ? 'cursor-default focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0' : ''}`}
                     />
                   </CardContent>
                 </Card>
@@ -800,24 +802,26 @@ const BusinessDetail = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {/* Owner: show editable email & phone only in edit mode */}
-                {isOwner && editing ? (
+                {/* Owner: always show email/phone fields, editable only in edit mode */}
+                {isOwner ? (
                   <>
                     <div className="flex items-center gap-3">
                       <Mail className="w-4 h-4 text-primary flex-shrink-0" />
                       <Input
-                        value={editForm.email}
+                        value={editing ? editForm.email : (company.email || "")}
                         onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                        className="h-9 text-sm"
+                        readOnly={!editing}
+                        className={`h-9 text-sm ${!editing ? 'border-transparent bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0' : ''}`}
                         placeholder="correo@tuempresa.com"
                       />
                     </div>
                     <div className="flex items-center gap-3">
                       <Phone className="w-4 h-4 text-primary flex-shrink-0" />
                       <Input
-                        value={editForm.phone}
+                        value={editing ? editForm.phone : (company.phone || "")}
                         onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                        className="h-9 text-sm"
+                        readOnly={!editing}
+                        className={`h-9 text-sm ${!editing ? 'border-transparent bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0' : ''}`}
                         placeholder="Teléfono de contacto"
                       />
                     </div>
@@ -836,20 +840,6 @@ const BusinessDetail = () => {
                         <span className="text-sm">{company.phone}</span>
                       </div>
                     )}
-                  </>
-                )}
-                {!(isOwner && editing) && (
-                  <>
-                    {company.address && (
-                      <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-                        <MapPin className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="text-xs text-muted-foreground">Dirección</p>
-                          <p className="text-sm font-medium">{company.address}</p>
-                        </div>
-                      </div>
-                    )}
-
                     {company.website && (
                       <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
                         <Globe className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
@@ -861,7 +851,6 @@ const BusinessDetail = () => {
                         </div>
                       </div>
                     )}
-
                     {(socialMedia.instagram || socialMedia.facebook || socialMedia.twitter) && (
                       <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
                         {socialMedia.instagram && (
