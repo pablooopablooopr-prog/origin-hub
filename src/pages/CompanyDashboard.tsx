@@ -488,7 +488,11 @@ export default function CompanyDashboard() {
           </div>
         </div>
 
-        <Tabs defaultValue="mypage" className="space-y-6">
+        <Tabs defaultValue="packs" className="space-y-6" onValueChange={(value) => {
+          if (value === "mypage") {
+            navigate(`/negocio/${company?.slug || company?.id}`);
+          }
+        }}>
           <TabsList>
             <TabsTrigger value="mypage" className="flex items-center gap-2">
               <Globe className="h-4 w-4" />
@@ -512,26 +516,6 @@ export default function CompanyDashboard() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Mi Página Tab */}
-          <TabsContent value="mypage">
-            <Card>
-              <CardHeader>
-                <CardTitle>Tu Página de Empresa</CardTitle>
-                <CardDescription>
-                  Visualiza y edita tu página pública directamente
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col items-center gap-4">
-                <p className="text-muted-foreground text-center">
-                  Tu página pública es donde los clientes pueden ver tu información, packs y valoraciones.
-                </p>
-                <Button onClick={() => navigate(`/negocio/${company?.slug || company?.id}`)} size="lg">
-                  <Eye className="h-4 w-4 mr-2" />
-                  Ir a Mi Página
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
 
           <TabsContent value="packs">
