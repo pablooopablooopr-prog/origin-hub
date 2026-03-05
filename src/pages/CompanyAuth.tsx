@@ -450,7 +450,10 @@ export default function CompanyAuth() {
                   Ir al panel
                 </Button>
               )}
-              <Button variant="outline" onClick={() => navigate("/")} className="w-full">
+              <Button variant="outline" onClick={async () => {
+                await supabase.auth.signOut();
+                navigate("/");
+              }} className="w-full">
                 Volver al inicio
               </Button>
             </CardContent>
