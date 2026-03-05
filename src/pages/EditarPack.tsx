@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,10 +11,11 @@ import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { MapPin, Package, Star, Truck, Clock, Users, ShoppingCart, Share2, Award, Leaf, Gift, Plus, X, Save, Trash2, Image as ImageIcon, CheckCircle, Check, Box, Euro, Calendar, Bookmark } from "lucide-react";
+import { MapPin, Package, Truck, Leaf, Gift, Plus, X, Save, Trash2, Image as ImageIcon, Check, Box, Euro, Clock, Bookmark, Loader2, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { supabase } from "@/integrations/supabase/client";
+import { ImageUpload } from "@/components/ImageUpload";
 
 interface Product {
   id: number;
@@ -21,202 +23,394 @@ interface Product {
   description: string;
   company: string;
   attributes: string[];
+  image_url?: string;
+  db_id?: string; // supabase product id
 }
 
 const availableAttributes = [
-  "Artesanal",
-  "Km 0",
-  "Producción local",
-  "Ecológico",
-  "Vegano",
-  "Sin gluten",
-  "Denominación de origen",
-  "Temporada",
-  "Edición limitada",
-  "Tradicional"
+  "Artesanal", "Km 0", "Producción local", "Ecológico", "Vegano",
+  "Sin gluten", "Denominación de origen", "Temporada", "Edición limitada", "Tradicional"
 ];
 
-const packTypeMaxPrices: { [key: string]: number } = {
+const FIXED_PRICES: Record<string, number> = {
   raiz: 35,
   esencia: 60,
   gourmet: 90
 };
 
 const EditarPack = () => {
+  const { packId } = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { toast } = useToast();
-  
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [companyId, setCompanyId] = useState<string>("");
+  const [currentPackId, setCurrentPackId] = useState<string | null>(packId || null);
+
   // Pack basic info
   const [packName, setPackName] = useState("");
   const [packType, setPackType] = useState("raiz");
-  const [province, setProvince] = useState("");
-  const [price, setPrice] = useState(packTypeMaxPrices["raiz"].toString());
+  const [price, setPrice] = useState(FIXED_PRICES["raiz"].toString());
   const [description, setDescription] = useState("");
   const [sustainabilityInfo, setSustainabilityInfo] = useState("");
-  
+  const [shippingPolicy, setShippingPolicy] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState("");
+
   // Pack features
-  const [classification, setClassification] = useState("");
   const [fastShipping, setFastShipping] = useState(false);
   const [sustainablePackaging, setSustainablePackaging] = useState(false);
-  const [productCount, setProductCount] = useState("");
-  
+
   // Technical details
   const [packagingType, setPackagingType] = useState("Caja de cartón reciclado");
   const [estimatedShipping, setEstimatedShipping] = useState("2-3 días laborables");
-  const [packOrigin, setPackOrigin] = useState("León");
-  
+  const [packOrigin, setPackOrigin] = useState("");
+
   // Products
   const [products, setProducts] = useState<Product[]>([
-    {
-      id: 1,
-      name: "",
-      description: "",
-      company: "",
-      attributes: []
-    }
+    { id: 1, name: "", description: "", company: "", attributes: [] }
   ]);
 
-  // Handle pack type change - update max price
-  const handlePackTypeChange = (newType: string) => {
-    setPackType(newType);
-    setPrice(packTypeMaxPrices[newType].toString());
+  useEffect(() => {
+    initializePack();
+  }, [packId, searchParams]);
+
+  const initializePack = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { navigate('/company-auth'); return; }
+
+      const { data: companyList } = await supabase
+        .from('companies')
+        .select('id, status, address')
+        .eq('user_id', session.user.id);
+
+      const company = (companyList || []).find(
+        (c: any) => String(c.status ?? '').trim().toUpperCase() === 'APPROVED'
+      );
+
+      if (!company) {
+        toast({ title: "No tienes permisos", variant: "destructive" });
+        navigate('/company-dashboard');
+        return;
+      }
+
+      setCompanyId(company.id);
+      setPackOrigin(company.address || "");
+
+      if (packId) {
+        await loadExistingPack(packId, company.id);
+      } else {
+        const type = searchParams.get('type') || 'raiz';
+        setPackType(type);
+        setPrice(FIXED_PRICES[type]?.toString() || "35");
+      }
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Validate price doesn't exceed max for pack type
-  const handlePriceChange = (newPrice: string) => {
-    const numPrice = parseFloat(newPrice);
-    const maxPrice = packTypeMaxPrices[packType];
-    if (!isNaN(numPrice) && numPrice <= maxPrice) {
-      setPrice(newPrice);
-    } else if (newPrice === "") {
-      setPrice("");
+  const loadExistingPack = async (id: string, cId: string) => {
+    const { data: pack, error } = await supabase
+      .from('company_packs')
+      .select('*')
+      .eq('id', id)
+      .eq('company_id', cId)
+      .single();
+
+    if (error || !pack) {
+      toast({ title: "Pack no encontrado", variant: "destructive" });
+      navigate('/company-dashboard');
+      return;
     }
+
+    // Infer type from title or template
+    const inferredType = (() => {
+      const title = (pack.title || "").toLowerCase();
+      if (title.includes("raíz") || title.includes("raiz")) return "raiz";
+      if (title.includes("gourmet")) return "gourmet";
+      return "esencia";
+    })();
+
+    setPackType(inferredType);
+    setPackName(pack.title || "");
+    setPrice(pack.price?.toString() || FIXED_PRICES[inferredType].toString());
+    setDescription(pack.shipping_policy || "");
+    setSustainabilityInfo(pack.sustainability_info || "");
+    setShippingPolicy(pack.shipping_policy || "");
+    setTags(pack.tags || []);
+    setCurrentPackId(pack.id);
+
+    // Load products linked to this pack
+    const { data: packProducts } = await supabase
+      .from('pack_products')
+      .select('*, products(*)')
+      .eq('pack_id', id)
+      .order('position');
+
+    if (packProducts && packProducts.length > 0) {
+      setProducts(packProducts.map((pp: any, idx: number) => ({
+        id: idx + 1,
+        name: pp.products?.name || "",
+        description: pp.products?.description || "",
+        company: "",
+        attributes: [],
+        db_id: pp.product_id,
+        image_url: pp.products?.images?.[0] || undefined,
+      })));
+    }
+  };
+
+  const handlePackTypeChange = (newType: string) => {
+    setPackType(newType);
+    setPrice(FIXED_PRICES[newType].toString());
   };
 
   const getPackTypeColor = (type: string) => {
     switch (type) {
-      case 'raiz':
-        return 'hsl(40, 43%, 93%)';
-      case 'esencia':
-        return 'hsl(93, 36%, 91%)';
-      case 'gourmet':
-        return 'hsl(23, 34%, 77%)';
-      default:
-        return 'hsl(var(--background))';
+      case 'raiz': return 'hsl(40, 43%, 93%)';
+      case 'esencia': return 'hsl(93, 36%, 91%)';
+      case 'gourmet': return 'hsl(23, 34%, 77%)';
+      default: return 'hsl(var(--background))';
     }
   };
 
   const getMiniHeroColor = (type: string) => {
     switch (type) {
-      case 'raiz':
-        return 'hsl(30, 25%, 70%)';
-      case 'esencia':
-        return 'hsl(100, 35%, 75%)';
-      case 'gourmet':
-        return 'hsl(23, 34%, 65%)';
-      default:
-        return '#C6B08C';
+      case 'raiz': return 'hsl(30, 25%, 70%)';
+      case 'esencia': return 'hsl(100, 35%, 75%)';
+      case 'gourmet': return 'hsl(23, 34%, 65%)';
+      default: return '#C6B08C';
     }
   };
 
   const getPackTypeName = (type: string) => {
     switch (type) {
-      case 'raiz':
-        return 'Pack Raíz';
-      case 'esencia':
-        return 'Pack Esencia';
-      case 'gourmet':
-        return 'Pack Gourmet';
-      default:
-        return '';
+      case 'raiz': return 'Pack Raíz';
+      case 'esencia': return 'Pack Esencia';
+      case 'gourmet': return 'Pack Gourmet';
+      default: return '';
     }
   };
 
   const addProduct = () => {
     if (products.length >= 8) {
-      toast({
-        title: "Límite alcanzado",
-        description: "Máximo 8 productos por pack",
-        variant: "destructive",
-      });
+      toast({ title: "Límite alcanzado", description: "Máximo 8 productos", variant: "destructive" });
       return;
     }
-    setProducts([...products, {
-      id: Date.now(),
-      name: "",
-      description: "",
-      company: "",
-      attributes: []
-    }]);
+    setProducts([...products, { id: Date.now(), name: "", description: "", company: "", attributes: [] }]);
   };
 
   const removeProduct = (id: number) => {
     if (products.length === 1) {
-      toast({
-        title: "Mínimo requerido",
-        description: "Debe haber al menos un producto",
-        variant: "destructive",
-      });
+      toast({ title: "Mínimo requerido", description: "Debe haber al menos un producto", variant: "destructive" });
       return;
     }
     setProducts(products.filter(p => p.id !== id));
   };
 
-  const handlePublish = () => {
-    if (!packName || !price || products.some(p => !p.name)) {
-      toast({
-        title: "Campos incompletos",
-        description: "Completa todos los campos obligatorios",
-        variant: "destructive",
-      });
+  const addTag = () => {
+    if (newTag.trim() && !tags.includes(newTag.trim())) {
+      setTags([...tags, newTag.trim()]);
+      setNewTag("");
+    }
+  };
+
+  const removeTag = (tag: string) => {
+    setTags(tags.filter(t => t !== tag));
+  };
+
+  const savePack = async (publish: boolean = false) => {
+    if (!packName) {
+      toast({ title: "El nombre del pack es obligatorio", variant: "destructive" });
       return;
     }
-    toast({
-      title: "Pack publicado",
-      description: "Tu pack ha sido publicado correctamente.",
-    });
+    if (!companyId) return;
+
+    setSaving(true);
+    try {
+      const slug = packName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + Date.now();
+      const status = publish ? 'published' : 'draft';
+
+      const packData = {
+        company_id: companyId,
+        title: packName,
+        price: parseFloat(price) || FIXED_PRICES[packType],
+        shipping_policy: shippingPolicy,
+        sustainability_info: sustainabilityInfo,
+        tags,
+        status,
+        is_published: publish,
+        is_active: true,
+      };
+
+      let savedPackId = currentPackId;
+
+      if (currentPackId) {
+        // Update existing
+        const { error } = await supabase
+          .from('company_packs')
+          .update(packData)
+          .eq('id', currentPackId);
+        if (error) throw error;
+      } else {
+        // Create new
+        const { data: newPack, error } = await supabase
+          .from('company_packs')
+          .insert({ ...packData, slug })
+          .select()
+          .single();
+        if (error) throw error;
+        savedPackId = newPack.id;
+        setCurrentPackId(newPack.id);
+      }
+
+      // Save products: create in products table and link via pack_products
+      if (savedPackId) {
+        // Remove old pack_products links
+        await supabase.from('pack_products').delete().eq('pack_id', savedPackId);
+
+        for (let i = 0; i < products.length; i++) {
+          const p = products[i];
+          if (!p.name) continue;
+
+          let productId = p.db_id;
+
+          if (!productId) {
+            // Create the product
+            const productSlug = p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now() + '-' + i;
+            const { data: newProduct, error: prodError } = await supabase
+              .from('products')
+              .insert({
+                company_id: companyId,
+                name: p.name,
+                slug: productSlug,
+                description: p.description || null,
+                is_available: true,
+              })
+              .select()
+              .single();
+
+            if (prodError) {
+              console.error('Error creating product:', prodError);
+              continue;
+            }
+            productId = newProduct.id;
+          } else {
+            // Update existing product
+            await supabase.from('products').update({
+              name: p.name,
+              description: p.description || null,
+            }).eq('id', productId);
+          }
+
+          // Link to pack
+          await supabase.from('pack_products').insert({
+            pack_id: savedPackId,
+            product_id: productId,
+            position: i,
+            quantity: 1,
+          });
+        }
+      }
+
+      toast({
+        title: publish ? "Pack publicado" : "Pack guardado",
+        description: publish ? "Tu pack ha sido publicado correctamente" : "Los cambios se han guardado",
+      });
+
+      navigate('/company-dashboard');
+    } catch (error: any) {
+      toast({ title: "Error al guardar", description: error.message, variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleSaveDraft = () => {
-    toast({
-      title: "Guardado como borrador",
-      description: "El pack se ha guardado como borrador.",
-    });
+  const handleDelete = async () => {
+    if (!currentPackId) return;
+    try {
+      await supabase.from('pack_elements').delete().eq('pack_id', currentPackId);
+      await supabase.from('pack_products').delete().eq('pack_id', currentPackId);
+      const { error } = await supabase.from('company_packs').delete().eq('id', currentPackId);
+      if (error) throw error;
+      toast({ title: "Pack eliminado" });
+      navigate('/company-dashboard');
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    }
   };
 
-  const handleDelete = () => {
-    toast({
-      title: "Pack eliminado",
-      description: "El pack ha sido eliminado correctamente.",
-      variant: "destructive",
-    });
-  };
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-[#FAF6F0]">
         <Header />
         
-        {/* Breadcrumb Navigation - Mini-hero con color por tipo de pack */}
-        <section style={{ backgroundColor: getMiniHeroColor(packType) }} className="border-b">
+        {/* Top Bar - Editar / Guardar / Cancelar */}
+        <section style={{ backgroundColor: getMiniHeroColor(packType) }} className="border-b sticky top-0 z-50">
           <div className="max-w-6xl mx-auto px-6 py-3">
             <div className="flex items-center justify-between">
-              <div className="text-white">
-                <p className="text-sm font-medium">Editar Pack</p>
+              <div className="flex items-center gap-3">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => navigate('/company-dashboard')}
+                  className="text-white hover:bg-white/20"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Volver
+                </Button>
+                <span className="text-white font-medium">
+                  {currentPackId ? 'Editando Pack' : 'Crear Nuevo Pack'}
+                </span>
               </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => window.history.back()}
-                className="bg-white/90 hover:bg-white border-white/20"
-                style={{ color: getMiniHeroColor(packType) }}
-              >
-                Cancelar
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => navigate('/company-dashboard')}
+                  className="bg-white/90 hover:bg-white"
+                  style={{ color: getMiniHeroColor(packType) }}
+                >
+                  Cancelar
+                </Button>
+                <Button 
+                  size="sm" 
+                  onClick={() => savePack(false)}
+                  disabled={saving}
+                  className="bg-white/90 hover:bg-white"
+                  style={{ color: getMiniHeroColor(packType) }}
+                >
+                  {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                  Guardar borrador
+                </Button>
+                <Button 
+                  size="sm" 
+                  onClick={() => savePack(true)}
+                  disabled={saving}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  <Bookmark className="w-4 h-4 mr-2" />
+                  Publicar
+                </Button>
+              </div>
             </div>
           </div>
         </section>
         
-        {/* Hero Section - Tarjeta principal con color por categoría */}
+        {/* Hero Section - Same layout as PackDetail */}
         <section className="w-full" style={{ backgroundColor: getPackTypeColor(packType) }}>
           <div className="container mx-auto px-6 py-6 max-w-6xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -231,35 +425,9 @@ const EditarPack = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="raiz">Pack Raíz</SelectItem>
-                        <SelectItem value="esencia">Pack Esencia</SelectItem>
-                        <SelectItem value="gourmet">Pack Gourmet</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                    
-                  <div>
-                    <Label className="text-xs mb-1 block">Provincia</Label>
-                    <Input 
-                      value={province}
-                      onChange={(e) => setProvince(e.target.value)}
-                      placeholder="León"
-                      className="w-32 h-8 text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <Label className="text-xs mb-1 block">Clasificación</Label>
-                    <Select value={classification} onValueChange={setClassification}>
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue placeholder="Sin clasificar" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sin-clasificar">Sin clasificar</SelectItem>
-                        <SelectItem value="mas-vendido">Más vendido</SelectItem>
-                        <SelectItem value="nuevo">Nuevo</SelectItem>
-                        <SelectItem value="recomendado">Recomendado</SelectItem>
-                        <SelectItem value="edicion-limitada">Edición limitada</SelectItem>
+                        <SelectItem value="raiz">Pack Raíz (35€)</SelectItem>
+                        <SelectItem value="esencia">Pack Esencia (60€)</SelectItem>
+                        <SelectItem value="gourmet">Pack Gourmet (90€)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -274,42 +442,17 @@ const EditarPack = () => {
                     className="text-3xl md:text-4xl font-semibold h-auto py-2"
                   />
                 </div>
-
-                <div className="space-y-2">
-                  <Label>Provincia / Región</Label>
-                  <Input 
-                    value={province}
-                    onChange={(e) => setProvince(e.target.value)}
-                    placeholder="Ej: León"
-                    className="text-xl"
-                  />
-                </div>
                 
-                <div className="space-y-2">
-                  <Label>Precio (€) * - Máximo {packTypeMaxPrices[packType]}€</Label>
-                  <Input 
-                    type="number"
-                    value={price}
-                    onChange={(e) => handlePriceChange(e.target.value)}
-                    max={packTypeMaxPrices[packType]}
-                    placeholder={packTypeMaxPrices[packType].toString()}
-                    className="text-3xl font-bold"
-                  />
-                  <p className="text-xs text-muted-foreground">(envío incluido - Solo puedes bajar el precio desde {packTypeMaxPrices[packType]}€)</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-4xl font-bold text-primary">{FIXED_PRICES[packType]}€</span>
+                  <span className="text-sm text-muted-foreground">(envío incluido - precio fijo)</span>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 text-sm">
-                  <div className="flex items-center gap-1">
-                    <Package className="w-4 h-4 text-primary" />
-                    <Label className="text-xs">Productos:</Label>
-                    <Input 
-                      type="number"
-                      value={productCount}
-                      onChange={(e) => setProductCount(e.target.value)}
-                      placeholder="8"
-                      className="w-16 h-7 text-xs"
-                    />
-                  </div>
+                  <span className="flex items-center gap-1">
+                    <Package className="w-4 h-4" />
+                    {products.filter(p => p.name).length} productos incluidos
+                  </span>
                   
                   <label className="flex items-center gap-1 cursor-pointer">
                     <input 
@@ -335,7 +478,7 @@ const EditarPack = () => {
                 </div>
               </div>
 
-              {/* Pack Image - Editable */}
+              {/* Pack Image */}
               <div className="relative">
                 <div className="w-full h-72 rounded-xl shadow-2xl border-2 border-dashed border-muted-foreground/25 flex items-center justify-center bg-muted/30 cursor-pointer hover:border-primary/50 transition-colors">
                   <div className="text-center">
@@ -347,7 +490,7 @@ const EditarPack = () => {
               </div>
             </div>
 
-            {/* Pack Description - Editable */}
+            {/* Pack Description */}
             <Card className="mt-4">
               <CardHeader className="pb-3 pt-3">
                 <CardTitle className="text-lg">Descripción del Pack</CardTitle>
@@ -367,13 +510,12 @@ const EditarPack = () => {
 
         {/* Main Content */}
         <main className="container mx-auto px-6 py-8">
-          
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            {/* Left Content - 2 columns */}
+            {/* Left Content - Products */}
             <div className="lg:col-span-2 space-y-8">
               
-              {/* Products Included - Editable */}
+              {/* Products Included */}
               <Card>
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
@@ -459,7 +601,7 @@ const EditarPack = () => {
                               <div>
                                 <Label className="text-xs">Atributos</Label>
                                 <Select
-                                  value={product.attributes[0] || ""}
+                                  value=""
                                   onValueChange={(value) => {
                                     const newProducts = [...products];
                                     if (!newProducts[index].attributes.includes(value)) {
@@ -505,12 +647,12 @@ const EditarPack = () => {
                 </CardContent>
               </Card>
 
-              {/* Valor Añadido */}
+              {/* Valor Añadido / Sustainability */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Gift className="w-5 h-5" />
-                    Valor Añadido
+                    Valor Añadido y Sostenibilidad
                   </CardTitle>
                   <CardDescription>
                     Describe prácticas sostenibles, empaque ecológico, etc.
@@ -527,10 +669,43 @@ const EditarPack = () => {
                   <p className="text-xs text-muted-foreground mt-2">Cada línea será un punto separado en la tarjeta</p>
                 </CardContent>
               </Card>
+
+              {/* Tags / Etiquetas */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Etiquetas</CardTitle>
+                  <CardDescription>Añade etiquetas para mejorar la búsqueda</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-2 mb-3">
+                    <Input
+                      value={newTag}
+                      onChange={(e) => setNewTag(e.target.value)}
+                      placeholder="Ej: artesano, vegano..."
+                      className="h-8 text-sm"
+                      onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                    />
+                    <Button size="sm" variant="outline" onClick={addTag}>
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {tags.map((tag, idx) => (
+                      <Badge 
+                        key={idx} 
+                        variant="secondary" 
+                        className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                        onClick={() => removeTag(tag)}
+                      >
+                        {tag} ×
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
-
-            {/* Right Sidebar - Technical Details & Actions */}
+            {/* Right Sidebar */}
             <div className="space-y-6">
 
               {/* Technical Details */}
@@ -539,115 +714,116 @@ const EditarPack = () => {
                   <CardTitle className="text-base">Detalles Técnicos</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
-                  <div className="flex items-center gap-2">
-                    <Package className="w-4 h-4 text-primary" />
-                    <span className="text-muted-foreground text-xs">Productos incluidos:</span>
-                    <Input 
-                      type="number"
-                      value={productCount}
-                      onChange={(e) => setProductCount(e.target.value)}
-                      className="w-16 h-7 text-xs ml-auto"
-                    />
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Productos incluidos:</span>
+                    <span className="font-medium">{products.filter(p => p.name).length}</span>
                   </div>
                   <Separator />
-                  <div className="flex items-center gap-2">
-                    <Euro className="w-4 h-4 text-primary" />
-                    <span className="text-muted-foreground text-xs">Precio total:</span>
-                    <span className="font-medium ml-auto">{price}€</span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Precio total:</span>
+                    <span className="font-medium">{FIXED_PRICES[packType]}€</span>
                   </div>
                   <Separator />
-                  <div className="flex items-start gap-2">
-                    <Box className="w-4 h-4 text-primary mt-0.5" />
-                    <div className="flex-1">
-                      <p className="text-muted-foreground text-xs mb-1">Tipo de empaque:</p>
-                      <Select value={packagingType} onValueChange={setPackagingType}>
-                        <SelectTrigger className="h-7 text-xs">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Caja de cartón reciclado">Caja de cartón reciclado</SelectItem>
-                          <SelectItem value="Cesta de mimbre">Cesta de mimbre</SelectItem>
-                          <SelectItem value="Bolsa de tela reutilizable">Bolsa de tela reutilizable</SelectItem>
-                          <SelectItem value="Caja de madera">Caja de madera</SelectItem>
-                          <SelectItem value="Envase biodegradable">Envase biodegradable</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <div>
+                    <p className="text-muted-foreground text-xs mb-1">Tipo de empaque:</p>
+                    <Select value={packagingType} onValueChange={setPackagingType}>
+                      <SelectTrigger className="h-7 text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Caja de cartón reciclado">Caja de cartón reciclado</SelectItem>
+                        <SelectItem value="Cesta de mimbre">Cesta de mimbre</SelectItem>
+                        <SelectItem value="Bolsa de tela reutilizable">Bolsa de tela reutilizable</SelectItem>
+                        <SelectItem value="Caja de madera">Caja de madera</SelectItem>
+                        <SelectItem value="Envase biodegradable">Envase biodegradable</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <Separator />
-                  <div className="flex items-start gap-2">
-                    <Clock className="w-4 h-4 text-primary mt-0.5" />
-                    <div className="flex-1">
-                      <p className="text-muted-foreground text-xs mb-1">Envío estimado:</p>
-                      <Select value={estimatedShipping} onValueChange={setEstimatedShipping}>
-                        <SelectTrigger className="h-7 text-xs">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1-2 días laborables">1-2 días laborables</SelectItem>
-                          <SelectItem value="2-3 días laborables">2-3 días laborables</SelectItem>
-                          <SelectItem value="3-5 días laborables">3-5 días laborables</SelectItem>
-                          <SelectItem value="5-7 días laborables">5-7 días laborables</SelectItem>
-                          <SelectItem value="Envío express 24h">Envío express 24h</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <div>
+                    <p className="text-muted-foreground text-xs mb-1">Envío estimado:</p>
+                    <Select value={estimatedShipping} onValueChange={setEstimatedShipping}>
+                      <SelectTrigger className="h-7 text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1-2 días laborables">1-2 días laborables</SelectItem>
+                        <SelectItem value="2-3 días laborables">2-3 días laborables</SelectItem>
+                        <SelectItem value="3-5 días laborables">3-5 días laborables</SelectItem>
+                        <SelectItem value="Envío express 24h">Envío express 24h</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <Separator />
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-primary" />
-                    <span className="text-muted-foreground text-xs">Origen:</span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Origen:</span>
                     <Input 
                       value={packOrigin}
                       onChange={(e) => setPackOrigin(e.target.value)}
-                      className="w-24 h-7 text-xs ml-auto"
+                      className="w-28 h-7 text-xs text-right"
                     />
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Action Buttons */}
+              {/* Shipping Policy */}
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">Política de Envío</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Textarea
+                    value={shippingPolicy}
+                    onChange={(e) => setShippingPolicy(e.target.value)}
+                    placeholder="Describe tu política de envío..."
+                    rows={3}
+                    className="text-sm"
+                  />
+                </CardContent>
+              </Card>
+
+              {/* Actions */}
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">Acciones</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button onClick={handlePublish} className="w-full flex items-center justify-center gap-2 bg-[#8B6F47] hover:bg-[#8B6F47]/90">
-                    <div className="w-5 h-5 rounded-full border-2 border-white flex items-center justify-center">
-                      <Check className="w-3 h-3 text-white" />
-                    </div>
-                    <span>Guardar Cambios</span>
+                  <Button onClick={() => savePack(false)} disabled={saving} className="w-full">
+                    {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                    Guardar Borrador
                   </Button>
-                  <Button onClick={handlePublish} variant="default" className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700">
-                    <Bookmark className="w-4 h-4" />
-                    <span>Publicar Pack</span>
+                  <Button onClick={() => savePack(true)} disabled={saving} className="w-full bg-green-600 hover:bg-green-700">
+                    <Bookmark className="w-4 h-4 mr-2" />
+                    Publicar Pack
                   </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="destructive" className="w-full flex items-center justify-center gap-2">
-                        <Trash2 className="w-4 h-4" />
-                        <span>Eliminar Pack</span>
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Esta acción no se puede deshacer. El pack será eliminado permanentemente.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                          Eliminar
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  {currentPackId && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" className="w-full">
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Eliminar Pack
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Esta acción no se puede deshacer. El pack será eliminado permanentemente.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                            Eliminar
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
                 </CardContent>
               </Card>
 
-              {/* Help Card */}
+              {/* Help */}
               <Card className="bg-primary/5 border-primary/20">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base">💡 Consejos</CardTitle>

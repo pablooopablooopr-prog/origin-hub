@@ -227,7 +227,7 @@ export default function CompanyDashboard() {
   };
 
   const createNewPack = (templateType: string) => {
-    navigate(`/pack-builder?template=${templateType}&company=${company?.id}`);
+    navigate(`/editar-pack?type=${templateType}`);
   };
 
   const duplicatePack = async (packId: string) => {
@@ -593,7 +593,7 @@ export default function CompanyDashboard() {
                               size="sm"
                               variant="outline"
                               className="flex-1"
-                              onClick={() => navigate(`/pack-builder/${pack.id}`)}
+                              onClick={() => navigate(`/editar-pack/${pack.id}`)}
                             >
                               <Edit className="h-4 w-4 mr-1" />
                               Editar
