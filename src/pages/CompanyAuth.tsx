@@ -131,6 +131,8 @@ export default function CompanyAuth() {
       : null;
 
     if (row) {
+      const normalizedStatus = String(row.status).trim().toUpperCase();
+
       setExistingCompany({
         id: row.company_id,
         user_id: userId,
@@ -143,11 +145,13 @@ export default function CompanyAuth() {
         longitude: null,
         description: null,
         authenticity_story: null,
-        status: row.status,
+        status: normalizedStatus,
       });
 
-      if (row.status === "approved") {
+      if (normalizedStatus === "APPROVED") {
         navigate("/company-dashboard");
+      } else if (normalizedStatus === "REJECTED") {
+        navigate("/company-rejected");
       } else {
         navigate("/company-pending");
       }
@@ -411,7 +415,7 @@ export default function CompanyAuth() {
         <main className="flex-1 container mx-auto px-6 py-16">
           <Card className="w-full max-w-md mx-auto">
             <CardHeader className="text-center">
-              {existingCompany.status === "pending" ? (
+              {existingCompany.status === "PENDING" ? (
                 <>
                   <div className="w-16 h-16 rounded-full bg-secondary/20 flex items-center justify-center mx-auto mb-4">
                     <Loader2 className="w-8 h-8 text-secondary animate-spin" />
@@ -422,7 +426,7 @@ export default function CompanyAuth() {
                     Te notificaremos por email.
                   </CardDescription>
                 </>
-              ) : existingCompany.status === "approved" ? (
+              ) : existingCompany.status === "APPROVED" ? (
                 <>
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                     <CheckCircle2 className="w-8 h-8 text-primary" />
@@ -445,7 +449,7 @@ export default function CompanyAuth() {
               )}
             </CardHeader>
             <CardContent className="text-center space-y-3">
-              {existingCompany.status === "approved" && (
+              {existingCompany.status === "APPROVED" && (
                 <Button onClick={() => navigate("/company-dashboard")} className="w-full">
                   Ir al panel
                 </Button>
