@@ -130,7 +130,25 @@ const CustomerDashboard = () => {
         return;
       }
 
-      // Not admin — load customer data
+      // Check if user is a company — redirect to company dashboard
+      const { data: companyStatus } = await supabase.rpc("get_my_company_status");
+      if (!mounted) return;
+      const normalizedStatus = String(companyStatus ?? "").trim().toUpperCase();
+      if (normalizedStatus !== "") {
+        // User has a company record — send them to company flow
+        if (normalizedStatus === "APPROVED") {
+          navigate("/company-dashboard", { replace: true });
+        } else if (normalizedStatus === "PENDING") {
+          navigate("/company-pending", { replace: true });
+        } else if (normalizedStatus === "REJECTED") {
+          navigate("/company-rejected", { replace: true });
+        } else {
+          navigate("/company-auth", { replace: true });
+        }
+        return;
+      }
+
+      // Not admin, not company — load customer data
       loadCustomerData(user.id);
     };
 
