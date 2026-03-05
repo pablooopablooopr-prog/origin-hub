@@ -14,6 +14,9 @@ import { postLoginRedirect } from "@/lib/auth/postLoginRedirect";
 import PasswordInput from "@/components/PasswordInput";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const toTitleCase = (value: string) =>
+  value.replace(/\b\w/g, (char) => char.toUpperCase());
 const AUTH_CALLBACK_REDIRECT = `${window.location.origin}/auth/callback?redirect_to=/mi-cuenta`;
 
 const withPhonePrefix = (value: string) => {
@@ -224,9 +227,13 @@ const CustomerAuth = () => {
       return;
     }
 
+    const isInvalidCredentials = msg.includes("invalid login credentials") || msg.includes("invalid");
+
     toast({
-      title: "Error",
-      description: error?.message ?? "No se pudo iniciar sesión.",
+      title: "Error de acceso",
+      description: isInvalidCredentials
+        ? "Email o contraseña incorrectos. Revisa tus datos e inténtalo de nuevo."
+        : (error?.message ?? "No se pudo iniciar sesión."),
       variant: "destructive",
     });
   } finally {
@@ -400,18 +407,18 @@ const CustomerAuth = () => {
                 <CardContent>
                   <form onSubmit={handleSignUp} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="register-name">Nombre Completo</Label>
+                      <Label htmlFor="register-name">Nombre Completo *</Label>
                       <Input
                         id="register-name"
                         type="text"
                         placeholder="Tu nombre y apellidos"
                         value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
+                        onChange={(e) => setFullName(toTitleCase(e.target.value))}
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-email">Email</Label>
+                      <Label htmlFor="register-email">Email *</Label>
                       <Input
                         id="register-email"
                         type="email"
@@ -422,7 +429,7 @@ const CustomerAuth = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-phone">Teléfono</Label>
+                      <Label htmlFor="register-phone">Teléfono *</Label>
                       <Input
                         id="register-phone"
                         type="tel"
@@ -436,7 +443,7 @@ const CustomerAuth = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-password">Contraseña</Label>
+                      <Label htmlFor="register-password">Contraseña *</Label>
                       <PasswordInput
                         id="register-password"
                         placeholder="Mínimo 6 caracteres"
@@ -466,7 +473,11 @@ const CustomerAuth = () => {
                     </Button>
 
                     <p className="text-xs text-muted-foreground text-center">
-                      Si no lo ves, revisa “Promociones” o “Spam”.
+                      Si no lo ves, revisa "Promociones" o "Spam".
+                    </p>
+
+                    <p className="text-[11px] text-muted-foreground text-center mt-2">
+                      * Los campos con asterisco son obligatorios.
                     </p>
                   </form>
                 </CardContent>
