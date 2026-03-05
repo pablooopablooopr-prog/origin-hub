@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
@@ -7,11 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import {
   MapPin, Star, Phone, Globe, Mail, Package, Edit, Plus,
   MessageCircle, Building2, Award, History, ChevronRight,
-  Clock, Instagram, Facebook, Twitter, ExternalLink, Route, Users, Leaf
+  Clock, Instagram, Facebook, Twitter, ExternalLink, Route, Users, Leaf,
+  Camera, Save, X, Loader2, Check
 } from "lucide-react";
 
 interface Company {
@@ -29,11 +32,6 @@ interface Company {
   slug: string | null;
   latitude: number | null;
   longitude: number | null;
-}
-
-interface CompanyPrivate {
-  email: string;
-  phone: string | null;
 }
 
 interface CompanyPack {
@@ -71,12 +69,29 @@ const BusinessDetail = () => {
   const { toast } = useToast();
 
   const [company, setCompany] = useState<Company | null>(null);
-  const [companyPrivate, setCompanyPrivate] = useState<CompanyPrivate | null>(null);
   const [packs, setPacks] = useState<CompanyPack[]>([]);
   const [routes, setRoutes] = useState<CompanyRoute[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
+
+  // Inline editing state
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [editForm, setEditForm] = useState({
+    business_name: "",
+    description: "",
+    authenticity_story: "",
+    address: "",
+    website: "",
+    social_instagram: "",
+    social_facebook: "",
+    social_twitter: "",
+  });
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (id) loadCompanyData();
@@ -95,21 +110,32 @@ const BusinessDetail = () => {
       const { data: companyData, error: companyError } = await companyQuery.single();
       if (companyError) throw companyError;
 
-      setCompany(companyData as unknown as Company);
-      const companyId = companyData.id;
+      const companyResult = companyData as any;
+      setCompany(companyResult as Company);
+      const companyId = companyResult.id;
 
-      // Check ownership & get private contact info
+      // Check ownership
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         const { data: ownerCheck } = await supabase
           .from('companies')
-          .select('user_id, email, phone')
+          .select('user_id')
           .eq('id', companyId)
           .eq('user_id', session.user.id)
           .single();
         if (ownerCheck) {
           setIsOwner(true);
-          setCompanyPrivate({ email: ownerCheck.email, phone: ownerCheck.phone });
+          const sm = (companyResult.social_media as any) || {};
+          setEditForm({
+            business_name: companyResult.business_name || "",
+            description: companyResult.description || "",
+            authenticity_story: companyResult.authenticity_story || "",
+            address: companyResult.address || "",
+            website: companyResult.website || "",
+            social_instagram: sm.instagram || "",
+            social_facebook: sm.facebook || "",
+            social_twitter: sm.twitter || "",
+          });
         }
       }
 
@@ -137,7 +163,6 @@ const BusinessDetail = () => {
 
       setPacks(packsRes.data || []);
 
-      // Dedupe routes
       const routeMap = new Map<string, CompanyRoute>();
       (routesRes.data || []).forEach((stop: any) => {
         const r = stop.routes;
@@ -146,7 +171,6 @@ const BusinessDetail = () => {
         }
       });
       setRoutes(Array.from(routeMap.values()));
-
       setReviews(reviewsRes.data || []);
     } catch (error: any) {
       toast({
@@ -156,6 +180,85 @@ const BusinessDetail = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleImageUpload = async (file: File, type: 'cover' | 'logo') => {
+    if (!company) return;
+    const setUploading = type === 'cover' ? setUploadingCover : setUploadingLogo;
+    setUploading(true);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${company.id}/${type}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('company-files')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('company-files')
+        .getPublicUrl(fileName);
+
+      const updateField = type === 'cover' ? 'cover_image_url' : 'logo_url';
+      const { error: updateError } = await supabase
+        .from('companies')
+        .update({ [updateField]: publicUrl })
+        .eq('id', company.id);
+
+      if (updateError) throw updateError;
+
+      setCompany({ ...company, [updateField]: publicUrl });
+      toast({ title: "Imagen actualizada", description: `${type === 'cover' ? 'Portada' : 'Logo'} actualizado correctamente` });
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const saveProfile = async () => {
+    if (!company) return;
+    setSaving(true);
+
+    try {
+      const socialMedia: any = {};
+      if (editForm.social_instagram) socialMedia.instagram = editForm.social_instagram;
+      if (editForm.social_facebook) socialMedia.facebook = editForm.social_facebook;
+      if (editForm.social_twitter) socialMedia.twitter = editForm.social_twitter;
+
+      const { error } = await supabase
+        .from('companies')
+        .update({
+          business_name: editForm.business_name,
+          description: editForm.description || null,
+          authenticity_story: editForm.authenticity_story || null,
+          address: editForm.address || null,
+          website: editForm.website || null,
+          social_media: socialMedia,
+        })
+        .eq('id', company.id);
+
+      if (error) throw error;
+
+      setCompany({
+        ...company,
+        business_name: editForm.business_name,
+        description: editForm.description || null,
+        authenticity_story: editForm.authenticity_story || null,
+        address: editForm.address || null,
+        website: editForm.website || null,
+        social_media: socialMedia,
+      });
+
+      setEditing(false);
+      toast({ title: "Perfil actualizado", description: "Los cambios se han guardado correctamente" });
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -195,6 +298,30 @@ const BusinessDetail = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
+      {/* Hidden file inputs for image uploads */}
+      <input
+        ref={coverInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) handleImageUpload(file, 'cover');
+          e.target.value = '';
+        }}
+      />
+      <input
+        ref={logoInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) handleImageUpload(file, 'logo');
+          e.target.value = '';
+        }}
+      />
+
       {/* Hero / Cover */}
       <section className="relative">
         {company.cover_image_url ? (
@@ -210,27 +337,70 @@ const BusinessDetail = () => {
           <div className="h-64 md:h-80 w-full bg-gradient-to-br from-primary/80 to-primary-foreground/20" />
         )}
 
+        {/* Owner: cover image upload button */}
+        {isOwner && (
+          <button
+            onClick={() => coverInputRef.current?.click()}
+            disabled={uploadingCover}
+            className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-colors disabled:opacity-50"
+            title="Cambiar imagen de portada"
+          >
+            {uploadingCover ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
+          </button>
+        )}
+
         {/* Overlay content */}
         <div className="absolute bottom-0 left-0 right-0">
           <div className="container mx-auto px-6 pb-8 max-w-6xl">
             <div className="flex items-end gap-5">
               {/* Logo */}
-              <div className="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-card border-4 border-background shadow-lg flex items-center justify-center overflow-hidden -mb-4">
+              <div className="relative w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-card border-4 border-background shadow-lg flex items-center justify-center overflow-hidden -mb-4 group">
                 {company.logo_url ? (
                   <img src={company.logo_url} alt={company.business_name} className="w-full h-full object-cover" />
                 ) : (
                   <Building2 className="w-12 h-12 text-muted-foreground" />
                 )}
+                {isOwner && (
+                  <button
+                    onClick={() => logoInputRef.current?.click()}
+                    disabled={uploadingLogo}
+                    className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer disabled:opacity-50"
+                    title="Cambiar logo"
+                  >
+                    {uploadingLogo ? <Loader2 className="w-6 h-6 text-white animate-spin" /> : <Camera className="w-6 h-6 text-white" />}
+                  </button>
+                )}
               </div>
               <div className="flex-1 pb-1">
-                <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
-                  {company.business_name}
-                </h1>
-                {company.address && (
-                  <p className="text-white/90 flex items-center gap-1.5 mt-1 text-sm md:text-base drop-shadow">
-                    <MapPin className="w-4 h-4 flex-shrink-0" />
-                    {company.address}
-                  </p>
+                {editing ? (
+                  <Input
+                    value={editForm.business_name}
+                    onChange={(e) => setEditForm({ ...editForm, business_name: e.target.value })}
+                    className="text-3xl md:text-4xl font-bold bg-white/20 text-white border-white/40 placeholder:text-white/50"
+                    placeholder="Nombre del negocio"
+                  />
+                ) : (
+                  <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
+                    {company.business_name}
+                  </h1>
+                )}
+                {editing ? (
+                  <div className="flex items-center gap-2 mt-2">
+                    <MapPin className="w-4 h-4 text-white/80 flex-shrink-0" />
+                    <Input
+                      value={editForm.address}
+                      onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
+                      className="bg-white/20 text-white border-white/40 placeholder:text-white/50 text-sm"
+                      placeholder="Dirección completa"
+                    />
+                  </div>
+                ) : (
+                  company.address && (
+                    <p className="text-white/90 flex items-center gap-1.5 mt-1 text-sm md:text-base drop-shadow">
+                      <MapPin className="w-4 h-4 flex-shrink-0" />
+                      {company.address}
+                    </p>
+                  )
                 )}
               </div>
             </div>
@@ -260,42 +430,122 @@ const BusinessDetail = () => {
                 {routes.length} rutas
               </Badge>
             )}
-            {company.website && (
-              <a href={company.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
-                <Globe className="w-4 h-4" />
-                Sitio web
-                <ExternalLink className="w-3 h-3" />
-              </a>
+
+            {editing ? (
+              <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4 text-muted-foreground" />
+                <Input
+                  value={editForm.website}
+                  onChange={(e) => setEditForm({ ...editForm, website: e.target.value })}
+                  className="h-8 text-sm w-56"
+                  placeholder="https://www.tuempresa.com"
+                />
+              </div>
+            ) : (
+              company.website && (
+                <a href={company.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+                  <Globe className="w-4 h-4" />
+                  Sitio web
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              )
             )}
-            {/* Social links */}
-            {socialMedia.instagram && (
-              <a href={socialMedia.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-            )}
-            {socialMedia.facebook && (
-              <a href={socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                <Facebook className="w-5 h-5" />
-              </a>
-            )}
-            {socialMedia.twitter && (
-              <a href={socialMedia.twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
+
+            {editing ? (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
+                  <Instagram className="w-4 h-4 text-muted-foreground" />
+                  <Input
+                    value={editForm.social_instagram}
+                    onChange={(e) => setEditForm({ ...editForm, social_instagram: e.target.value })}
+                    className="h-8 text-sm w-40"
+                    placeholder="URL Instagram"
+                  />
+                </div>
+                <div className="flex items-center gap-1">
+                  <Facebook className="w-4 h-4 text-muted-foreground" />
+                  <Input
+                    value={editForm.social_facebook}
+                    onChange={(e) => setEditForm({ ...editForm, social_facebook: e.target.value })}
+                    className="h-8 text-sm w-40"
+                    placeholder="URL Facebook"
+                  />
+                </div>
+                <div className="flex items-center gap-1">
+                  <Twitter className="w-4 h-4 text-muted-foreground" />
+                  <Input
+                    value={editForm.social_twitter}
+                    onChange={(e) => setEditForm({ ...editForm, social_twitter: e.target.value })}
+                    className="h-8 text-sm w-40"
+                    placeholder="URL Twitter"
+                  />
+                </div>
+              </div>
+            ) : (
+              <>
+                {socialMedia.instagram && (
+                  <a href={socialMedia.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                    <Instagram className="w-5 h-5" />
+                  </a>
+                )}
+                {socialMedia.facebook && (
+                  <a href={socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                    <Facebook className="w-5 h-5" />
+                  </a>
+                )}
+                {socialMedia.twitter && (
+                  <a href={socialMedia.twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                    <Twitter className="w-5 h-5" />
+                  </a>
+                )}
+              </>
             )}
           </div>
 
           {/* Owner Actions */}
           {isOwner && (
             <div className="mt-4 ml-0 md:ml-36 flex gap-3">
-              <Button variant="outline" size="sm" onClick={() => navigate('/company-dashboard')}>
-                <Edit className="w-4 h-4 mr-2" />
-                Editar Empresa
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => navigate('/pack-builder')}>
-                <Plus className="w-4 h-4 mr-2" />
-                Nuevo Pack
-              </Button>
+              {editing ? (
+                <>
+                  <Button onClick={saveProfile} disabled={saving} size="sm">
+                    {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                    Guardar cambios
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => {
+                    setEditing(false);
+                    // Reset form
+                    const sm = company.social_media || {};
+                    setEditForm({
+                      business_name: company.business_name || "",
+                      description: company.description || "",
+                      authenticity_story: company.authenticity_story || "",
+                      address: company.address || "",
+                      website: company.website || "",
+                      social_instagram: sm.instagram || "",
+                      social_facebook: sm.facebook || "",
+                      social_twitter: sm.twitter || "",
+                    });
+                  }}>
+                    <X className="w-4 h-4 mr-2" />
+                    Cancelar
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
+                    <Edit className="w-4 h-4 mr-2" />
+                    Editar Perfil
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => navigate('/company-dashboard')}>
+                    <Building2 className="w-4 h-4 mr-2" />
+                    Panel de gestión
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => navigate('/pack-builder')}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Nuevo Pack
+                  </Button>
+                </>
+              )}
             </div>
           )}
         </div>
@@ -307,25 +557,54 @@ const BusinessDetail = () => {
           {/* Left Column - Main content */}
           <div className="lg:col-span-2 space-y-10">
             {/* About */}
-            {company.description && (
-              <section>
-                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                  <Leaf className="w-6 h-6 text-primary" />
-                  Sobre nosotros
-                </h2>
+            <section>
+              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                <Leaf className="w-6 h-6 text-primary" />
+                Sobre nosotros
+              </h2>
+              {editing ? (
+                <Textarea
+                  value={editForm.description}
+                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                  rows={6}
+                  placeholder="Describe tu empresa, qué productos ofreces y qué te hace único..."
+                  className="text-base leading-relaxed"
+                />
+              ) : company.description ? (
                 <p className="text-muted-foreground leading-relaxed text-base whitespace-pre-line">
                   {company.description}
                 </p>
-              </section>
-            )}
+              ) : isOwner ? (
+                <Card className="border-dashed">
+                  <CardContent className="py-8 text-center">
+                    <p className="text-muted-foreground mb-3">Aún no has añadido una descripción</p>
+                    <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
+                      <Edit className="w-4 h-4 mr-2" /> Añadir descripción
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : null}
+            </section>
 
             {/* Story */}
-            {company.authenticity_story && (
-              <section>
-                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                  <History className="w-6 h-6 text-primary" />
-                  Nuestra historia
-                </h2>
+            <section>
+              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                <History className="w-6 h-6 text-primary" />
+                Nuestra historia
+              </h2>
+              {editing ? (
+                <Card className="bg-muted/30 border-dashed">
+                  <CardContent className="p-6">
+                    <Textarea
+                      value={editForm.authenticity_story}
+                      onChange={(e) => setEditForm({ ...editForm, authenticity_story: e.target.value })}
+                      rows={5}
+                      placeholder="Cuenta la historia de tu empresa, tu tradición familiar, valores..."
+                      className="italic text-base leading-relaxed"
+                    />
+                  </CardContent>
+                </Card>
+              ) : company.authenticity_story ? (
                 <Card className="bg-muted/30 border-dashed">
                   <CardContent className="p-6">
                     <p className="text-muted-foreground leading-relaxed italic whitespace-pre-line">
@@ -333,8 +612,17 @@ const BusinessDetail = () => {
                     </p>
                   </CardContent>
                 </Card>
-              </section>
-            )}
+              ) : isOwner ? (
+                <Card className="border-dashed">
+                  <CardContent className="py-8 text-center">
+                    <p className="text-muted-foreground mb-3">Aún no has contado tu historia</p>
+                    <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
+                      <Edit className="w-4 h-4 mr-2" /> Añadir historia
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : null}
+            </section>
 
             {/* Packs */}
             <section>
@@ -349,7 +637,14 @@ const BusinessDetail = () => {
                 <Card>
                   <CardContent className="py-10 text-center">
                     <Package className="w-12 h-12 mx-auto mb-3 text-muted-foreground/30" />
-                    <p className="text-muted-foreground">Esta empresa aún no tiene packs publicados</p>
+                    <p className="text-muted-foreground">
+                      {isOwner ? "Aún no tienes packs publicados" : "Esta empresa aún no tiene packs publicados"}
+                    </p>
+                    {isOwner && (
+                      <Button variant="outline" size="sm" className="mt-3" onClick={() => navigate('/pack-builder')}>
+                        <Plus className="w-4 h-4 mr-2" /> Crear tu primer pack
+                      </Button>
+                    )}
                   </CardContent>
                 </Card>
               ) : (
@@ -490,7 +785,7 @@ const BusinessDetail = () => {
 
           {/* Right Column - Sidebar */}
           <div className="space-y-6">
-            {/* Contact Card */}
+            {/* Contact Card - NO sensitive data for non-owners */}
             <Card className="sticky top-24">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -509,30 +804,6 @@ const BusinessDetail = () => {
                   </div>
                 )}
 
-                {isOwner && companyPrivate?.email && (
-                  <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-                    <Mail className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Email</p>
-                      <a href={`mailto:${companyPrivate.email}`} className="text-sm font-medium text-primary hover:underline">
-                        {companyPrivate.email}
-                      </a>
-                    </div>
-                  </div>
-                )}
-
-                {isOwner && companyPrivate?.phone && (
-                  <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-                    <Phone className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Teléfono</p>
-                      <a href={`tel:${companyPrivate.phone}`} className="text-sm font-medium text-primary hover:underline">
-                        {companyPrivate.phone}
-                      </a>
-                    </div>
-                  </div>
-                )}
-
                 {company.website && (
                   <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
                     <Globe className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
@@ -542,6 +813,27 @@ const BusinessDetail = () => {
                         {company.website.replace(/^https?:\/\//, '')}
                       </a>
                     </div>
+                  </div>
+                )}
+
+                {/* Social media in sidebar */}
+                {(socialMedia.instagram || socialMedia.facebook || socialMedia.twitter) && (
+                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                    {socialMedia.instagram && (
+                      <a href={socialMedia.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                        <Instagram className="w-5 h-5" />
+                      </a>
+                    )}
+                    {socialMedia.facebook && (
+                      <a href={socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                        <Facebook className="w-5 h-5" />
+                      </a>
+                    )}
+                    {socialMedia.twitter && (
+                      <a href={socialMedia.twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                        <Twitter className="w-5 h-5" />
+                      </a>
+                    )}
                   </div>
                 )}
 
