@@ -117,16 +117,16 @@ export default function AdminCompanies() {
     setApprovingId(null);
   };
 
+  const REJECTION_REASON = "Estimado/a, lamentamos informarle de que su solicitud de registro ha sido rechazada debido a falta de información. Le invitamos a volver a registrarse proporcionando datos más completos sobre su negocio. Gracias por su interés.";
+
   const handleReject = async (company: CompanyRow) => {
     const confirmed = window.confirm(`¿Seguro que quieres rechazar a ${company.business_name}?`);
     if (!confirmed) return;
 
-    const reason = window.prompt("Motivo del rechazo (opcional):", "")?.trim() || null;
-
     setRejectingId(company.id);
     const { error } = await supabase.rpc("reject_company", {
       p_company_id: company.id,
-      p_reason: reason,
+      p_reason: REJECTION_REASON,
     });
 
     if (error) {
