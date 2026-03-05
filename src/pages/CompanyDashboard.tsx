@@ -25,6 +25,7 @@ interface Company {
   id: string;
   business_name: string;
   status: string;
+  slug?: string;
   contact_email?: string;
   phone?: string;
   website?: string;
@@ -428,7 +429,7 @@ export default function CompanyDashboard() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => navigate('/')}>
+            <Button variant="outline" onClick={() => navigate(`/negocio/${company?.slug || company?.id}`)}>
               Ver Sitio
             </Button>
             <Button variant="outline" onClick={handleSignOut}>
