@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Eye, Edit, Copy, BarChart3, Package, Settings, Trash2, ShoppingBag, Loader2, Save, X, Route, Clock, Users, ChevronRight } from "lucide-react";
+import { Plus, Eye, Edit, Copy, BarChart3, Package, Settings, Trash2, ShoppingBag, Loader2, Save, X, Route, Clock, Users, ChevronRight, Globe } from "lucide-react";
+import AddressAutocompleteInput, { AddressComponents } from "@/components/AddressAutocompleteInput";
 import { User } from "@supabase/supabase-js";
 import {
   Dialog,
@@ -94,14 +95,17 @@ export default function CompanyDashboard() {
   });
   const [savingProduct, setSavingProduct] = useState(false);
   const [savingCompany, setSavingCompany] = useState(false);
+  const [editingSettings, setEditingSettings] = useState(false);
   const [companyForm, setCompanyForm] = useState({
     business_name: "",
+    contact_person: "",
     phone: "",
     website: "",
     address: "",
     description: "",
     authenticity_story: ""
   });
+  const [editLatLng, setEditLatLng] = useState<{ lat: number | null; lng: number | null }>({ lat: null, lng: null });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -151,6 +155,7 @@ export default function CompanyDashboard() {
       setCompany(companyData);
       setCompanyForm({
         business_name: companyData.business_name || "",
+        contact_person: companyData.contact_person || "",
         phone: companyData.phone || "",
         website: companyData.website || "",
         address: companyData.address || "",
@@ -410,27 +415,48 @@ export default function CompanyDashboard() {
     
     setSavingCompany(true);
     try {
+      const updateData: any = {
+        business_name: companyForm.business_name,
+        contact_person: companyForm.contact_person,
+        phone: companyForm.phone,
+        website: companyForm.website,
+        address: companyForm.address,
+        description: companyForm.description,
+        authenticity_story: companyForm.authenticity_story
+      };
+      if (editLatLng.lat !== null && editLatLng.lng !== null) {
+        updateData.latitude = editLatLng.lat;
+        updateData.longitude = editLatLng.lng;
+      }
+
       const { error } = await supabase
         .from('companies')
-        .update({
-          business_name: companyForm.business_name,
-          phone: companyForm.phone,
-          website: companyForm.website,
-          address: companyForm.address,
-          description: companyForm.description,
-          authenticity_story: companyForm.authenticity_story
-        })
+        .update(updateData)
         .eq('id', company.id);
 
       if (error) throw error;
       
       setCompany({ ...company, ...companyForm });
+      setEditingSettings(false);
       toast.success("Perfil de empresa actualizado correctamente");
     } catch (error: any) {
       toast.error(error.message);
     } finally {
       setSavingCompany(false);
     }
+  };
+
+  const cancelEditingSettings = () => {
+    setEditingSettings(false);
+    setCompanyForm({
+      business_name: company?.business_name || "",
+      contact_person: (company as any)?.contact_person || "",
+      phone: (company as any)?.phone || "",
+      website: (company as any)?.website || "",
+      address: company?.address || "",
+      description: company?.description || "",
+      authenticity_story: company?.authenticity_story || ""
+    });
   };
 
   if (loading) {
@@ -456,24 +482,21 @@ export default function CompanyDashboard() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => navigate(`/negocio/${company?.slug || company?.id}`)}>
-              Ver Sitio
-            </Button>
             <Button variant="outline" onClick={handleSignOut}>
               Cerrar Sesión
             </Button>
           </div>
         </div>
 
-        <Tabs defaultValue="packs" className="space-y-6">
+        <Tabs defaultValue="mypage" className="space-y-6">
           <TabsList>
+            <TabsTrigger value="mypage" className="flex items-center gap-2">
+              <Globe className="h-4 w-4" />
+              Mi Página
+            </TabsTrigger>
             <TabsTrigger value="packs" className="flex items-center gap-2">
               <Package className="h-4 w-4" />
               Mis Packs
-            </TabsTrigger>
-            <TabsTrigger value="products" className="flex items-center gap-2">
-              <ShoppingBag className="h-4 w-4" />
-              Productos
             </TabsTrigger>
             <TabsTrigger value="routes" className="flex items-center gap-2">
               <Route className="h-4 w-4" />
@@ -488,6 +511,28 @@ export default function CompanyDashboard() {
               Configuración
             </TabsTrigger>
           </TabsList>
+
+          {/* Mi Página Tab */}
+          <TabsContent value="mypage">
+            <Card>
+              <CardHeader>
+                <CardTitle>Tu Página de Empresa</CardTitle>
+                <CardDescription>
+                  Visualiza y edita tu página pública directamente
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col items-center gap-4">
+                <p className="text-muted-foreground text-center">
+                  Tu página pública es donde los clientes pueden ver tu información, packs y valoraciones.
+                </p>
+                <Button onClick={() => navigate(`/negocio/${company?.slug || company?.id}`)} size="lg">
+                  <Eye className="h-4 w-4 mr-2" />
+                  Ir a Mi Página
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
 
           <TabsContent value="packs">
             {/* Create New Pack Cards */}
@@ -595,104 +640,8 @@ export default function CompanyDashboard() {
             </div>
           </TabsContent>
 
-          {/* Products Tab */}
-          <TabsContent value="products">
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-semibold">Tus Productos</h2>
-                <Button onClick={() => openProductDialog()}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Añadir Producto
-                </Button>
-              </div>
 
-              {products.length === 0 ? (
-                <Card>
-                  <CardContent className="p-12 text-center">
-                    <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-xl font-semibold mb-2">No tienes productos</h3>
-                    <p className="text-muted-foreground mb-6">
-                      Añade productos para incluirlos en tus packs
-                    </p>
-                    <Button onClick={() => openProductDialog()}>
-                      <Plus className="h-4 w-4 mr-2" />
-                      Añadir Primer Producto
-                    </Button>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {products.map((product) => (
-                    <Card key={product.id} className="hover:shadow-lg transition-shadow">
-                      <CardHeader>
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <CardTitle className="text-lg">{product.name}</CardTitle>
-                            <CardDescription className="line-clamp-2">
-                              {product.description || "Sin descripción"}
-                            </CardDescription>
-                          </div>
-                          <Badge variant={product.is_available ? "default" : "secondary"}>
-                            {product.is_available ? "Disponible" : "No disponible"}
-                          </Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
-                          <div className="flex justify-between text-sm">
-                            <span>Precio:</span>
-                            <span className="font-semibold">
-                              {product.price ? `€${product.price}` : 'No definido'}
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span>Stock:</span>
-                            <span>{product.stock_quantity ?? 'Sin control'}</span>
-                          </div>
-                          {product.origin && (
-                            <div className="flex justify-between text-sm">
-                              <span>Origen:</span>
-                              <span>{product.origin}</span>
-                            </div>
-                          )}
-                          <div className="flex items-center justify-between pt-2">
-                            <div className="flex items-center gap-2">
-                              <Switch 
-                                checked={product.is_available}
-                                onCheckedChange={() => toggleProductAvailability(product)}
-                              />
-                              <span className="text-sm text-muted-foreground">Disponible</span>
-                            </div>
-                          </div>
-                          <div className="flex gap-2 pt-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="flex-1"
-                              onClick={() => openProductDialog(product)}
-                            >
-                              <Edit className="h-4 w-4 mr-1" />
-                              Editar
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-destructive hover:text-destructive"
-                              onClick={() => deleteProduct(product.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </div>
-          </TabsContent>
 
-          {/* Routes Tab */}
           <TabsContent value="routes">
             <div className="space-y-4">
               <h2 className="text-2xl font-semibold">Rutas donde apareces</h2>
@@ -788,84 +737,146 @@ export default function CompanyDashboard() {
 
           <TabsContent value="settings">
             <div className="space-y-6">
-              {/* Company Profile Settings */}
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Settings className="h-5 w-5" />
-                    Datos de la Empresa
-                  </CardTitle>
-                  <CardDescription>
-                    Gestiona la información visible de tu empresa
-                  </CardDescription>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Settings className="h-5 w-5" />
+                      Datos de la Empresa
+                    </CardTitle>
+                    <CardDescription>
+                      Los mismos datos que rellenaste en tu solicitud de verificación
+                    </CardDescription>
+                  </div>
+                  {editingSettings ? (
+                    <div className="flex gap-2">
+                      <Button onClick={saveCompanyProfile} disabled={savingCompany} size="sm">
+                        {savingCompany ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
+                        Guardar
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={cancelEditingSettings}>
+                        <X className="h-4 w-4 mr-2" />
+                        Cancelar
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button size="sm" onClick={() => setEditingSettings(true)}>
+                      <Edit className="h-4 w-4 mr-2" />
+                      Editar datos
+                    </Button>
+                  )}
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  {/* Email - never editable */}
+                  <div>
+                    <Label>Correo electrónico</Label>
+                    <Input
+                      value={user?.email || ""}
+                      readOnly
+                      className="bg-muted/50 cursor-default"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">El correo no se puede modificar</p>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="business_name">Nombre del Negocio</Label>
+                      <Label htmlFor="settings_business_name">Nombre del negocio *</Label>
                       <Input
-                        id="business_name"
+                        id="settings_business_name"
                         value={companyForm.business_name}
                         onChange={(e) => setCompanyForm({ ...companyForm, business_name: e.target.value })}
-                        placeholder="Nombre de tu empresa"
+                        placeholder="Ej: Quesería La Dehesa"
+                        readOnly={!editingSettings}
+                        className={!editingSettings ? 'bg-muted/50 cursor-default' : ''}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="phone">Teléfono</Label>
+                      <Label htmlFor="settings_contact_person">Persona de contacto *</Label>
                       <Input
-                        id="phone"
+                        id="settings_contact_person"
+                        value={companyForm.contact_person}
+                        onChange={(e) => setCompanyForm({ ...companyForm, contact_person: e.target.value })}
+                        placeholder="Tu nombre"
+                        readOnly={!editingSettings}
+                        className={!editingSettings ? 'bg-muted/50 cursor-default' : ''}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="settings_phone">Teléfono</Label>
+                      <Input
+                        id="settings_phone"
                         value={companyForm.phone}
                         onChange={(e) => setCompanyForm({ ...companyForm, phone: e.target.value })}
                         placeholder="+34 600 000 000"
+                        readOnly={!editingSettings}
+                        className={!editingSettings ? 'bg-muted/50 cursor-default' : ''}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="settings_website">Sitio Web</Label>
+                      <Input
+                        id="settings_website"
+                        value={companyForm.website}
+                        onChange={(e) => setCompanyForm({ ...companyForm, website: e.target.value })}
+                        placeholder="https://www.tuempresa.com"
+                        readOnly={!editingSettings}
+                        className={!editingSettings ? 'bg-muted/50 cursor-default' : ''}
                       />
                     </div>
                   </div>
+
                   <div>
-                    <Label htmlFor="address">Dirección</Label>
-                    <Input
-                      id="address"
-                      value={companyForm.address}
-                      onChange={(e) => setCompanyForm({ ...companyForm, address: e.target.value })}
-                      placeholder="Dirección completa"
-                    />
+                    <Label htmlFor="settings_address">Dirección</Label>
+                    {editingSettings ? (
+                      <AddressAutocompleteInput
+                        id="settings_address"
+                        value={companyForm.address}
+                        onChange={(e) => setCompanyForm({ ...companyForm, address: e.target.value })}
+                        onAddressSelect={(addr: AddressComponents) => {
+                          setCompanyForm(prev => ({ ...prev, address: addr.formatted_address }));
+                          setEditLatLng({ lat: addr.latitude, lng: addr.longitude });
+                        }}
+                        placeholder="Empieza a escribir tu dirección..."
+                        countryRestriction="es"
+                      />
+                    ) : (
+                      <Input
+                        value={companyForm.address}
+                        readOnly
+                        className="bg-muted/50 cursor-default"
+                        placeholder="Sin dirección"
+                      />
+                    )}
                   </div>
+
                   <div>
-                    <Label htmlFor="website">Sitio Web</Label>
-                    <Input
-                      id="website"
-                      value={companyForm.website}
-                      onChange={(e) => setCompanyForm({ ...companyForm, website: e.target.value })}
-                      placeholder="https://www.tuempresa.com"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="description">Descripción</Label>
+                    <Label htmlFor="settings_description">Cuéntanos sobre tu negocio</Label>
                     <Textarea
-                      id="description"
+                      id="settings_description"
                       value={companyForm.description}
                       onChange={(e) => setCompanyForm({ ...companyForm, description: e.target.value })}
-                      placeholder="Describe tu empresa, qué productos ofreces y qué te hace único..."
+                      placeholder="Historia, productos, métodos tradicionales..."
                       rows={4}
+                      readOnly={!editingSettings}
+                      className={!editingSettings ? 'bg-muted/50 cursor-default' : ''}
                     />
                   </div>
+
                   <div>
-                    <Label htmlFor="authenticity_story">Historia de Autenticidad</Label>
+                    <Label htmlFor="settings_authenticity_story">¿Por qué es auténtico tu negocio?</Label>
                     <Textarea
-                      id="authenticity_story"
+                      id="settings_authenticity_story"
                       value={companyForm.authenticity_story}
                       onChange={(e) => setCompanyForm({ ...companyForm, authenticity_story: e.target.value })}
-                      placeholder="Cuenta la historia de tu empresa, tu tradición familiar, valores..."
+                      placeholder="Qué te hace diferente, tradiciones, compromiso..."
                       rows={4}
+                      readOnly={!editingSettings}
+                      className={!editingSettings ? 'bg-muted/50 cursor-default' : ''}
                     />
                   </div>
-                  <Button onClick={saveCompanyProfile} disabled={savingCompany} className="w-full md:w-auto">
-                    {savingCompany ? (
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    ) : (
-                      <Save className="h-4 w-4 mr-2" />
-                    )}
-                    Guardar Cambios
-                  </Button>
                 </CardContent>
               </Card>
 
