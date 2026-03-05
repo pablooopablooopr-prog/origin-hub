@@ -109,7 +109,12 @@ export default function CompanyAuth() {
   }, []);
 
   const checkCompanyStatus = useCallback(async (userId: string) => {
-    const { data, error } = await supabase.rpc("get_my_company_approval_status");
+    const { data: companyRows, error } = await supabase
+      .from("companies")
+      .select("id, business_name, status")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(1);
 
     if (error) {
       console.error("checkCompanyStatus error:", error);
@@ -117,7 +122,10 @@ export default function CompanyAuth() {
       return;
     }
 
-    const row = (Array.isArray(data) ? data[0] : data) as CompanyApprovalStatusRow | null;
+    const firstRow = companyRows?.[0] ?? null;
+    const row: CompanyApprovalStatusRow | null = firstRow
+      ? { company_id: firstRow.id, business_name: firstRow.business_name, status: firstRow.status ?? "pending" }
+      : null;
 
     if (row) {
       setExistingCompany({
@@ -299,10 +307,18 @@ export default function CompanyAuth() {
 
     try {
       // Si ya existe empresa, no insertes otra
-      const { data: statusData, error: exErr } = await supabase.rpc("get_my_company_approval_status");
+      const { data: statusRows, error: exErr } = await supabase
+        .from("companies")
+        .select("id, business_name, status")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1);
 
       if (exErr) throw exErr;
-      const existing = (Array.isArray(statusData) ? statusData[0] : statusData) as CompanyApprovalStatusRow | null;
+      const existingRow = statusRows?.[0] ?? null;
+      const existing: CompanyApprovalStatusRow | null = existingRow
+        ? { company_id: existingRow.id, business_name: existingRow.business_name, status: existingRow.status ?? "pending" }
+        : null;
       if (existing?.company_id) {
         toast.success("Ya tienes una solicitud creada. Te llevamos al estado.");
         await checkCompanyStatus(user.id);

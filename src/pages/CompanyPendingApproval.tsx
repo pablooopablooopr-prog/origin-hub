@@ -26,8 +26,16 @@ export default function CompanyPendingApproval() {
         return;
       }
 
-      const { data } = await supabase.rpc("get_my_company_approval_status");
-      const row = (Array.isArray(data) ? data[0] : data) as CompanyApprovalStatusRow | null;
+      const { data: companyRows } = await supabase
+        .from("companies")
+        .select("id, business_name, status")
+        .eq("user_id", sessionData.session.user.id)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      const firstRow = companyRows?.[0] ?? null;
+      const row: CompanyApprovalStatusRow | null = firstRow
+        ? { company_id: firstRow.id, business_name: firstRow.business_name, status: firstRow.status ?? "pending" }
+        : null;
 
       if (!row) {
         navigate("/company-auth");
