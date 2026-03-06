@@ -721,40 +721,6 @@ const EditarRuta = () => {
           <div className="lg:col-span-1 space-y-4">
             <RouteMap routeTitle={routeName || "Mi Ruta"} stopsCount={stops.length} />
             
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm">Acciones</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Button onClick={() => handleSave(false)} variant="outline" className="w-full" disabled={isSubmitting}>
-                  <Save className="w-4 h-4 mr-2" />
-                  Guardar cambios
-                </Button>
-                <Button onClick={() => handleSave(true)} className="w-full" disabled={isSubmitting}>
-                  Publicar ruta
-                </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive" className="w-full">
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Eliminar ruta
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>¿Eliminar ruta?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Esta acción no se puede deshacer.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDelete}>Eliminar</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
