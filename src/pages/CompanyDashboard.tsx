@@ -635,10 +635,10 @@ export default function CompanyDashboard() {
                               size="sm"
                               variant="outline"
                               className="flex-1"
-                              onClick={() => navigate(`/editar-pack/${pack.id}`)}
+                              onClick={() => navigate(`/pack/${pack.slug}`)}
                             >
-                              <Edit className="h-4 w-4 mr-1" />
-                              Editar
+                              <Eye className="h-4 w-4 mr-1" />
+                              Ver
                             </Button>
                             <Button
                               size="sm"
@@ -647,15 +647,13 @@ export default function CompanyDashboard() {
                             >
                               <Copy className="h-4 w-4" />
                             </Button>
-                            {pack.status === 'published' && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => window.open(`/pack/${pack.slug}`, '_blank')}
-                              >
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                            )}
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => deletePack(pack.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
                         </div>
                       </CardContent>
