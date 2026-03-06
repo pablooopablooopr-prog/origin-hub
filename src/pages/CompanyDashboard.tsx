@@ -427,8 +427,6 @@ export default function CompanyDashboard() {
   };
 
   const deleteProduct = async (productId: string) => {
-    if (!confirm("¿Estás seguro de eliminar este producto?")) return;
-
     try {
       const { error } = await supabase
         .from('products')
