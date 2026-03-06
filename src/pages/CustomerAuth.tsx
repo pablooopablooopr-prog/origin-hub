@@ -60,6 +60,7 @@ const CustomerAuth = () => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
+        setRedirecting(true);
         await postLoginRedirect(navigate, "/mi-cuenta");
         return;
       }
