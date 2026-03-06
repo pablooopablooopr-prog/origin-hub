@@ -282,6 +282,50 @@ const CustomerDashboard = () => {
         const regionRaw = routeRaw ? (Array.isArray(routeRaw.region) ? routeRaw.region[0] : routeRaw.region) : null;
         return { ...r, route: routeRaw ? { ...routeRaw, region: regionRaw } : null };
       }));
+
+      // Load routes created by the user
+      const { data: createdRoutesData } = await supabase
+        .from('routes')
+        .select('id, title, slug, duration, total_stops, is_public, is_active, created_at, image_url')
+        .eq('created_by', userId)
+        .order('created_at', { ascending: false });
+
+      setCreatedRoutes((createdRoutesData || []) as CreatedRoute[]);
+
+      // Load favorite companies
+      const { data: favCompaniesData } = await supabase
+        .from('favorite_companies')
+        .select(`
+          id,
+          company_id,
+          company:companies_public(id, business_name, slug, logo_url, description)
+        `)
+        .eq('customer_id', customerData.id);
+
+      setFavoriteCompanies((favCompaniesData || []).map((fc: any) => ({
+        ...fc,
+        company: Array.isArray(fc.company) ? fc.company[0] : fc.company
+      })));
+
+      // Load purchased routes
+      const { data: purchasedRoutesData } = await supabase
+        .from('route_purchases')
+        .select(`
+          id,
+          route_id,
+          num_people,
+          final_price,
+          purchased_at,
+          route:routes(id, title, slug, duration, total_stops, image_url)
+        `)
+        .eq('customer_id', customerData.id)
+        .eq('payment_status', 'completed')
+        .order('purchased_at', { ascending: false });
+
+      setPurchasedRoutes((purchasedRoutesData || []).map((pr: any) => ({
+        ...pr,
+        route: Array.isArray(pr.route) ? pr.route[0] : pr.route
+      })));
     } catch (error: any) {
       toast({
         title: "Error",
