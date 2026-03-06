@@ -71,16 +71,16 @@ const Footer = () => {
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-secondary" />
-                <span className="text-primary-foreground/80">hola@origen.es</span>
+                <span className="text-primary-foreground/80">info@origen.it.com</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-secondary" />
-                <span className="text-primary-foreground/80">+34 900 123 456</span>
+                <span className="text-primary-foreground/80">+34 633 804 448</span>
               </div>
               <div className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-secondary mt-1" />
                 <span className="text-primary-foreground/80">
-                  Presente en toda la península
+                  Ciudad Real, España
                 </span>
               </div>
             </div>
