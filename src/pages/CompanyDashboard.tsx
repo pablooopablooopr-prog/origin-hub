@@ -612,7 +612,7 @@ export default function CompanyDashboard() {
                         <div className="flex justify-between items-start">
                           <div>
                             <CardTitle className="text-lg">{pack.title}</CardTitle>
-                            <CardDescription>{pack.template.name}</CardDescription>
+                            <CardDescription>{pack.template?.name || 'Pack'}</CardDescription>
                           </div>
                           <Badge
                             variant={pack.status === 'published' ? 'default' : pack.status === 'draft' ? 'secondary' : 'destructive'}
