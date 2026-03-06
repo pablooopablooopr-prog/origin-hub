@@ -107,6 +107,7 @@ export default function CompanyDashboard() {
     authenticity_story: ""
   });
   const [editLatLng, setEditLatLng] = useState<{ lat: number | null; lng: number | null }>({ lat: null, lng: null });
+  const [confirmDelete, setConfirmDelete] = useState<{ type: 'route' | 'pack' | 'product'; id: string; title: string } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
