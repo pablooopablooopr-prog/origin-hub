@@ -47,6 +47,7 @@ const CustomerAuth = () => {
   const [phone, setPhone] = useState("+34 ");
 
   const [loading, setLoading] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const [lastSignupEmail, setLastSignupEmail] = useState<string>("");
   const [showResendOnLogin, setShowResendOnLogin] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
