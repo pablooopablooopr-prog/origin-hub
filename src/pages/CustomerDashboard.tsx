@@ -80,11 +80,54 @@ interface SavedRoute {
   } | null;
 }
 
+interface CreatedRoute {
+  id: string;
+  title: string;
+  slug: string;
+  duration: string | null;
+  total_stops: number | null;
+  is_public: boolean | null;
+  is_active: boolean | null;
+  created_at: string;
+  image_url: string | null;
+}
+
+interface FavoriteCompany {
+  id: string;
+  company_id: string;
+  company?: {
+    id: string;
+    business_name: string;
+    slug: string | null;
+    logo_url: string | null;
+    description: string | null;
+  } | null;
+}
+
+interface PurchasedRoute {
+  id: string;
+  route_id: string;
+  num_people: number;
+  final_price: number;
+  purchased_at: string;
+  route?: {
+    id: string;
+    title: string;
+    slug: string;
+    duration: string | null;
+    total_stops: number | null;
+    image_url: string | null;
+  } | null;
+}
+
 const CustomerDashboard = () => {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [savedRoutes, setSavedRoutes] = useState<SavedRoute[]>([]);
+  const [createdRoutes, setCreatedRoutes] = useState<CreatedRoute[]>([]);
+  const [favoriteCompanies, setFavoriteCompanies] = useState<FavoriteCompany[]>([]);
+  const [purchasedRoutes, setPurchasedRoutes] = useState<PurchasedRoute[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   
