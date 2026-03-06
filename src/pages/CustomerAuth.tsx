@@ -208,6 +208,7 @@ const CustomerAuth = () => {
 
     if (error) throw error;
 
+    setRedirecting(true);
     await postLoginRedirect(navigate, "/mi-cuenta");
     return;
   } catch (error: any) {
