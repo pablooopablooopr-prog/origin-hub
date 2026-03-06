@@ -736,11 +736,11 @@ export default function CompanyDashboard() {
                             </div>
                           </div>
                           <div className="flex gap-2 flex-shrink-0">
-                            <Button size="sm" variant="outline" onClick={() => navigate(`/editar-ruta/${route.slug}`)}>
-                              <Edit className="h-4 w-4 mr-1" /> Editar
-                            </Button>
                             <Button size="sm" variant="outline" onClick={() => navigate(`/rutas/${route.slug || route.id}`)}>
-                              <Eye className="h-4 w-4" />
+                              <Eye className="h-4 w-4 mr-1" /> Ver
+                            </Button>
+                            <Button size="sm" variant="destructive" onClick={() => deleteRoute(route.id)}>
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </CardContent>

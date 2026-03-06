@@ -1064,19 +1064,30 @@ const CustomerDashboard = () => {
                           </div>
                           <div className="flex gap-2">
                             <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => navigate(`/editar-ruta/${route.slug}`)}
-                            >
-                              Editar
-                            </Button>
-                            <Button
                               variant="default"
                               size="sm"
                               className="bg-[#8B7355] hover:bg-[#7A6449]"
                               onClick={() => navigate(`/rutas/${route.slug}`)}
                             >
                               Ver
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={async () => {
+                                if (!confirm("¿Estás seguro de eliminar esta ruta?")) return;
+                                try {
+                                  await supabase.from('route_stops').delete().eq('route_id', route.id);
+                                  const { error } = await supabase.from('routes').delete().eq('id', route.id);
+                                  if (error) throw error;
+                                  setCreatedRoutes(createdRoutes.filter(r => r.id !== route.id));
+                                  toast({ title: "Ruta eliminada" });
+                                } catch (err: any) {
+                                  toast({ title: "Error", description: err.message, variant: "destructive" });
+                                }
+                              }}
+                            >
+                              <Trash2 className="w-4 h-4" />
                             </Button>
                           </div>
                         </CardContent>
