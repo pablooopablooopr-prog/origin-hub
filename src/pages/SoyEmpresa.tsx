@@ -178,15 +178,15 @@ const SoyEmpresa = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
               <div className="flex items-center justify-center space-x-2">
                 <Phone className="w-5 h-5 text-secondary" />
-                <span className="text-muted-foreground">+34 900 123 456</span>
+                <span className="text-muted-foreground">+34 633 804 448</span>
               </div>
               <div className="flex items-center justify-center space-x-2">
                 <Mail className="w-5 h-5 text-secondary" />
-                <span className="text-muted-foreground">empresas@origen.es</span>
+                <span className="text-muted-foreground">info@origen.it.com</span>
               </div>
               <div className="flex items-center justify-center space-x-2">
                 <MapPin className="w-5 h-5 text-secondary" />
-                <span className="text-muted-foreground">Madrid, España</span>
+                <span className="text-muted-foreground">Ciudad Real, España</span>
               </div>
             </div>
             <div className="mt-6 text-center">
