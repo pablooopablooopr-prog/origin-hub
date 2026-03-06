@@ -10,7 +10,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { MapPin, Plus, X, Save, Trash2, Clock, Route, Users, Loader2, Check } from "lucide-react";
+import { MapPin, Plus, X, Save, Trash2, Clock, Route, Users, Loader2, Check, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RouteMap from "@/components/RouteMap";
 import { supabase } from "@/integrations/supabase/client";
@@ -336,6 +336,46 @@ const EditarRuta = () => {
     <div className="min-h-screen">
       <Header />
       
+      {/* Sticky Top Bar - Back / Save / Publish */}
+      <section className="border-b sticky top-0 z-50 bg-secondary">
+        <div className="max-w-6xl mx-auto px-6 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate(-1)}
+                className="text-secondary-foreground hover:bg-white/20"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Volver
+              </Button>
+              <span className="text-secondary-foreground font-medium">
+                {routeId ? 'Editando Ruta' : 'Crear Nueva Ruta'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigate(-1)}
+                className="bg-white/90 hover:bg-white text-secondary"
+              >
+                Cancelar
+              </Button>
+              <Button onClick={() => handleSave(false)} variant="outline" size="sm" disabled={isSubmitting} className="bg-white/90 hover:bg-white text-secondary">
+                <Save className="w-4 h-4 mr-2" />
+                Guardar borrador
+              </Button>
+              <Button onClick={() => handleSave(true)} size="sm" disabled={isSubmitting} className="bg-green-600 hover:bg-green-700 text-white">
+                {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                Publicar
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section - Editable */}
       <section className="py-8 bg-gradient-warm enso-watermark relative">
         <div className="container mx-auto px-6">
@@ -344,16 +384,6 @@ const EditarRuta = () => {
               <Badge variant={isPublic ? "default" : "secondary"}>
                 {isPublic ? "Pública" : "Privada"}
               </Badge>
-              <div className="flex gap-2">
-                <Button onClick={() => handleSave(false)} variant="outline" size="sm" disabled={isSubmitting}>
-                  <Save className="w-4 h-4 mr-2" />
-                  Guardar
-                </Button>
-                <Button onClick={() => handleSave(true)} size="sm" disabled={isSubmitting}>
-                  {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                  Publicar
-                </Button>
-              </div>
             </div>
 
             <div className="text-center mb-6">

@@ -1,18 +1,36 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X, ShoppingCart, User } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { isAdminUser } from "@/lib/auth/isAdmin";
 import { NotificationsDropdown } from "@/components/NotificationsDropdown";
 import { useProducerCarts } from "@/hooks/useProducerCarts";
 
+type UserType = "customer" | "company" | null;
+
+const ACCOUNT_ROUTES = ["/mi-cuenta", "/company-dashboard"];
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [userType, setUserType] = useState<UserType>(null);
   const { totalItemCount: itemCount } = useProducerCarts();
+  const location = useLocation();
+
+  const isOnAccountPage = ACCOUNT_ROUTES.some((r) => location.pathname.startsWith(r));
+
+  const detectUserType = async (userId: string) => {
+    // Check if user has a company profile
+    const { data: company } = await supabase
+      .from("companies")
+      .select("id")
+      .eq("user_id", userId)
+      .maybeSingle();
+    setUserType(company ? "company" : "customer");
+  };
 
   const refreshAdmin = async (sessionUserId?: string) => {
     const admin = await isAdminUser(sessionUserId);
@@ -23,18 +41,34 @@ const Header = () => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
-      await refreshAdmin(session?.user?.id);
+      if (session?.user?.id) {
+        await Promise.all([refreshAdmin(session.user.id), detectUserType(session.user.id)]);
+      } else {
+        setUserType(null);
+      }
     };
 
     checkSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setIsAuthenticated(!!session);
-      await refreshAdmin(session?.user?.id);
+      if (session?.user?.id) {
+        await Promise.all([refreshAdmin(session.user.id), detectUserType(session.user.id)]);
+      } else {
+        setUserType(null);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const accountLink = userType === "company" ? "/company-dashboard" : "/mi-cuenta";
+  const accountColor = userType === "company"
+    ? "hsl(var(--secondary))"   // green for companies
+    : "hsl(var(--primary))";     // brown for customers
+  const accountFgColor = userType === "company"
+    ? "hsl(var(--secondary-foreground))"
+    : "hsl(var(--primary-foreground))";
 
   return <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 py-3">
@@ -84,23 +118,40 @@ const Header = () => {
                 )}
               </Button>
             </Link>
-            <Link to="/soy-empresa">
-              <Button variant="secondary" size="sm">
-                Soy Empresa
-              </Button>
-            </Link>
-            {isAuthenticated ? (
-              <Link to="/mi-cuenta">
-                <Button variant="default" size="sm">
+            {isAuthenticated && isOnAccountPage ? (
+              <Link to={accountLink}>
+                <Button size="sm" style={{ backgroundColor: accountColor, color: accountFgColor }}>
                   <User className="w-4 h-4 mr-2" />
                   Mi Cuenta
-                  {isAdmin && <span className="ml-2 rounded border px-2 py-0.5 text-[10px] font-semibold tracking-wide">ADMIN</span>}
+                  {isAdmin && <span className="ml-2 rounded border border-white/30 px-2 py-0.5 text-[10px] font-semibold tracking-wide">ADMIN</span>}
                 </Button>
               </Link>
+            ) : isAuthenticated ? (
+              <>
+                <Link to="/soy-empresa">
+                  <Button variant="secondary" size="sm">
+                    Soy Empresa
+                  </Button>
+                </Link>
+                <Link to={accountLink}>
+                  <Button variant="default" size="sm">
+                    <User className="w-4 h-4 mr-2" />
+                    Mi Cuenta
+                    {isAdmin && <span className="ml-2 rounded border px-2 py-0.5 text-[10px] font-semibold tracking-wide">ADMIN</span>}
+                  </Button>
+                </Link>
+              </>
             ) : (
-              <Link to="/customer-auth">
-                <Button variant="default" size="sm">Log in</Button>
-              </Link>
+              <>
+                <Link to="/soy-empresa">
+                  <Button variant="secondary" size="sm">
+                    Soy Empresa
+                  </Button>
+                </Link>
+                <Link to="/customer-auth">
+                  <Button variant="default" size="sm">Log in</Button>
+                </Link>
+              </>
             )}
           </div>
 
@@ -140,25 +191,42 @@ const Header = () => {
                     Mis Carritos {itemCount > 0 && `(${itemCount})`}
                   </Button>
                 </Link>
-                <Link to="/soy-empresa" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="secondary" size="sm" className="w-full">
-                    Soy Empresa
-                  </Button>
-                </Link>
-                {isAuthenticated ? (
-                  <Link to="/mi-cuenta" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="default" size="sm" className="w-full">
+                {isAuthenticated && isOnAccountPage ? (
+                  <Link to={accountLink} onClick={() => setIsMenuOpen(false)}>
+                    <Button size="sm" className="w-full" style={{ backgroundColor: accountColor, color: accountFgColor }}>
                       <User className="w-4 h-4 mr-2" />
                       Mi Cuenta
-                      {isAdmin && <span className="ml-2 rounded border px-2 py-0.5 text-[10px] font-semibold tracking-wide">ADMIN</span>}
+                      {isAdmin && <span className="ml-2 rounded border border-white/30 px-2 py-0.5 text-[10px] font-semibold tracking-wide">ADMIN</span>}
                     </Button>
                   </Link>
+                ) : isAuthenticated ? (
+                  <>
+                    <Link to="/soy-empresa" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="secondary" size="sm" className="w-full">
+                        Soy Empresa
+                      </Button>
+                    </Link>
+                    <Link to={accountLink} onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="default" size="sm" className="w-full">
+                        <User className="w-4 h-4 mr-2" />
+                        Mi Cuenta
+                        {isAdmin && <span className="ml-2 rounded border px-2 py-0.5 text-[10px] font-semibold tracking-wide">ADMIN</span>}
+                      </Button>
+                    </Link>
+                  </>
                 ) : (
-                  <Link to="/customer-auth" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="default" size="sm" className="w-full">
-                      Log in
-                    </Button>
-                  </Link>
+                  <>
+                    <Link to="/soy-empresa" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="secondary" size="sm" className="w-full">
+                        Soy Empresa
+                      </Button>
+                    </Link>
+                    <Link to="/customer-auth" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="default" size="sm" className="w-full">
+                        Log in
+                      </Button>
+                    </Link>
+                  </>
                 )}
               </div>
             </nav>
