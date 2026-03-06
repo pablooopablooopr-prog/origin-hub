@@ -427,8 +427,6 @@ export default function CompanyDashboard() {
   };
 
   const deleteProduct = async (productId: string) => {
-    if (!confirm("¿Estás seguro de eliminar este producto?")) return;
-
     try {
       const { error } = await supabase
         .from('products')
@@ -614,7 +612,7 @@ export default function CompanyDashboard() {
                         <div className="flex justify-between items-start">
                           <div>
                             <CardTitle className="text-lg">{pack.title}</CardTitle>
-                            <CardDescription>{pack.template.name}</CardDescription>
+                            <CardDescription>{pack.template?.name || 'Pack'}</CardDescription>
                           </div>
                           <Badge
                             variant={pack.status === 'published' ? 'default' : pack.status === 'draft' ? 'secondary' : 'destructive'}
@@ -642,7 +640,7 @@ export default function CompanyDashboard() {
                               size="sm"
                               variant="outline"
                               className="flex-1"
-                              onClick={() => navigate(`/pack/${pack.slug}`)}
+                              onClick={() => navigate(`/packs/${pack.slug}`)}
                             >
                               <Eye className="h-4 w-4 mr-1" />
                               Ver
