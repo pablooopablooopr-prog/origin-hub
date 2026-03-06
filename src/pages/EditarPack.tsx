@@ -63,6 +63,19 @@ const TAG_PRESETS = [
   "Montaña", "Costa", "Rural", "Familiar", "Sorpresa",
 ];
 
+const SHIPPING_PRESETS = [
+  "Envío gratuito en Península",
+  "Envío en 24-48h",
+  "Envío refrigerado incluido",
+  "Gastos de envío: 4,95€",
+  "Envío gratis a partir de 50€",
+  "Recogida en tienda disponible",
+  "No se envía a Canarias, Ceuta o Melilla",
+  "Envío asegurado contra roturas",
+  "Embalaje especial para productos frágiles",
+  "Seguimiento del pedido por email",
+];
+
 const FIXED_PRICES: Record<string, number> = {
   raiz: 35,
   esencia: 60,
@@ -863,12 +876,39 @@ const EditarPack = () => {
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base">Política de Envío</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-3">
+                  <div className="flex flex-wrap gap-1.5">
+                    {SHIPPING_PRESETS.map((preset) => {
+                      const lines = shippingPolicy.split('\n').filter(Boolean);
+                      const selected = lines.includes(preset);
+                      return (
+                        <Badge
+                          key={preset}
+                          variant={selected ? "default" : "outline"}
+                          className={`cursor-pointer transition-all text-[10px] px-2 py-1 ${
+                            selected
+                              ? "bg-primary hover:bg-primary/80"
+                              : "hover:bg-primary/10 hover:border-primary/30"
+                          }`}
+                          onClick={() => {
+                            if (selected) {
+                              setShippingPolicy(lines.filter(l => l !== preset).join('\n'));
+                            } else {
+                              setShippingPolicy([...lines, preset].join('\n'));
+                            }
+                          }}
+                        >
+                          {selected && <Check className="w-2.5 h-2.5 mr-0.5" />}
+                          {preset}
+                        </Badge>
+                      );
+                    })}
+                  </div>
                   <Textarea
                     value={shippingPolicy}
                     onChange={(e) => setShippingPolicy(e.target.value)}
-                    placeholder="Describe tu política de envío..."
-                    rows={3}
+                    placeholder="O escribe tu propia política..."
+                    rows={2}
                     className="text-sm"
                   />
                 </CardContent>
