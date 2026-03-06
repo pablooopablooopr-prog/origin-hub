@@ -286,8 +286,9 @@ export default function CompanyAuth() {
     setLoading(true);
 
     try {
+      setRedirecting(true);
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
+      if (error) { setRedirecting(false); throw error; }
       await postLoginRedirect(navigate, "/company-dashboard");
       return;
     } catch (err: any) {
