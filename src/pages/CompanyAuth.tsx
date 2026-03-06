@@ -75,6 +75,7 @@ export default function CompanyAuth() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
 
   const [companyData, setCompanyData] = useState({
     business_name: "",
