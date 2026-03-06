@@ -32,6 +32,37 @@ const availableAttributes = [
   "Sin gluten", "Denominación de origen", "Temporada", "Edición limitada", "Tradicional"
 ];
 
+const SUSTAINABILITY_OPTIONS = [
+  "Empaque 100% reciclable",
+  "Productos de km 0",
+  "Sin plásticos de un solo uso",
+  "Materiales biodegradables",
+  "Producción con energía renovable",
+  "Agricultura ecológica certificada",
+  "Comercio justo",
+  "Huella de carbono compensada",
+  "Envases reutilizables",
+  "Tintas vegetales en etiquetado",
+  "Producción artesanal sin residuos",
+  "Ingredientes de temporada",
+  "Apoyo a economía rural local",
+  "Reducción de desperdicio alimentario",
+  "Cultivo sin pesticidas",
+  "Bienestar animal garantizado",
+  "Transporte en frío sostenible",
+  "Colaboración con cooperativas locales",
+];
+
+const TAG_PRESETS = [
+  "Artesano", "Vegano", "Ecológico", "Sin gluten", "Km 0",
+  "Gourmet", "Tradicional", "Bio", "Denominación de origen", "Premium",
+  "Temporada", "Edición limitada", "Apto celíacos", "Sin lactosa",
+  "Producción local", "Maridaje", "Regalo", "Navidad", "Para compartir",
+  "Selección", "Degustación", "Sabor intenso", "Ahumado", "Curado",
+  "Dulce", "Salado", "Picante", "Mediterráneo", "Ibérico",
+  "Montaña", "Costa", "Rural", "Familiar", "Sorpresa",
+];
+
 const FIXED_PRICES: Record<string, number> = {
   raiz: 35,
   esencia: 60,
