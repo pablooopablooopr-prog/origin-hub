@@ -757,10 +757,51 @@ const CustomerDashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-8">
-                  <Store className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-30" />
-                  <p className="text-muted-foreground">Próximamente podrás seguir a tus productores favoritos</p>
-                </div>
+                {favoriteCompanies.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Store className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-30" />
+                    <p className="text-muted-foreground">No sigues a ningún productor aún</p>
+                    <Button 
+                      variant="outline"
+                      className="mt-3"
+                      onClick={() => navigate('/mapa')}
+                    >
+                      Descubrir Productores
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {favoriteCompanies.map((fc) => (
+                      <Card key={fc.id} className="hover:shadow-lg transition-shadow">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center gap-3">
+                            {fc.company?.logo_url ? (
+                              <img src={fc.company.logo_url} alt={fc.company.business_name} className="w-10 h-10 rounded-full object-cover" />
+                            ) : (
+                              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                <Store className="w-5 h-5 text-primary" />
+                              </div>
+                            )}
+                            <CardTitle className="text-base">{fc.company?.business_name || "Productor"}</CardTitle>
+                          </div>
+                          {fc.company?.description && (
+                            <CardDescription className="line-clamp-2 mt-2">{fc.company.description}</CardDescription>
+                          )}
+                        </CardHeader>
+                        <CardContent>
+                          <Button
+                            variant="default"
+                            className="w-full bg-[#8B7355] hover:bg-[#7A6449]"
+                            size="sm"
+                            onClick={() => navigate(`/negocio/${fc.company?.slug || fc.company_id}`)}
+                          >
+                            Ver Productor
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
