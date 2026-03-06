@@ -193,7 +193,9 @@ export default function CompanyAuth() {
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (!mounted || redirecting) return;
+      if (!mounted || redirectingRef.current) return;
+
+      setCheckingAuth(true);
 
       if (session?.user) {
         setUser(session.user);
@@ -203,7 +205,7 @@ export default function CompanyAuth() {
         setUser(null);
         setExistingCompany(null);
       }
-      setCheckingAuth(false);
+      if (mounted) setCheckingAuth(false);
     });
 
     return () => {
