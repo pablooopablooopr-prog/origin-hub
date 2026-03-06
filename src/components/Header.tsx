@@ -71,6 +71,9 @@ const Header = () => {
     ? "hsl(var(--secondary-foreground))"
     : "hsl(var(--primary-foreground))";
 
+  // Hide entire header for logged-in company users
+  if (userType === "company") return null;
+
   return <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
@@ -82,8 +85,7 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Navegación desktop - oculta para empresas logueadas */}
-          {userType !== "company" && (
+          {/* Navegación desktop */}
             <nav className="hidden md:flex items-center space-x-8">
               <Link to="/mapa" className="text-muted-foreground hover:text-primary transition-colors">
                 Mapa
@@ -106,14 +108,6 @@ const Header = () => {
                 </Link>
               )}
             </nav>
-          )}
-          {userType === "company" && isAdmin && (
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link to="/admin/companies" className="text-muted-foreground hover:text-primary transition-colors">
-                Admin
-              </Link>
-            </nav>
-          )}
 
           {/* Botones de acción */}
           <div className="hidden md:flex items-center space-x-4">
@@ -174,8 +168,6 @@ const Header = () => {
         {/* Menu mobile desplegable */}
         {isMenuOpen && <div className="md:hidden mt-4 pb-4 border-t border-border">
             <nav className="flex flex-col space-y-4 pt-4">
-              {userType !== "company" && (
-                <>
                   <Link to="/mapa" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                     Mapa
                   </Link>
@@ -191,8 +183,6 @@ const Header = () => {
                   <Link to="/sobre-origen" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                     Historia
                   </Link>
-                </>
-              )}
               {isAdmin && (
                 <Link to="/admin/companies" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                   Admin
