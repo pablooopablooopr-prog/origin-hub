@@ -192,7 +192,7 @@ export default function CompanyAuth() {
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (!mounted) return;
+      if (!mounted || redirecting) return;
 
       if (session?.user) {
         setUser(session.user);
