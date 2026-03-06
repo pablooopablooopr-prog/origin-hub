@@ -13,7 +13,7 @@ interface RoutePracticalInfoProps {
   difficulty: string;
 }
 
-const RoutePracticalInfo = ({ practicalInfo, difficulty }: RoutePracticalInfoProps) => {
+const RoutePracticalInfo = React.forwardRef<HTMLDivElement, RoutePracticalInfoProps>(({ practicalInfo, difficulty }, ref) => {
   const getDifficultyColor = (level: string) => {
     switch (level.toLowerCase()) {
       case 'fácil':
