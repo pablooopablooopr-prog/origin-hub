@@ -85,8 +85,7 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Navegación desktop - oculta para empresas logueadas */}
-          {userType !== "company" && (
+          {/* Navegación desktop */}
             <nav className="hidden md:flex items-center space-x-8">
               <Link to="/mapa" className="text-muted-foreground hover:text-primary transition-colors">
                 Mapa
@@ -109,14 +108,6 @@ const Header = () => {
                 </Link>
               )}
             </nav>
-          )}
-          {userType === "company" && isAdmin && (
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link to="/admin/companies" className="text-muted-foreground hover:text-primary transition-colors">
-                Admin
-              </Link>
-            </nav>
-          )}
 
           {/* Botones de acción */}
           <div className="hidden md:flex items-center space-x-4">
