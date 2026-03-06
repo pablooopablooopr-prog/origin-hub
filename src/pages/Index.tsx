@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import InteractiveMap from "@/components/InteractiveMap";
@@ -8,15 +9,35 @@ import Footer from "@/components/Footer";
 import PackTypeCards from "@/components/PackTypeCards";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+
 const Index = () => {
   const navigate = useNavigate();
+  const [isCompanyUser, setIsCompanyUser] = useState(false);
+
+  useEffect(() => {
+    const check = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user?.id) { setIsCompanyUser(false); return; }
+      const { data } = await supabase
+        .from("companies")
+        .select("id")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+      setIsCompanyUser(!!data);
+    };
+    check();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => check());
+    return () => subscription.unsubscribe();
+  }, []);
+
   const handleSearchPacks = () => {
     navigate('/packs');
   };
   return <div className="min-h-screen">
       <Header />
       <main>
-        <Hero />
+        {!isCompanyUser && <Hero />}
         <InteractiveMap />
         
         {/* Pack Exploration Section */}

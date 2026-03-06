@@ -43,7 +43,7 @@ const SoyEmpresa = () => {
     {
       number: "3",
       title: "Verificación",
-      description: "Revisamos tu solicitud en menos de 48 horas"
+      description: "Revisamos tu solicitud en menos de 24 horas"
     },
     {
       number: "4",
