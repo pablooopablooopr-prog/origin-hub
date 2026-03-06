@@ -1075,18 +1075,7 @@ const CustomerDashboard = () => {
                             <Button
                               variant="destructive"
                               size="sm"
-                              onClick={async () => {
-                                if (!confirm("¿Estás seguro de eliminar esta ruta?")) return;
-                                try {
-                                  await supabase.from('route_stops').delete().eq('route_id', route.id);
-                                  const { error } = await supabase.from('routes').delete().eq('id', route.id);
-                                  if (error) throw error;
-                                  setCreatedRoutes(createdRoutes.filter(r => r.id !== route.id));
-                                  toast({ title: "Ruta eliminada" });
-                                } catch (err: any) {
-                                  toast({ title: "Error", description: err.message, variant: "destructive" });
-                                }
-                              }}
+                              onClick={() => setDeleteRouteConfirm({ id: route.id, title: route.title })}
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>
