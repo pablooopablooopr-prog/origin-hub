@@ -476,7 +476,7 @@ const CustomerAuth = () => {
                       Si no lo ves, revisa "Promociones" o "Spam".
                     </p>
 
-                    <p className="text-[11px] text-muted-foreground text-center mt-2">
+                    <p className="text-[11px] text-secondary font-medium text-center mt-2">
                       * Los campos con asterisco son obligatorios.
                     </p>
                   </form>

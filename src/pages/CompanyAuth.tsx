@@ -599,7 +599,7 @@ export default function CompanyAuth() {
                   )}
                 </Button>
 
-                <p className="text-[11px] text-muted-foreground text-center mt-2">
+                <p className="text-[11px] text-secondary font-medium text-center mt-2">
                   * Los campos con asterisco son obligatorios.
                 </p>
               </form>
@@ -745,7 +745,7 @@ export default function CompanyAuth() {
                       Te llegará un email de confirmación para activar tu cuenta.
                     </p>
 
-                    <p className="text-[11px] text-muted-foreground text-center mt-2">
+                    <p className="text-[11px] text-secondary font-medium text-center mt-2">
                       * Los campos con asterisco son obligatorios.
                     </p>
                   </form>
