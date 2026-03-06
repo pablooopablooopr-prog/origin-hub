@@ -47,6 +47,7 @@ const CustomerAuth = () => {
   const [phone, setPhone] = useState("+34 ");
 
   const [loading, setLoading] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const [lastSignupEmail, setLastSignupEmail] = useState<string>("");
   const [showResendOnLogin, setShowResendOnLogin] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
@@ -59,6 +60,7 @@ const CustomerAuth = () => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
+        setRedirecting(true);
         await postLoginRedirect(navigate, "/mi-cuenta");
         return;
       }
@@ -206,6 +208,7 @@ const CustomerAuth = () => {
 
     if (error) throw error;
 
+    setRedirecting(true);
     await postLoginRedirect(navigate, "/mi-cuenta");
     return;
   } catch (error: any) {
@@ -278,6 +281,17 @@ const CustomerAuth = () => {
   };
 
 
+
+  if (redirecting) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-muted-foreground">Redirigiendo...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">

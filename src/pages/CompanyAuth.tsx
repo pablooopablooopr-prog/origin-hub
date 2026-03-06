@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
@@ -76,6 +76,7 @@ export default function CompanyAuth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [redirecting, setRedirecting] = useState(false);
+  const redirectingRef = useRef(false);
 
   const [companyData, setCompanyData] = useState({
     business_name: "",
@@ -192,7 +193,9 @@ export default function CompanyAuth() {
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (!mounted || redirecting) return;
+      if (!mounted || redirectingRef.current) return;
+
+      setCheckingAuth(true);
 
       if (session?.user) {
         setUser(session.user);
@@ -202,7 +205,7 @@ export default function CompanyAuth() {
         setUser(null);
         setExistingCompany(null);
       }
-      setCheckingAuth(false);
+      if (mounted) setCheckingAuth(false);
     });
 
     return () => {
@@ -287,8 +290,9 @@ export default function CompanyAuth() {
 
     try {
       setRedirecting(true);
+      redirectingRef.current = true;
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) { setRedirecting(false); throw error; }
+      if (error) { setRedirecting(false); redirectingRef.current = false; throw error; }
       await postLoginRedirect(navigate, "/company-dashboard");
       return;
     } catch (err: any) {
