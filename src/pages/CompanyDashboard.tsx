@@ -176,22 +176,27 @@ export default function CompanyDashboard() {
 
       if (packsError) throw packsError;
 
-      // Load analytics for each pack
-      const packsWithAnalytics = await Promise.all(
-        (packsData || []).map(async (pack) => {
-          const { data: analyticsData } = await supabase
-            .from('pack_analytics')
-            .select('views, clicks')
-            .eq('pack_id', pack.id)
-            .eq('date', new Date().toISOString().split('T')[0])
-            .maybeSingle();
+      // Load analytics for all packs in a single query
+      const packIds = (packsData || []).map(p => p.id);
+      const today = new Date().toISOString().split('T')[0];
+      
+      let analyticsMap: Record<string, { views: number; clicks: number }> = {};
+      if (packIds.length > 0) {
+        const { data: analyticsData } = await supabase
+          .from('pack_analytics')
+          .select('pack_id, views, clicks')
+          .in('pack_id', packIds)
+          .eq('date', today);
+        
+        (analyticsData || []).forEach((a: any) => {
+          analyticsMap[a.pack_id] = { views: a.views || 0, clicks: a.clicks || 0 };
+        });
+      }
 
-          return {
-            ...pack,
-            analytics: analyticsData || { views: 0, clicks: 0 }
-          };
-        })
-      );
+      const packsWithAnalytics = (packsData || []).map(pack => ({
+        ...pack,
+        analytics: analyticsMap[pack.id] || { views: 0, clicks: 0 }
+      }));
 
       setPacks(packsWithAnalytics);
 
