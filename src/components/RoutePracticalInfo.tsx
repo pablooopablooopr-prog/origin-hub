@@ -29,7 +29,7 @@ const RoutePracticalInfo = React.forwardRef<HTMLDivElement, RoutePracticalInfoPr
   };
 
   return (
-    <Card className="overflow-hidden">
+    <Card ref={ref} className="overflow-hidden">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg font-bold text-foreground">
           Información Práctica
