@@ -746,7 +746,7 @@ export default function CompanyDashboard() {
                             <Button size="sm" variant="outline" onClick={() => navigate(`/rutas/${route.slug || route.id}`)}>
                               <Eye className="h-4 w-4 mr-1" /> Ver
                             </Button>
-                            <Button size="sm" variant="destructive" onClick={() => deleteRoute(route.id)}>
+                            <Button size="sm" variant="destructive" onClick={() => setConfirmDelete({ type: 'route', id: route.id, title: route.title })}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
