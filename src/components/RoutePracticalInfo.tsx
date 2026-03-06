@@ -72,6 +72,7 @@ const RoutePracticalInfo = React.forwardRef<HTMLDivElement, RoutePracticalInfoPr
       </CardContent>
     </Card>
   );
-};
+});
+RoutePracticalInfo.displayName = "RoutePracticalInfo";
 
 export default RoutePracticalInfo;
