@@ -640,7 +640,7 @@ export default function CompanyDashboard() {
                               size="sm"
                               variant="outline"
                               className="flex-1"
-                              onClick={() => navigate(`/pack/${pack.slug}`)}
+                              onClick={() => navigate(`/packs/${pack.slug}`)}
                             >
                               <Eye className="h-4 w-4 mr-1" />
                               Ver
