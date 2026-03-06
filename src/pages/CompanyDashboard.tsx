@@ -1126,6 +1126,27 @@ export default function CompanyDashboard() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Confirm Delete Dialog */}
+        <Dialog open={!!confirmDelete} onOpenChange={(open) => !open && setConfirmDelete(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>¿Eliminar {confirmDelete?.type === 'route' ? 'ruta' : confirmDelete?.type === 'pack' ? 'pack' : 'producto'}?</DialogTitle>
+              <DialogDescription>
+                Estás a punto de eliminar <strong>{confirmDelete?.title}</strong>. Esta acción no se puede deshacer.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setConfirmDelete(null)}>
+                Cancelar
+              </Button>
+              <Button variant="destructive" onClick={handleConfirmDelete}>
+                <Trash2 className="h-4 w-4 mr-2" />
+                Eliminar
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
