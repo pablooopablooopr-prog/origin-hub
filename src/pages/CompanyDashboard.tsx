@@ -309,12 +309,8 @@ export default function CompanyDashboard() {
   };
 
   const deleteRoute = async (routeId: string) => {
-    if (!confirm("¿Estás seguro de eliminar esta ruta? Esta acción no se puede deshacer.")) return;
-
     try {
-      // Delete stops first
       await supabase.from('route_stops').delete().eq('route_id', routeId);
-      // Delete route
       const { error } = await supabase.from('routes').delete().eq('id', routeId);
       if (error) throw error;
       setOwnCreatedRoutes(ownCreatedRoutes.filter(r => r.id !== routeId));
@@ -325,10 +321,7 @@ export default function CompanyDashboard() {
   };
 
   const deletePack = async (packId: string) => {
-    if (!confirm("¿Estás seguro de eliminar este pack? Esta acción no se puede deshacer.")) return;
-
     try {
-      // Delete elements and products first
       await supabase.from('pack_elements').delete().eq('pack_id', packId);
       await supabase.from('pack_products').delete().eq('pack_id', packId);
       const { error } = await supabase.from('company_packs').delete().eq('id', packId);
@@ -338,6 +331,14 @@ export default function CompanyDashboard() {
     } catch (error: any) {
       toast.error(error.message);
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmDelete) return;
+    if (confirmDelete.type === 'route') await deleteRoute(confirmDelete.id);
+    else if (confirmDelete.type === 'pack') await deletePack(confirmDelete.id);
+    else if (confirmDelete.type === 'product') await deleteProduct(confirmDelete.id);
+    setConfirmDelete(null);
   };
 
   const handleSignOut = async () => {
