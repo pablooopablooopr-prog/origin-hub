@@ -948,6 +948,68 @@ const CustomerDashboard = () => {
 
           {/* C. MIS RUTAS */}
           <TabsContent value="routes" className="space-y-6">
+            {/* Rutas Compradas */}
+            <Card className="shadow-md">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Package className="w-5 h-5 text-[#8B7355]" />
+                  Rutas Compradas
+                </CardTitle>
+                <CardDescription>
+                  Rutas autoguiadas que has adquirido
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {purchasedRoutes.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Package className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-30" />
+                    <p className="text-muted-foreground">No has comprado rutas aún</p>
+                    <Button 
+                      variant="outline"
+                      className="mt-3"
+                      onClick={() => navigate('/rutas')}
+                    >
+                      Explorar Rutas
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {purchasedRoutes.map((pr) => (
+                      <Card key={pr.id} className="hover:shadow-lg transition-shadow">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-base">{pr.route?.title || "Ruta"}</CardTitle>
+                          <CardDescription className="flex gap-4 text-xs">
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3" />
+                              {pr.route?.total_stops || 0} paradas
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-3 h-3" />
+                              {new Date(pr.purchased_at).toLocaleDateString('es-ES')}
+                            </span>
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <Badge variant="secondary" className="bg-green-100 text-green-700 mb-3">
+                            Acceso activo
+                          </Badge>
+                          <Button
+                            variant="default"
+                            className="w-full bg-[#8B7355] hover:bg-[#7A6449]"
+                            size="sm"
+                            onClick={() => navigate(`/rutas/${pr.route?.slug || pr.route_id}`)}
+                          >
+                            Ver Ruta
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Rutas Creadas */}
             <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -959,19 +1021,81 @@ const CustomerDashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12">
-                  <Route className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-30" />
-                  <p className="text-muted-foreground text-lg mb-4">No has creado ninguna ruta aún</p>
-                  <Button 
-                    onClick={() => navigate('/crear-ruta')}
-                    className="bg-[#8B7355] hover:bg-[#7A6449]"
-                  >
-                    Crear Mi Primera Ruta
-                  </Button>
-                </div>
+                {createdRoutes.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Route className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-30" />
+                    <p className="text-muted-foreground text-lg mb-4">No has creado ninguna ruta aún</p>
+                    <Button 
+                      onClick={() => navigate('/crear-ruta')}
+                      className="bg-[#8B7355] hover:bg-[#7A6449]"
+                    >
+                      Crear Mi Primera Ruta
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {createdRoutes.map((route) => (
+                      <Card key={route.id} className="hover:shadow-lg transition-shadow">
+                        <CardContent className="p-4 flex items-center gap-4">
+                          <div className="w-16 h-16 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
+                            {route.image_url ? (
+                              <img src={route.image_url} alt={route.title} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <Route className="w-6 h-6 text-muted-foreground/40" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold truncate">{route.title}</h4>
+                            <div className="flex gap-3 mt-1">
+                              <Badge variant={route.is_public ? "default" : "secondary"} className="text-xs">
+                                {route.is_public ? "Pública" : "Privada"}
+                              </Badge>
+                              {route.duration && (
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Calendar className="w-3 h-3" /> {route.duration}
+                                </span>
+                              )}
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <MapPin className="w-3 h-3" /> {route.total_stops || 0} paradas
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => navigate(`/editar-ruta/${route.slug}`)}
+                            >
+                              Editar
+                            </Button>
+                            <Button
+                              variant="default"
+                              size="sm"
+                              className="bg-[#8B7355] hover:bg-[#7A6449]"
+                              onClick={() => navigate(`/rutas/${route.slug}`)}
+                            >
+                              Ver
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                    <div className="text-center pt-4">
+                      <Button 
+                        onClick={() => navigate('/crear-ruta')}
+                        className="bg-[#8B7355] hover:bg-[#7A6449]"
+                      >
+                        Crear Nueva Ruta
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
+            {/* Rutas Guardadas */}
             <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
