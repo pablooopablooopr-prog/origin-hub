@@ -81,6 +81,7 @@ export default function CompanyDashboard() {
   const [packs, setPacks] = useState<CompanyPack[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [companyRoutes, setCompanyRoutes] = useState<CompanyRoute[]>([]);
+  const [ownCreatedRoutes, setOwnCreatedRoutes] = useState<CompanyRoute[]>([]);
   const [loading, setLoading] = useState(true);
   const [showProductDialog, setShowProductDialog] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -204,7 +205,7 @@ export default function CompanyDashboard() {
       if (productsError) throw productsError;
       setProducts(productsData || []);
 
-      // Load routes where company appears
+      // Load routes where company appears as a stop
       const { data: routeStopsData } = await supabase
         .from('route_stops')
         .select('route_id, routes!inner(id, title, slug, description, duration, difficulty, image_url, is_public, is_active)')
@@ -219,6 +220,15 @@ export default function CompanyDashboard() {
         }
       });
       setCompanyRoutes(Array.from(routeMap.values()));
+
+      // Load routes created by the company user
+      const { data: ownRoutesData } = await supabase
+        .from('routes')
+        .select('id, title, slug, description, duration, difficulty, image_url')
+        .eq('created_by', userId)
+        .order('created_at', { ascending: false });
+
+      setOwnCreatedRoutes((ownRoutesData || []) as CompanyRoute[]);
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -647,62 +657,125 @@ export default function CompanyDashboard() {
                 </Card>
               </div>
 
-              {/* Rutas donde apareces */}
+              {/* Mis Rutas Creadas */}
               <div className="space-y-4">
-              <h2 className="text-2xl font-semibold">Rutas donde apareces</h2>
-              {companyRoutes.length === 0 ? (
-                <Card>
-                  <CardContent className="p-12 text-center">
-                    <Route className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-xl font-semibold mb-2">No apareces en ninguna ruta</h3>
-                    <p className="text-muted-foreground">
-                      Cuando tu empresa sea incluida en una ruta gastronómica, aparecerá aquí
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="space-y-4">
-                  {companyRoutes.map((route) => (
-                    <Card
-                      key={route.id}
-                      className="hover:shadow-lg transition-all cursor-pointer group"
-                      onClick={() => navigate(`/rutas/${route.slug || route.id}`)}
-                    >
-                      <CardContent className="p-4 flex gap-4 items-center">
-                        <div className="w-20 h-20 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
-                          {route.image_url ? (
-                            <img src={route.image_url} alt={route.title} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <Route className="w-8 h-8 text-muted-foreground/40" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold group-hover:text-primary transition-colors truncate">{route.title}</h3>
-                          {route.description && (
-                            <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{route.description}</p>
-                          )}
-                          <div className="flex gap-3 mt-2">
-                            {route.duration && (
-                              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Clock className="w-3 h-3" /> {route.duration}
-                              </span>
-                            )}
-                            {route.difficulty && (
-                              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Users className="w-3 h-3" /> {route.difficulty}
-                              </span>
+                <h2 className="text-2xl font-semibold">Mis Rutas Creadas</h2>
+                {ownCreatedRoutes.length === 0 ? (
+                  <Card>
+                    <CardContent className="p-12 text-center">
+                      <Route className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                      <h3 className="text-xl font-semibold mb-2">No has creado ninguna ruta</h3>
+                      <p className="text-muted-foreground">
+                        Crea tu primera ruta gastronómica usando el botón de arriba
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="space-y-4">
+                    {ownCreatedRoutes.map((route) => (
+                      <Card
+                        key={route.id}
+                        className="hover:shadow-lg transition-all group"
+                      >
+                        <CardContent className="p-4 flex gap-4 items-center">
+                          <div className="w-20 h-20 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
+                            {route.image_url ? (
+                              <img src={route.image_url} alt={route.title} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <Route className="w-8 h-8 text-muted-foreground/40" />
+                              </div>
                             )}
                           </div>
-                        </div>
-                        <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold group-hover:text-primary transition-colors truncate">{route.title}</h3>
+                            {route.description && (
+                              <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{route.description}</p>
+                            )}
+                            <div className="flex gap-3 mt-2">
+                              {route.duration && (
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Clock className="w-3 h-3" /> {route.duration}
+                                </span>
+                              )}
+                              {route.difficulty && (
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Users className="w-3 h-3" /> {route.difficulty}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex gap-2 flex-shrink-0">
+                            <Button size="sm" variant="outline" onClick={() => navigate(`/editar-ruta/${route.slug}`)}>
+                              <Edit className="h-4 w-4 mr-1" /> Editar
+                            </Button>
+                            <Button size="sm" variant="outline" onClick={() => navigate(`/rutas/${route.slug || route.id}`)}>
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Rutas donde apareces */}
+              <div className="space-y-4">
+                <h2 className="text-2xl font-semibold">Rutas donde apareces</h2>
+                {companyRoutes.length === 0 ? (
+                  <Card>
+                    <CardContent className="p-12 text-center">
+                      <Route className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                      <h3 className="text-xl font-semibold mb-2">No apareces en ninguna ruta</h3>
+                      <p className="text-muted-foreground">
+                        Cuando tu empresa sea incluida en una ruta gastronómica, aparecerá aquí
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="space-y-4">
+                    {companyRoutes.map((route) => (
+                      <Card
+                        key={route.id}
+                        className="hover:shadow-lg transition-all cursor-pointer group"
+                        onClick={() => navigate(`/rutas/${route.slug || route.id}`)}
+                      >
+                        <CardContent className="p-4 flex gap-4 items-center">
+                          <div className="w-20 h-20 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
+                            {route.image_url ? (
+                              <img src={route.image_url} alt={route.title} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <Route className="w-8 h-8 text-muted-foreground/40" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold group-hover:text-primary transition-colors truncate">{route.title}</h3>
+                            {route.description && (
+                              <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{route.description}</p>
+                            )}
+                            <div className="flex gap-3 mt-2">
+                              {route.duration && (
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Clock className="w-3 h-3" /> {route.duration}
+                                </span>
+                              )}
+                              {route.difficulty && (
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Users className="w-3 h-3" /> {route.difficulty}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </TabsContent>
 

@@ -80,11 +80,54 @@ interface SavedRoute {
   } | null;
 }
 
+interface CreatedRoute {
+  id: string;
+  title: string;
+  slug: string;
+  duration: string | null;
+  total_stops: number | null;
+  is_public: boolean | null;
+  is_active: boolean | null;
+  created_at: string;
+  image_url: string | null;
+}
+
+interface FavoriteCompany {
+  id: string;
+  company_id: string;
+  company?: {
+    id: string;
+    business_name: string;
+    slug: string | null;
+    logo_url: string | null;
+    description: string | null;
+  } | null;
+}
+
+interface PurchasedRoute {
+  id: string;
+  route_id: string;
+  num_people: number;
+  final_price: number;
+  purchased_at: string;
+  route?: {
+    id: string;
+    title: string;
+    slug: string;
+    duration: string | null;
+    total_stops: number | null;
+    image_url: string | null;
+  } | null;
+}
+
 const CustomerDashboard = () => {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [savedRoutes, setSavedRoutes] = useState<SavedRoute[]>([]);
+  const [createdRoutes, setCreatedRoutes] = useState<CreatedRoute[]>([]);
+  const [favoriteCompanies, setFavoriteCompanies] = useState<FavoriteCompany[]>([]);
+  const [purchasedRoutes, setPurchasedRoutes] = useState<PurchasedRoute[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   
@@ -239,6 +282,50 @@ const CustomerDashboard = () => {
         const regionRaw = routeRaw ? (Array.isArray(routeRaw.region) ? routeRaw.region[0] : routeRaw.region) : null;
         return { ...r, route: routeRaw ? { ...routeRaw, region: regionRaw } : null };
       }));
+
+      // Load routes created by the user
+      const { data: createdRoutesData } = await supabase
+        .from('routes')
+        .select('id, title, slug, duration, total_stops, is_public, is_active, created_at, image_url')
+        .eq('created_by', userId)
+        .order('created_at', { ascending: false });
+
+      setCreatedRoutes((createdRoutesData || []) as CreatedRoute[]);
+
+      // Load favorite companies
+      const { data: favCompaniesData } = await supabase
+        .from('favorite_companies')
+        .select(`
+          id,
+          company_id,
+          company:companies_public(id, business_name, slug, logo_url, description)
+        `)
+        .eq('customer_id', customerData.id);
+
+      setFavoriteCompanies((favCompaniesData || []).map((fc: any) => ({
+        ...fc,
+        company: Array.isArray(fc.company) ? fc.company[0] : fc.company
+      })));
+
+      // Load purchased routes
+      const { data: purchasedRoutesData } = await supabase
+        .from('route_purchases')
+        .select(`
+          id,
+          route_id,
+          num_people,
+          final_price,
+          purchased_at,
+          route:routes(id, title, slug, duration, total_stops, image_url)
+        `)
+        .eq('customer_id', customerData.id)
+        .eq('payment_status', 'completed')
+        .order('purchased_at', { ascending: false });
+
+      setPurchasedRoutes((purchasedRoutesData || []).map((pr: any) => ({
+        ...pr,
+        route: Array.isArray(pr.route) ? pr.route[0] : pr.route
+      })));
     } catch (error: any) {
       toast({
         title: "Error",
@@ -670,10 +757,51 @@ const CustomerDashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-8">
-                  <Store className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-30" />
-                  <p className="text-muted-foreground">Próximamente podrás seguir a tus productores favoritos</p>
-                </div>
+                {favoriteCompanies.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Store className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-30" />
+                    <p className="text-muted-foreground">No sigues a ningún productor aún</p>
+                    <Button 
+                      variant="outline"
+                      className="mt-3"
+                      onClick={() => navigate('/mapa')}
+                    >
+                      Descubrir Productores
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {favoriteCompanies.map((fc) => (
+                      <Card key={fc.id} className="hover:shadow-lg transition-shadow">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center gap-3">
+                            {fc.company?.logo_url ? (
+                              <img src={fc.company.logo_url} alt={fc.company.business_name} className="w-10 h-10 rounded-full object-cover" />
+                            ) : (
+                              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                <Store className="w-5 h-5 text-primary" />
+                              </div>
+                            )}
+                            <CardTitle className="text-base">{fc.company?.business_name || "Productor"}</CardTitle>
+                          </div>
+                          {fc.company?.description && (
+                            <CardDescription className="line-clamp-2 mt-2">{fc.company.description}</CardDescription>
+                          )}
+                        </CardHeader>
+                        <CardContent>
+                          <Button
+                            variant="default"
+                            className="w-full bg-[#8B7355] hover:bg-[#7A6449]"
+                            size="sm"
+                            onClick={() => navigate(`/negocio/${fc.company?.slug || fc.company_id}`)}
+                          >
+                            Ver Productor
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -820,6 +948,68 @@ const CustomerDashboard = () => {
 
           {/* C. MIS RUTAS */}
           <TabsContent value="routes" className="space-y-6">
+            {/* Rutas Compradas */}
+            <Card className="shadow-md">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Package className="w-5 h-5 text-[#8B7355]" />
+                  Rutas Compradas
+                </CardTitle>
+                <CardDescription>
+                  Rutas autoguiadas que has adquirido
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {purchasedRoutes.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Package className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-30" />
+                    <p className="text-muted-foreground">No has comprado rutas aún</p>
+                    <Button 
+                      variant="outline"
+                      className="mt-3"
+                      onClick={() => navigate('/rutas')}
+                    >
+                      Explorar Rutas
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {purchasedRoutes.map((pr) => (
+                      <Card key={pr.id} className="hover:shadow-lg transition-shadow">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-base">{pr.route?.title || "Ruta"}</CardTitle>
+                          <CardDescription className="flex gap-4 text-xs">
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3" />
+                              {pr.route?.total_stops || 0} paradas
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-3 h-3" />
+                              {new Date(pr.purchased_at).toLocaleDateString('es-ES')}
+                            </span>
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <Badge variant="secondary" className="bg-green-100 text-green-700 mb-3">
+                            Acceso activo
+                          </Badge>
+                          <Button
+                            variant="default"
+                            className="w-full bg-[#8B7355] hover:bg-[#7A6449]"
+                            size="sm"
+                            onClick={() => navigate(`/rutas/${pr.route?.slug || pr.route_id}`)}
+                          >
+                            Ver Ruta
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Rutas Creadas */}
             <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -831,19 +1021,81 @@ const CustomerDashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12">
-                  <Route className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-30" />
-                  <p className="text-muted-foreground text-lg mb-4">No has creado ninguna ruta aún</p>
-                  <Button 
-                    onClick={() => navigate('/crear-ruta')}
-                    className="bg-[#8B7355] hover:bg-[#7A6449]"
-                  >
-                    Crear Mi Primera Ruta
-                  </Button>
-                </div>
+                {createdRoutes.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Route className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-30" />
+                    <p className="text-muted-foreground text-lg mb-4">No has creado ninguna ruta aún</p>
+                    <Button 
+                      onClick={() => navigate('/crear-ruta')}
+                      className="bg-[#8B7355] hover:bg-[#7A6449]"
+                    >
+                      Crear Mi Primera Ruta
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {createdRoutes.map((route) => (
+                      <Card key={route.id} className="hover:shadow-lg transition-shadow">
+                        <CardContent className="p-4 flex items-center gap-4">
+                          <div className="w-16 h-16 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
+                            {route.image_url ? (
+                              <img src={route.image_url} alt={route.title} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <Route className="w-6 h-6 text-muted-foreground/40" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold truncate">{route.title}</h4>
+                            <div className="flex gap-3 mt-1">
+                              <Badge variant={route.is_public ? "default" : "secondary"} className="text-xs">
+                                {route.is_public ? "Pública" : "Privada"}
+                              </Badge>
+                              {route.duration && (
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Calendar className="w-3 h-3" /> {route.duration}
+                                </span>
+                              )}
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <MapPin className="w-3 h-3" /> {route.total_stops || 0} paradas
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => navigate(`/editar-ruta/${route.slug}`)}
+                            >
+                              Editar
+                            </Button>
+                            <Button
+                              variant="default"
+                              size="sm"
+                              className="bg-[#8B7355] hover:bg-[#7A6449]"
+                              onClick={() => navigate(`/rutas/${route.slug}`)}
+                            >
+                              Ver
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                    <div className="text-center pt-4">
+                      <Button 
+                        onClick={() => navigate('/crear-ruta')}
+                        className="bg-[#8B7355] hover:bg-[#7A6449]"
+                      >
+                        Crear Nueva Ruta
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
+            {/* Rutas Guardadas */}
             <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
