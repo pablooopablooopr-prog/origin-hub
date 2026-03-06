@@ -258,4 +258,5 @@ export const RoutePurchaseCard = React.forwardRef<HTMLDivElement, RoutePurchaseC
       </CardContent>
     </Card>
   );
-};
+});
+RoutePurchaseCard.displayName = "RoutePurchaseCard";
