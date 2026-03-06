@@ -205,7 +205,7 @@ export default function CompanyDashboard() {
       if (productsError) throw productsError;
       setProducts(productsData || []);
 
-      // Load routes where company appears
+      // Load routes where company appears as a stop
       const { data: routeStopsData } = await supabase
         .from('route_stops')
         .select('route_id, routes!inner(id, title, slug, description, duration, difficulty, image_url, is_public, is_active)')
@@ -220,6 +220,15 @@ export default function CompanyDashboard() {
         }
       });
       setCompanyRoutes(Array.from(routeMap.values()));
+
+      // Load routes created by the company user
+      const { data: ownRoutesData } = await supabase
+        .from('routes')
+        .select('id, title, slug, description, duration, difficulty, image_url')
+        .eq('created_by', userId)
+        .order('created_at', { ascending: false });
+
+      setOwnCreatedRoutes((ownRoutesData || []) as CompanyRoute[]);
     } catch (error: any) {
       toast.error(error.message);
     } finally {
