@@ -107,6 +107,7 @@ export default function CompanyDashboard() {
     authenticity_story: ""
   });
   const [editLatLng, setEditLatLng] = useState<{ lat: number | null; lng: number | null }>({ lat: null, lng: null });
+  const [confirmDelete, setConfirmDelete] = useState<{ type: 'route' | 'pack' | 'product'; id: string; title: string } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -176,22 +177,27 @@ export default function CompanyDashboard() {
 
       if (packsError) throw packsError;
 
-      // Load analytics for each pack
-      const packsWithAnalytics = await Promise.all(
-        (packsData || []).map(async (pack) => {
-          const { data: analyticsData } = await supabase
-            .from('pack_analytics')
-            .select('views, clicks')
-            .eq('pack_id', pack.id)
-            .eq('date', new Date().toISOString().split('T')[0])
-            .maybeSingle();
+      // Load analytics for all packs in a single query
+      const packIds = (packsData || []).map(p => p.id);
+      const today = new Date().toISOString().split('T')[0];
+      
+      let analyticsMap: Record<string, { views: number; clicks: number }> = {};
+      if (packIds.length > 0) {
+        const { data: analyticsData } = await supabase
+          .from('pack_analytics')
+          .select('pack_id, views, clicks')
+          .in('pack_id', packIds)
+          .eq('date', today);
+        
+        (analyticsData || []).forEach((a: any) => {
+          analyticsMap[a.pack_id] = { views: a.views || 0, clicks: a.clicks || 0 };
+        });
+      }
 
-          return {
-            ...pack,
-            analytics: analyticsData || { views: 0, clicks: 0 }
-          };
-        })
-      );
+      const packsWithAnalytics = (packsData || []).map(pack => ({
+        ...pack,
+        analytics: analyticsMap[pack.id] || { views: 0, clicks: 0 }
+      }));
 
       setPacks(packsWithAnalytics);
 
@@ -303,12 +309,8 @@ export default function CompanyDashboard() {
   };
 
   const deleteRoute = async (routeId: string) => {
-    if (!confirm("¿Estás seguro de eliminar esta ruta? Esta acción no se puede deshacer.")) return;
-
     try {
-      // Delete stops first
       await supabase.from('route_stops').delete().eq('route_id', routeId);
-      // Delete route
       const { error } = await supabase.from('routes').delete().eq('id', routeId);
       if (error) throw error;
       setOwnCreatedRoutes(ownCreatedRoutes.filter(r => r.id !== routeId));
@@ -319,10 +321,7 @@ export default function CompanyDashboard() {
   };
 
   const deletePack = async (packId: string) => {
-    if (!confirm("¿Estás seguro de eliminar este pack? Esta acción no se puede deshacer.")) return;
-
     try {
-      // Delete elements and products first
       await supabase.from('pack_elements').delete().eq('pack_id', packId);
       await supabase.from('pack_products').delete().eq('pack_id', packId);
       const { error } = await supabase.from('company_packs').delete().eq('id', packId);
@@ -332,6 +331,14 @@ export default function CompanyDashboard() {
     } catch (error: any) {
       toast.error(error.message);
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmDelete) return;
+    if (confirmDelete.type === 'route') await deleteRoute(confirmDelete.id);
+    else if (confirmDelete.type === 'pack') await deletePack(confirmDelete.id);
+    else if (confirmDelete.type === 'product') await deleteProduct(confirmDelete.id);
+    setConfirmDelete(null);
   };
 
   const handleSignOut = async () => {
@@ -650,7 +657,7 @@ export default function CompanyDashboard() {
                             <Button
                               size="sm"
                               variant="destructive"
-                              onClick={() => deletePack(pack.id)}
+                              onClick={() => setConfirmDelete({ type: 'pack', id: pack.id, title: pack.title })}
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -739,7 +746,7 @@ export default function CompanyDashboard() {
                             <Button size="sm" variant="outline" onClick={() => navigate(`/rutas/${route.slug || route.id}`)}>
                               <Eye className="h-4 w-4 mr-1" /> Ver
                             </Button>
-                            <Button size="sm" variant="destructive" onClick={() => deleteRoute(route.id)}>
+                            <Button size="sm" variant="destructive" onClick={() => setConfirmDelete({ type: 'route', id: route.id, title: route.title })}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
@@ -1115,6 +1122,27 @@ export default function CompanyDashboard() {
                   <Save className="h-4 w-4 mr-2" />
                 )}
                 {editingProduct ? "Guardar Cambios" : "Crear Producto"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Confirm Delete Dialog */}
+        <Dialog open={!!confirmDelete} onOpenChange={(open) => !open && setConfirmDelete(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>¿Eliminar {confirmDelete?.type === 'route' ? 'ruta' : confirmDelete?.type === 'pack' ? 'pack' : 'producto'}?</DialogTitle>
+              <DialogDescription>
+                Estás a punto de eliminar <strong>{confirmDelete?.title}</strong>. Esta acción no se puede deshacer.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setConfirmDelete(null)}>
+                Cancelar
+              </Button>
+              <Button variant="destructive" onClick={handleConfirmDelete}>
+                <Trash2 className="h-4 w-4 mr-2" />
+                Eliminar
               </Button>
             </DialogFooter>
           </DialogContent>

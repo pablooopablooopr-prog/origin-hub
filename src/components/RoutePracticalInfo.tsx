@@ -1,3 +1,4 @@
+import React from "react";
 import { Badge } from "./ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
@@ -13,7 +14,7 @@ interface RoutePracticalInfoProps {
   difficulty: string;
 }
 
-const RoutePracticalInfo = ({ practicalInfo, difficulty }: RoutePracticalInfoProps) => {
+const RoutePracticalInfo = React.forwardRef<HTMLDivElement, RoutePracticalInfoProps>(({ practicalInfo, difficulty }, ref) => {
   const getDifficultyColor = (level: string) => {
     switch (level.toLowerCase()) {
       case 'fácil':
@@ -28,7 +29,7 @@ const RoutePracticalInfo = ({ practicalInfo, difficulty }: RoutePracticalInfoPro
   };
 
   return (
-    <Card className="overflow-hidden">
+    <Card ref={ref} className="overflow-hidden">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg font-bold text-foreground">
           Información Práctica
@@ -71,6 +72,7 @@ const RoutePracticalInfo = ({ practicalInfo, difficulty }: RoutePracticalInfoPro
       </CardContent>
     </Card>
   );
-};
+});
+RoutePracticalInfo.displayName = "RoutePracticalInfo";
 
 export default RoutePracticalInfo;

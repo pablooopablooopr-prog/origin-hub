@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
@@ -142,6 +143,7 @@ const CustomerDashboard = () => {
     newsletter: true
   });
   const [savingNotifications, setSavingNotifications] = useState(false);
+  const [deleteRouteConfirm, setDeleteRouteConfirm] = useState<{ id: string; title: string } | null>(null);
   
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -1074,18 +1076,7 @@ const CustomerDashboard = () => {
                             <Button
                               variant="destructive"
                               size="sm"
-                              onClick={async () => {
-                                if (!confirm("¿Estás seguro de eliminar esta ruta?")) return;
-                                try {
-                                  await supabase.from('route_stops').delete().eq('route_id', route.id);
-                                  const { error } = await supabase.from('routes').delete().eq('id', route.id);
-                                  if (error) throw error;
-                                  setCreatedRoutes(createdRoutes.filter(r => r.id !== route.id));
-                                  toast({ title: "Ruta eliminada" });
-                                } catch (err: any) {
-                                  toast({ title: "Error", description: err.message, variant: "destructive" });
-                                }
-                              }}
+                              onClick={() => setDeleteRouteConfirm({ id: route.id, title: route.title })}
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>
@@ -1404,6 +1395,40 @@ const CustomerDashboard = () => {
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* Confirm Delete Route Dialog */}
+      <Dialog open={!!deleteRouteConfirm} onOpenChange={(open) => !open && setDeleteRouteConfirm(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>¿Eliminar ruta?</DialogTitle>
+            <DialogDescription>
+              Estás a punto de eliminar <strong>{deleteRouteConfirm?.title}</strong>. Esta acción no se puede deshacer.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteRouteConfirm(null)}>
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={async () => {
+              if (!deleteRouteConfirm) return;
+              try {
+                await supabase.from('route_stops').delete().eq('route_id', deleteRouteConfirm.id);
+                const { error } = await supabase.from('routes').delete().eq('id', deleteRouteConfirm.id);
+                if (error) throw error;
+                setCreatedRoutes(createdRoutes.filter(r => r.id !== deleteRouteConfirm.id));
+                toast({ title: "Ruta eliminada" });
+              } catch (err: any) {
+                toast({ title: "Error", description: err.message, variant: "destructive" });
+              }
+              setDeleteRouteConfirm(null);
+            }}>
+              <Trash2 className="w-4 h-4 mr-2" />
+              Eliminar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Footer />
     </div>
   );

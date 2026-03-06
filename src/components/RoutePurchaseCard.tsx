@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ interface RoutePurchaseCardProps {
   benefits?: string[];
 }
 
-export const RoutePurchaseCard = ({
+export const RoutePurchaseCard = React.forwardRef<HTMLDivElement, RoutePurchaseCardProps>(({
   routeId,
   routeSlug,
   routeTitle,
@@ -30,7 +30,7 @@ export const RoutePurchaseCard = ({
     "Beneficios asociados a la ruta (según paradas)",
     "Acceso permanente al comprobante de reserva"
   ]
-}: RoutePurchaseCardProps) => {
+}, ref) => {
   const [numPeople, setNumPeople] = useState(2);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [hasPurchased, setHasPurchased] = useState(false);
@@ -258,4 +258,5 @@ export const RoutePurchaseCard = ({
       </CardContent>
     </Card>
   );
-};
+});
+RoutePurchaseCard.displayName = "RoutePurchaseCard";
