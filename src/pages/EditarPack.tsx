@@ -863,12 +863,39 @@ const EditarPack = () => {
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base">Política de Envío</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-3">
+                  <div className="flex flex-wrap gap-1.5">
+                    {SHIPPING_PRESETS.map((preset) => {
+                      const lines = shippingPolicy.split('\n').filter(Boolean);
+                      const selected = lines.includes(preset);
+                      return (
+                        <Badge
+                          key={preset}
+                          variant={selected ? "default" : "outline"}
+                          className={`cursor-pointer transition-all text-[10px] px-2 py-1 ${
+                            selected
+                              ? "bg-primary hover:bg-primary/80"
+                              : "hover:bg-primary/10 hover:border-primary/30"
+                          }`}
+                          onClick={() => {
+                            if (selected) {
+                              setShippingPolicy(lines.filter(l => l !== preset).join('\n'));
+                            } else {
+                              setShippingPolicy([...lines, preset].join('\n'));
+                            }
+                          }}
+                        >
+                          {selected && <Check className="w-2.5 h-2.5 mr-0.5" />}
+                          {preset}
+                        </Badge>
+                      );
+                    })}
+                  </div>
                   <Textarea
                     value={shippingPolicy}
                     onChange={(e) => setShippingPolicy(e.target.value)}
-                    placeholder="Describe tu política de envío..."
-                    rows={3}
+                    placeholder="O escribe tu propia política..."
+                    rows={2}
                     className="text-sm"
                   />
                 </CardContent>
