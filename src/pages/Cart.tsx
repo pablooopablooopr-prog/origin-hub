@@ -202,6 +202,7 @@ const Cart = () => {
       }
 
       window.location.href = checkoutData.url;
+      // Cart clearing and email are handled by the Stripe webhook after payment
       return;
     } catch (stripeError) {
       console.error("Error creating pack checkout:", stripeError);
@@ -209,35 +210,6 @@ const Cart = () => {
       setIsCheckingOut(false);
       return;
     }
-
-    // Clear only this producer's cart
-    await clearCartForCompany(selectedCart.company.id);
-
-    // Send confirmation email
-    try {
-      await supabase.functions.invoke('send-order-confirmation', {
-        body: {
-          to: customer.email,
-          customerName: customer.full_name,
-          orderId: order.id,
-          producerName: selectedCart.company.business_name,
-          items: orderItems.map(item => ({
-            name: item.pack_id ? 'Pack' : 'Producto',
-            quantity: item.quantity,
-            price: item.unit_price
-          })),
-          total: totalAmount
-        }
-      });
-    } catch (emailError) {
-      console.error('Failed to send confirmation email:', emailError);
-    }
-
-    setIsCheckingOut(false);
-    setOrderId(order.id);
-    setShowCheckoutDialog(false);
-    setShowSuccessDialog(true);
-    refetch();
   };
 
   const subtotal = selectedCart?.total || 0;
