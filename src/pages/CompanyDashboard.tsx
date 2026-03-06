@@ -27,7 +27,8 @@ interface Company {
   business_name: string;
   status: string;
   slug?: string;
-  contact_email?: string;
+  contact_person?: string;
+  email?: string;
   phone?: string;
   website?: string;
   description?: string;
