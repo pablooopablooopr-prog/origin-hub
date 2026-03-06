@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PasswordInput from "@/components/PasswordInput";
-import { User, Package, Heart, MapPin, Mail, Phone, LogOut, Truck, Download, RepeatIcon, Settings, Bell, Lock, Bookmark, Route, Store, Calendar, FileText, Camera } from "lucide-react";
+import { User, Package, Heart, MapPin, Mail, Phone, LogOut, Truck, Download, RepeatIcon, Settings, Bell, Lock, Bookmark, Route, Store, Calendar, FileText, Camera, Trash2 } from "lucide-react";
 
 interface Customer {
   id: string;
