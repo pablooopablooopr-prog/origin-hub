@@ -657,7 +657,7 @@ export default function CompanyDashboard() {
                             <Button
                               size="sm"
                               variant="destructive"
-                              onClick={() => deletePack(pack.id)}
+                              onClick={() => setConfirmDelete({ type: 'pack', id: pack.id, title: pack.title })}
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
