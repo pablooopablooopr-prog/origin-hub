@@ -63,6 +63,19 @@ const TAG_PRESETS = [
   "Montaña", "Costa", "Rural", "Familiar", "Sorpresa",
 ];
 
+const SHIPPING_PRESETS = [
+  "Envío gratuito en Península",
+  "Envío en 24-48h",
+  "Envío refrigerado incluido",
+  "Gastos de envío: 4,95€",
+  "Envío gratis a partir de 50€",
+  "Recogida en tienda disponible",
+  "No se envía a Canarias, Ceuta o Melilla",
+  "Envío asegurado contra roturas",
+  "Embalaje especial para productos frágiles",
+  "Seguimiento del pedido por email",
+];
+
 const FIXED_PRICES: Record<string, number> = {
   raiz: 35,
   esencia: 60,
