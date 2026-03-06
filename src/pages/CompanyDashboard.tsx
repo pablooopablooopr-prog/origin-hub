@@ -27,7 +27,8 @@ interface Company {
   business_name: string;
   status: string;
   slug?: string;
-  contact_email?: string;
+  contact_person?: string;
+  email?: string;
   phone?: string;
   website?: string;
   description?: string;
@@ -497,9 +498,9 @@ export default function CompanyDashboard() {
     setEditingSettings(false);
     setCompanyForm({
       business_name: company?.business_name || "",
-      contact_person: (company as any)?.contact_person || "",
-      phone: (company as any)?.phone || "",
-      website: (company as any)?.website || "",
+      contact_person: company?.contact_person || "",
+      phone: company?.phone || "",
+      website: company?.website || "",
       address: company?.address || "",
       description: company?.description || "",
       authenticity_story: company?.authenticity_story || ""
@@ -635,7 +636,7 @@ export default function CompanyDashboard() {
                             <span>Clicks:</span>
                             <span>{pack.analytics?.clicks || 0}</span>
                           </div>
-                          <div className="flex gap-2 pt-2">
+                        <div className="flex gap-2 pt-2">
                             <Button
                               size="sm"
                               variant="outline"
@@ -644,6 +645,13 @@ export default function CompanyDashboard() {
                             >
                               <Eye className="h-4 w-4 mr-1" />
                               Ver
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => navigate(`/editar-pack/${pack.id}`)}
+                            >
+                              <Edit className="h-4 w-4" />
                             </Button>
                             <Button
                               size="sm"
@@ -743,6 +751,9 @@ export default function CompanyDashboard() {
                           <div className="flex gap-2 flex-shrink-0">
                             <Button size="sm" variant="outline" onClick={() => navigate(`/rutas/${route.slug || route.id}`)}>
                               <Eye className="h-4 w-4 mr-1" /> Ver
+                            </Button>
+                            <Button size="sm" variant="outline" onClick={() => navigate(`/editar-ruta/${route.slug}`)}>
+                              <Edit className="h-4 w-4" />
                             </Button>
                             <Button size="sm" variant="destructive" onClick={() => setConfirmDelete({ type: 'route', id: route.id, title: route.title })}>
                               <Trash2 className="h-4 w-4" />

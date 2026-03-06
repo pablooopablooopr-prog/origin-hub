@@ -17,12 +17,12 @@ const Index = () => {
 
   useEffect(() => {
     const check = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user?.id) { setIsCompanyUser(false); return; }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.id) { setIsCompanyUser(false); return; }
       const { data } = await supabase
         .from("companies")
         .select("id")
-        .eq("user_id", session.user.id)
+        .eq("user_id", user.id)
         .maybeSingle();
       setIsCompanyUser(!!data);
     };
