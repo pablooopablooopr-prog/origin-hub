@@ -636,7 +636,7 @@ export default function CompanyDashboard() {
                             <span>Clicks:</span>
                             <span>{pack.analytics?.clicks || 0}</span>
                           </div>
-                          <div className="flex gap-2 pt-2">
+                        <div className="flex gap-2 pt-2">
                             <Button
                               size="sm"
                               variant="outline"
@@ -645,6 +645,13 @@ export default function CompanyDashboard() {
                             >
                               <Eye className="h-4 w-4 mr-1" />
                               Ver
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => navigate(`/editar-pack/${pack.id}`)}
+                            >
+                              <Edit className="h-4 w-4" />
                             </Button>
                             <Button
                               size="sm"
