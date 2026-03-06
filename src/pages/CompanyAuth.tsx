@@ -75,6 +75,7 @@ export default function CompanyAuth() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
 
   const [companyData, setCompanyData] = useState({
     business_name: "",
@@ -191,7 +192,7 @@ export default function CompanyAuth() {
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (!mounted) return;
+      if (!mounted || redirecting) return;
 
       if (session?.user) {
         setUser(session.user);
@@ -285,8 +286,9 @@ export default function CompanyAuth() {
     setLoading(true);
 
     try {
+      setRedirecting(true);
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
+      if (error) { setRedirecting(false); throw error; }
       await postLoginRedirect(navigate, "/company-dashboard");
       return;
     } catch (err: any) {

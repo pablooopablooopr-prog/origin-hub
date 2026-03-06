@@ -32,6 +32,37 @@ const availableAttributes = [
   "Sin gluten", "Denominación de origen", "Temporada", "Edición limitada", "Tradicional"
 ];
 
+const SUSTAINABILITY_OPTIONS = [
+  "Empaque 100% reciclable",
+  "Productos de km 0",
+  "Sin plásticos de un solo uso",
+  "Materiales biodegradables",
+  "Producción con energía renovable",
+  "Agricultura ecológica certificada",
+  "Comercio justo",
+  "Huella de carbono compensada",
+  "Envases reutilizables",
+  "Tintas vegetales en etiquetado",
+  "Producción artesanal sin residuos",
+  "Ingredientes de temporada",
+  "Apoyo a economía rural local",
+  "Reducción de desperdicio alimentario",
+  "Cultivo sin pesticidas",
+  "Bienestar animal garantizado",
+  "Transporte en frío sostenible",
+  "Colaboración con cooperativas locales",
+];
+
+const TAG_PRESETS = [
+  "Artesano", "Vegano", "Ecológico", "Sin gluten", "Km 0",
+  "Gourmet", "Tradicional", "Bio", "Denominación de origen", "Premium",
+  "Temporada", "Edición limitada", "Apto celíacos", "Sin lactosa",
+  "Producción local", "Maridaje", "Regalo", "Navidad", "Para compartir",
+  "Selección", "Degustación", "Sabor intenso", "Ahumado", "Curado",
+  "Dulce", "Salado", "Picante", "Mediterráneo", "Ibérico",
+  "Montaña", "Costa", "Rural", "Familiar", "Sorpresa",
+];
+
 const FIXED_PRICES: Record<string, number> = {
   raiz: 35,
   esencia: 60,
@@ -655,18 +686,47 @@ const EditarPack = () => {
                     Valor Añadido y Sostenibilidad
                   </CardTitle>
                   <CardDescription>
-                    Describe prácticas sostenibles, empaque ecológico, etc.
+                    Selecciona las prácticas sostenibles que aplican a tu pack
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Textarea 
-                    value={sustainabilityInfo}
-                    onChange={(e) => setSustainabilityInfo(e.target.value)}
-                    placeholder="Ej: Empaque 100% reciclable&#10;Productos de km0&#10;Sin plásticos..."
-                    rows={6}
-                    className="text-sm"
-                  />
-                  <p className="text-xs text-muted-foreground mt-2">Cada línea será un punto separado en la tarjeta</p>
+                <CardContent className="space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    {SUSTAINABILITY_OPTIONS.map((option) => {
+                      const selected = sustainabilityInfo.split('\n').filter(Boolean).includes(option);
+                      return (
+                        <Badge
+                          key={option}
+                          variant={selected ? "default" : "outline"}
+                          className={`cursor-pointer transition-all text-xs px-3 py-1.5 ${
+                            selected
+                              ? "bg-green-600 hover:bg-green-700 text-white border-green-600"
+                              : "hover:bg-green-50 hover:border-green-300"
+                          }`}
+                          onClick={() => {
+                            const current = sustainabilityInfo.split('\n').filter(Boolean);
+                            if (selected) {
+                              setSustainabilityInfo(current.filter(i => i !== option).join('\n'));
+                            } else {
+                              setSustainabilityInfo([...current, option].join('\n'));
+                            }
+                          }}
+                        >
+                          {selected ? <Check className="w-3 h-3 mr-1" /> : <Leaf className="w-3 h-3 mr-1" />}
+                          {option}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                  {sustainabilityInfo && (
+                    <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                      <p className="text-xs font-medium text-green-800 mb-1">Seleccionados ({sustainabilityInfo.split('\n').filter(Boolean).length}):</p>
+                      <ul className="text-xs text-green-700 space-y-0.5">
+                        {sustainabilityInfo.split('\n').filter(Boolean).map((item, i) => (
+                          <li key={i}>✓ {item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -674,14 +734,41 @@ const EditarPack = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Etiquetas</CardTitle>
-                  <CardDescription>Añade etiquetas para mejorar la búsqueda</CardDescription>
+                  <CardDescription>Selecciona etiquetas para mejorar la búsqueda de tu pack</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex gap-2 mb-3">
+                <CardContent className="space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    {TAG_PRESETS.map((preset) => {
+                      const selected = tags.includes(preset);
+                      return (
+                        <Badge
+                          key={preset}
+                          variant={selected ? "default" : "outline"}
+                          className={`cursor-pointer transition-all text-xs px-3 py-1.5 ${
+                            selected
+                              ? "bg-primary hover:bg-primary/80"
+                              : "hover:bg-primary/10 hover:border-primary/30"
+                          }`}
+                          onClick={() => {
+                            if (selected) {
+                              setTags(tags.filter(t => t !== preset));
+                            } else {
+                              setTags([...tags, preset]);
+                            }
+                          }}
+                        >
+                          {selected && <Check className="w-3 h-3 mr-1" />}
+                          {preset}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                  {/* Custom tag input */}
+                  <div className="flex gap-2 pt-2 border-t">
                     <Input
                       value={newTag}
                       onChange={(e) => setNewTag(e.target.value)}
-                      placeholder="Ej: artesano, vegano..."
+                      placeholder="O escribe una etiqueta personalizada..."
                       className="h-8 text-sm"
                       onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
                     />
@@ -689,18 +776,23 @@ const EditarPack = () => {
                       <Plus className="w-4 h-4" />
                     </Button>
                   </div>
-                  <div className="flex flex-wrap gap-1">
-                    {tags.map((tag, idx) => (
-                      <Badge 
-                        key={idx} 
-                        variant="secondary" 
-                        className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
-                        onClick={() => removeTag(tag)}
-                      >
-                        {tag} ×
-                      </Badge>
-                    ))}
-                  </div>
+                  {tags.length > 0 && (
+                    <div className="p-3 bg-muted/50 rounded-lg">
+                      <p className="text-xs font-medium mb-2">Etiquetas seleccionadas ({tags.length}):</p>
+                      <div className="flex flex-wrap gap-1">
+                        {tags.map((tag, idx) => (
+                          <Badge 
+                            key={idx} 
+                            variant="secondary" 
+                            className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground text-xs"
+                            onClick={() => removeTag(tag)}
+                          >
+                            {tag} ×
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
