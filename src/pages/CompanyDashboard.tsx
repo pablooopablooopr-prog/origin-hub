@@ -81,6 +81,7 @@ export default function CompanyDashboard() {
   const [packs, setPacks] = useState<CompanyPack[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [companyRoutes, setCompanyRoutes] = useState<CompanyRoute[]>([]);
+  const [ownCreatedRoutes, setOwnCreatedRoutes] = useState<CompanyRoute[]>([]);
   const [loading, setLoading] = useState(true);
   const [showProductDialog, setShowProductDialog] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
