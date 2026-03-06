@@ -142,6 +142,7 @@ const CustomerDashboard = () => {
     newsletter: true
   });
   const [savingNotifications, setSavingNotifications] = useState(false);
+  const [deleteRouteConfirm, setDeleteRouteConfirm] = useState<{ id: string; title: string } | null>(null);
   
   const navigate = useNavigate();
   const { toast } = useToast();
