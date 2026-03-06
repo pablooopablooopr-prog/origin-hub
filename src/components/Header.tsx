@@ -21,6 +21,7 @@ const Header = () => {
   const location = useLocation();
 
   const isOnAccountPage = ACCOUNT_ROUTES.some((r) => location.pathname.startsWith(r));
+  const hideLoginButtons = userType === "company" || isOnAccountPage;
 
   const detectUserType = async (userId: string) => {
     // Check if user has a company profile
@@ -118,7 +119,7 @@ const Header = () => {
                 )}
               </Button>
             </Link>
-            {isAuthenticated && isOnAccountPage ? (
+            {isAuthenticated && hideLoginButtons ? (
               <Link to={accountLink}>
                 <Button size="sm" style={{ backgroundColor: accountColor, color: accountFgColor }}>
                   <User className="w-4 h-4 mr-2" />
@@ -191,7 +192,7 @@ const Header = () => {
                     Mis Carritos {itemCount > 0 && `(${itemCount})`}
                   </Button>
                 </Link>
-                {isAuthenticated && isOnAccountPage ? (
+                {isAuthenticated && hideLoginButtons ? (
                   <Link to={accountLink} onClick={() => setIsMenuOpen(false)}>
                     <Button size="sm" className="w-full" style={{ backgroundColor: accountColor, color: accountFgColor }}>
                       <User className="w-4 h-4 mr-2" />
