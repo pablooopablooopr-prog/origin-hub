@@ -498,9 +498,9 @@ export default function CompanyDashboard() {
     setEditingSettings(false);
     setCompanyForm({
       business_name: company?.business_name || "",
-      contact_person: (company as any)?.contact_person || "",
-      phone: (company as any)?.phone || "",
-      website: (company as any)?.website || "",
+      contact_person: company?.contact_person || "",
+      phone: company?.phone || "",
+      website: company?.website || "",
       address: company?.address || "",
       description: company?.description || "",
       authenticity_story: company?.authenticity_story || ""
