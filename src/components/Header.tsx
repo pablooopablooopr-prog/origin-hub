@@ -71,8 +71,31 @@ const Header = () => {
     ? "hsl(var(--secondary-foreground))"
     : "hsl(var(--primary-foreground))";
 
-  // Hide entire header for logged-in company users
-  if (userType === "company") return null;
+  // Minimal header for logged-in company users: logo + Mi Cuenta only
+  if (userType === "company") {
+    return (
+      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
+        <div className="container mx-auto px-6 py-3">
+          <div className="flex items-center justify-between">
+            <Link to="/company-dashboard" className="text-2xl font-bold tracking-tight text-primary flex items-center">
+              <img src="/lovable-uploads/enso-transparent.png" alt="Ensō" className="w-6 h-6 object-contain mx-0 -ml-4" />
+              <span>RIGEN</span>
+            </Link>
+            <div className="flex items-center space-x-4">
+              {isAuthenticated && <NotificationsDropdown />}
+              <Link to="/company-dashboard">
+                <Button size="sm" style={{ backgroundColor: accountColor, color: accountFgColor }}>
+                  <User className="w-4 h-4 mr-2" />
+                  Mi Cuenta
+                  {isAdmin && <span className="ml-2 rounded border border-white/30 px-2 py-0.5 text-[10px] font-semibold tracking-wide">ADMIN</span>}
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 py-3">
