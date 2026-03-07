@@ -65,9 +65,9 @@ export const useProducerCarts = () => {
       return;
     }
 
-    // Fetch company details
+    // Fetch company details from public view (customers can't read companies table directly)
     const { data: companies } = await supabase
-      .from("companies")
+      .from("companies_public")
       .select("*")
       .in("id", companyIds);
 
