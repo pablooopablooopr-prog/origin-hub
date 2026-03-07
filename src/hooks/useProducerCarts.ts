@@ -156,7 +156,7 @@ export const useProducerCarts = () => {
     if (existingCart && existingCart.company.id !== pack.company_id) {
       // Get the new company details
       const { data: newCompany } = await supabase
-        .from("companies")
+        .from("companies_public")
         .select("*")
         .eq("id", pack.company_id)
         .single();
