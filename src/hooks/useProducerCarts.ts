@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
-export type Company = Tables<'companies'>;
+export type Company = Tables<'companies_public'>;
 export type CompanyPack = Tables<'company_packs'>;
 export type Product = Tables<'products'>;
 
@@ -65,9 +65,9 @@ export const useProducerCarts = () => {
       return;
     }
 
-    // Fetch company details
+    // Fetch company details from public view (customers can't read companies table directly)
     const { data: companies } = await supabase
-      .from("companies")
+      .from("companies_public")
       .select("*")
       .in("id", companyIds);
 
@@ -156,7 +156,7 @@ export const useProducerCarts = () => {
     if (existingCart && existingCart.company.id !== pack.company_id) {
       // Get the new company details
       const { data: newCompany } = await supabase
-        .from("companies")
+        .from("companies_public")
         .select("*")
         .eq("id", pack.company_id)
         .single();
@@ -222,7 +222,7 @@ export const useProducerCarts = () => {
       if (existingCart.company.id !== companyId) {
         // Get the new company for the conflict
         const { data: newCompany } = await supabase
-          .from("companies")
+          .from("companies_public")
           .select("*")
           .eq("id", companyId)
           .single();
