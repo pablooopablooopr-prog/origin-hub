@@ -222,7 +222,7 @@ export const useProducerCarts = () => {
       if (existingCart.company.id !== companyId) {
         // Get the new company for the conflict
         const { data: newCompany } = await supabase
-          .from("companies")
+          .from("companies_public")
           .select("*")
           .eq("id", companyId)
           .single();
