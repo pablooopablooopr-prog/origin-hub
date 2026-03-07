@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
-export type Company = Tables<'companies'>;
+export type Company = Tables<'companies_public'>;
 export type CompanyPack = Tables<'company_packs'>;
 export type Product = Tables<'products'>;
 
