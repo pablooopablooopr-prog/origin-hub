@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, memo } from 'react';
 import { Business } from '@/data/businesses';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -6,8 +6,28 @@ import { MapPin, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useGoogleMapsLoader } from '@/hooks/useGoogleMapsLoader';
 import { useNavigate } from "react-router-dom";
+import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import type { MapItem } from './InteractiveMap';
 
+// Custom map style — warm, earthy tones matching ORIGEN brand
+const ORIGEN_MAP_STYLE: google.maps.MapTypeStyle[] = [
+  { elementType: "geometry", stylers: [{ color: "#f5f0e8" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#6b5c4c" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#f5f0e8" }] },
+  { featureType: "administrative", elementType: "geometry.stroke", stylers: [{ color: "#c9b99a" }] },
+  { featureType: "administrative.land_parcel", elementType: "labels.text.fill", stylers: [{ color: "#ae9e85" }] },
+  { featureType: "landscape.natural", elementType: "geometry", stylers: [{ color: "#ede7d9" }] },
+  { featureType: "poi", elementType: "geometry", stylers: [{ color: "#dfd8c8" }] },
+  { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#7a6b57" }] },
+  { featureType: "poi.park", elementType: "geometry.fill", stylers: [{ color: "#c8dbb4" }] },
+  { featureType: "road", elementType: "geometry", stylers: [{ color: "#e8dfd0" }] },
+  { featureType: "road.arterial", elementType: "geometry", stylers: [{ color: "#ddd4c3" }] },
+  { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#d4c9b5" }] },
+  { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#c4b89e" }] },
+  { featureType: "transit.line", elementType: "geometry", stylers: [{ color: "#dfd8c8" }] },
+  { featureType: "water", elementType: "geometry.fill", stylers: [{ color: "#b8cfe0" }] },
+  { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#6e8fa5" }] },
+];
 
 interface GoogleMapProps {
   filteredBusinesses: Business[];
@@ -26,19 +46,20 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
+  const clustererRef = useRef<MarkerClusterer | null>(null);
   const userMarkerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(null);
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
   const { loaded, error, apiKeyMissing } = useGoogleMapsLoader();
 
   // Marker colors by item type
-  const getMarkerColor = (item: Business): string => {
+  const getMarkerColor = useCallback((item: Business): string => {
     const mapItem = item as MapItem;
-    if (mapItem.itemType === 'route-stop') return '#5B8C5A'; // moss green for routes
-    if (mapItem.itemType === 'company') return '#8B5A3C'; // earth brown for companies
+    if (mapItem.itemType === 'route-stop') return '#5B8C5A';
+    if (mapItem.itemType === 'company') return '#8B5A3C';
     return '#8B5A3C';
-  };
+  }, []);
 
-  // Initialize map
+  // Initialize map (once)
   useEffect(() => {
     if (!loaded || !mapContainer.current || mapRef.current) return;
 
@@ -46,21 +67,25 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
       
       mapRef.current = new Map(mapContainer.current!, {
-        center: { lat: 40.4168, lng: -3.7038 }, // Madrid center
+        center: { lat: 40.4168, lng: -3.7038 },
         zoom: 6,
-        mapId: 'origen-map', // Required for AdvancedMarkerElement
+        mapId: 'origen-map',
         disableDefaultUI: false,
         zoomControl: true,
         mapTypeControl: false,
         streetViewControl: false,
         fullscreenControl: true,
+        styles: ORIGEN_MAP_STYLE,
       });
     };
 
     initMap();
 
     return () => {
-      // Clean up markers
+      if (clustererRef.current) {
+        clustererRef.current.clearMarkers();
+        clustererRef.current = null;
+      }
       markersRef.current.forEach(marker => marker.map = null);
       markersRef.current = [];
       if (userMarkerRef.current) {
@@ -69,32 +94,32 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     };
   }, [loaded]);
 
-  // Update markers when businesses change
+  // Update markers when businesses change — with clustering
   useEffect(() => {
     if (!mapRef.current || !loaded) return;
 
     const updateMarkers = async () => {
-      // Remove existing markers
+      // Clear previous clusterer and markers
+      if (clustererRef.current) {
+        clustererRef.current.clearMarkers();
+        clustererRef.current = null;
+      }
       markersRef.current.forEach(marker => marker.map = null);
       markersRef.current = [];
 
       const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
 
-      // Add new markers
+      const newMarkers: google.maps.marker.AdvancedMarkerElement[] = [];
+
       filteredBusinesses.forEach((business) => {
         const markerContent = document.createElement('div');
-        markerContent.className = 'google-map-marker';
-        markerContent.style.width = '24px';
-        markerContent.style.height = '24px';
-        markerContent.style.borderRadius = '50%';
-        markerContent.style.cursor = 'pointer';
-        markerContent.style.border = '3px solid white';
-        markerContent.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
-        markerContent.style.backgroundColor = getMarkerColor(business);
-        markerContent.style.transition = 'transform 0.2s';
+        markerContent.style.cssText = `
+          width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+          border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+          background-color: ${getMarkerColor(business)}; transition: transform 0.2s;
+        `;
 
         const marker = new AdvancedMarkerElement({
-          map: mapRef.current!,
           position: { 
             lat: business.coordinates[1], 
             lng: business.coordinates[0] 
@@ -112,22 +137,43 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           mapRef.current!.setZoom(14);
         });
 
-        markersRef.current.push(marker);
+        newMarkers.push(marker);
       });
 
-      // Fit bounds to show all markers
-      if (filteredBusinesses.length > 0) {
+      markersRef.current = newMarkers;
+
+      // Create clusterer with custom renderer
+      if (newMarkers.length > 0) {
+        clustererRef.current = new MarkerClusterer({
+          map: mapRef.current!,
+          markers: newMarkers,
+          renderer: {
+            render: ({ count, position }) => {
+              const size = count < 10 ? 36 : count < 50 ? 44 : 52;
+              const el = document.createElement('div');
+              el.style.cssText = `
+                width: ${size}px; height: ${size}px; border-radius: 50%;
+                background: hsl(30, 40%, 35%); color: white; display: flex;
+                align-items: center; justify-content: center; font-weight: 700;
+                font-size: ${size < 40 ? 12 : 14}px; border: 3px solid hsl(30, 30%, 90%);
+                box-shadow: 0 3px 10px rgba(0,0,0,0.25); cursor: pointer;
+              `;
+              el.textContent = String(count);
+              return new google.maps.marker.AdvancedMarkerElement({
+                position,
+                content: el,
+              });
+            }
+          }
+        });
+
+        // Fit bounds
         const bounds = new google.maps.LatLngBounds();
         filteredBusinesses.forEach(business => {
-          bounds.extend({ 
-            lat: business.coordinates[1], 
-            lng: business.coordinates[0] 
-          });
+          bounds.extend({ lat: business.coordinates[1], lng: business.coordinates[0] });
         });
-        
         mapRef.current.fitBounds(bounds, 50);
-        
-        // Don't zoom in too much for a single marker
+
         const listener = google.maps.event.addListener(mapRef.current, 'idle', () => {
           if (mapRef.current!.getZoom()! > 14) {
             mapRef.current!.setZoom(14);
@@ -138,15 +184,10 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     };
 
     updateMarkers();
-  }, [filteredBusinesses, loaded]);
+  }, [filteredBusinesses, loaded, getMarkerColor]);
 
   const handleGeolocation = useCallback(async () => {
-    if (!navigator.geolocation) {
-      alert('La geolocalización no está disponible en su navegador');
-      return;
-    }
-
-    if (!mapRef.current || !loaded) return;
+    if (!navigator.geolocation || !mapRef.current || !loaded) return;
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -155,21 +196,18 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         mapRef.current!.panTo({ lat: latitude, lng: longitude });
         mapRef.current!.setZoom(12);
 
-        // Remove previous user marker
         if (userMarkerRef.current) {
           userMarkerRef.current.map = null;
         }
 
-        // Add user location marker
         const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
         
         const userMarkerContent = document.createElement('div');
-        userMarkerContent.style.width = '20px';
-        userMarkerContent.style.height = '20px';
-        userMarkerContent.style.borderRadius = '50%';
-        userMarkerContent.style.backgroundColor = '#3B82F6';
-        userMarkerContent.style.border = '3px solid white';
-        userMarkerContent.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.5)';
+        userMarkerContent.style.cssText = `
+          width: 20px; height: 20px; border-radius: 50%;
+          background-color: hsl(217, 91%, 60%); border: 3px solid white;
+          box-shadow: 0 0 10px hsla(217, 91%, 60%, 0.5);
+        `;
 
         userMarkerRef.current = new AdvancedMarkerElement({
           map: mapRef.current!,
@@ -180,14 +218,13 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         
         onLocationClick?.();
       },
-      (error) => {
-        console.error('Error getting location:', error);
-        alert('No se pudo obtener su ubicación');
+      (err) => {
+        console.error('Error getting location:', err);
       }
     );
   }, [loaded, onLocationClick]);
 
-  // Error state - API key missing
+  // Error / loading states
   if (apiKeyMissing) {
     return (
       <Card className="h-96 md:h-[500px] flex items-center justify-center">
@@ -205,16 +242,13 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     );
   }
 
-  // Loading or error state
   if (error) {
     return (
       <Card className="h-96 md:h-[500px] flex items-center justify-center">
         <CardContent className="text-center p-8">
           <AlertTriangle className="w-12 h-12 text-destructive mx-auto mb-4" />
           <h3 className="text-xl font-semibold mb-2">Error al cargar el mapa</h3>
-          <p className="text-muted-foreground">
-            No se pudo cargar Google Maps. Por favor, intente de nuevo más tarde.
-          </p>
+          <p className="text-muted-foreground">No se pudo cargar Google Maps.</p>
         </CardContent>
       </Card>
     );
@@ -236,7 +270,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       <div className="relative h-96 md:h-[500px]">
         <div ref={mapContainer} className="w-full h-full rounded-lg" />
         
-        {/* Geolocation button */}
         <Button
           onClick={handleGeolocation}
           className="absolute top-4 left-4 z-10"
@@ -246,7 +279,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           Mi zona
         </Button>
 
-        {/* Selected business info */}
         {selectedBusiness && (
           <Card className="absolute bottom-4 left-4 right-4 md:right-auto md:w-80 z-10 bg-primary border-primary shadow-lg">
             <CardContent className="p-4">
@@ -291,8 +323,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                     e.stopPropagation();
                     const mapItem = selectedBusiness as MapItem;
                     if (mapItem?.itemType === 'route-stop' && mapItem.routeId) {
-                      // Navigate to route detail
-                      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
                       navigate(`/rutas/${mapItem.routeId}`);
                     } else {
                       const dbId = selectedBusiness?.id;
@@ -320,4 +350,4 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   );
 };
 
-export default GoogleMap;
+export default memo(GoogleMap);
