@@ -289,16 +289,23 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    const dbId = selectedBusiness?.id;
-                    const slug = (selectedBusiness as any)?.slug;
-                    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-                    if (dbId && uuidRegex.test(dbId)) {
-                      navigate(`/negocio/${dbId}`);
-                    } else if (slug) {
-                      navigate(`/negocio/${slug}`);
+                    const mapItem = selectedBusiness as MapItem;
+                    if (mapItem?.itemType === 'route-stop' && mapItem.routeId) {
+                      // Navigate to route detail
+                      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+                      navigate(`/rutas/${mapItem.routeId}`);
                     } else {
-                      const showcaseSlugs = ['aceites-sierra-del-sur', 'quesos-artesanos-la-mancha'];
-                      navigate(`/negocio/${showcaseSlugs[Math.floor(Math.random() * 2)]}`);
+                      const dbId = selectedBusiness?.id;
+                      const slug = (selectedBusiness as any)?.slug;
+                      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+                      if (dbId && uuidRegex.test(dbId)) {
+                        navigate(`/negocio/${dbId}`);
+                      } else if (slug) {
+                        navigate(`/negocio/${slug}`);
+                      } else {
+                        const showcaseSlugs = ['aceites-sierra-del-sur', 'quesos-artesanos-la-mancha'];
+                        navigate(`/negocio/${showcaseSlugs[Math.floor(Math.random() * 2)]}`);
+                      }
                     }
                   }}
                 >
