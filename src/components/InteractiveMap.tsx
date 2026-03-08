@@ -26,7 +26,9 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   const [selectedSubItem, setSelectedSubItem] = useState<string | null>(null);
   const [allItems, setAllItems] = useState<MapItem[]>([]);
   const [routeStopItems, setRouteStopItems] = useState<MapItem[]>([]);
+  const [packItems, setPackItems] = useState<MapItem[]>([]);
   const [routes, setRoutes] = useState<{ id: string; title: string }[]>([]);
+  const [packs, setPacks] = useState<{ id: string; title: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryMap, setCategoryMap] = useState<Record<string, string>>({});
 
