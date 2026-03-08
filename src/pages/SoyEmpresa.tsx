@@ -48,7 +48,7 @@ const SoyEmpresa = () => {
     {
       number: "4",
       title: "¡Empieza a vender!",
-      description: "Accede a tu panel y crea tus packs de productos"
+      description: "Accede a tu panel, crea y muéstrate al mundo entero"
     }
   ];
 
