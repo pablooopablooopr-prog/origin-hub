@@ -33,11 +33,13 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [companiesRes, categoriesRes] = await Promise.all([
+        const [companiesRes, categoriesRes, routesRes, stopsRes] = await Promise.all([
           supabase
             .from("companies_public")
             .select("id, business_name, description, address, latitude, longitude, avg_rating, category_id, slug"),
           supabase.from("categories").select("id, slug, name").eq("is_active", true),
+          supabase.from("routes_public").select("id, title, slug").eq("is_active", true),
+          supabase.from("route_stops").select("id, name, description, address, latitude, longitude, route_id, position"),
         ]);
 
         // Build category id → slug map
