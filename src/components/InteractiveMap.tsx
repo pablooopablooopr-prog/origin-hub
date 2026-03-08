@@ -36,10 +36,10 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
         const [companiesRes, categoriesRes, routesRes, stopsRes] = await Promise.all([
           supabase
             .from("companies_public")
-            .select("id, business_name, description, address, latitude, longitude, avg_rating, category_id, slug"),
-          supabase.from("categories").select("id, slug, name").eq("is_active", true),
-          supabase.from("routes_public").select("id, title, slug").eq("is_active", true),
-          supabase.from("route_stops").select("id, name, description, address, latitude, longitude, route_id, position"),
+            .select("id, business_name, description, address, latitude, longitude, avg_rating, category_id, slug") as any,
+          supabase.from("categories").select("id, slug, name").eq("is_active", true) as any,
+          supabase.from("routes_public").select("id, title, slug").eq("is_active", true) as any,
+          supabase.from("route_stops").select("id, name, description, address, latitude, longitude, route_id, position") as any,
         ]);
 
         // Build category id → slug map
