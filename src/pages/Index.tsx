@@ -112,7 +112,7 @@ const Index = () => {
               <Button onClick={() => navigate('/mapa')} size="default" className="text-sm px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all">
                 Explorar ORIGEN
               </Button>
-              <Button onClick={() => navigate('/soy-empresa')} variant="outline" size="lg" className="text-lg px-10 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all border-2 border-primary">
+              <Button onClick={() => navigate('/soy-empresa')} variant="outline" size="default" className="text-sm px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all border-2 border-primary">
                 Unir mi negocio
               </Button>
             </div>
