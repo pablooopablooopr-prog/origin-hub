@@ -90,7 +90,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         markerContent.style.cursor = 'pointer';
         markerContent.style.border = '3px solid white';
         markerContent.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
-        markerContent.style.backgroundColor = categoryColors[business.category] || '#8B5A3C';
+        markerContent.style.backgroundColor = getMarkerColor(business);
         markerContent.style.transition = 'transform 0.2s';
 
         const marker = new AdvancedMarkerElement({
