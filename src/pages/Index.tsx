@@ -101,9 +101,8 @@ const Index = () => {
         {/* Manifiesto + CTA Final */}
         <section className="py-10 md:py-14 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-6 max-w-2xl text-center">
-            <p className="text-secondary font-semibold tracking-widest uppercase text-xs mb-3">Importante</p>
-            <h2 className="text-2xl md:text-3xl font-bold text-primary mb-4 leading-tight tracking-tight">
-              Volver al origen también es una forma de avanzar
+            <h2 className="text-2xl md:text-3xl font-bold text-primary mb-4 leading-tight tracking-tight italic">
+              «Volver al origen siempre fue una forma de avanzar»
             </h2>
             <p className="text-base text-muted-foreground leading-relaxed mb-8">
               Creemos en una España viva, conectada a su tierra, a sus oficios y a las personas que la sostienen. ORIGEN nace para dar visibilidad a quienes producen, cocinan y cuidan el territorio.
