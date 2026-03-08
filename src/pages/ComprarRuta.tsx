@@ -21,7 +21,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { formatPrice, calculateRoutePricing, RoutePricing } from "@/hooks/useRoutePricing";
-import { getRouteById } from "@/data/routes";
+
 import { PAYMENT_MESSAGES } from "@/lib/paymentRules";
 import { processRoutePurchase, PAYMENTS_MODE } from "@/lib/payments";
 

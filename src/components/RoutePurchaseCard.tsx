@@ -9,6 +9,7 @@ import { calculateRoutePricing, formatPrice } from "@/hooks/useRoutePricing";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { PAYMENT_MESSAGES } from "@/lib/paymentRules";
+import { PAYMENTS_MODE } from "@/lib/payments";
 
 interface RoutePurchaseCardProps {
   routeId: string;

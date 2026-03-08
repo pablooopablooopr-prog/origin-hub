@@ -125,28 +125,16 @@ const processMockPurchase = async (
       purchaseId = data.id;
     }
 
-    // Create route access (permanent - no valid_until)
-    const { data: existingAccess } = await supabase
-      .from("route_access")
-      .select("id")
-      .eq("user_id", customer.user_id)
-      .eq("route_id", routeId)
-      .single();
+    // Create route access via security definer function (bypasses RLS)
+    const { error: accessError } = await supabase
+      .rpc("grant_route_access_after_purchase", {
+        p_user_id: customer.user_id,
+        p_route_id: routeId,
+      });
 
-    if (!existingAccess) {
-      const { error: accessError } = await supabase
-        .from("route_access")
-        .insert({
-          user_id: customer.user_id,
-          route_id: routeId,
-          valid_from: now,
-          valid_until: null, // Permanent access
-        });
-
-      if (accessError) {
-        console.error("Error creating route access:", accessError);
-        // Don't fail the purchase, access can be fixed later
-      }
+    if (accessError) {
+      console.error("Error creating route access:", accessError);
+      // Don't fail the purchase, access can be fixed later
     }
 
     return { 
