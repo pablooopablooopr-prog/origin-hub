@@ -194,7 +194,7 @@ const Rutas = () => {
               {/* CTA to create route */}
               <div className="text-center bg-card rounded-lg p-8 shadow-soft">
                 <h3 className="text-2xl font-semibold text-primary mb-4">
-                  ¿Tienes tu propia ruta?
+                  ¿Quieres crear tu propia experiencia?
                 </h3>
                 <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
                   Comparte tus descubrimientos con la comunidad. Marca los lugares que has visitado 
