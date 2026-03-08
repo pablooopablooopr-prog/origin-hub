@@ -109,6 +109,9 @@ export default function CompanyDashboard() {
   });
   const [editLatLng, setEditLatLng] = useState<{ lat: number | null; lng: number | null }>({ lat: null, lng: null });
   const [confirmDelete, setConfirmDelete] = useState<{ type: 'route' | 'pack' | 'product'; id: string; title: string } | null>(null);
+  const [totalViews, setTotalViews] = useState(0);
+  const [packsSold, setPacksSold] = useState<{ total: number; byType: Record<string, number> }>({ total: 0, byType: {} });
+  const [soldFilterType, setSoldFilterType] = useState<string>('all');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -236,6 +239,33 @@ export default function CompanyDashboard() {
         .order('created_at', { ascending: false });
 
       setOwnCreatedRoutes((ownRoutesData || []) as CompanyRoute[]);
+
+      // Load total views across all dates
+      if (packIds.length > 0) {
+        const { data: allAnalytics } = await supabase
+          .from('pack_analytics')
+          .select('views')
+          .in('pack_id', packIds);
+        const total = (allAnalytics || []).reduce((sum: number, a: any) => sum + (a.views || 0), 0);
+        setTotalViews(total);
+      }
+
+      // Load orders (packs sold)
+      const { data: ordersData } = await supabase
+        .from('orders')
+        .select('id, pack_id, status')
+        .eq('company_id', companyData.id)
+        .in('status', ['completed', 'shipped', 'delivered', 'confirmed', 'pending']);
+
+      const soldByType: Record<string, number> = {};
+      let totalSold = 0;
+      (ordersData || []).forEach((order: any) => {
+        totalSold++;
+        const pack = (packsData || []).find((p: any) => p.id === order.pack_id);
+        const typeName = pack?.template?.type || 'otro';
+        soldByType[typeName] = (soldByType[typeName] || 0) + 1;
+      });
+      setPacksSold({ total: totalSold, byType: soldByType });
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -836,30 +866,54 @@ export default function CompanyDashboard() {
               <CardHeader>
                 <CardTitle>Estadísticas Generales</CardTitle>
                 <CardDescription>
-                  Resumen del rendimiento de tus packs
+                  Resumen del rendimiento de tu negocio
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  {/* Packs Publicados */}
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-primary">{packs.length}</div>
-                    <div className="text-sm text-muted-foreground">Packs Totales</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-green-600">
+                    <div className="text-3xl font-bold text-secondary">
                       {packs.filter(p => p.status === 'published').length}
                     </div>
                     <div className="text-sm text-muted-foreground">Packs Publicados</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-blue-600">
-                      {packs.reduce((sum, pack) => sum + (pack.analytics?.views || 0), 0)}
+
+                  {/* Packs Vendidos with type filter */}
+                  <div className="text-center space-y-2">
+                    <div className="text-3xl font-bold text-primary">
+                      {soldFilterType === 'all'
+                        ? packsSold.total
+                        : (packsSold.byType[soldFilterType] || 0)}
                     </div>
-                    <div className="text-sm text-muted-foreground">Vistas Totales</div>
+                    <div className="text-sm text-muted-foreground">Packs Vendidos</div>
+                    <select
+                      value={soldFilterType}
+                      onChange={(e) => setSoldFilterType(e.target.value)}
+                      className="text-xs border rounded px-2 py-1 bg-background text-foreground"
+                    >
+                      <option value="all">Todos</option>
+                      <option value="micro">Microselección</option>
+                      <option value="raiz">Pack Raíz</option>
+                      <option value="esencia">Pack Esencia</option>
+                      <option value="gourmet">Pack Gourmet</option>
+                    </select>
                   </div>
+
+                  {/* Rutas donde apareces */}
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-amber-600">{products.length}</div>
-                    <div className="text-sm text-muted-foreground">Productos</div>
+                    <div className="text-3xl font-bold text-accent-foreground">
+                      {companyRoutes.length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Rutas donde apareces</div>
+                  </div>
+
+                  {/* Visitas Totales */}
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-muted-foreground">
+                      {totalViews}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Visitas Totales</div>
                   </div>
                 </div>
               </CardContent>
