@@ -29,15 +29,15 @@ export const useCart = () => {
         .eq("user_id", user.id)
         .single();
 
-      // If customer doesn't exist, create one
+      // If customer doesn't exist, create one with conflict handling
       if (!customer) {
         const { data: newCustomer, error: createError } = await supabase
           .from("customers")
-          .insert({
+          .upsert({
             user_id: user.id,
             email: user.email || "",
             full_name: user.user_metadata?.full_name || user.email?.split("@")[0] || "Usuario"
-          })
+          }, { onConflict: "user_id" })
           .select("id")
           .single();
         
