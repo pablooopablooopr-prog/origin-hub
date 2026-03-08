@@ -81,8 +81,8 @@ const BusinessSection = () => {
             <Button size="lg" className="shadow-earth" onClick={() => navigate('/soy-empresa')}>
               Solicita tu espacio
             </Button>
-            <p className="text-sm text-muted-foreground">
-              Proceso de verificación gratuito • Comenzamos contigo en 48h
+            <p className="text-sm text-foreground/70">
+              Proceso de verificación gratuito • Comenzamos contigo en menos de 24h
             </p>
           </div>
         </div>
