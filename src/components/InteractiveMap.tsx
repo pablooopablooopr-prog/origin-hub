@@ -307,11 +307,11 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   const filterChips = useMemo(() => [
     { name: "Provincias", icon: MapPin, count: provinces.length, color: "bg-primary" },
     { name: "Productores", icon: Leaf, count: productores.length, color: "bg-secondary" },
-    { name: "Selecciones", icon: Package, count: packs.length, color: "bg-secondary" },
+    { name: "Selecciones", icon: Package, count: packItems.length, color: "bg-secondary" },
     { name: "Cooperativas", icon: Users, count: cooperativas.length, color: "bg-secondary" },
     { name: "Restaurantes", icon: UtensilsCrossed, count: restaurantes.length, color: "bg-secondary" },
     { name: "Experiencias", icon: Compass, count: routes.length, color: "bg-secondary" },
-  ], [provinces, productores, cooperativas, restaurantes, routes, packs]);
+  ], [provinces, productores, cooperativas, restaurantes, routes, packItems]);
 
   const handleFilterClick = (filterName: string) => {
     if (expandedFilter === filterName) {
