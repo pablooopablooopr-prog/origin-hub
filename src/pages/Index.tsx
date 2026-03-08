@@ -47,7 +47,7 @@ const Index = () => {
               <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
                 Selecciones del territorio
               </h2>
-                <p className="text-base text-muted-foreground max-w-5xl mx-auto leading-relaxed">
+                <p className="text-lg text-muted-foreground max-w-5xl mx-auto leading-relaxed">
                  Packs y propuestas originales creadas por productores de toda la vida para llevarte una parte del origen a casa
                </p>
             </div>
