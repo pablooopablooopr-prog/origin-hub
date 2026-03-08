@@ -115,6 +115,7 @@ const Packs = () => {
       if (filters.packType) {
         filtered = filtered.filter(pack => {
           const title = pack.title.toLowerCase();
+          if (filters.packType === 'micro') return title.includes('microselección') || title.includes('microseleccion') || title.includes('micro');
           if (filters.packType === 'raiz') return title.includes('raíz') || title.includes('raiz');
           if (filters.packType === 'esencia') return title.includes('esencia');
           if (filters.packType === 'gourmet') return title.includes('gourmet');
