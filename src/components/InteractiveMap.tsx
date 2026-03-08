@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, MapPin, Leaf, UtensilsCrossed, Loader2, Users, Compass } from "lucide-react";
+import { Search, MapPin, Leaf, UtensilsCrossed, Loader2, Users, Compass, Package } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import GoogleMap from "./GoogleMap";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,7 +26,9 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   const [selectedSubItem, setSelectedSubItem] = useState<string | null>(null);
   const [allItems, setAllItems] = useState<MapItem[]>([]);
   const [routeStopItems, setRouteStopItems] = useState<MapItem[]>([]);
+  const [packItems, setPackItems] = useState<MapItem[]>([]);
   const [routes, setRoutes] = useState<{ id: string; title: string }[]>([]);
+  const [packs, setPacks] = useState<{ id: string; title: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryMap, setCategoryMap] = useState<Record<string, string>>({});
 
@@ -39,7 +41,7 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
         const categoriesRes = await supabase.from("categories").select("id, slug, name").eq("is_active", true);
         const routesRes = await supabase.from("routes_public").select("id, title, slug");
         const stopsRes = await supabase.from("route_stops").select("id, name, description, address, latitude, longitude, route_id, position");
-
+        const packsRes = await supabase.from("company_packs_public").select("id, title, slug, company_id").eq("is_published", true).eq("is_active", true);
         // Build category id → slug map
         const catMap: Record<string, string> = {};
         const catNameMap: Record<string, string> = {};
@@ -120,6 +122,41 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
         }
         setRouteStopItems(stopItems);
 
+        // Build pack items (placed at their company's coordinates)
+        const companyCoordMap: Record<string, { lat: number; lng: number; address: string }> = {};
+        if (companiesRes.data) {
+          for (const c of companiesRes.data) {
+            if (c.id && c.latitude && c.longitude) {
+              companyCoordMap[c.id] = { lat: c.latitude as number, lng: c.longitude as number, address: c.address || "" };
+            }
+          }
+        }
+        const packItemsList: MapItem[] = [];
+        const fetchedPacks: { id: string; title: string }[] = [];
+        if (packsRes.data) {
+          for (const p of packsRes.data) {
+            if (!p.id || !p.title || !p.company_id) continue;
+            fetchedPacks.push({ id: p.id, title: p.title });
+            const coords = companyCoordMap[p.company_id];
+            if (!coords) continue;
+            packItemsList.push({
+              id: p.id,
+              name: p.title,
+              category: "Selecciones",
+              description: "",
+              address: coords.address,
+              city: "",
+              province: extractProvince(coords.address),
+              coordinates: [coords.lng, coords.lat],
+              rating: 0,
+              tags: [],
+              itemType: "pack",
+            });
+          }
+        }
+        setPacks(fetchedPacks);
+        setPackItems(packItemsList);
+
         setAllItems(items);
       } catch (err) {
         console.error("Error fetching map data:", err);
@@ -156,10 +193,11 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   const subItemsMap = useMemo<Record<string, { id: string; name: string }[]>>(() => ({
     Provincias: provinces.map((p) => ({ id: p, name: p })),
     Productores: productores.map((i) => ({ id: i.id, name: i.name })),
+    Selecciones: packs.map((p) => ({ id: p.id, name: p.title })),
     Cooperativas: cooperativas.map((i) => ({ id: i.id, name: i.name })),
     Restaurantes: restaurantes.map((i) => ({ id: i.id, name: i.name })),
     Experiencias: routes.map((r) => ({ id: r.id, name: r.title })),
-  }), [provinces, productores, cooperativas, restaurantes, routes]);
+  }), [provinces, productores, cooperativas, restaurantes, routes, packs]);
 
   // Filtered items
   const filteredItems = useMemo(() => {
@@ -169,6 +207,14 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
         return routeStopItems.filter((i) => i.routeId === selectedSubItem);
       }
       return routeStopItems;
+    }
+
+    // When Selecciones filter is active, show pack locations
+    if (selectedFilter === "Selecciones") {
+      if (selectedSubItem) {
+        return packItems.filter((i) => i.id === selectedSubItem);
+      }
+      return packItems;
     }
 
     let filtered = allItems;
@@ -202,15 +248,16 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
     }
 
     return filtered;
-  }, [allItems, routeStopItems, searchQuery, selectedFilter, selectedSubItem, expandedFilter]);
+  }, [allItems, routeStopItems, packItems, searchQuery, selectedFilter, selectedSubItem, expandedFilter]);
 
   const filterChips = useMemo(() => [
     { name: "Provincias", icon: MapPin, count: provinces.length, color: "bg-primary" },
     { name: "Productores", icon: Leaf, count: productores.length, color: "bg-secondary" },
+    { name: "Selecciones", icon: Package, count: packs.length, color: "bg-secondary" },
     { name: "Cooperativas", icon: Users, count: cooperativas.length, color: "bg-secondary" },
     { name: "Restaurantes", icon: UtensilsCrossed, count: restaurantes.length, color: "bg-secondary" },
     { name: "Experiencias", icon: Compass, count: routes.length, color: "bg-secondary" },
-  ], [provinces, productores, cooperativas, restaurantes, routes]);
+  ], [provinces, productores, cooperativas, restaurantes, routes, packs]);
 
   const handleFilterClick = (filterName: string) => {
     if (expandedFilter === filterName) {
@@ -304,6 +351,7 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
                 >
                   {expandedFilter === "Provincias" && <MapPin className="w-3 h-3 mr-1" />}
                   {expandedFilter === "Productores" && <Leaf className="w-3 h-3 mr-1" />}
+                  {expandedFilter === "Selecciones" && <Package className="w-3 h-3 mr-1" />}
                   {expandedFilter === "Cooperativas" && <Users className="w-3 h-3 mr-1" />}
                   {expandedFilter === "Restaurantes" && <UtensilsCrossed className="w-3 h-3 mr-1" />}
                   {expandedFilter === "Experiencias" && <Compass className="w-3 h-3 mr-1" />}
