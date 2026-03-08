@@ -231,7 +231,7 @@ const Packs = () => {
               </span>
               <span>rio</span>
             </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Packs y propuestas originales creadas por productores de toda la vida para llevarte una parte del origen a casa
             </p>
           </div>
