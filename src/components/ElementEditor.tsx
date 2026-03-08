@@ -42,14 +42,14 @@ export default function ElementEditor({ element, onUpdate, onClose }: ElementEdi
 
     setUploading(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('No authenticated');
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('No authenticated');
 
       // Get company ID
       const { data: company } = await supabase
         .from('companies')
         .select('id')
-        .eq('user_id', session.user.id)
+        .eq('user_id', user.id)
         .single();
 
       if (!company) throw new Error('Company not found');
