@@ -1,7 +1,7 @@
 export interface CompanyPack {
   id: string;
   name: string;
-  type: 'raiz' | 'esencia' | 'gourmet';
+  type: 'micro' | 'raiz' | 'esencia' | 'gourmet';
   price: number;
   description: string;
   expandedDescription: string;
