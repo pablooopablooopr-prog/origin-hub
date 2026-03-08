@@ -41,7 +41,7 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
         const categoriesRes = await supabase.from("categories").select("id, slug, name").eq("is_active", true);
         const routesRes = await supabase.from("routes_public").select("id, title, slug");
         const stopsRes = await supabase.from("route_stops").select("id, name, description, address, latitude, longitude, route_id, position");
-
+        const packsRes = await supabase.from("company_packs_public").select("id, title, slug, company_id").eq("is_published", true).eq("is_active", true);
         // Build category id → slug map
         const catMap: Record<string, string> = {};
         const catNameMap: Record<string, string> = {};
