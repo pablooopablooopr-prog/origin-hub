@@ -886,25 +886,28 @@ export default function CompanyDashboard() {
                     <div className="text-sm text-muted-foreground">Packs Publicados</div>
                   </div>
 
-                  {/* Packs Vendidos with type filter */}
-                  <div className="text-center space-y-2">
+                  {/* Packs Vendidos with inline dropdown */}
+                  <div className="text-center">
                     <div className="text-3xl font-bold text-primary">
                       {soldFilterType === 'all'
                         ? packsSold.total
                         : (packsSold.byType[soldFilterType] || 0)}
                     </div>
-                    <div className="text-sm text-muted-foreground">Packs Vendidos</div>
-                    <select
-                      value={soldFilterType}
-                      onChange={(e) => setSoldFilterType(e.target.value)}
-                      className="text-xs border rounded px-2 py-1 bg-background text-foreground"
-                    >
-                      <option value="all">Todos</option>
-                      <option value="micro">Microselección</option>
-                      <option value="raiz">Pack Raíz</option>
-                      <option value="esencia">Pack Esencia</option>
-                      <option value="gourmet">Pack Gourmet</option>
-                    </select>
+                    <div className="text-sm text-muted-foreground inline-flex items-center gap-1">
+                      Packs Vendidos
+                      <select
+                        value={soldFilterType}
+                        onChange={(e) => setSoldFilterType(e.target.value)}
+                        className="appearance-none bg-transparent text-muted-foreground cursor-pointer pr-4 pl-0 py-0 border-none text-sm focus:outline-none"
+                        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right center' }}
+                      >
+                        <option value="all">▾</option>
+                        <option value="micro">Microselección</option>
+                        <option value="raiz">Pack Raíz</option>
+                        <option value="esencia">Pack Esencia</option>
+                        <option value="gourmet">Pack Gourmet</option>
+                      </select>
+                    </div>
                   </div>
 
                   {/* Rutas donde apareces */}
