@@ -42,12 +42,6 @@ const Footer = () => {
               <Link to="/packs" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Selecciones
               </Link>
-              <Link to="/contacto" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                Contacto
-              </Link>
-              <Link to="/sobre-origen" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                Historia
-              </Link>
             </nav>
           </div>
 
