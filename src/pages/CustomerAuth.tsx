@@ -58,8 +58,8 @@ const CustomerAuth = () => {
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
         setRedirecting(true);
         await postLoginRedirect(navigate, "/mi-cuenta");
         return;

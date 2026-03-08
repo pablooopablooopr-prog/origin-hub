@@ -40,10 +40,10 @@ const Header = () => {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-      if (session?.user?.id) {
-        await Promise.all([refreshAdmin(session.user.id), detectUserType(session.user.id)]);
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+      if (user?.id) {
+        await Promise.all([refreshAdmin(user.id), detectUserType(user.id)]);
       } else {
         setUserType(null);
       }

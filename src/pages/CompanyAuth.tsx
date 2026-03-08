@@ -179,12 +179,12 @@ export default function CompanyAuth() {
   useEffect(() => {
     let mounted = true;
 
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    supabase.auth.getUser().then(async ({ data: { user: currentUser } }) => {
       if (!mounted) return;
-      if (session?.user) {
-        setUser(session.user);
-        const isAdmin = await checkAdminAndRedirect(session.user.id);
-        if (!isAdmin) await checkCompanyStatus(session.user.id);
+      if (currentUser) {
+        setUser(currentUser);
+        const isAdmin = await checkAdminAndRedirect(currentUser.id);
+        if (!isAdmin) await checkCompanyStatus(currentUser.id);
       } else {
         setUser(null);
         setExistingCompany(null);
