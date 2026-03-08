@@ -49,7 +49,7 @@ const BusinessSection = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-primary mb-1">{benefit.title}</h3>
-                    <p className="text-muted-foreground text-sm">{benefit.description}</p>
+                    <p className="text-foreground/70 text-sm">{benefit.description}</p>
                   </div>
                 </div>
               );
