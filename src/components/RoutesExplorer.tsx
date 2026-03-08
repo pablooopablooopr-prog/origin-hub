@@ -43,10 +43,10 @@ const RoutesExplorer = ({
         {showTitle && (
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
-              Rutas ORIGEN
+              Experiencias ORIGEN
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Marca y comparte rutas visitando negocios locales. Sube valoraciones y reseñas de cada lugar que descubras en tu camino y compártela con los demás
+              Recorre caminos que unen productores, restaurantes y lugares con identidad propia. Conoce y descubre cómo los negocios elaboran sus productos en primera persona
             </p>
           </div>
         )}
