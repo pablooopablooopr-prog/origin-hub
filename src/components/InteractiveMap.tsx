@@ -193,10 +193,11 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   const subItemsMap = useMemo<Record<string, { id: string; name: string }[]>>(() => ({
     Provincias: provinces.map((p) => ({ id: p, name: p })),
     Productores: productores.map((i) => ({ id: i.id, name: i.name })),
+    Selecciones: packs.map((p) => ({ id: p.id, name: p.title })),
     Cooperativas: cooperativas.map((i) => ({ id: i.id, name: i.name })),
     Restaurantes: restaurantes.map((i) => ({ id: i.id, name: i.name })),
     Experiencias: routes.map((r) => ({ id: r.id, name: r.title })),
-  }), [provinces, productores, cooperativas, restaurantes, routes]);
+  }), [provinces, productores, cooperativas, restaurantes, routes, packs]);
 
   // Filtered items
   const filteredItems = useMemo(() => {
@@ -206,6 +207,14 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
         return routeStopItems.filter((i) => i.routeId === selectedSubItem);
       }
       return routeStopItems;
+    }
+
+    // When Selecciones filter is active, show pack locations
+    if (selectedFilter === "Selecciones") {
+      if (selectedSubItem) {
+        return packItems.filter((i) => i.id === selectedSubItem);
+      }
+      return packItems;
     }
 
     let filtered = allItems;
@@ -239,15 +248,16 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
     }
 
     return filtered;
-  }, [allItems, routeStopItems, searchQuery, selectedFilter, selectedSubItem, expandedFilter]);
+  }, [allItems, routeStopItems, packItems, searchQuery, selectedFilter, selectedSubItem, expandedFilter]);
 
   const filterChips = useMemo(() => [
     { name: "Provincias", icon: MapPin, count: provinces.length, color: "bg-primary" },
     { name: "Productores", icon: Leaf, count: productores.length, color: "bg-secondary" },
+    { name: "Selecciones", icon: Package, count: packs.length, color: "bg-secondary" },
     { name: "Cooperativas", icon: Users, count: cooperativas.length, color: "bg-secondary" },
     { name: "Restaurantes", icon: UtensilsCrossed, count: restaurantes.length, color: "bg-secondary" },
     { name: "Experiencias", icon: Compass, count: routes.length, color: "bg-secondary" },
-  ], [provinces, productores, cooperativas, restaurantes, routes]);
+  ], [provinces, productores, cooperativas, restaurantes, routes, packs]);
 
   const handleFilterClick = (filterName: string) => {
     if (expandedFilter === filterName) {
