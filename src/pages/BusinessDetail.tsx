@@ -122,13 +122,13 @@ const BusinessDetail = () => {
       const companyId = companyResult.id;
 
       // Check ownership
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
         const { data: ownerCheck } = await supabase
           .from('companies')
           .select('user_id, email, phone')
           .eq('id', companyId)
-          .eq('user_id', session.user.id)
+          .eq('user_id', user.id)
           .single();
         if (ownerCheck) {
           setIsOwner(true);

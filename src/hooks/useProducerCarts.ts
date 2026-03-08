@@ -98,24 +98,24 @@ export const useProducerCarts = () => {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { user } } = await supabase.auth.getUser();
       
-      if (session?.user) {
+      if (user) {
         // Get or create customer
         let { data: customer } = await supabase
           .from("customers")
           .select("id")
-          .eq("user_id", session.user.id)
+          .eq("user_id", user.id)
           .single();
 
         if (!customer) {
           const { data: newCustomer } = await supabase
             .from("customers")
-            .insert({
-              user_id: session.user.id,
-              email: session.user.email || "",
-              full_name: session.user.user_metadata?.full_name || session.user.email?.split("@")[0] || "Usuario"
-            })
+            .upsert({
+              user_id: user.id,
+              email: user.email || "",
+              full_name: user.user_metadata?.full_name || user.email?.split("@")[0] || "Usuario"
+            }, { onConflict: "user_id" })
             .select("id")
             .single();
           customer = newCustomer;

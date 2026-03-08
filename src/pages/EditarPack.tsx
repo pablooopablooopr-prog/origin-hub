@@ -124,13 +124,13 @@ const EditarPack = () => {
 
   const initializePack = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { navigate('/company-auth'); return; }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { navigate('/company-auth'); return; }
 
       const { data: companyList } = await supabase
         .from('companies')
         .select('id, status, address')
-        .eq('user_id', session.user.id);
+        .eq('user_id', user.id);
 
       const company = (companyList || []).find(
         (c: any) => String(c.status ?? '').trim().toUpperCase() === 'APPROVED'

@@ -20,8 +20,8 @@ export default function CompanyPendingApproval() {
 
   useEffect(() => {
     const checkStatus = async () => {
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData.session?.user) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
         navigate("/company-auth");
         return;
       }
@@ -29,7 +29,7 @@ export default function CompanyPendingApproval() {
       const { data: companyRows } = await supabase
         .from("companies")
         .select("id, business_name, status")
-        .eq("user_id", sessionData.session.user.id)
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(1);
       const firstRow = companyRows?.[0] ?? null;

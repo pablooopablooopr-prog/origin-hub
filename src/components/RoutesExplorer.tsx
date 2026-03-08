@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Route, Star, Users, Clock, MapPin } from "lucide-react";
+import { Route, Star, Users, Clock, MapPin, Loader2 } from "lucide-react";
 import { routesData, RouteDetail } from "@/data/routes";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -18,15 +18,47 @@ const RoutesExplorer = ({
 }) => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const displayRoutes = customRoutes || routesData;
+  const [dbRoutes, setDbRoutes] = useState<RouteDetail[] | null>(null);
+  const [loading, setLoading] = useState(!customRoutes);
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const init = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setIsAuthenticated(!!user);
+
+      if (!customRoutes) {
+        const { data } = await supabase
+          .from('routes')
+          .select('slug, title, description, duration, difficulty, total_stops, total_participants, avg_rating, image_url, is_featured')
+          .eq('is_public', true)
+          .eq('is_active', true)
+          .order('is_featured', { ascending: false })
+          .limit(6);
+
+        if (data && data.length > 0) {
+          setDbRoutes(data.map(r => ({
+            id: r.slug,
+            title: r.title,
+            description: r.description || '',
+            duration: r.duration || 'Medio día',
+            businesses: r.total_stops || 0,
+            rating: `${r.avg_rating || 4.8}/5`,
+            participants: r.total_participants || 0,
+            image: r.image_url || '',
+            difficulty: r.difficulty || 'Fácil',
+            narrative: '',
+            stops: [],
+            dailyRecommendations: [],
+            practicalInfo: { level: '', duration: '', recommendedPeople: '', localTips: [] }
+          })));
+        }
+        setLoading(false);
+      }
     };
-    checkAuth();
-  }, []);
+    init();
+  }, [customRoutes]);
+
+  const displayRoutes = customRoutes || dbRoutes || routesData;
 
   const handleCreateRoute = () => {
     if (isAuthenticated) {

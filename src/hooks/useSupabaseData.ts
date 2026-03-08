@@ -250,12 +250,12 @@ export function useCart() {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
         const { data: customer } = await supabase
           .from('customers')
           .select('id')
-          .eq('user_id', session.user.id)
+          .eq('user_id', user.id)
           .single();
         
         if (customer) {
@@ -366,13 +366,13 @@ export async function submitContactMessage(data: {
   subject?: string;
   message: string;
 }) {
-  const { data: session } = await supabase.auth.getSession();
+  const { data: { user } } = await supabase.auth.getUser();
   
   const { error } = await supabase
     .from('contact_messages')
     .insert({
       ...data,
-      user_id: session?.session?.user?.id
+      user_id: user?.id
     });
   
   return { error };
@@ -380,13 +380,13 @@ export async function submitContactMessage(data: {
 
 // Function to save a route
 export async function saveRoute(routeId: string, notes?: string) {
-  const { data: session } = await supabase.auth.getSession();
-  if (!session?.session?.user) return { error: 'Not logged in' };
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: 'Not logged in' };
   
   const { data: customer } = await supabase
     .from('customers')
     .select('id')
-    .eq('user_id', session.session.user.id)
+    .eq('user_id', user.id)
     .single();
   
   if (!customer) return { error: 'Customer not found' };
@@ -411,8 +411,8 @@ export async function createRoute(routeData: {
   difficulty?: string;
   region_id?: string;
 }) {
-  const { data: session } = await supabase.auth.getSession();
-  if (!session?.session?.user) return { error: 'Not logged in' };
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: 'Not logged in' };
   
   const slug = routeData.title
     .toLowerCase()
@@ -424,7 +424,7 @@ export async function createRoute(routeData: {
     .insert({
       ...routeData,
       slug,
-      creator_id: session.session.user.id,
+      creator_id: user.id,
       is_public: true
     })
     .select()
@@ -467,13 +467,13 @@ export async function createOrder(orderData: {
   notes?: string;
   items: OrderItemInput[];
 }) {
-  const { data: session } = await supabase.auth.getSession();
-  if (!session?.session?.user) return { data: null, error: 'Not logged in' };
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { data: null, error: 'Not logged in' };
 
   const { data: customer } = await supabase
     .from('customers')
     .select('id, email, full_name')
-    .eq('user_id', session.session.user.id)
+    .eq('user_id', user.id)
     .single();
 
   if (!customer) return { data: null, error: 'Customer not found' };

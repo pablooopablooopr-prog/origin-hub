@@ -81,15 +81,15 @@ const AdminDashboard = () => {
   }, [navigate]);
 
   const checkAdminAccess = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       navigate("/");
       return;
     }
 
     // Use RPC function for secure server-side role check
     const { data: isAdmin, error } = await supabase.rpc('has_role', {
-      _user_id: session.user.id,
+      _user_id: user.id,
       _role: 'admin'
     });
 

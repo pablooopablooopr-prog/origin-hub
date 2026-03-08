@@ -73,8 +73,8 @@ export default function PackBuilder() {
 
   const initializeBuilder = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
         navigate('/company-auth');
         return;
       }
@@ -82,7 +82,7 @@ export default function PackBuilder() {
       const { data: companyList } = await supabase
         .from('companies')
         .select('id, cover_image_url, status')
-        .eq('user_id', session.user.id);
+        .eq('user_id', user.id);
 
       const company = (companyList || []).find(
         (c: any) => String(c.status ?? '').trim().toUpperCase() === 'APPROVED'
