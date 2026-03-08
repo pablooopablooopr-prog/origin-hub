@@ -33,7 +33,7 @@ const Hero = () => {
           
           <Link to="/rutas">
             <Button size="lg" className="px-8 py-4 text-lg bg-earth-dark text-white hover:bg-earth-dark/90 transition-colors">
-              Descubrir rutas
+              Descubrir experiencias
             </Button>
           </Link>
           
