@@ -568,11 +568,12 @@ export default function CompanyDashboard() {
 
           <TabsContent value="packs">
             {/* Create New Pack Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              {['raiz', 'esencia', 'gourmet'].map((type) => (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+              {['micro', 'raiz', 'esencia', 'gourmet'].map((type) => (
                 <Card key={type} className="border-2 border-dashed border-muted-foreground/25 hover:border-primary/50 transition-colors cursor-pointer" onClick={() => createNewPack(type)}>
                   <CardContent className="flex flex-col items-center justify-center p-6 text-center">
                     <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
+                      type === 'micro' ? 'bg-gray-100 text-gray-600' :
                       type === 'raiz' ? 'bg-amber-100 text-amber-700' :
                       type === 'esencia' ? 'bg-orange-100 text-orange-700' :
                       'bg-purple-100 text-purple-700'
@@ -580,10 +581,13 @@ export default function CompanyDashboard() {
                       <Plus className="h-8 w-8" />
                     </div>
                     <h3 className="font-semibold mb-2">
-                      Crear Pack {type === 'raiz' ? 'Raíz' : type === 'esencia' ? 'Esencia' : 'Gourmet'}
+                      {type === 'micro' ? 'Crear Microselección' :
+                       type === 'raiz' ? 'Crear Pack Raíz' : 
+                       type === 'esencia' ? 'Crear Pack Esencia' : 'Crear Pack Gourmet'}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {type === 'raiz' ? 'Productos locales básicos' :
+                      {type === 'micro' ? '1-2 productos únicos (15€)' :
+                       type === 'raiz' ? 'Productos locales básicos' :
                        type === 'esencia' ? 'Experiencia premium' :
                        'Productos exclusivos'}
                     </p>
