@@ -47,10 +47,9 @@ const Index = () => {
               <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
                 Explora los Packs Regionales
               </h2>
-              <p className="text-lg text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-                Descubre lo mejor de cada tierra en packs cuidadosamente seleccionados por productores locales.<br />
-                <span className="font-medium">Sencillos, equilibrados o gourmet: tú eliges cómo saborear el ORIGEN.</span>
-              </p>
+                <p className="text-lg text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+                 Conectamos, sin intermediarios, a consumidores con productores, cooperativas, restaurantes, negocios con identidad y experiencias rurales exclusivas por toda España, impulsando la visibilidad del sector primario y el valor de su origen real.
+               </p>
             </div>
 
             {/* Pack Type Information Cards */}
