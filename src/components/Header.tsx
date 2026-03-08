@@ -194,11 +194,11 @@ const Header = () => {
                   <Link to="/mapa" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                     Mapa
                   </Link>
-                  <Link to="/packs" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
-                    Packs
-                  </Link>
                   <Link to="/rutas" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                     Rutas
+                  </Link>
+                  <Link to="/packs" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
+                    Selecciones
                   </Link>
                   <Link to="/contacto" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                     Contacto
