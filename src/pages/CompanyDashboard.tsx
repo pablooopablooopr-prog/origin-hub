@@ -239,6 +239,33 @@ export default function CompanyDashboard() {
         .order('created_at', { ascending: false });
 
       setOwnCreatedRoutes((ownRoutesData || []) as CompanyRoute[]);
+
+      // Load total views across all dates
+      if (packIds.length > 0) {
+        const { data: allAnalytics } = await supabase
+          .from('pack_analytics')
+          .select('views')
+          .in('pack_id', packIds);
+        const total = (allAnalytics || []).reduce((sum: number, a: any) => sum + (a.views || 0), 0);
+        setTotalViews(total);
+      }
+
+      // Load orders (packs sold)
+      const { data: ordersData } = await supabase
+        .from('orders')
+        .select('id, pack_id, status')
+        .eq('company_id', companyData.id)
+        .in('status', ['completed', 'shipped', 'delivered', 'confirmed', 'pending']);
+
+      const soldByType: Record<string, number> = {};
+      let totalSold = 0;
+      (ordersData || []).forEach((order: any) => {
+        totalSold++;
+        const pack = (packsData || []).find((p: any) => p.id === order.pack_id);
+        const typeName = pack?.template?.type || 'otro';
+        soldByType[typeName] = (soldByType[typeName] || 0) + 1;
+      });
+      setPacksSold({ total: totalSold, byType: soldByType });
     } catch (error: any) {
       toast.error(error.message);
     } finally {
