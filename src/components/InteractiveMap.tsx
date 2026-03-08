@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, MapPin, Leaf, UtensilsCrossed, Loader2, Users } from "lucide-react";
+import { Search, MapPin, Leaf, UtensilsCrossed, Loader2, Users, Compass } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import GoogleMap from "./GoogleMap";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,18 +25,20 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   const [expandedFilter, setExpandedFilter] = useState<string | null>(null);
   const [selectedSubItem, setSelectedSubItem] = useState<string | null>(null);
   const [allItems, setAllItems] = useState<MapItem[]>([]);
+  const [routeStopItems, setRouteStopItems] = useState<MapItem[]>([]);
+  const [routes, setRoutes] = useState<{ id: string; title: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryMap, setCategoryMap] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [companiesRes, categoriesRes] = await Promise.all([
-          supabase
-            .from("companies_public")
-            .select("id, business_name, description, address, latitude, longitude, avg_rating, category_id, slug"),
-          supabase.from("categories").select("id, slug, name").eq("is_active", true),
-        ]);
+        const companiesRes = await supabase
+          .from("companies_public")
+          .select("id, business_name, description, address, latitude, longitude, avg_rating, category_id, slug");
+        const categoriesRes = await supabase.from("categories").select("id, slug, name").eq("is_active", true);
+        const routesRes = await supabase.from("routes_public").select("id, title, slug");
+        const stopsRes = await supabase.from("route_stops").select("id, name, description, address, latitude, longitude, route_id, position");
 
         // Build category id → slug map
         const catMap: Record<string, string> = {};
@@ -48,6 +50,19 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
           }
         }
         setCategoryMap(catMap);
+
+        // Build route id → title map
+        const routeMap: Record<string, string> = {};
+        const fetchedRoutes: { id: string; title: string }[] = [];
+        if (routesRes.data) {
+          for (const r of routesRes.data) {
+            if (r.id && r.title) {
+              routeMap[r.id] = r.title;
+              fetchedRoutes.push({ id: r.id, title: r.title });
+            }
+          }
+        }
+        setRoutes(fetchedRoutes);
 
         const items: MapItem[] = [];
 
@@ -80,6 +95,30 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
             });
           }
         }
+
+        // Build route stop items
+        const stopItems: MapItem[] = [];
+        if (stopsRes.data) {
+          for (const s of stopsRes.data) {
+            if (!s.latitude || !s.longitude) continue;
+            stopItems.push({
+              id: s.id,
+              name: s.name || "",
+              category: "Experiencias",
+              description: s.description || "",
+              address: s.address || "",
+              city: "",
+              province: extractProvince(s.address),
+              coordinates: [s.longitude as number, s.latitude as number],
+              rating: 0,
+              tags: [],
+              itemType: "route-stop",
+              routeId: s.route_id,
+              routeTitle: s.route_id ? routeMap[s.route_id] || "" : "",
+            });
+          }
+        }
+        setRouteStopItems(stopItems);
 
         setAllItems(items);
       } catch (err) {
@@ -119,10 +158,19 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
     Productores: productores.map((i) => ({ id: i.id, name: i.name })),
     Cooperativas: cooperativas.map((i) => ({ id: i.id, name: i.name })),
     Restaurantes: restaurantes.map((i) => ({ id: i.id, name: i.name })),
-  }), [provinces, productores, cooperativas, restaurantes]);
+    Experiencias: routes.map((r) => ({ id: r.id, name: r.title })),
+  }), [provinces, productores, cooperativas, restaurantes, routes]);
 
   // Filtered items
   const filteredItems = useMemo(() => {
+    // When Experiencias filter is active, show route stops instead of companies
+    if (selectedFilter === "Experiencias") {
+      if (selectedSubItem) {
+        return routeStopItems.filter((i) => i.routeId === selectedSubItem);
+      }
+      return routeStopItems;
+    }
+
     let filtered = allItems;
 
     if (searchQuery.trim()) {
@@ -151,18 +199,18 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
       } else if (selectedFilter === "Restaurantes") {
         filtered = filtered.filter((i) => i.companyType === "restaurante");
       }
-      // Provincias with no sub-item selected shows all
     }
 
     return filtered;
-  }, [allItems, searchQuery, selectedFilter, selectedSubItem, expandedFilter]);
+  }, [allItems, routeStopItems, searchQuery, selectedFilter, selectedSubItem, expandedFilter]);
 
   const filterChips = useMemo(() => [
     { name: "Provincias", icon: MapPin, count: provinces.length, color: "bg-primary" },
     { name: "Productores", icon: Leaf, count: productores.length, color: "bg-secondary" },
     { name: "Cooperativas", icon: Users, count: cooperativas.length, color: "bg-secondary" },
     { name: "Restaurantes", icon: UtensilsCrossed, count: restaurantes.length, color: "bg-secondary" },
-  ], [provinces, productores, cooperativas, restaurantes]);
+    { name: "Experiencias", icon: Compass, count: routes.length, color: "bg-secondary" },
+  ], [provinces, productores, cooperativas, restaurantes, routes]);
 
   const handleFilterClick = (filterName: string) => {
     if (expandedFilter === filterName) {
@@ -258,6 +306,7 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
                   {expandedFilter === "Productores" && <Leaf className="w-3 h-3 mr-1" />}
                   {expandedFilter === "Cooperativas" && <Users className="w-3 h-3 mr-1" />}
                   {expandedFilter === "Restaurantes" && <UtensilsCrossed className="w-3 h-3 mr-1" />}
+                  {expandedFilter === "Experiencias" && <Compass className="w-3 h-3 mr-1" />}
                   {sub.name}
                 </Badge>
               ))}
