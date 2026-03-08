@@ -4,6 +4,15 @@ import { Link } from "react-router-dom";
 const PackTypeCards = () => {
   const packTypes = [
     {
+      name: "Microselecciones",
+      price: "15€",
+      products: "1-2 productos únicos",
+      level: "Detalle / Capricho",
+      description: "Pequeños tesoros artesanos para descubrir sabores auténticos en formato reducido.",
+      bgColor: "bg-pack-micro",
+      filterType: "micro"
+    },
+    {
       name: "Pack Raíz",
       price: "35€",
       products: "3 productos aprox.",
@@ -33,7 +42,7 @@ const PackTypeCards = () => {
   ];
 
   return (
-    <div className="grid md:grid-cols-3 gap-6 mb-12">
+    <div className="grid md:grid-cols-4 gap-6 mb-12">
       {packTypes.map((pack) => (
         <Card key={pack.name} className={`${pack.bgColor} border-0 shadow-md`}>
           <CardContent className="p-6 text-center">

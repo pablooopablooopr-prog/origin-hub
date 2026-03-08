@@ -76,6 +76,8 @@ export default {
 				bone: 'hsl(var(--bone))',
 				'warm-white': 'hsl(var(--warm-white))',
 				// Pack type colors
+				'pack-micro': 'hsl(var(--pack-micro))',
+				'pack-micro-alt': 'hsl(var(--pack-micro-alt))',
 				'pack-raiz': 'hsl(var(--pack-raiz))',
 				'pack-raiz-alt': 'hsl(var(--pack-raiz-alt))',
 				'pack-esencia': 'hsl(var(--pack-esencia))',
