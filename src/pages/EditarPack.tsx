@@ -238,6 +238,7 @@ const EditarPack = () => {
 
   const getPackTypeName = (type: string) => {
     switch (type) {
+      case 'micro': return 'Microselección';
       case 'raiz': return 'Pack Raíz';
       case 'esencia': return 'Pack Esencia';
       case 'gourmet': return 'Pack Gourmet';
