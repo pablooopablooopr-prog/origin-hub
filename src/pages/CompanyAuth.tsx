@@ -335,7 +335,7 @@ export default function CompanyAuth() {
     e.preventDefault();
     if (!user) return;
 
-    if (!companyData.business_name || !companyData.contact_person) {
+    if (!companyData.business_name || !companyData.contact_person || !companyData.business_type) {
       toast.error("Completa los campos obligatorios.");
       return;
     }
