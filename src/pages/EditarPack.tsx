@@ -77,6 +77,7 @@ const SHIPPING_PRESETS = [
 ];
 
 const FIXED_PRICES: Record<string, number> = {
+  micro: 15,
   raiz: 35,
   esencia: 60,
   gourmet: 90
