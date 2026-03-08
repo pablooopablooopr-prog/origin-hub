@@ -42,7 +42,7 @@ const PackTypeCards = () => {
   ];
 
   return (
-    <div className="grid md:grid-cols-3 gap-6 mb-12">
+    <div className="grid md:grid-cols-4 gap-6 mb-12">
       {packTypes.map((pack) => (
         <Card key={pack.name} className={`${pack.bgColor} border-0 shadow-md`}>
           <CardContent className="p-6 text-center">
