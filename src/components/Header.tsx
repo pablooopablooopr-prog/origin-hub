@@ -113,11 +113,11 @@ const Header = () => {
               <Link to="/mapa" className="text-muted-foreground hover:text-primary transition-colors">
                 Mapa
               </Link>
-              <Link to="/packs" className="text-muted-foreground hover:text-primary transition-colors">
-                Packs
-              </Link>
               <Link to="/rutas" className="text-muted-foreground hover:text-primary transition-colors">
                 Rutas
+              </Link>
+              <Link to="/packs" className="text-muted-foreground hover:text-primary transition-colors">
+                Selecciones
               </Link>
               <Link to="/contacto" className="text-muted-foreground hover:text-primary transition-colors">
                 Contacto
