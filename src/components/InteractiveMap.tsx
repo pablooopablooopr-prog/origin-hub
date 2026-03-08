@@ -32,40 +32,35 @@ const InteractiveMap = ({
   const [companies, setCompanies] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
   const categories = [{
-    name: "Restaurantes",
-    icon: UtensilsCrossed,
+    name: "Provincia",
+    icon: MapPin,
     count: 0,
     color: "bg-primary"
   }, {
-    name: "Carnes",
-    icon: Beef,
+    name: "Productores",
+    icon: Leaf,
     count: 0,
     color: "bg-secondary"
   }, {
-    name: "Lácteos",
-    icon: Milk,
+    name: "Restaurantes",
+    icon: UtensilsCrossed,
     count: 0,
     color: "bg-moss-medium"
   }, {
-    name: "Fermentos",
-    icon: Wheat,
+    name: "Negocios tradicionales",
+    icon: Heart,
     count: 0,
     color: "bg-earth-medium"
   }, {
-    name: "Herbolarios",
-    icon: Leaf,
+    name: "Cooperativas",
+    icon: Wheat,
     count: 0,
     color: "bg-accent"
   }, {
-    name: "EcoModa",
-    icon: Shirt,
+    name: "Experiencias",
+    icon: MapPin,
     count: 0,
     color: "bg-moss-dark"
-  }, {
-    name: "Vida Natural",
-    icon: Heart,
-    count: 0,
-    color: "bg-moss-light"
   }];
   useEffect(() => {
     const fetchCompanies = async () => {
