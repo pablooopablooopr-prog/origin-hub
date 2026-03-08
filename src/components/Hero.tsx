@@ -19,7 +19,7 @@ const Hero = () => {
         <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-medium">Negocios tradicionales. Calidad real. Comunidad nacional.</p>
 
         {/* Descripción adicional */}
-        <p className="text-muted-foreground mb-16 max-w-3xl mx-auto opacity-90 text-lg font-normal font-sans text-center leading-relaxed">
+         <p className="text-muted-foreground mb-10 max-w-3xl mx-auto opacity-90 text-lg font-normal font-sans text-center leading-relaxed">
   Conectamos, sin intermediarios, a consumidores con productores, cooperativas, restaurantes, negocios con identidad y experiencias rurales exclusivas por toda España, impulsando la visibilidad del sector primario y el valor de su origen real.
 </p>
 
