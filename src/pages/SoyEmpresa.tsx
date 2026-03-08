@@ -155,8 +155,8 @@ const SoyEmpresa = () => {
                   Verifica si cumples con nuestros criterios de autenticidad
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CardContent className="flex justify-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-fit">
                   {criteria.map((criterion) => (
                     <div key={criterion} className="flex items-center space-x-3">
                       <Check className="w-5 h-5 text-secondary flex-shrink-0" />
