@@ -176,6 +176,7 @@ const EditarPack = () => {
     // Infer type from title or template
     const inferredType = (() => {
       const title = (pack.title || "").toLowerCase();
+      if (title.includes("micro")) return "micro";
       if (title.includes("raíz") || title.includes("raiz")) return "raiz";
       if (title.includes("gourmet")) return "gourmet";
       return "esencia";
