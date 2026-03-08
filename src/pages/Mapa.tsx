@@ -7,7 +7,7 @@ const Mapa = () => {
     <div className="min-h-screen">
       <Header />
       <main className="pt-6">
-        <div className="container mx-auto px-6 py-8">
+        <div className="container mx-auto px-6 py-8 pb-2">
           <div className="text-center mb-6">
             <h1 className="text-4xl md:text-5xl font-bold text-primary mb-2">
               Explora el territorio
