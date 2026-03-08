@@ -37,7 +37,7 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
           .from("companies_public")
           .select("id, business_name, description, address, latitude, longitude, avg_rating, category_id, slug");
         const categoriesRes = await supabase.from("categories").select("id, slug, name").eq("is_active", true);
-        const routesRes = await supabase.from("routes_public").select("id, title, slug").eq("is_active", true);
+        const routesRes = await supabase.from("routes_public").select("id, title, slug");
         const stopsRes = await supabase.from("route_stops").select("id, name, description, address, latitude, longitude, route_id, position");
 
         // Build category id → slug map
@@ -50,6 +50,19 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
           }
         }
         setCategoryMap(catMap);
+
+        // Build route id → title map
+        const routeMap: Record<string, string> = {};
+        const fetchedRoutes: { id: string; title: string }[] = [];
+        if (routesRes.data) {
+          for (const r of routesRes.data) {
+            if (r.id && r.title) {
+              routeMap[r.id] = r.title;
+              fetchedRoutes.push({ id: r.id, title: r.title });
+            }
+          }
+        }
+        setRoutes(fetchedRoutes);
 
         const items: MapItem[] = [];
 
@@ -82,6 +95,30 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
             });
           }
         }
+
+        // Build route stop items
+        const stopItems: MapItem[] = [];
+        if (stopsRes.data) {
+          for (const s of stopsRes.data) {
+            if (!s.latitude || !s.longitude) continue;
+            stopItems.push({
+              id: s.id,
+              name: s.name || "",
+              category: "Experiencias",
+              description: s.description || "",
+              address: s.address || "",
+              city: "",
+              province: extractProvince(s.address),
+              coordinates: [s.longitude as number, s.latitude as number],
+              rating: 0,
+              tags: [],
+              itemType: "route-stop",
+              routeId: s.route_id,
+              routeTitle: s.route_id ? routeMap[s.route_id] || "" : "",
+            });
+          }
+        }
+        setRouteStopItems(stopItems);
 
         setAllItems(items);
       } catch (err) {
