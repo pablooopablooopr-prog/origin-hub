@@ -73,9 +73,9 @@ All colors MUST be HSL.
     --gradient-warm: linear-gradient(180deg, hsl(35 15% 98%), hsl(35 20% 96%));
     
     /* Shadows with earth tones */
-    --shadow-earth: 0 6px 24px hsl(25 25% 30% / 0.35), 0 2px 8px hsl(25 25% 30% / 0.2);
-    --shadow-moss: 0 6px 24px hsl(100 25% 35% / 0.35), 0 2px 8px hsl(100 25% 35% / 0.2);
-    --shadow-soft: 0 4px 16px hsl(25 15% 20% / 0.18), 0 2px 6px hsl(25 15% 20% / 0.1);
+    --shadow-earth: 0 4px 20px hsl(25 25% 30% / 0.15);
+    --shadow-moss: 0 4px 20px hsl(100 25% 45% / 0.15);
+    --shadow-soft: 0 2px 8px hsl(25 15% 20% / 0.08);
     
     /* Typography */
     --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
