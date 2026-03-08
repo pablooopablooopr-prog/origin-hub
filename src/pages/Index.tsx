@@ -41,13 +41,13 @@ const Index = () => {
         <InteractiveMap />
         
         {/* Pack Exploration Section */}
-        <section className="pt-4 pb-12">
+        <section className="-mt-4 pb-12">
           <div className="container mx-auto px-6">
             <div className="text-center mb-12">
               <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
                 Selecciones del territorio
               </h2>
-                <p className="text-lg text-muted-foreground max-w-5xl mx-auto leading-relaxed">
+                <p className="text-lg text-muted-foreground whitespace-nowrap mx-auto leading-relaxed">
                  Packs y propuestas originales creadas por productores de toda la vida para llevarte una parte del origen a casa
                </p>
             </div>
