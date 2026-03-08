@@ -76,16 +76,17 @@ const ComprarRuta = () => {
       setCustomerId(customer.id);
     }
 
-    // Get route ID from database
+    // Get route from database
     if (slug) {
       const { data: route } = await supabase
         .from("routes")
-        .select("id")
+        .select("id, title, total_stops")
         .eq("slug", slug)
         .single();
 
       if (route) {
         setRouteDbId(route.id);
+        if (route.total_stops) setStopCount(route.total_stops);
       }
     }
   };
