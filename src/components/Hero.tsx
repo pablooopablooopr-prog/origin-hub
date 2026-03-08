@@ -38,7 +38,7 @@ const Hero = () => {
           </Link>
           
           <Link to="/packs">
-            <Button size="lg" className="px-8 py-4 text-lg shadow-moss">
+            <Button variant="secondary" size="lg" className="px-8 py-4 text-lg shadow-moss">
               Selecciones del territorio
             </Button>
           </Link>
