@@ -86,7 +86,7 @@ const SobreOrigen = () => {
               <span>bre ORIGEN</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-light">
-              Preservamos y aseguramos la autenticidad y crecimiento de negocios tradicionales
+              Preservamos y aseguramos la autenticidad y crecimiento de negocios tradicionales.
             </p>
           </div>
         </section>
