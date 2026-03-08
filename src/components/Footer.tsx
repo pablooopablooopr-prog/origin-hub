@@ -5,16 +5,15 @@ const Footer = () => {
       <div className="container mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Logo y descripción */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <h3 className="text-2xl font-bold flex items-center">
                 <img src="/lovable-uploads/enso-transparent.png" alt="Ensō Symbol" className="w-8 h-8 object-contain invert" />
                 <span>RIGEN</span>
               </h3>
             </div>
-            <p className="text-primary-foreground/80 leading-relaxed">
-              Conectando consumidores conscientes con negocios auténticos. 
-              Preservamos lo esencial, promovemos lo real.
+            <p className="text-primary-foreground/80 leading-snug text-justify">
+              Conectando consumidores conscientes con negocios auténticos. Preservamos lo esencial, promovemos lo real.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="hover:text-secondary transition-colors">
