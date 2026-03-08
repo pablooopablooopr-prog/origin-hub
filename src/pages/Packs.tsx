@@ -163,6 +163,8 @@ const Packs = () => {
 
   const getPackTypeColor = (type: string) => {
     switch (type) {
+      case 'micro':
+        return 'bg-muted/50 border-muted-foreground/20';
       case 'raiz':
         return 'bg-pack-raiz border-pack-raiz-alt';
       case 'esencia':
