@@ -109,6 +109,9 @@ export default function CompanyDashboard() {
   });
   const [editLatLng, setEditLatLng] = useState<{ lat: number | null; lng: number | null }>({ lat: null, lng: null });
   const [confirmDelete, setConfirmDelete] = useState<{ type: 'route' | 'pack' | 'product'; id: string; title: string } | null>(null);
+  const [totalViews, setTotalViews] = useState(0);
+  const [packsSold, setPacksSold] = useState<{ total: number; byType: Record<string, number> }>({ total: 0, byType: {} });
+  const [soldFilterType, setSoldFilterType] = useState<string>('all');
   const navigate = useNavigate();
 
   useEffect(() => {
