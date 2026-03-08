@@ -58,6 +58,8 @@ All colors MUST be HSL.
     --warm-white: 35 15% 98%;
     
     /* Pack type colors - Warm, natural tones */
+    --pack-micro: 220 15% 93%;      /* #EBEEF2 - gris clarito suave */
+    --pack-micro-alt: 220 15% 90%;  /* gris suave */
     --pack-raiz: 40 43% 93%;        /* #F7F3E9 - arena suave */
     --pack-raiz-alt: 40 50% 92%;    /* #F4EAD2 - arena dorada */
     --pack-esencia: 93 36% 91%;     /* #E3ECD7 - verde suave natural */
