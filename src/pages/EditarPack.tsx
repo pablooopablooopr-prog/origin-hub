@@ -77,6 +77,7 @@ const SHIPPING_PRESETS = [
 ];
 
 const FIXED_PRICES: Record<string, number> = {
+  micro: 15,
   raiz: 35,
   esencia: 60,
   gourmet: 90
@@ -175,6 +176,7 @@ const EditarPack = () => {
     // Infer type from title or template
     const inferredType = (() => {
       const title = (pack.title || "").toLowerCase();
+      if (title.includes("micro")) return "micro";
       if (title.includes("raíz") || title.includes("raiz")) return "raiz";
       if (title.includes("gourmet")) return "gourmet";
       return "esencia";
@@ -216,6 +218,7 @@ const EditarPack = () => {
 
   const getPackTypeColor = (type: string) => {
     switch (type) {
+      case 'micro': return 'hsl(220, 15%, 93%)';
       case 'raiz': return 'hsl(40, 43%, 93%)';
       case 'esencia': return 'hsl(93, 36%, 91%)';
       case 'gourmet': return 'hsl(23, 34%, 77%)';
@@ -225,6 +228,7 @@ const EditarPack = () => {
 
   const getMiniHeroColor = (type: string) => {
     switch (type) {
+      case 'micro': return 'hsl(220, 15%, 80%)';
       case 'raiz': return 'hsl(30, 25%, 70%)';
       case 'esencia': return 'hsl(100, 35%, 75%)';
       case 'gourmet': return 'hsl(23, 34%, 65%)';
@@ -234,6 +238,7 @@ const EditarPack = () => {
 
   const getPackTypeName = (type: string) => {
     switch (type) {
+      case 'micro': return 'Microselección';
       case 'raiz': return 'Pack Raíz';
       case 'esencia': return 'Pack Esencia';
       case 'gourmet': return 'Pack Gourmet';
@@ -469,6 +474,7 @@ const EditarPack = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="micro">Microselección (15€)</SelectItem>
                         <SelectItem value="raiz">Pack Raíz (35€)</SelectItem>
                         <SelectItem value="esencia">Pack Esencia (60€)</SelectItem>
                         <SelectItem value="gourmet">Pack Gourmet (90€)</SelectItem>
