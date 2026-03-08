@@ -367,7 +367,7 @@ const PackDetail = () => {
   };
 
   const getPackSpecificName = (fullName: string) => {
-    return fullName.replace(/^Pack (Raíz|Esencia|Gourmet) - /, '');
+    return fullName.replace(/^(Pack (Raíz|Esencia|Gourmet)|Microselección)\s*[-·]\s*/, '');
   };
 
   const getFeaturedBadge = (featured: string | undefined) => {
