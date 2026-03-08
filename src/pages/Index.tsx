@@ -109,7 +109,7 @@ const Index = () => {
               Creemos en una España viva, conectada a su tierra, a sus oficios y a las personas que la sostienen. ORIGEN nace para dar visibilidad a quienes producen, cocinan y cuidan el territorio.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button onClick={() => navigate('/mapa')} size="lg" className="text-lg px-10 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
+              <Button onClick={() => navigate('/mapa')} size="default" className="text-sm px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all">
                 Explorar ORIGEN
               </Button>
               <Button onClick={() => navigate('/soy-empresa')} variant="outline" size="lg" className="text-lg px-10 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all border-2 border-primary">
