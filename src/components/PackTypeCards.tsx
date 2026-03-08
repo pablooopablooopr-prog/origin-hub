@@ -7,7 +7,7 @@ const PackTypeCards = () => {
       name: "Microselecciones",
       price: "15€",
       products: "1-2 productos únicos",
-      level: "Detalle / Capricho",
+      level: "Detalle / Delicatessen",
       description: "Pequeños tesoros artesanos para descubrir sabores auténticos en formato reducido.",
       bgColor: "bg-pack-micro",
       filterType: "micro"
@@ -16,7 +16,7 @@ const PackTypeCards = () => {
       name: "Pack Raíz",
       price: "35€",
       products: "3 productos aprox.",
-      level: "Nivel básico / Intro",
+      level: "Selección básica / Descubrimiento",
       description: "Ideal para una primera aproximación a los sabores locales.",
       bgColor: "bg-pack-raiz",
       filterType: "raiz"
