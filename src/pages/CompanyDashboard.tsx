@@ -582,7 +582,7 @@ export default function CompanyDashboard() {
                     }`}>
                       <Plus className="h-8 w-8" />
                     </div>
-                    <h3 className="font-semibold mb-2">
+                    <h3 className="font-semibold mb-2 whitespace-nowrap">
                       {type === 'micro' ? 'Crear Microselección' :
                        type === 'raiz' ? 'Crear Pack Raíz' : 
                        type === 'esencia' ? 'Crear Pack Esencia' : 'Crear Pack Gourmet'}
