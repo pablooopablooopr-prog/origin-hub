@@ -25,7 +25,7 @@ const PackTypeCards = () => {
       name: "Pack Esencia",
       price: "60€",
       products: "4 productos aprox.",
-      level: "Selección media / equilibrada",
+      level: "Selección media / Equilibrada",
       description: "Perfecto para quienes quieren conocer la esencia gastronómica de una zona.",
       bgColor: "bg-pack-esencia",
       filterType: "esencia"
