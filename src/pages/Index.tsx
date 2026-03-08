@@ -48,7 +48,7 @@ const Index = () => {
                 Selecciones del territorio
               </h2>
                 <p className="text-lg text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-                 Conectamos, sin intermediarios, a consumidores con productores, cooperativas, restaurantes, negocios con identidad y experiencias rurales exclusivas por toda España, impulsando la visibilidad del sector primario y el valor de su origen real.
+                 Packs y propuestas originales creadas por productores de toda la vida para llevarte una parte del origen a casa
                </p>
             </div>
 

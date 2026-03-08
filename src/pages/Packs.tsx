@@ -232,7 +232,7 @@ const Packs = () => {
               <span>rio</span>
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Encuentra el pack perfecto filtrando por región, tipo o categoría
+              Packs y propuestas originales creadas por productores de toda la vida para llevarte una parte del origen a casa
             </p>
           </div>
 
