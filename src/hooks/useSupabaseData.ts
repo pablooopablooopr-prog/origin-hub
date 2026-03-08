@@ -411,8 +411,8 @@ export async function createRoute(routeData: {
   difficulty?: string;
   region_id?: string;
 }) {
-  const { data: session } = await supabase.auth.getSession();
-  if (!session?.session?.user) return { error: 'Not logged in' };
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: 'Not logged in' };
   
   const slug = routeData.title
     .toLowerCase()
