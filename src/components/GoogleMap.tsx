@@ -259,7 +259,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                   ×
                 </button>
               </div>
-              <p className="text-sm text-primary-foreground/80 mb-1">{selectedBusiness.category}</p>
+              <p className="text-sm text-primary-foreground/80 mb-1">
+                {(selectedBusiness as MapItem)?.itemType === 'route-stop' 
+                  ? `Ruta: ${(selectedBusiness as MapItem)?.routeTitle}` 
+                  : selectedBusiness.category}
+              </p>
               <p className="text-sm text-primary-foreground/90 mb-2">{selectedBusiness.description}</p>
               <p className="text-sm text-primary-foreground/70 mb-3">
                 {selectedBusiness.address}, {selectedBusiness.city}
