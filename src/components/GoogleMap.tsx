@@ -6,6 +6,7 @@ import { MapPin, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useGoogleMapsLoader } from '@/hooks/useGoogleMapsLoader';
 import { useNavigate } from "react-router-dom";
+import type { MapItem } from './InteractiveMap';
 
 
 interface GoogleMapProps {
@@ -29,15 +30,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
   const { loaded, error, apiKeyMissing } = useGoogleMapsLoader();
 
-  // Category colors for markers
-  const categoryColors: Record<string, string> = {
-    'Restaurantes': '#8B5A3C',
-    'Carnes': '#8B5A3C',
-    'Lácteos': '#6B7280', 
-    'Fermentos': '#84CC16',
-    'Herbolarios': '#A3A3A3',
-    'EcoModa': '#F59E0B',
-    'Vida Natural': '#16A34A'
+  // Marker colors by item type
+  const getMarkerColor = (item: Business): string => {
+    const mapItem = item as MapItem;
+    if (mapItem.itemType === 'route-stop') return '#5B8C5A'; // moss green for routes
+    if (mapItem.itemType === 'company') return '#8B5A3C'; // earth brown for companies
+    return '#8B5A3C';
   };
 
   // Initialize map
@@ -92,7 +90,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         markerContent.style.cursor = 'pointer';
         markerContent.style.border = '3px solid white';
         markerContent.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
-        markerContent.style.backgroundColor = categoryColors[business.category] || '#8B5A3C';
+        markerContent.style.backgroundColor = getMarkerColor(business);
         markerContent.style.transition = 'transform 0.2s';
 
         const marker = new AdvancedMarkerElement({
@@ -261,7 +259,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                   ×
                 </button>
               </div>
-              <p className="text-sm text-primary-foreground/80 mb-1">{selectedBusiness.category}</p>
+              <p className="text-sm text-primary-foreground/80 mb-1">
+                {(selectedBusiness as MapItem)?.itemType === 'route-stop' 
+                  ? `Ruta: ${(selectedBusiness as MapItem)?.routeTitle}` 
+                  : selectedBusiness.category}
+              </p>
               <p className="text-sm text-primary-foreground/90 mb-2">{selectedBusiness.description}</p>
               <p className="text-sm text-primary-foreground/70 mb-3">
                 {selectedBusiness.address}, {selectedBusiness.city}
@@ -287,16 +289,23 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    const dbId = selectedBusiness?.id;
-                    const slug = (selectedBusiness as any)?.slug;
-                    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-                    if (dbId && uuidRegex.test(dbId)) {
-                      navigate(`/negocio/${dbId}`);
-                    } else if (slug) {
-                      navigate(`/negocio/${slug}`);
+                    const mapItem = selectedBusiness as MapItem;
+                    if (mapItem?.itemType === 'route-stop' && mapItem.routeId) {
+                      // Navigate to route detail
+                      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+                      navigate(`/rutas/${mapItem.routeId}`);
                     } else {
-                      const showcaseSlugs = ['aceites-sierra-del-sur', 'quesos-artesanos-la-mancha'];
-                      navigate(`/negocio/${showcaseSlugs[Math.floor(Math.random() * 2)]}`);
+                      const dbId = selectedBusiness?.id;
+                      const slug = (selectedBusiness as any)?.slug;
+                      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+                      if (dbId && uuidRegex.test(dbId)) {
+                        navigate(`/negocio/${dbId}`);
+                      } else if (slug) {
+                        navigate(`/negocio/${slug}`);
+                      } else {
+                        const showcaseSlugs = ['aceites-sierra-del-sur', 'quesos-artesanos-la-mancha'];
+                        navigate(`/negocio/${showcaseSlugs[Math.floor(Math.random() * 2)]}`);
+                      }
                     }
                   }}
                 >
