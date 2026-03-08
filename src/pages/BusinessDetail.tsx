@@ -35,6 +35,7 @@ interface Company {
   longitude: number | null;
   email?: string | null;
   phone?: string | null;
+  business_type?: string | null;
 }
 
 interface CompanyPack {
