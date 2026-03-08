@@ -6,7 +6,6 @@ import { MapPin, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useGoogleMapsLoader } from '@/hooks/useGoogleMapsLoader';
 import { useNavigate } from "react-router-dom";
-import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import type { MapItem } from './InteractiveMap';
 
 // Custom map style — warm, earthy tones matching ORIGEN brand
@@ -46,7 +45,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
-  const clustererRef = useRef<MarkerClusterer | null>(null);
+  
   const userMarkerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(null);
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
   const { loaded, error, apiKeyMissing } = useGoogleMapsLoader();
@@ -82,10 +81,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     initMap();
 
     return () => {
-      if (clustererRef.current) {
-        clustererRef.current.clearMarkers();
-        clustererRef.current = null;
-      }
       markersRef.current.forEach(marker => marker.map = null);
       markersRef.current = [];
       if (userMarkerRef.current) {
@@ -99,11 +94,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     if (!mapRef.current || !loaded) return;
 
     const updateMarkers = async () => {
-      // Clear previous clusterer and markers
-      if (clustererRef.current) {
-        clustererRef.current.clearMarkers();
-        clustererRef.current = null;
-      }
       markersRef.current.forEach(marker => marker.map = null);
       markersRef.current = [];
 
@@ -120,6 +110,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         `;
 
         const marker = new AdvancedMarkerElement({
+          map: mapRef.current!,
           position: { 
             lat: business.coordinates[1], 
             lng: business.coordinates[0] 
@@ -142,32 +133,8 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
       markersRef.current = newMarkers;
 
-      // Create clusterer with custom renderer
+      // Fit bounds
       if (newMarkers.length > 0) {
-        clustererRef.current = new MarkerClusterer({
-          map: mapRef.current!,
-          markers: newMarkers,
-          renderer: {
-            render: ({ count, position }) => {
-              const size = count < 10 ? 36 : count < 50 ? 44 : 52;
-              const el = document.createElement('div');
-              el.style.cssText = `
-                width: ${size}px; height: ${size}px; border-radius: 50%;
-                background: hsl(30, 40%, 35%); color: white; display: flex;
-                align-items: center; justify-content: center; font-weight: 700;
-                font-size: ${size < 40 ? 12 : 14}px; border: 3px solid hsl(30, 30%, 90%);
-                box-shadow: 0 3px 10px rgba(0,0,0,0.25); cursor: pointer;
-              `;
-              el.textContent = String(count);
-              return new google.maps.marker.AdvancedMarkerElement({
-                position,
-                content: el,
-              });
-            }
-          }
-        });
-
-        // Fit bounds
         const bounds = new google.maps.LatLngBounds();
         filteredBusinesses.forEach(business => {
           bounds.extend({ lat: business.coordinates[1], lng: business.coordinates[0] });
