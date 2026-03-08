@@ -12,7 +12,7 @@ const Footer = () => {
                 <span>RIGEN</span>
               </h3>
             </div>
-            <p className="text-primary-foreground/80 leading-snug text-justify">
+            <p className="text-primary-foreground/80 leading-snug text-left max-w-[240px]">
               Conectando consumidores conscientes con negocios auténticos. Preservamos lo esencial, promovemos lo real.
             </p>
             <div className="flex space-x-4">
