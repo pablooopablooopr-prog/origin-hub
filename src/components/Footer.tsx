@@ -34,15 +34,20 @@ const Footer = () => {
             <h4 className="text-lg font-semibold">Explora</h4>
             <nav className="flex flex-col space-y-3">
               <Link to="/mapa" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                Mapa Interactivo
-              </Link>
-              <Link to="/packs" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                Packs Regionales
+                Mapa
               </Link>
               <Link to="/rutas" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                Rutas ORIGEN
+                Experiencias
               </Link>
-              <Link to="/soy-empresa" className="text-primary-foreground/80 hover:text-secondary transition-colors">Soy Empresa</Link>
+              <Link to="/packs" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                Selecciones
+              </Link>
+              <Link to="/contacto" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                Contacto
+              </Link>
+              <Link to="/sobre-origen" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                Historia
+              </Link>
             </nav>
           </div>
 
