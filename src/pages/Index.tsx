@@ -69,7 +69,7 @@ const Index = () => {
         {/* Cómo funciona ORIGEN */}
         <section className="py-10 md:py-14 bg-muted/30">
           <div className="container mx-auto px-6 max-w-4xl">
-            <h2 className="text-2xl md:text-3xl font-bold text-primary text-center mb-8 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-bold text-primary text-center mb-8 tracking-tight">
               Cómo funciona ORIGEN
             </h2>
 
