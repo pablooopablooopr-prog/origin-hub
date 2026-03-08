@@ -6,17 +6,13 @@ const Hero = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-earth-light/20 via-transparent to-moss-light/20"></div>
       
       <div className="container mx-auto px-6 py-4 text-center relative z-10">
-        {/* Título principal con Ensō integrado */}
-        <h1 className="text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1">
-          <span>Vuelve al</span>
-          <span className="inline-flex items-center">
-            <img src="/lovable-uploads/enso-transparent.png" alt="Ensō" className="w-12 h-12 md:w-20 md:h-20 object-contain mx-0" />
-            <span>rigen</span>
-          </span>
-        </h1>
+        {/* Título principal */}
+         <h1 className="text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight">
+           Selecciones del territorio
+         </h1>
 
-        {/* Subtítulo */}
-        <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-medium">Negocios tradicionales. Calidad real. Comunidad nacional.</p>
+         {/* Subtítulo */}
+         <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-medium">Filtra por provincia, tipo de negocio, experiencia y recorre España a través de su red gastronómica</p>
 
         {/* Descripción adicional */}
         <p className="text-muted-foreground mb-16 max-w-3xl mx-auto opacity-90 text-lg font-normal font-sans text-center leading-relaxed">
