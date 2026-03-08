@@ -366,13 +366,13 @@ export async function submitContactMessage(data: {
   subject?: string;
   message: string;
 }) {
-  const { data: session } = await supabase.auth.getSession();
+  const { data: { user } } = await supabase.auth.getUser();
   
   const { error } = await supabase
     .from('contact_messages')
     .insert({
       ...data,
-      user_id: session?.session?.user?.id
+      user_id: user?.id
     });
   
   return { error };
