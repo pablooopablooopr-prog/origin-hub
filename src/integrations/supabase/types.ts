@@ -2311,6 +2311,10 @@ export type Database = {
       }
       extract_email_domain: { Args: { p_email: string }; Returns: string }
       get_my_company_status: { Args: never; Returns: string }
+      grant_route_access_after_purchase: {
+        Args: { p_route_id: string; p_user_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

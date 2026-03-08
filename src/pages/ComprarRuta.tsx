@@ -21,7 +21,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { formatPrice, calculateRoutePricing, RoutePricing } from "@/hooks/useRoutePricing";
-import { getRouteById } from "@/data/routes";
+
 import { PAYMENT_MESSAGES } from "@/lib/paymentRules";
 import { processRoutePurchase, PAYMENTS_MODE } from "@/lib/payments";
 
@@ -43,10 +43,9 @@ const ComprarRuta = () => {
     pricing?: RoutePricing;
   } | null;
 
-  const localRoute = slug ? getRouteById(slug) : null;
-  const routeTitle = stateData?.routeTitle || localRoute?.title || "Ruta";
+  const routeTitle = stateData?.routeTitle || "Ruta";
   const numPeople = stateData?.numPeople || 2;
-  const stopCount = localRoute?.stops?.length || 4;
+  const [stopCount, setStopCount] = useState(stateData?.pricing ? Math.round(stateData.pricing.basePrice / 3) : 4);
   const pricing = stateData?.pricing || calculateRoutePricing(stopCount, numPeople);
 
   useEffect(() => {
@@ -77,16 +76,17 @@ const ComprarRuta = () => {
       setCustomerId(customer.id);
     }
 
-    // Get route ID from database
+    // Get route from database
     if (slug) {
       const { data: route } = await supabase
         .from("routes")
-        .select("id")
+        .select("id, title, total_stops")
         .eq("slug", slug)
         .single();
 
       if (route) {
         setRouteDbId(route.id);
+        if (route.total_stops) setStopCount(route.total_stops);
       }
     }
   };

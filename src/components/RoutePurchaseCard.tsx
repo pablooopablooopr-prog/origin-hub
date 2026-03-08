@@ -9,6 +9,7 @@ import { calculateRoutePricing, formatPrice } from "@/hooks/useRoutePricing";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { PAYMENT_MESSAGES } from "@/lib/paymentRules";
+import { PAYMENTS_MODE } from "@/lib/payments";
 
 interface RoutePurchaseCardProps {
   routeId: string;
@@ -242,6 +243,15 @@ export const RoutePurchaseCard = React.forwardRef<HTMLDivElement, RoutePurchaseC
             ))}
           </ul>
         </div>
+
+        {/* Mock mode indicator */}
+        {PAYMENTS_MODE === "mock" && (
+          <div className="p-2 bg-muted/50 rounded-lg border border-dashed border-border">
+            <p className="text-[10px] text-muted-foreground text-center">
+              🧪 Modo demo · La reserva se completa directamente
+            </p>
+          </div>
+        )}
 
         {/* Purchase Button */}
         <Button 
