@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Map, Building } from "lucide-react";
 import { Link } from "react-router-dom";
 const Hero = () => {
   return <section className="min-h-screen bg-gradient-warm enso-watermark flex items-center justify-center relative overflow-hidden pt-0">
