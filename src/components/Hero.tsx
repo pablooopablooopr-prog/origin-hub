@@ -24,34 +24,22 @@ const Hero = () => {
 </p>
 
         {/* Botones de acción */}
-        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-4xl mx-auto flex-wrap">
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-4xl mx-auto">
           <Link to="/mapa">
-            <Button size="lg" className="px-8 py-4 text-lg shadow-earth">
-              Mapa
+            <Button size="lg" className="group px-8 py-4 text-lg shadow-earth">
+              Explorar el mapa
             </Button>
           </Link>
           
           <Link to="/rutas">
             <Button size="lg" className="px-8 py-4 text-lg bg-earth-dark text-white hover:bg-earth-dark/90 transition-colors">
-              Rutas
+              Descubrir rutas
             </Button>
           </Link>
           
           <Link to="/packs">
             <Button variant="secondary" size="lg" className="px-8 py-4 text-lg shadow-moss">
               Selecciones del territorio
-            </Button>
-          </Link>
-
-          <Link to="/contacto">
-            <Button size="lg" className="px-8 py-4 text-lg shadow-earth">
-              Contacto
-            </Button>
-          </Link>
-
-          <Link to="/sobre-origen">
-            <Button size="lg" className="px-8 py-4 text-lg shadow-earth">
-              Historia
             </Button>
           </Link>
         </div>
