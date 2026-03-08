@@ -228,6 +228,7 @@ const EditarPack = () => {
 
   const getMiniHeroColor = (type: string) => {
     switch (type) {
+      case 'micro': return 'hsl(220, 15%, 80%)';
       case 'raiz': return 'hsl(30, 25%, 70%)';
       case 'esencia': return 'hsl(100, 35%, 75%)';
       case 'gourmet': return 'hsl(23, 34%, 65%)';
