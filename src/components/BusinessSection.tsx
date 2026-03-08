@@ -61,6 +61,7 @@ const BusinessSection = () => {
             <h4 className="font-semibold text-primary mb-4 text-center">¿Tu negocio es ORIGEN?</h4>
             <div className="space-y-3">
               {[
+                "Eres productor, restaurante o negocio",
                 "Productos auténticos y naturales",
                 "Procesos tradicionales o artesanos",
                 "Sin refinamientos industriales",

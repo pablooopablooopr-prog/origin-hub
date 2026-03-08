@@ -21,6 +21,7 @@ const SoyEmpresa = () => {
   }];
 
   const criteria = [
+    "Eres productor, restaurante o negocio",
     "Productos artesanos o tradicionales", 
     "Sin aditivos químicos innecesarios", 
     "Métodos de producción auténticos", 
