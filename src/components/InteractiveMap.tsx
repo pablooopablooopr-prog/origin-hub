@@ -175,14 +175,19 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
     return parts[0] || "Desconocida";
   }
 
-  // Unique provinces
-  const provinces = useMemo(() => {
-    const set = new Set<string>();
-    allItems.forEach((item) => {
-      if (item.province && item.province !== "Desconocida") set.add(item.province);
-    });
-    return Array.from(set).sort();
-  }, [allItems]);
+  // All Spanish provinces
+  const ALL_PROVINCES = [
+    "A Coruña", "Álava", "Albacete", "Alicante", "Almería", "Asturias", "Ávila",
+    "Badajoz", "Barcelona", "Bizkaia", "Burgos", "Cáceres", "Cádiz", "Cantabria",
+    "Castellón", "Ceuta", "Ciudad Real", "Córdoba", "Cuenca", "Gipuzkoa", "Girona",
+    "Granada", "Guadalajara", "Huelva", "Huesca", "Illes Balears", "Jaén",
+    "La Rioja", "Las Palmas", "León", "Lleida", "Lugo", "Madrid", "Málaga",
+    "Melilla", "Murcia", "Navarra", "Ourense", "Palencia", "Pontevedra",
+    "Salamanca", "Santa Cruz de Tenerife", "Segovia", "Sevilla", "Soria",
+    "Tarragona", "Teruel", "Toledo", "Valencia", "Valladolid", "Zamora", "Zaragoza"
+  ];
+
+  const provinces = ALL_PROVINCES;
 
   // Items grouped by type
   const productores = useMemo(() => allItems.filter((i) => i.companyType === "productor"), [allItems]);
@@ -193,7 +198,12 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   const subItemsMap = useMemo<Record<string, { id: string; name: string }[]>>(() => ({
     Provincias: provinces.map((p) => ({ id: p, name: p })),
     Productores: productores.map((i) => ({ id: i.id, name: i.name })),
-    Selecciones: packs.map((p) => ({ id: p.id, name: p.title })),
+    Selecciones: packs.map((p) => {
+      // Extract just the name after "·" if present
+      const parts = p.title.split("·");
+      const displayName = parts.length > 1 ? parts.slice(1).join("·").trim() : p.title;
+      return { id: p.id, name: displayName };
+    }),
     Cooperativas: cooperativas.map((i) => ({ id: i.id, name: i.name })),
     Restaurantes: restaurantes.map((i) => ({ id: i.id, name: i.name })),
     Experiencias: routes.map((r) => ({ id: r.id, name: r.title })),
