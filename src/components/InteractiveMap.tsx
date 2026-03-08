@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, MapPin, Beef, Milk, Wheat, Leaf, Shirt, Heart, UtensilsCrossed, Loader2 } from "lucide-react";
+import { Search, Filter, MapPin, Wheat, Leaf, Heart, UtensilsCrossed, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import GoogleMap from "./GoogleMap";
 import { supabase } from "@/integrations/supabase/client";
