@@ -178,6 +178,8 @@ const Packs = () => {
 
   const getPackTypeName = (type: string) => {
     switch (type) {
+      case 'micro':
+        return 'Microselección';
       case 'raiz':
         return 'Pack Raíz';
       case 'esencia':
