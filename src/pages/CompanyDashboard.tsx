@@ -115,10 +115,13 @@ export default function CompanyDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-        loadCompanyData(session.user.id);
+    let loadedUserId: string | null = null;
+
+    supabase.auth.getUser().then(({ data: { user: currentUser } }) => {
+      if (currentUser) {
+        setUser(currentUser);
+        loadedUserId = currentUser.id;
+        loadCompanyData(currentUser.id);
       } else {
         navigate('/company-auth');
       }
@@ -126,8 +129,12 @@ export default function CompanyDashboard() {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {
-        setUser(session.user);
-        loadCompanyData(session.user.id);
+        // Only reload if user changed (avoid duplicate loads on INITIAL_SESSION)
+        if (session.user.id !== loadedUserId) {
+          loadedUserId = session.user.id;
+          setUser(session.user);
+          loadCompanyData(session.user.id);
+        }
       } else {
         navigate('/company-auth');
       }
