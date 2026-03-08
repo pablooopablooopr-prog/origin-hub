@@ -16,7 +16,7 @@ const PackTypeCards = () => {
       name: "Pack Raíz",
       price: "35€",
       products: "3 productos aprox.",
-      level: "Nivel básico / Intro",
+      level: "Selección básica / Descubrimiento",
       description: "Ideal para una primera aproximación a los sabores locales.",
       bgColor: "bg-pack-raiz",
       filterType: "raiz"
