@@ -517,7 +517,7 @@ const BusinessDetail = () => {
                 {avgRating.toFixed(1)} ({company.total_reviews || reviews.length} valoraciones)
               </Badge>
             )}
-            {packs.length > 0 && (
+            {packs.length > 0 && !['Restaurante', 'Cooperativa'].includes(company.business_type || '') && (
               <Badge variant="outline" className="px-3 py-1.5 text-sm">
                 <Package className="w-4 h-4 mr-1" />
                 {packs.length} packs
@@ -659,7 +659,8 @@ const BusinessDetail = () => {
               ) : null}
             </section>
 
-            {/* Packs */}
+            {/* Packs - hidden for Restaurante/Cooperativa */}
+            {!['Restaurante', 'Cooperativa'].includes(company.business_type || '') && (
             <section>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold flex items-center gap-2">
@@ -705,6 +706,7 @@ const BusinessDetail = () => {
                 </div>
               )}
             </section>
+            )}
 
             {/* Routes */}
             <section>
