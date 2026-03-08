@@ -45,7 +45,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
-  const clustererRef = useRef<MarkerClusterer | null>(null);
+  
   const userMarkerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(null);
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
   const { loaded, error, apiKeyMissing } = useGoogleMapsLoader();
