@@ -7,7 +7,7 @@ const PackTypeCards = () => {
       name: "Microselecciones",
       price: "15€",
       products: "1-2 productos únicos",
-      level: "Detalle / Capricho",
+      level: "Detalle / Delicatessen",
       description: "Pequeños tesoros artesanos para descubrir sabores auténticos en formato reducido.",
       bgColor: "bg-pack-micro",
       filterType: "micro"
