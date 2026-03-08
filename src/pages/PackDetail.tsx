@@ -338,12 +338,14 @@ const PackDetail = () => {
 
   const getMiniHeroColor = (type: string) => {
     switch (type) {
+      case 'micro':
+        return 'hsl(220, 15%, 70%)';
       case 'raiz':
-        return 'hsl(30, 25%, 70%)'; // Pack Raíz - marrón tierra más oscuro para mini-hero
+        return 'hsl(30, 25%, 70%)';
       case 'esencia':
-        return 'hsl(100, 35%, 75%)'; // Pack Esencia - verde más intenso para mini-hero
+        return 'hsl(100, 35%, 75%)';
       case 'gourmet':
-        return 'hsl(23, 34%, 65%)'; // Pack Gourmet - arcilla más oscura para mini-hero
+        return 'hsl(23, 34%, 65%)';
       default:
         return '#C6B08C';
     }
