@@ -380,13 +380,13 @@ export async function submitContactMessage(data: {
 
 // Function to save a route
 export async function saveRoute(routeId: string, notes?: string) {
-  const { data: session } = await supabase.auth.getSession();
-  if (!session?.session?.user) return { error: 'Not logged in' };
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: 'Not logged in' };
   
   const { data: customer } = await supabase
     .from('customers')
     .select('id')
-    .eq('user_id', session.session.user.id)
+    .eq('user_id', user.id)
     .single();
   
   if (!customer) return { error: 'Customer not found' };
