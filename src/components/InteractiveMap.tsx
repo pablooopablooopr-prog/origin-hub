@@ -229,7 +229,12 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
     // When Selecciones filter is active, show pack locations
     if (selectedFilter === "Selecciones") {
       if (selectedSubItem) {
-        return packItems.filter((i) => i.id === selectedSubItem);
+        // selectedSubItem is the pack type name, find matching pack IDs
+        const matchingType = packTypes.find((t) => t.id === selectedSubItem);
+        if (matchingType) {
+          return packItems.filter((i) => matchingType.packIds.includes(i.id));
+        }
+        return [];
       }
       return packItems;
     }
