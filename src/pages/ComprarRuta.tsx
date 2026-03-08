@@ -43,10 +43,9 @@ const ComprarRuta = () => {
     pricing?: RoutePricing;
   } | null;
 
-  const localRoute = slug ? getRouteById(slug) : null;
-  const routeTitle = stateData?.routeTitle || localRoute?.title || "Ruta";
+  const routeTitle = stateData?.routeTitle || "Ruta";
   const numPeople = stateData?.numPeople || 2;
-  const stopCount = localRoute?.stops?.length || 4;
+  const [stopCount, setStopCount] = useState(stateData?.pricing ? Math.round(stateData.pricing.basePrice / 3) : 4);
   const pricing = stateData?.pricing || calculateRoutePricing(stopCount, numPeople);
 
   useEffect(() => {
