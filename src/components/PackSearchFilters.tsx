@@ -144,6 +144,7 @@ const PackSearchFilters = ({ onFiltersChange, initialFilters }: PackSearchFilter
                 <SelectValue placeholder="Cualquier tipo..." />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="micro">Microselección (15€)</SelectItem>
                 <SelectItem value="raiz">Raíz (hasta 35€)</SelectItem>
                 <SelectItem value="esencia">Esencia (hasta 55€)</SelectItem>
                 <SelectItem value="gourmet">Gourmet (hasta 100€)</SelectItem>
