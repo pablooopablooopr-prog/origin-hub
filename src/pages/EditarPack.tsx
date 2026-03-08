@@ -474,6 +474,7 @@ const EditarPack = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="micro">Microselección (15€)</SelectItem>
                         <SelectItem value="raiz">Pack Raíz (35€)</SelectItem>
                         <SelectItem value="esencia">Pack Esencia (60€)</SelectItem>
                         <SelectItem value="gourmet">Pack Gourmet (90€)</SelectItem>
