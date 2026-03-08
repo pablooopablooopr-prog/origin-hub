@@ -198,51 +198,83 @@ const CustomerAuth = () => {
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    setShowResendOnLogin(false);
+    try {
+      setShowResendOnLogin(false);
 
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+      const { error, data: signInData } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
 
-    if (error) throw error;
+      if (error) throw error;
 
-    setRedirecting(true);
-    await postLoginRedirect(navigate, "/mi-cuenta");
-    return;
-  } catch (error: any) {
-    const msg = (error?.message || "").toLowerCase();
+      const userId = signInData.user?.id;
+      if (userId) {
+        // Check if user is admin first (admins can access anywhere)
+        const { data: adminRole } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", userId)
+          .eq("role", "admin")
+          .maybeSingle();
 
-    const notConfirmed =
-      msg.includes("email not confirmed") ||
-      msg.includes("not confirmed") ||
-      msg.includes("confirm");
+        if (!adminRole) {
+          // Not admin — check if they have a company
+          const { data: companyRows } = await supabase
+            .from("companies")
+            .select("id")
+            .eq("user_id", userId)
+            .limit(1);
 
-    if (notConfirmed) {
-      setShowResendOnLogin(true);
+          if (companyRows && companyRows.length > 0) {
+            // This is a company account, block access via customer login
+            await supabase.auth.signOut();
+            toast({
+              title: "Acceso incorrecto",
+              description: "Esta cuenta es de empresa. Usa el acceso de empresas para iniciar sesión.",
+              variant: "destructive",
+            });
+            setLoading(false);
+            return;
+          }
+        }
+      }
+
+      setRedirecting(true);
+      await postLoginRedirect(navigate, "/mi-cuenta");
+      return;
+    } catch (error: any) {
+      const msg = (error?.message || "").toLowerCase();
+
+      const notConfirmed =
+        msg.includes("email not confirmed") ||
+        msg.includes("not confirmed") ||
+        msg.includes("confirm");
+
+      if (notConfirmed) {
+        setShowResendOnLogin(true);
+        toast({
+          title: "Verifica tu email",
+          description:
+            "Tu cuenta existe pero el email no está confirmado. Revisa tu bandeja de entrada o pulsa \u201CReenviar verificación\u201D.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const isInvalidCredentials = msg.includes("invalid login credentials") || msg.includes("invalid");
+
       toast({
-        title: "Verifica tu email",
-        description:
-          "Tu cuenta existe pero el email no está confirmado. Revisa tu bandeja de entrada o pulsa “Reenviar verificación”.",
+        title: "Error de acceso",
+        description: isInvalidCredentials
+          ? "Email o contraseña incorrectos. Revisa tus datos e inténtalo de nuevo."
+          : (error?.message ?? "No se pudo iniciar sesión."),
         variant: "destructive",
       });
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    const isInvalidCredentials = msg.includes("invalid login credentials") || msg.includes("invalid");
-
-    toast({
-      title: "Error de acceso",
-      description: isInvalidCredentials
-        ? "Email o contraseña incorrectos. Revisa tus datos e inténtalo de nuevo."
-        : (error?.message ?? "No se pudo iniciar sesión."),
-      variant: "destructive",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handlePasswordReset = async () => {
     const targetEmail = (resetEmail || email).trim();
