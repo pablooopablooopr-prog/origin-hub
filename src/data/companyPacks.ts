@@ -34,6 +34,72 @@ export interface CompanyPack {
 }
 
 export const companyPacks: CompanyPack[] = [
+  // ===== MICROSELECCIONES =====
+  {
+    id: "micro-miel-alpujarra",
+    name: "Miel Pura de la Alpujarra",
+    type: "micro",
+    price: 15,
+    description: "Un tarro de miel artesana de montaña, recolectada a mano en la Alpujarra granadina.",
+    expandedDescription: "Miel cruda y sin pasteurizar, elaborada por abejas que polinizan las flores silvestres de la Alpujarra. Cada tarro es único según la temporada de floración. Un pequeño tesoro del sur que concentra todo el sabor de la sierra.",
+    company: {
+      name: "Colmenas del Valle",
+      logo: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png",
+      location: "Granada"
+    },
+    region: "Granada",
+    autonomousCommunity: "Andalucía",
+    categories: ["Miel"],
+    products: [
+      {
+        name: "Miel de Flores de Montaña 250g",
+        description: "Miel cruda multifloral de alta montaña",
+        company: "Colmenas del Valle",
+        companyLogo: "/lovable-uploads/2e843717-7b23-4291-b3d1-54fb8e5f294c.png",
+        limitedEdition: true
+      }
+    ],
+    addedValue: ["Envío cuidado en caja ecológica"],
+    qualitySeal: true,
+    featured: "new",
+    rating: 4.8,
+    reviews: 42,
+    fastShipping: true,
+    sustainablePackaging: true,
+    loyaltyPoints: 15
+  },
+  {
+    id: "micro-pimenton-vera",
+    name: "Pimentón de la Vera DOP",
+    type: "micro",
+    price: 15,
+    description: "Pimentón ahumado artesano con Denominación de Origen Protegida, directo de Extremadura.",
+    expandedDescription: "Elaborado con pimientos secados lentamente al humo de encina, este pimentón conserva el método tradicional que lleva siglos practicándose en La Vera. Un imprescindible de la despensa española en formato auténtico.",
+    company: {
+      name: "Ahumados de la Vera",
+      logo: "/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png",
+      location: "Cáceres"
+    },
+    region: "Cáceres",
+    autonomousCommunity: "Extremadura",
+    categories: ["Otros artesanales"],
+    products: [
+      {
+        name: "Pimentón Ahumado DOP Lata 75g",
+        description: "Pimentón dulce ahumado con leña de encina",
+        company: "Ahumados de la Vera",
+        companyLogo: "/lovable-uploads/a327eccb-ce74-42aa-9e98-6181b1501e23.png"
+      }
+    ],
+    addedValue: ["Recetario tradicional incluido"],
+    qualitySeal: true,
+    rating: 4.9,
+    reviews: 67,
+    fastShipping: true,
+    sustainablePackaging: true,
+    loyaltyPoints: 15
+  },
+
   // ===== ANDALUCÍA =====
   {
     id: "pack-raiz-olivar-sierra",
