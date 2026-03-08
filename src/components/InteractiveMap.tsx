@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, MapPin, Beef, Milk, Wheat, Leaf, Shirt, Heart, UtensilsCrossed, Loader2 } from "lucide-react";
+import { Search, Filter, MapPin, Wheat, Leaf, Heart, UtensilsCrossed, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import GoogleMap from "./GoogleMap";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,40 +32,35 @@ const InteractiveMap = ({
   const [companies, setCompanies] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
   const categories = [{
-    name: "Restaurantes",
-    icon: UtensilsCrossed,
+    name: "Provincia",
+    icon: MapPin,
     count: 0,
     color: "bg-primary"
   }, {
-    name: "Carnes",
-    icon: Beef,
+    name: "Productores",
+    icon: Leaf,
     count: 0,
     color: "bg-secondary"
   }, {
-    name: "Lácteos",
-    icon: Milk,
+    name: "Restaurantes",
+    icon: UtensilsCrossed,
     count: 0,
     color: "bg-moss-medium"
   }, {
-    name: "Fermentos",
-    icon: Wheat,
+    name: "Negocios tradicionales",
+    icon: Heart,
     count: 0,
     color: "bg-earth-medium"
   }, {
-    name: "Herbolarios",
-    icon: Leaf,
+    name: "Cooperativas",
+    icon: Wheat,
     count: 0,
     color: "bg-accent"
   }, {
-    name: "EcoModa",
-    icon: Shirt,
+    name: "Experiencias",
+    icon: MapPin,
     count: 0,
     color: "bg-moss-dark"
-  }, {
-    name: "Vida Natural",
-    icon: Heart,
-    count: 0,
-    color: "bg-moss-light"
   }];
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -150,10 +145,10 @@ const InteractiveMap = ({
       <div className="container mx-auto px-6">
         {showTitle && <div className="text-center mb-6">
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-2">
-              Mapa Interactivo de Empresas
+              Selecciones del territorio
             </h2>
             <p className="text-lg text-muted-foreground">
-              Encuentra negocios auténticos cerca de ti filtrando por categoría, zona o producto.
+              Filtra por provincia, tipo de negocio, experiencia y recorre España a través de su red gastronómica.
             </p>
           </div>}
 
