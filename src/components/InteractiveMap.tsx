@@ -145,10 +145,10 @@ const InteractiveMap = ({
       <div className="container mx-auto px-6">
         {showTitle && <div className="text-center mb-6">
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-2">
-              Mapa Interactivo de Empresas
+              Selecciones del territorio
             </h2>
             <p className="text-lg text-muted-foreground">
-              Encuentra negocios auténticos cerca de ti filtrando por categoría, zona o producto.
+              Filtra por provincia, tipo de negocio, experiencia y recorre España a través de su red gastronómica.
             </p>
           </div>}
 
