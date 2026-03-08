@@ -145,7 +145,7 @@ const InteractiveMap = ({
       <div className="container mx-auto px-6">
         {showTitle && <div className="text-center mb-6">
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-2">
-              Selecciones del territorio
+              Explora el territorio
             </h2>
             <p className="text-lg text-muted-foreground">
               Filtra por provincia, tipo de negocio, experiencia y recorre España a través de su red gastronómica.
