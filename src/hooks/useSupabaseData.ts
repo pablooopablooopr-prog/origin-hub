@@ -424,7 +424,7 @@ export async function createRoute(routeData: {
     .insert({
       ...routeData,
       slug,
-      creator_id: session.session.user.id,
+      creator_id: user.id,
       is_public: true
     })
     .select()
