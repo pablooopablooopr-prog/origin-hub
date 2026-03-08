@@ -240,6 +240,7 @@ export type Database = {
           authenticity_story: string | null
           avg_rating: number | null
           business_name: string
+          business_type: string | null
           category_id: string | null
           contact_person: string
           cover_image_url: string | null
@@ -273,6 +274,7 @@ export type Database = {
           authenticity_story?: string | null
           avg_rating?: number | null
           business_name: string
+          business_type?: string | null
           category_id?: string | null
           contact_person: string
           cover_image_url?: string | null
@@ -306,6 +308,7 @@ export type Database = {
           authenticity_story?: string | null
           avg_rating?: number | null
           business_name?: string
+          business_type?: string | null
           category_id?: string | null
           contact_person?: string
           cover_image_url?: string | null
