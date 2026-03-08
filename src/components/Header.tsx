@@ -114,7 +114,7 @@ const Header = () => {
                 Mapa
               </Link>
               <Link to="/rutas" className="text-muted-foreground hover:text-primary transition-colors">
-                Rutas
+                Experiencias
               </Link>
               <Link to="/packs" className="text-muted-foreground hover:text-primary transition-colors">
                 Selecciones
@@ -195,7 +195,7 @@ const Header = () => {
                     Mapa
                   </Link>
                   <Link to="/rutas" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
-                    Rutas
+                    Experiencias
                   </Link>
                   <Link to="/packs" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                     Selecciones
