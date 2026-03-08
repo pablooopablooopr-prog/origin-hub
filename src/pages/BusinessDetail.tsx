@@ -35,6 +35,7 @@ interface Company {
   longitude: number | null;
   email?: string | null;
   phone?: string | null;
+  business_type?: string | null;
 }
 
 interface CompanyPack {
@@ -374,12 +375,21 @@ const BusinessDetail = () => {
           <div className="h-64 md:h-80 w-full bg-gradient-to-br from-primary/80 to-primary-foreground/20" />
         )}
 
-        {/* Owner: cover image upload button - always visible for owners */}
+        {/* Business type badge - top left */}
+        {company.business_type && (
+          <div className="absolute top-4 left-4 z-10">
+            <Badge variant="secondary" className="bg-secondary text-secondary-foreground font-semibold text-sm px-3 py-1.5 shadow-lg">
+              {company.business_type}
+            </Badge>
+          </div>
+        )}
+
+        {/* Owner: cover image upload button */}
         {isOwner && (
           <button
             onClick={() => coverInputRef.current?.click()}
             disabled={uploadingCover}
-            className="absolute top-4 left-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-colors disabled:opacity-50"
+            className={`absolute ${company.business_type ? 'top-14' : 'top-4'} left-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-colors disabled:opacity-50`}
             title="Cambiar imagen de portada"
           >
             {uploadingCover ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}

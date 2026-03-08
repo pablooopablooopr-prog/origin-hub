@@ -897,14 +897,26 @@ export default function CompanyDashboard() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Email - never editable */}
-                  <div>
-                    <Label>Correo electrónico</Label>
-                    <Input
-                      value={user?.email || ""}
-                      readOnly
-                      className="bg-muted/50 cursor-default"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">El correo no se puede modificar</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Correo electrónico</Label>
+                      <Input
+                        value={user?.email || ""}
+                        readOnly
+                        className="bg-muted/50 cursor-default"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">El correo no se puede modificar</p>
+                    </div>
+                    {/* Business type - never editable after registration */}
+                    <div>
+                      <Label>Tipo de negocio</Label>
+                      <Input
+                        value={(company as any)?.business_type || "Sin especificar"}
+                        readOnly
+                        className="bg-muted/50 cursor-default"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">El tipo de negocio no se puede modificar</p>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

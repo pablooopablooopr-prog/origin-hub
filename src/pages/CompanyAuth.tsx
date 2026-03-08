@@ -393,10 +393,7 @@ export default function CompanyAuth() {
         return;
       }
 
-      const descriptionWithType =
-        companyData.description
-          ? `${companyData.business_type ? `[${companyData.business_type}] ` : ""}${companyData.description}`
-          : (companyData.business_type || null);
+      const descriptionText = companyData.description || null;
 
       const fullAddress = [
         companyData.address,
@@ -415,8 +412,9 @@ export default function CompanyAuth() {
         address: fullAddress || null,
         latitude: companyData.latitude,
         longitude: companyData.longitude,
-        description: descriptionWithType,
+        description: descriptionText,
         authenticity_story: companyData.authenticity_story || null,
+        business_type: companyData.business_type || null,
         status: "pending"
       });
 
