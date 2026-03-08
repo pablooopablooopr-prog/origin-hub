@@ -119,7 +119,7 @@ const RoutesExplorer = ({
         {showCTA && (
           <div className="text-center bg-card rounded-lg p-8 shadow-soft">
             <h3 className="text-2xl font-semibold text-primary mb-4">
-              ¿Tienes tu propia ruta?
+              ¿Quieres crear tu propia experiencia?
             </h3>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
               Comparte tus descubrimientos con la comunidad. Marca los lugares que has visitado 
@@ -128,11 +128,11 @@ const RoutesExplorer = ({
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="shadow-earth" onClick={handleCreateRoute}>
                 <Route className="w-5 h-5 mr-2" />
-                Crear mi ruta
+                Crear experiencia
               </Button>
               <Button variant="secondary" size="lg" className="shadow-moss" onClick={() => navigate('/rutas')}>
                 <MapPin className="w-5 h-5 mr-2" />
-                Ver todas las rutas
+                Descubrir experiencias
               </Button>
             </div>
           </div>
