@@ -10,10 +10,12 @@ import { supabase } from "@/integrations/supabase/client";
 const RoutesExplorer = ({
   showTitle = true,
   showCTA = true,
+  maxRoutes,
   customRoutes
 }: {
   showTitle?: boolean;
   showCTA?: boolean;
+  maxRoutes?: number;
   customRoutes?: RouteDetail[];
 }) => {
   const navigate = useNavigate();
@@ -58,7 +60,8 @@ const RoutesExplorer = ({
     init();
   }, [customRoutes]);
 
-  const displayRoutes = customRoutes || dbRoutes || routesData;
+  const allRoutes = customRoutes || dbRoutes || routesData;
+  const displayRoutes = maxRoutes ? allRoutes.slice(0, maxRoutes) : allRoutes;
 
   const handleCreateRoute = () => {
     if (isAuthenticated) {

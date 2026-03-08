@@ -62,7 +62,7 @@ const Index = () => {
           </div>
         </section>
         
-        <RoutesExplorer />
+        <RoutesExplorer maxRoutes={3} />
         <BusinessSection />
         <HumanRatings />
 
