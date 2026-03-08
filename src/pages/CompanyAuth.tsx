@@ -291,8 +291,39 @@ export default function CompanyAuth() {
     try {
       setRedirecting(true);
       redirectingRef.current = true;
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error, data: signInData } = await supabase.auth.signInWithPassword({ email, password });
       if (error) { setRedirecting(false); redirectingRef.current = false; throw error; }
+
+      const userId = signInData.user?.id;
+      if (userId) {
+        // Check if user is admin first
+        const { data: adminRole } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", userId)
+          .eq("role", "admin")
+          .maybeSingle();
+
+        if (!adminRole) {
+          // Not admin — check if they have a company
+          const { data: companyRows } = await supabase
+            .from("companies")
+            .select("id")
+            .eq("user_id", userId)
+            .limit(1);
+
+          if (!companyRows || companyRows.length === 0) {
+            // No company — this is a customer account, block access
+            await supabase.auth.signOut();
+            setRedirecting(false);
+            redirectingRef.current = false;
+            toast.error("Esta cuenta es de cliente. Usa el acceso de clientes para iniciar sesión.");
+            setLoading(false);
+            return;
+          }
+        }
+      }
+
       await postLoginRedirect(navigate, "/company-dashboard");
       return;
     } catch (err: any) {
