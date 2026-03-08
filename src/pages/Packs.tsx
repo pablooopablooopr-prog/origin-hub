@@ -226,11 +226,9 @@ const Packs = () => {
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4 flex items-center justify-center flex-wrap">
               <span>Selecciones del territ</span>
-              <img 
-                src="/lovable-uploads/enso-transparent.png" 
-                alt="Ensō"
-                className="w-8 h-8 md:w-10 md:h-10 object-contain mx-1"
-              />
+              <span className="inline-flex items-center">
+                <img src="/lovable-uploads/enso-transparent.png" alt="Ensō" className="w-10 h-10 md:w-14 md:h-14 object-contain" />
+              </span>
               <span>rio</span>
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
