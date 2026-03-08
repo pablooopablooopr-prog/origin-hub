@@ -194,6 +194,9 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   const cooperativas = useMemo(() => allItems.filter((i) => i.companyType === "cooperativa"), [allItems]);
   const restaurantes = useMemo(() => allItems.filter((i) => i.companyType === "restaurante"), [allItems]);
 
+  // All map points combined (for default view and province filter)
+  const allMapPoints = useMemo(() => [...allItems, ...routeStopItems, ...packItems], [allItems, routeStopItems, packItems]);
+
   // Group packs by type (prefix before "·")
   const packTypes = useMemo(() => {
     const typeMap = new Map<string, string[]>();
@@ -218,7 +221,7 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
 
   // Filtered items
   const filteredItems = useMemo(() => {
-    // When Experiencias filter is active, show route stops instead of companies
+    // When Experiencias filter is active, show route stops
     if (selectedFilter === "Experiencias") {
       if (selectedSubItem) {
         return routeStopItems.filter((i) => i.routeId === selectedSubItem);
@@ -229,7 +232,6 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
     // When Selecciones filter is active, show pack locations
     if (selectedFilter === "Selecciones") {
       if (selectedSubItem) {
-        // selectedSubItem is the pack type name, find matching pack IDs
         const matchingType = packTypes.find((t) => t.id === selectedSubItem);
         if (matchingType) {
           return packItems.filter((i) => matchingType.packIds.includes(i.id));
@@ -239,6 +241,26 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
       return packItems;
     }
 
+    // Provincias filter: search across ALL map points
+    if (selectedFilter === "Provincias") {
+      let base = allMapPoints;
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        base = base.filter(
+          (item) =>
+            item.name.toLowerCase().includes(q) ||
+            item.description.toLowerCase().includes(q) ||
+            item.address.toLowerCase().includes(q) ||
+            item.province.toLowerCase().includes(q)
+        );
+      }
+      if (selectedSubItem) {
+        return base.filter((i) => i.province.toLowerCase().includes(selectedSubItem.toLowerCase()));
+      }
+      return base;
+    }
+
+    // Company-type filters (Productores, Cooperativas, Restaurantes)
     let filtered = allItems;
 
     if (searchQuery.trim()) {
@@ -254,11 +276,7 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
     }
 
     if (selectedSubItem) {
-      if (expandedFilter === "Provincias") {
-        filtered = filtered.filter((i) => i.province === selectedSubItem);
-      } else {
-        filtered = filtered.filter((i) => i.id === selectedSubItem);
-      }
+      filtered = filtered.filter((i) => i.id === selectedSubItem);
     } else if (selectedFilter) {
       if (selectedFilter === "Productores") {
         filtered = filtered.filter((i) => i.companyType === "productor");
@@ -267,10 +285,24 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
       } else if (selectedFilter === "Restaurantes") {
         filtered = filtered.filter((i) => i.companyType === "restaurante");
       }
+    } else {
+      // No filter selected: show ALL points
+      let base = allMapPoints;
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        base = base.filter(
+          (item) =>
+            item.name.toLowerCase().includes(q) ||
+            item.description.toLowerCase().includes(q) ||
+            item.address.toLowerCase().includes(q) ||
+            item.province.toLowerCase().includes(q)
+        );
+      }
+      return base;
     }
 
     return filtered;
-  }, [allItems, routeStopItems, packItems, searchQuery, selectedFilter, selectedSubItem, expandedFilter]);
+  }, [allItems, allMapPoints, routeStopItems, packItems, searchQuery, selectedFilter, selectedSubItem, expandedFilter, packTypes]);
 
   const filterChips = useMemo(() => [
     { name: "Provincias", icon: MapPin, count: provinces.length, color: "bg-primary" },
