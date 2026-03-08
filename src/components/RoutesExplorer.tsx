@@ -60,7 +60,8 @@ const RoutesExplorer = ({
     init();
   }, [customRoutes]);
 
-  const displayRoutes = customRoutes || dbRoutes || routesData;
+  const allRoutes = customRoutes || dbRoutes || routesData;
+  const displayRoutes = maxRoutes ? allRoutes.slice(0, maxRoutes) : allRoutes;
 
   const handleCreateRoute = () => {
     if (isAuthenticated) {
