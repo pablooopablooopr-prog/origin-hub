@@ -306,6 +306,7 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
                   {expandedFilter === "Productores" && <Leaf className="w-3 h-3 mr-1" />}
                   {expandedFilter === "Cooperativas" && <Users className="w-3 h-3 mr-1" />}
                   {expandedFilter === "Restaurantes" && <UtensilsCrossed className="w-3 h-3 mr-1" />}
+                  {expandedFilter === "Experiencias" && <Compass className="w-3 h-3 mr-1" />}
                   {sub.name}
                 </Badge>
               ))}
