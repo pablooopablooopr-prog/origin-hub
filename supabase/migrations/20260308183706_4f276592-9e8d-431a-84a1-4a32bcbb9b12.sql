@@ -1,0 +1,5 @@
+
+INSERT INTO company_packs (id, company_id, title, slug, status, price, shipping_policy, sustainability_info, tags, is_active, is_published, published_at, is_demo, moderation_status)
+VALUES
+  ('93000000-0000-0000-0000-000000000001', 'a91260d4-e919-4d52-b005-5ab3dea106d9', 'Microselección · Miel Pura de la Alpujarra', 'microseleccion-miel-pura-alpujarra', 'published', 15.00, 'Envío estándar incluido. Entrega en 3-5 días laborables.', 'Miel cruda sin pasteurizar de apicultor local. Envasada en tarro de vidrio reutilizable.', ARRAY['micro','miel','alpujarra','ecológico'], true, true, now(), false, 'approved'),
+  ('93000000-0000-0000-0000-000000000002', 'a91260d4-e919-4d52-b005-5ab3dea106d9', 'Microselección · Pimentón de la Vera DOP', 'microseleccion-pimenton-vera-dop', 'published', 15.00, 'Envío estándar incluido. Entrega en 3-5 días laborables.', 'Pimentón ahumado con denominación de origen. Secado artesanal en secadero tradicional.', ARRAY['micro','pimentón','vera','DOP'], true, true, now(), false, 'approved');
