@@ -47,15 +47,15 @@ const Hero = () => {
         {/* Indicadores sutiles */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           <div className="space-y-2">
-            <div className="text-2xl font-bold text-primary">500+</div>
+            <div className="text-2xl font-bold text-primary">75</div>
             <p className="text-sm text-muted-foreground">Negocios locales</p>
           </div>
           <div className="space-y-2">
-            <div className="text-2xl font-bold text-secondary">15</div>
+            <div className="text-2xl font-bold text-secondary">4</div>
             <p className="text-sm text-muted-foreground">Provincias cubiertas</p>
           </div>
           <div className="space-y-2">
-            <div className="text-2xl font-bold text-primary">10k+</div>
+            <div className="text-2xl font-bold text-primary">100+</div>
             <p className="text-sm text-muted-foreground">Consumidores conscientes</p>
           </div>
         </div>
