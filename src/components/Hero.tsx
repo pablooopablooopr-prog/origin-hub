@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 const Hero = () => {
-  return <section className="min-h-screen bg-gradient-warm enso-watermark flex items-center justify-center relative overflow-hidden pt-0">
-      {/* Fondo sutil con textura */}
-      <div className="absolute inset-0 bg-gradient-to-br from-earth-light/20 via-transparent to-moss-light/20"></div>
-      
-      <div className="container mx-auto px-6 py-4 text-center relative z-10">
+  return <section className="min-h-screen bg-gradient-warm enso-watermark flex items-start justify-center relative overflow-hidden pt-0">
+       {/* Fondo sutil con textura */}
+       <div className="absolute inset-0 bg-gradient-to-br from-earth-light/20 via-transparent to-moss-light/20"></div>
+       
+       <div className="container mx-auto px-6 py-4 pt-20 text-center relative z-10">
         {/* Título principal con Ensō integrado */}
         <h1 className="text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1">
           <span>Vuelve al</span>
