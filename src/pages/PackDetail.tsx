@@ -323,12 +323,14 @@ const PackDetail = () => {
 
   const getPackTypeDarkColor = (type: string) => {
     switch (type) {
+      case 'micro':
+        return 'hsl(220, 15%, 93%)';
       case 'raiz':
-        return 'hsl(40, 43%, 93%)'; // Pack Raíz - arena suave (color original de tarjeta)
+        return 'hsl(40, 43%, 93%)';
       case 'esencia':
-        return 'hsl(93, 36%, 91%)'; // Pack Esencia - verde suave natural (color original de tarjeta)
+        return 'hsl(93, 36%, 91%)';
       case 'gourmet':
-        return 'hsl(23, 34%, 77%)'; // Pack Gourmet - arcilla profunda natural (color original de tarjeta)
+        return 'hsl(23, 34%, 77%)';
       default:
         return 'hsl(var(--background))';
     }
