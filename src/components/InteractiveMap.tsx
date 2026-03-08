@@ -148,7 +148,7 @@ const InteractiveMap = ({
               Explora el territorio
             </h2>
             <p className="text-lg text-muted-foreground">
-              Filtra por provincia, tipo de negocio, experiencia y recorre España a través de su red gastronómica.
+              Filtra por provincia, tipo de negocio o experiencia y recorre España a través de su red gastronómica.
             </p>
           </div>}
 
