@@ -154,6 +154,7 @@ const Packs = () => {
     if ('type' in pack) return pack.type;
     
     const title = pack.title.toLowerCase();
+    if (title.includes('microselección') || title.includes('microseleccion') || title.includes('micro')) return 'micro';
     if (title.includes('raíz') || title.includes('raiz')) return 'raiz';
     if (title.includes('esencia')) return 'esencia';
     if (title.includes('gourmet')) return 'gourmet';
