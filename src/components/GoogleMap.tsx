@@ -6,7 +6,6 @@ import { MapPin, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useGoogleMapsLoader } from '@/hooks/useGoogleMapsLoader';
 import { useNavigate } from "react-router-dom";
-import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import type { MapItem } from './InteractiveMap';
 
 // Custom map style — warm, earthy tones matching ORIGEN brand
