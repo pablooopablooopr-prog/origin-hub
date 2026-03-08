@@ -122,6 +122,41 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
         }
         setRouteStopItems(stopItems);
 
+        // Build pack items (placed at their company's coordinates)
+        const companyCoordMap: Record<string, { lat: number; lng: number; address: string }> = {};
+        if (companiesRes.data) {
+          for (const c of companiesRes.data) {
+            if (c.id && c.latitude && c.longitude) {
+              companyCoordMap[c.id] = { lat: c.latitude as number, lng: c.longitude as number, address: c.address || "" };
+            }
+          }
+        }
+        const packItemsList: MapItem[] = [];
+        const fetchedPacks: { id: string; title: string }[] = [];
+        if (packsRes.data) {
+          for (const p of packsRes.data) {
+            if (!p.id || !p.title || !p.company_id) continue;
+            fetchedPacks.push({ id: p.id, title: p.title });
+            const coords = companyCoordMap[p.company_id];
+            if (!coords) continue;
+            packItemsList.push({
+              id: p.id,
+              name: p.title,
+              category: "Selecciones",
+              description: "",
+              address: coords.address,
+              city: "",
+              province: extractProvince(coords.address),
+              coordinates: [coords.lng, coords.lat],
+              rating: 0,
+              tags: [],
+              itemType: "pack",
+            });
+          }
+        }
+        setPacks(fetchedPacks);
+        setPackItems(packItemsList);
+
         setAllItems(items);
       } catch (err) {
         console.error("Error fetching map data:", err);
