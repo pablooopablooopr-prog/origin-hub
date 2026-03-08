@@ -10,10 +10,12 @@ import { supabase } from "@/integrations/supabase/client";
 const RoutesExplorer = ({
   showTitle = true,
   showCTA = true,
+  maxRoutes,
   customRoutes
 }: {
   showTitle?: boolean;
   showCTA?: boolean;
+  maxRoutes?: number;
   customRoutes?: RouteDetail[];
 }) => {
   const navigate = useNavigate();
