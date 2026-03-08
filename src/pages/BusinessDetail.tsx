@@ -659,7 +659,8 @@ const BusinessDetail = () => {
               ) : null}
             </section>
 
-            {/* Packs */}
+            {/* Packs - hidden for Restaurante/Cooperativa */}
+            {!['Restaurante', 'Cooperativa'].includes(company.business_type || '') && (
             <section>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold flex items-center gap-2">
@@ -705,6 +706,7 @@ const BusinessDetail = () => {
                 </div>
               )}
             </section>
+            )}
 
             {/* Routes */}
             <section>

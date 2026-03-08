@@ -536,7 +536,7 @@ export default function CompanyDashboard() {
           </div>
         </div>
 
-        <Tabs defaultValue="packs" className="space-y-6" onValueChange={(value) => {
+        <Tabs defaultValue={['Restaurante', 'Cooperativa'].includes((company as any)?.business_type || '') ? 'routes' : 'packs'} className="space-y-6" onValueChange={(value) => {
           if (value === "mypage") {
             navigate(`/negocio/${company?.slug || company?.id}`);
           }
@@ -546,10 +546,12 @@ export default function CompanyDashboard() {
               <Globe className="h-4 w-4" />
               Mi Página
             </TabsTrigger>
+            {!['Restaurante', 'Cooperativa'].includes((company as any)?.business_type || '') && (
             <TabsTrigger value="packs" className="flex items-center gap-2">
               <Package className="h-4 w-4" />
               Mis Packs
             </TabsTrigger>
+            )}
             <TabsTrigger value="routes" className="flex items-center gap-2">
               <Route className="h-4 w-4" />
               Rutas
