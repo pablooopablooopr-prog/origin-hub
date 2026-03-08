@@ -158,10 +158,19 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
     Productores: productores.map((i) => ({ id: i.id, name: i.name })),
     Cooperativas: cooperativas.map((i) => ({ id: i.id, name: i.name })),
     Restaurantes: restaurantes.map((i) => ({ id: i.id, name: i.name })),
-  }), [provinces, productores, cooperativas, restaurantes]);
+    Experiencias: routes.map((r) => ({ id: r.id, name: r.title })),
+  }), [provinces, productores, cooperativas, restaurantes, routes]);
 
   // Filtered items
   const filteredItems = useMemo(() => {
+    // When Experiencias filter is active, show route stops instead of companies
+    if (selectedFilter === "Experiencias") {
+      if (selectedSubItem) {
+        return routeStopItems.filter((i) => i.routeId === selectedSubItem);
+      }
+      return routeStopItems;
+    }
+
     let filtered = allItems;
 
     if (searchQuery.trim()) {
@@ -190,18 +199,18 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
       } else if (selectedFilter === "Restaurantes") {
         filtered = filtered.filter((i) => i.companyType === "restaurante");
       }
-      // Provincias with no sub-item selected shows all
     }
 
     return filtered;
-  }, [allItems, searchQuery, selectedFilter, selectedSubItem, expandedFilter]);
+  }, [allItems, routeStopItems, searchQuery, selectedFilter, selectedSubItem, expandedFilter]);
 
   const filterChips = useMemo(() => [
     { name: "Provincias", icon: MapPin, count: provinces.length, color: "bg-primary" },
     { name: "Productores", icon: Leaf, count: productores.length, color: "bg-secondary" },
     { name: "Cooperativas", icon: Users, count: cooperativas.length, color: "bg-secondary" },
     { name: "Restaurantes", icon: UtensilsCrossed, count: restaurantes.length, color: "bg-secondary" },
-  ], [provinces, productores, cooperativas, restaurantes]);
+    { name: "Experiencias", icon: Compass, count: routes.length, color: "bg-secondary" },
+  ], [provinces, productores, cooperativas, restaurantes, routes]);
 
   const handleFilterClick = (filterName: string) => {
     if (expandedFilter === filterName) {
