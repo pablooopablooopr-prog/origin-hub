@@ -34,16 +34,15 @@ const Hero = () => {
             </Button>
           </Link>
           
-          <Link to="/packs">
+          <Link to="/rutas">
             <Button size="lg" className="px-8 py-4 text-lg bg-earth-dark text-white hover:bg-earth-dark/90 transition-colors">
-              Descubrir packs
+              Descubrir rutas
             </Button>
           </Link>
           
-          <Link to="/soy-empresa">
+          <Link to="/packs">
             <Button variant="secondary" size="lg" className="shadow-moss">
-              <Building className="w-5 h-5 mr-2" />
-              Soy empresa
+              Selecciones del territorio
             </Button>
           </Link>
         </div>

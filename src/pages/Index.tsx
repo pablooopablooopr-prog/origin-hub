@@ -45,7 +45,7 @@ const Index = () => {
           <div className="container mx-auto px-6">
             <div className="text-center mb-12">
               <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-                Explora los Packs Regionales
+                Selecciones del territorio
               </h2>
                 <p className="text-lg text-muted-foreground max-w-4xl mx-auto leading-relaxed">
                  Conectamos, sin intermediarios, a consumidores con productores, cooperativas, restaurantes, negocios con identidad y experiencias rurales exclusivas por toda España, impulsando la visibilidad del sector primario y el valor de su origen real.
