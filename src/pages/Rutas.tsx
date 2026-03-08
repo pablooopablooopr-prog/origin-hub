@@ -105,14 +105,14 @@ const Rutas = () => {
         <div className="container mx-auto px-6 py-8">
           <div className="text-center mb-4">
             <h1 className="text-4xl md:text-5xl font-bold text-primary mb-3 flex items-center justify-center flex-wrap">
-              <span>Rutas</span>
-              <span className="inline-flex items-center mx-1">
+              <span>Experiencias</span>
+              <span className="inline-flex items-center ml-3">
                 <img src="/lovable-uploads/enso-transparent.png" alt="Ensō" className="w-10 h-10 md:w-14 md:h-14 object-contain" />
               </span>
-              <span>RIGEN</span>
+              <span>rigen</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Marca y comparte rutas visitando negocios locales. Sube valoraciones y reseñas de cada lugar que descubras en tu camino.
+              Recorre caminos que unen productores, restaurantes y lugares con identidad propia. Conoce y descubre cómo los negocios elaboran sus productos en primera persona.
             </p>
           </div>
         </div>
