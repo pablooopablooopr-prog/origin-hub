@@ -21,7 +21,7 @@ const Hero = () => {
 
         {/* Descripción adicional */}
         <p className="text-muted-foreground mb-16 max-w-3xl mx-auto opacity-90 text-lg font-normal font-sans text-center leading-relaxed">
-  Conectamos sin intermediarios consumidores con productores artesanos que cuidan de tu alimentación y de su tierra junto a experiencias rurales por toda España preservando y fomentando el crecimiento del sector primario nacional.
+  Conectamos, sin intermediarios, a consumidores con productores, cooperativas, restaurantes, negocios con identidad y experiencias rurales exclusivas por toda España, impulsando la visibilidad del sector primario y el valor de su origen real.
 </p>
 
         {/* Botones de acción */}
