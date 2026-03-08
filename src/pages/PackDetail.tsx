@@ -308,6 +308,8 @@ const PackDetail = () => {
 
   const getPackTypeColor = (type: string) => {
     switch (type) {
+      case 'micro':
+        return 'bg-pack-micro';
       case 'raiz':
         return 'bg-pack-raiz';
       case 'esencia':
