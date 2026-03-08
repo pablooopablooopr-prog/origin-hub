@@ -218,6 +218,7 @@ const EditarPack = () => {
 
   const getPackTypeColor = (type: string) => {
     switch (type) {
+      case 'micro': return 'hsl(220, 15%, 93%)';
       case 'raiz': return 'hsl(40, 43%, 93%)';
       case 'esencia': return 'hsl(93, 36%, 91%)';
       case 'gourmet': return 'hsl(23, 34%, 77%)';
