@@ -92,8 +92,10 @@ const PackDetail = () => {
 
         const inferredType = (() => {
           const title = (data.title || "").toLowerCase();
+          if (title.includes("microselección") || title.includes("microseleccion") || title.includes("micro")) return "micro";
           if (title.includes("raíz") || title.includes("raiz")) return "raiz";
           if (title.includes("gourmet")) return "gourmet";
+          if (title.includes("esencia")) return "esencia";
           return "esencia";
         })();
 
@@ -306,6 +308,8 @@ const PackDetail = () => {
 
   const getPackTypeColor = (type: string) => {
     switch (type) {
+      case 'micro':
+        return 'bg-pack-micro';
       case 'raiz':
         return 'bg-pack-raiz';
       case 'esencia':
@@ -319,12 +323,14 @@ const PackDetail = () => {
 
   const getPackTypeDarkColor = (type: string) => {
     switch (type) {
+      case 'micro':
+        return 'hsl(220, 15%, 93%)';
       case 'raiz':
-        return 'hsl(40, 43%, 93%)'; // Pack Raíz - arena suave (color original de tarjeta)
+        return 'hsl(40, 43%, 93%)';
       case 'esencia':
-        return 'hsl(93, 36%, 91%)'; // Pack Esencia - verde suave natural (color original de tarjeta)
+        return 'hsl(93, 36%, 91%)';
       case 'gourmet':
-        return 'hsl(23, 34%, 77%)'; // Pack Gourmet - arcilla profunda natural (color original de tarjeta)
+        return 'hsl(23, 34%, 77%)';
       default:
         return 'hsl(var(--background))';
     }
@@ -332,12 +338,14 @@ const PackDetail = () => {
 
   const getMiniHeroColor = (type: string) => {
     switch (type) {
+      case 'micro':
+        return 'hsl(220, 15%, 70%)';
       case 'raiz':
-        return 'hsl(30, 25%, 70%)'; // Pack Raíz - marrón tierra más oscuro para mini-hero
+        return 'hsl(30, 25%, 70%)';
       case 'esencia':
-        return 'hsl(100, 35%, 75%)'; // Pack Esencia - verde más intenso para mini-hero
+        return 'hsl(100, 35%, 75%)';
       case 'gourmet':
-        return 'hsl(23, 34%, 65%)'; // Pack Gourmet - arcilla más oscura para mini-hero
+        return 'hsl(23, 34%, 65%)';
       default:
         return '#C6B08C';
     }
@@ -345,6 +353,8 @@ const PackDetail = () => {
 
   const getPackTypeName = (type: string) => {
     switch (type) {
+      case 'micro':
+        return 'Microselección';
       case 'raiz':
         return 'Pack Raíz';
       case 'esencia':
@@ -357,7 +367,7 @@ const PackDetail = () => {
   };
 
   const getPackSpecificName = (fullName: string) => {
-    return fullName.replace(/^Pack (Raíz|Esencia|Gourmet) - /, '');
+    return fullName.replace(/^(Pack (Raíz|Esencia|Gourmet)|Microselección)\s*[-·]\s*/, '');
   };
 
   const getFeaturedBadge = (featured: string | undefined) => {
