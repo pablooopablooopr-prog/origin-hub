@@ -198,7 +198,12 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   const subItemsMap = useMemo<Record<string, { id: string; name: string }[]>>(() => ({
     Provincias: provinces.map((p) => ({ id: p, name: p })),
     Productores: productores.map((i) => ({ id: i.id, name: i.name })),
-    Selecciones: packs.map((p) => ({ id: p.id, name: p.title })),
+    Selecciones: packs.map((p) => {
+      // Extract just the name after "·" if present
+      const parts = p.title.split("·");
+      const displayName = parts.length > 1 ? parts.slice(1).join("·").trim() : p.title;
+      return { id: p.id, name: displayName };
+    }),
     Cooperativas: cooperativas.map((i) => ({ id: i.id, name: i.name })),
     Restaurantes: restaurantes.map((i) => ({ id: i.id, name: i.name })),
     Experiencias: routes.map((r) => ({ id: r.id, name: r.title })),
