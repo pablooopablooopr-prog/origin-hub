@@ -81,10 +81,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     initMap();
 
     return () => {
-      if (clustererRef.current) {
-        clustererRef.current.clearMarkers();
-        clustererRef.current = null;
-      }
       markersRef.current.forEach(marker => marker.map = null);
       markersRef.current = [];
       if (userMarkerRef.current) {
