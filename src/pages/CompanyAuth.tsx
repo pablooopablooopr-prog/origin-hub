@@ -335,7 +335,7 @@ export default function CompanyAuth() {
     e.preventDefault();
     if (!user) return;
 
-    if (!companyData.business_name || !companyData.contact_person) {
+    if (!companyData.business_name || !companyData.contact_person || !companyData.business_type) {
       toast.error("Completa los campos obligatorios.");
       return;
     }
@@ -507,13 +507,27 @@ export default function CompanyAuth() {
 
                   <div className="space-y-2">
                     <Label htmlFor="business_type">Tipo de negocio *</Label>
-                    <Input
-                      id="business_type"
-                      required
-                      value={companyData.business_type}
-                      onChange={(e) => setCompanyData({ ...companyData, business_type: toTitleCase(e.target.value) })}
-                      placeholder="Ej: Ganadería ecológica"
-                    />
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { value: "Productor", label: "Productor" },
+                        { value: "Negocio tradicional", label: "Negocio tradicional" },
+                        { value: "Restaurante", label: "Restaurante" },
+                        { value: "Cooperativa", label: "Cooperativa" },
+                      ].map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setCompanyData({ ...companyData, business_type: opt.value })}
+                          className={`px-3 py-2.5 rounded-lg border text-sm font-medium transition-all ${
+                            companyData.business_type === opt.value
+                              ? "bg-primary text-primary-foreground border-primary shadow-md"
+                              : "bg-background text-foreground border-input hover:bg-muted"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
