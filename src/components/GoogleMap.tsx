@@ -6,6 +6,7 @@ import { MapPin, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useGoogleMapsLoader } from '@/hooks/useGoogleMapsLoader';
 import { useNavigate } from "react-router-dom";
+import type { MapItem } from './InteractiveMap';
 
 
 interface GoogleMapProps {
@@ -29,15 +30,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
   const { loaded, error, apiKeyMissing } = useGoogleMapsLoader();
 
-  // Category colors for markers
-  const categoryColors: Record<string, string> = {
-    'Restaurantes': '#8B5A3C',
-    'Carnes': '#8B5A3C',
-    'Lácteos': '#6B7280', 
-    'Fermentos': '#84CC16',
-    'Herbolarios': '#A3A3A3',
-    'EcoModa': '#F59E0B',
-    'Vida Natural': '#16A34A'
+  // Marker colors by item type
+  const getMarkerColor = (item: Business): string => {
+    const mapItem = item as MapItem;
+    if (mapItem.itemType === 'route-stop') return '#5B8C5A'; // moss green for routes
+    if (mapItem.itemType === 'company') return '#8B5A3C'; // earth brown for companies
+    return '#8B5A3C';
   };
 
   // Initialize map
