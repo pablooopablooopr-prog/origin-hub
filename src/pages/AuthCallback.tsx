@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { postLoginRedirect } from "@/lib/auth/postLoginRedirect";
 
 function safeInternalPath(maybeUrlOrPath: string | null, fallback = "/mi-cuenta") {
   if (!maybeUrlOrPath) return fallback;
@@ -40,19 +41,28 @@ export default function AuthCallback() {
         setStatus("working");
         setErrorMsg(null);
 
-        const url = new URL(window.location.href);
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
 
-        const code = url.searchParams.get("code");
-        const searchAccessToken = url.searchParams.get("access_token");
-        const searchRefreshToken = url.searchParams.get("refresh_token");
-
-        const hash = url.hash?.replace(/^#/, "") ?? "";
+        const hash = window.location.hash?.replace(/^#/, "") ?? "";
         const hashParams = new URLSearchParams(hash);
-        const hashAccessToken = hashParams.get("access_token");
-        const hashRefreshToken = hashParams.get("refresh_token");
 
-        const accessToken = searchAccessToken || hashAccessToken;
-        const refreshToken = searchRefreshToken || hashRefreshToken;
+        const accessToken = params.get("access_token") || hashParams.get("access_token");
+        const refreshToken = params.get("refresh_token") || hashParams.get("refresh_token");
+
+        // Check for password recovery type in hash or query
+        const type = params.get("type") || hashParams.get("type");
+        if (type === "recovery") {
+          // Redirect to reset-password with all relevant params preserved
+          const resetUrl = new URL("/reset-password", window.location.origin);
+          if (code) resetUrl.searchParams.set("code", code);
+          if (accessToken) resetUrl.searchParams.set("access_token", accessToken);
+          if (refreshToken) resetUrl.searchParams.set("refresh_token", refreshToken);
+          if (!cancelled) {
+            navigate(resetUrl.pathname + resetUrl.search, { replace: true });
+          }
+          return;
+        }
 
         if (code) {
           const { error } = await supabase.auth.exchangeCodeForSession(code);
@@ -75,7 +85,11 @@ export default function AuthCallback() {
         if (cancelled) return;
         setStatus("done");
 
-        navigate(targetAfter, { replace: true });
+        // Role-based redirect
+        await postLoginRedirect(
+          (to) => navigate(to, { replace: true }),
+          targetAfter
+        );
       } catch (err: any) {
         console.error("[AuthCallback] error:", err);
         if (cancelled) return;
