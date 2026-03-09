@@ -406,7 +406,7 @@ export default function CompanyAuth() {
         companyData.country
       ].filter(Boolean).join(", ");
 
-      const { error } = await supabase.from("companies").insert({
+      const { data: newCompanyRow, error } = await supabase.from("companies").insert({
         user_id: user.id,
         email: user.email!,
         business_name: companyData.business_name,
@@ -419,9 +419,36 @@ export default function CompanyAuth() {
         authenticity_story: companyData.authenticity_story || null,
         business_type: companyData.business_type || null,
         status: "pending"
-      });
+      }).select("id").single();
 
       if (error) throw error;
+
+      // If a referral code was provided, create referral record
+      if (refCode && newCompanyRow?.id) {
+        try {
+          // Look up the referrer company by code
+          const { data: codeRow } = await supabase
+            .from("company_referral_codes")
+            .select("company_id")
+            .eq("code", refCode.toUpperCase())
+            .maybeSingle();
+
+          if (codeRow?.company_id && codeRow.company_id !== newCompanyRow.id) {
+            await supabase.from("company_referrals").insert({
+              referrer_company_id: codeRow.company_id,
+              referred_company_id: newCompanyRow.id,
+              referred_email: user.email,
+              referral_code: refCode.toUpperCase(),
+              status: "pending",
+              reward_status: "none",
+            });
+            console.log("[Referral] Record created for code:", refCode);
+          }
+        } catch (refErr) {
+          // Non-blocking: don't fail registration if referral record fails
+          console.error("[Referral] Error creating referral:", refErr);
+        }
+      }
 
       toast.success("¡Solicitud enviada! Te notificaremos cuando sea aprobada.");
       await checkCompanyStatus(user.id);
