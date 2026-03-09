@@ -29,13 +29,11 @@ const Cart = () => {
   const cancelled = searchParams.get("cancelled");
   
   const { carts, loading, isLoggedIn, updateQuantity, removeFromCart, clearCartForCompany, refetch, customerId } = useProducerCarts();
-  const { appliedCodeId, discount, loading: promoLoading, validateCode, removeCode, incrementCodeUsage } = usePromotionalCode();
   const navigate = useNavigate();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [showCheckoutDialog, setShowCheckoutDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
-  const [promoInput, setPromoInput] = useState("");
   const [checkoutForm, setCheckoutForm] = useState({
     address: "",
     city: "",
