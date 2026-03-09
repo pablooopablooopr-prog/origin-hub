@@ -552,6 +552,12 @@ export default function CompanyAuth() {
 
             <CardContent className="pt-6">
               <form onSubmit={handleCompanyRegistration} className="space-y-6">
+                {refCode && (
+                  <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/5 border border-primary/20 text-sm">
+                    <span className="text-muted-foreground">Código de referido:</span>
+                    <code className="font-mono font-semibold text-primary">{refCode.toUpperCase()}</code>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="business_name">Nombre del negocio *</Label>
