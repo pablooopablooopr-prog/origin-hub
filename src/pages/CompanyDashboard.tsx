@@ -940,6 +940,10 @@ export default function CompanyDashboard() {
             </Card>
           </TabsContent>
 
+          <TabsContent value="referrals">
+            {company && <CompanyReferralsTab companyId={company.id} />}
+          </TabsContent>
+
           <TabsContent value="settings">
             <div className="space-y-6">
               <Card>
