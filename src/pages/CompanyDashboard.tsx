@@ -598,6 +598,10 @@ export default function CompanyDashboard() {
               <BarChart3 className="h-4 w-4" />
               Estadísticas
             </TabsTrigger>
+            <TabsTrigger value="referrals" className="flex items-center gap-2">
+              <UserPlus className="h-4 w-4" />
+              Referidos
+            </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
               Configuración
