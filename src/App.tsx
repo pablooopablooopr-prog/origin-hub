@@ -45,6 +45,7 @@ const PoliticaPrivacidad = lazy(() => import("./pages/PoliticaPrivacidad"));
 const PoliticaCookies = lazy(() => import("./pages/PoliticaCookies"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminCompanies = lazy(() => import("./pages/AdminCompanies"));
+const AdminReferrals = lazy(() => import("./pages/AdminReferrals"));
 
 // Gate components (small, keep eager)
 import CompanyGate from "./components/CompanyGate";
