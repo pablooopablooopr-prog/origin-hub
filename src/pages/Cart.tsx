@@ -456,54 +456,6 @@ const Cart = () => {
               </CardContent>
             </Card>
 
-            {/* Gift Option */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Gift className="w-5 h-5" />
-                  Opciones de Regalo
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <input 
-                    type="checkbox" 
-                    id="is-gift" 
-                    className="mt-1 cursor-pointer"
-                  />
-                  <div className="flex-1">
-                    <label htmlFor="is-gift" className="font-medium cursor-pointer">
-                      Este pedido es un regalo
-                    </label>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Añade una tarjeta personalizada y envía a otra dirección
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Promo Code */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Tag className="w-5 h-5" />
-                  Código Promocional
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-2">
-                  <input 
-                    type="text" 
-                    placeholder="Introduce tu código" 
-                    className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    value={promoInput}
-                    onChange={(e) => setPromoInput(e.target.value)}
-                  />
-                  <Button variant="outline">Aplicar</Button>
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
           {/* Order Summary */}
