@@ -22,10 +22,8 @@ export default function ResetPassword() {
     let mounted = true;
 
     const run = async () => {
-      // 1) Si ya hay sesión -> listo
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      // 1) If there's already a session, allow password update
+      const { data: { session } } = await supabase.auth.getSession();
       if (!mounted) return;
       if (session) {
         setReady(true);
@@ -33,12 +31,19 @@ export default function ResetPassword() {
         return;
       }
 
-      // 2) Si viene code -> exchange
-      const url = window.location.href;
+      // 2) Try to restore session from URL params
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
+
+      const hash = window.location.hash?.replace(/^#/, "") ?? "";
+      const hashParams = new URLSearchParams(hash);
+
+      const accessToken = params.get("access_token") || hashParams.get("access_token");
+      const refreshToken = params.get("refresh_token") || hashParams.get("refresh_token");
+
       if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(url);
+        // PKCE flow — pass only the code string
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
         if (!mounted) return;
         if (error) {
           setReady(false);
@@ -50,7 +55,23 @@ export default function ResetPassword() {
         return;
       }
 
-      // 3) Si no hay session ni code -> no listo
+      if (accessToken && refreshToken) {
+        const { error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        if (!mounted) return;
+        if (error) {
+          setReady(false);
+          setRecoveryError("Enlace inválido o caducado");
+          return;
+        }
+        setReady(true);
+        setRecoveryError(null);
+        return;
+      }
+
+      // 3) No session and no tokens — wait for onAuthStateChange recovery event
       setReady(false);
       setRecoveryError("Enlace inválido o caducado");
     };
@@ -108,7 +129,7 @@ export default function ResetPassword() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleReset} className="space-y-4">
-              {!ready && (
+              {!ready && !recoveryError && (
                 <p className="text-sm text-muted-foreground">Validando enlace de recuperación...</p>
               )}
 
