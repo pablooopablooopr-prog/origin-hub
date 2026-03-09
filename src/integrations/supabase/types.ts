@@ -2310,6 +2310,17 @@ export type Database = {
         Returns: undefined
       }
       extract_email_domain: { Args: { p_email: string }; Returns: string }
+      get_company_admin_audit: {
+        Args: never
+        Returns: {
+          action: string
+          admin_user_id: string
+          business_name: string
+          company_id: string
+          created_at: string
+          reason: string
+        }[]
+      }
       get_my_company_status: { Args: never; Returns: string }
       grant_route_access_after_purchase: {
         Args: { p_route_id: string; p_user_id: string }
