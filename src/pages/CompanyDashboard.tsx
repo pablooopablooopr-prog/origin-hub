@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Eye, Edit, Copy, BarChart3, Package, Settings, Trash2, ShoppingBag, Loader2, Save, X, Route, Clock, Users, ChevronRight, Globe } from "lucide-react";
+import { Plus, Eye, Edit, Copy, BarChart3, Package, Settings, Trash2, ShoppingBag, Loader2, Save, X, Route, Clock, Users, ChevronRight, Globe, UserPlus } from "lucide-react";
+import CompanyReferralsTab from "@/components/CompanyReferralsTab";
 import AddressAutocompleteInput, { AddressComponents } from "@/components/AddressAutocompleteInput";
 import { User } from "@supabase/supabase-js";
 import {
@@ -597,6 +598,10 @@ export default function CompanyDashboard() {
               <BarChart3 className="h-4 w-4" />
               Estadísticas
             </TabsTrigger>
+            <TabsTrigger value="referrals" className="flex items-center gap-2">
+              <UserPlus className="h-4 w-4" />
+              Referidos
+            </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
               Configuración
@@ -933,6 +938,10 @@ export default function CompanyDashboard() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="referrals">
+            {company && <CompanyReferralsTab companyId={company.id} />}
           </TabsContent>
 
           <TabsContent value="settings">

@@ -481,6 +481,116 @@ export type Database = {
           },
         ]
       }
+      company_referral_codes: {
+        Row: {
+          code: string
+          company_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          code: string
+          company_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          code?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_referral_codes_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_referral_codes_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_referrals: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          referral_code: string
+          referred_company_id: string | null
+          referred_email: string | null
+          referrer_company_id: string
+          reward_applied_at: string | null
+          reward_applied_by: string | null
+          reward_status: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          referral_code: string
+          referred_company_id?: string | null
+          referred_email?: string | null
+          referrer_company_id: string
+          reward_applied_at?: string | null
+          reward_applied_by?: string | null
+          reward_status?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          referral_code?: string
+          referred_company_id?: string | null
+          referred_email?: string | null
+          referrer_company_id?: string
+          reward_applied_at?: string | null
+          reward_applied_by?: string | null
+          reward_status?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_referrals_referred_company_id_fkey"
+            columns: ["referred_company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_referrals_referred_company_id_fkey"
+            columns: ["referred_company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_referrals_referrer_company_id_fkey"
+            columns: ["referrer_company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_referrals_referrer_company_id_fkey"
+            columns: ["referrer_company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_reviews: {
         Row: {
           comment: string | null
@@ -2309,6 +2419,7 @@ export type Database = {
         Args: { p_schema: string; p_table: string }
         Returns: undefined
       }
+      ensure_referral_code: { Args: { p_company_id: string }; Returns: string }
       extract_email_domain: { Args: { p_email: string }; Returns: string }
       get_company_admin_audit: {
         Args: never

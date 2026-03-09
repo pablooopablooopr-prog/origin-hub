@@ -66,6 +66,9 @@ export default function CompanyAuth() {
     [searchParams]
   );
 
+  // Capture referral code from URL
+  const refCode = useMemo(() => searchParams.get("ref") || "", [searchParams]);
+
   const [user, setUser] = useState<User | null>(null);
   const [existingCompany, setExistingCompany] = useState<CompanyRow | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -403,7 +406,7 @@ export default function CompanyAuth() {
         companyData.country
       ].filter(Boolean).join(", ");
 
-      const { error } = await supabase.from("companies").insert({
+      const { data: newCompanyRow, error } = await supabase.from("companies").insert({
         user_id: user.id,
         email: user.email!,
         business_name: companyData.business_name,
@@ -416,9 +419,36 @@ export default function CompanyAuth() {
         authenticity_story: companyData.authenticity_story || null,
         business_type: companyData.business_type || null,
         status: "pending"
-      });
+      }).select("id").single();
 
       if (error) throw error;
+
+      // If a referral code was provided, create referral record
+      if (refCode && newCompanyRow?.id) {
+        try {
+          // Look up the referrer company by code
+          const { data: codeRow } = await supabase
+            .from("company_referral_codes")
+            .select("company_id")
+            .eq("code", refCode.toUpperCase())
+            .maybeSingle();
+
+          if (codeRow?.company_id && codeRow.company_id !== newCompanyRow.id) {
+            await supabase.from("company_referrals").insert({
+              referrer_company_id: codeRow.company_id,
+              referred_company_id: newCompanyRow.id,
+              referred_email: user.email,
+              referral_code: refCode.toUpperCase(),
+              status: "pending",
+              reward_status: "none",
+            });
+            console.log("[Referral] Record created for code:", refCode);
+          }
+        } catch (refErr) {
+          // Non-blocking: don't fail registration if referral record fails
+          console.error("[Referral] Error creating referral:", refErr);
+        }
+      }
 
       toast.success("¡Solicitud enviada! Te notificaremos cuando sea aprobada.");
       await checkCompanyStatus(user.id);
@@ -522,6 +552,12 @@ export default function CompanyAuth() {
 
             <CardContent className="pt-6">
               <form onSubmit={handleCompanyRegistration} className="space-y-6">
+                {refCode && (
+                  <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/5 border border-primary/20 text-sm">
+                    <span className="text-muted-foreground">Código de referido:</span>
+                    <code className="font-mono font-semibold text-primary">{refCode.toUpperCase()}</code>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="business_name">Nombre del negocio *</Label>
