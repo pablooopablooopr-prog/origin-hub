@@ -66,6 +66,9 @@ export default function CompanyAuth() {
     [searchParams]
   );
 
+  // Capture referral code from URL
+  const refCode = useMemo(() => searchParams.get("ref") || "", [searchParams]);
+
   const [user, setUser] = useState<User | null>(null);
   const [existingCompany, setExistingCompany] = useState<CompanyRow | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
