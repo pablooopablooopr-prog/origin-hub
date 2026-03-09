@@ -106,6 +106,7 @@ const App = () => (
             <Route path="/politica-cookies" element={<PoliticaCookies />} />
             <Route path="/admin" element={<Navigate to="/admin/companies" replace />} />
             <Route path="/admin/companies" element={<AdminGate><AdminCompanies /></AdminGate>} />
+            <Route path="/admin/referrals" element={<AdminGate><AdminReferrals /></AdminGate>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

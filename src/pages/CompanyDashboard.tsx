@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Eye, Edit, Copy, BarChart3, Package, Settings, Trash2, ShoppingBag, Loader2, Save, X, Route, Clock, Users, ChevronRight, Globe } from "lucide-react";
+import { Plus, Eye, Edit, Copy, BarChart3, Package, Settings, Trash2, ShoppingBag, Loader2, Save, X, Route, Clock, Users, ChevronRight, Globe, UserPlus } from "lucide-react";
+import CompanyReferralsTab from "@/components/CompanyReferralsTab";
 import AddressAutocompleteInput, { AddressComponents } from "@/components/AddressAutocompleteInput";
 import { User } from "@supabase/supabase-js";
 import {
