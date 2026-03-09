@@ -12,7 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { ShoppingCart, Trash2, Plus, Minus, Package, ArrowRight, Loader2, LogIn, CheckCircle, MapPin, Store, Info, ArrowLeft, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import { useProducerCarts, type ProducerCart } from "@/hooks/useProducerCarts";
-import { usePromotionalCode } from "@/hooks/usePromotionalCode";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PAYMENT_MESSAGES } from "@/lib/paymentRules";
