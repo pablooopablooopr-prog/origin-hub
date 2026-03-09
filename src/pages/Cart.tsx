@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ShoppingCart, Trash2, Plus, Minus, Gift, Package, ArrowRight, Tag, Loader2, LogIn, CheckCircle, MapPin, Store, Info, ArrowLeft, CreditCard } from "lucide-react";
+import { ShoppingCart, Trash2, Plus, Minus, Package, ArrowRight, Loader2, LogIn, CheckCircle, MapPin, Store, Info, ArrowLeft, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import { useProducerCarts, type ProducerCart } from "@/hooks/useProducerCarts";
 import { usePromotionalCode } from "@/hooks/usePromotionalCode";
