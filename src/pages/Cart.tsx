@@ -101,79 +101,120 @@ const Cart = () => {
 
     setIsCheckingOut(true);
 
-    // Get customer info
-    const { data: customer } = await supabase
-      .from('customers')
-      .select('id, email, full_name')
-      .eq('id', customerId)
-      .single();
-
-    if (!customer) {
-      toast.error("Error: cliente no encontrado");
-      setIsCheckingOut(false);
-      return;
-    }
-
-    const orderItems = selectedCart.items.map(item => ({
-      pack_id: item.pack?.id,
-      product_id: item.product?.id,
-      quantity: item.quantity,
-      unit_price: Number(item.pack?.price || item.product?.price || 0)
-    }));
-
-    const shippingAddress = `${checkoutForm.address}, ${checkoutForm.postalCode} ${checkoutForm.city}`;
-
-    // Calculate total
-    const totalAmount = orderItems.reduce(
-      (sum, item) => sum + item.unit_price * item.quantity,
-      0
-    );
-
-    // Create order for this specific producer
-    const { data: order, error: orderError } = await supabase
-      .from('orders')
-      .insert({
-        customer_id: customerId,
-        company_id: selectedCart.company.id,
-        shipping_address: shippingAddress,
-        notes: checkoutForm.notes,
-        total_amount: totalAmount,
-        status: 'pending',
-        payment_status: 'pending'
-      })
-      .select()
-      .single();
-
-    if (orderError) {
-      toast.error("Error al crear el pedido");
-      setIsCheckingOut(false);
-      return;
-    }
-
-    // Create order items
-    const orderItemsData = orderItems.map(item => ({
-      order_id: order.id,
-      pack_id: item.pack_id,
-      product_id: item.product_id,
-      quantity: item.quantity,
-      unit_price: item.unit_price,
-      total_price: item.unit_price * item.quantity,
-      product_snapshot: { price: item.unit_price }
-    }));
-
-    const { error: itemsError } = await supabase
-      .from('order_items')
-      .insert(orderItemsData);
-
-    if (itemsError) {
-      // Rollback
-      await supabase.from('orders').delete().eq('id', order.id);
-      toast.error("Error al crear los items del pedido");
-      setIsCheckingOut(false);
-      return;
-    }
-
     try {
+      const shippingAddress = `${checkoutForm.address}, ${checkoutForm.postalCode} ${checkoutForm.city}`;
+      console.log("[Checkout] Dirección:", shippingAddress);
+      console.log("[Checkout] Customer ID:", customerId);
+      console.log("[Checkout] Company ID:", selectedCart.company.id);
+
+      // Validate: no demo items, no null IDs
+      for (const item of selectedCart.items) {
+        const packId = item.pack?.id || null;
+        const productId = item.product?.id || null;
+        const isDemoPack = item.pack && (item.pack as any).is_demo === true;
+
+        if (!packId && !productId) {
+          console.error("[Checkout] Item sin pack_id ni product_id:", item);
+          toast.error("Hay un producto inválido en tu carrito. Elimínalo e inténtalo de nuevo.");
+          setIsCheckingOut(false);
+          return;
+        }
+
+        if (isDemoPack) {
+          console.error("[Checkout] Pack demo detectado:", packId);
+          toast.error("Este producto demo no puede tramitarse como pedido real. Elimínalo del carrito.");
+          setIsCheckingOut(false);
+          return;
+        }
+      }
+
+      // Validate company exists in Supabase
+      const { data: companyCheck } = await supabase
+        .from("companies_public")
+        .select("id")
+        .eq("id", selectedCart.company.id)
+        .maybeSingle();
+
+      if (!companyCheck) {
+        console.error("[Checkout] Company no encontrada:", selectedCart.company.id);
+        toast.error("El productor asociado a este carrito no existe o no está disponible.");
+        setIsCheckingOut(false);
+        return;
+      }
+
+      const orderItems = selectedCart.items.map(item => ({
+        pack_id: item.pack?.id || null,
+        product_id: item.product?.id || null,
+        quantity: item.quantity,
+        unit_price: Number(item.pack?.price || item.product?.price || 0)
+      }));
+
+      console.log("[Checkout] Order items preparados:", orderItems);
+
+      const totalAmount = orderItems.reduce(
+        (sum, item) => sum + item.unit_price * item.quantity,
+        0
+      );
+
+      if (totalAmount <= 0) {
+        toast.error("El total del pedido debe ser mayor que 0.");
+        setIsCheckingOut(false);
+        return;
+      }
+
+      // Step 1: Create order
+      console.log("[Checkout] Creando orden...");
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          customer_id: customerId,
+          company_id: selectedCart.company.id,
+          shipping_address: shippingAddress,
+          notes: checkoutForm.notes || null,
+          total_amount: totalAmount,
+          status: 'pending',
+          payment_status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (orderError || !order) {
+        console.error("[Checkout] Error creando orden:", orderError);
+        toast.error("Error al crear el pedido. Inténtalo de nuevo.");
+        setIsCheckingOut(false);
+        return;
+      }
+
+      console.log("[Checkout] Orden creada:", order.id);
+
+      // Step 2: Create order items
+      const orderItemsData = orderItems.map(item => ({
+        order_id: order.id,
+        pack_id: item.pack_id,
+        product_id: item.product_id,
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        total_price: item.unit_price * item.quantity,
+        product_snapshot: { price: item.unit_price }
+      }));
+
+      console.log("[Checkout] Insertando order_items:", orderItemsData);
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItemsData);
+
+      if (itemsError) {
+        console.error("[Checkout] Error creando order_items:", itemsError);
+        // Rollback order
+        await supabase.from('orders').delete().eq('id', order.id);
+        toast.error("Error al crear los items del pedido. Revisa la consola para más detalles.");
+        setIsCheckingOut(false);
+        return;
+      }
+
+      console.log("[Checkout] Order items creados. Iniciando Stripe checkout...");
+
+      // Step 3: Stripe checkout
       const successUrl = `${window.location.origin}/mis-carritos?purchased=true&order=${order.id}`;
       const cancelUrl  = `${window.location.origin}/carrito?productor=${selectedCart.company.id}&cancelled=true`;
 
@@ -181,6 +222,8 @@ const Cart = () => {
         await supabase.functions.invoke("create-pack-checkout", {
           body: { orderId: order.id, successUrl, cancelUrl },
         });
+
+      console.log("[Checkout] Stripe response:", checkoutData, checkoutError);
 
       const errAny = checkoutError as any;
       const isNotOnboarded =
@@ -190,25 +233,23 @@ const Cart = () => {
         errAny?.message?.includes?.("PRODUCER_NOT_ONBOARDED");
 
       if (isNotOnboarded) {
-        toast.error("El productor no ha completado su configuración de pagos.");
+        toast.error("El productor no ha completado su configuración de pagos. Contacta con ORIGEN.");
         setIsCheckingOut(false);
         return;
       }
 
       if (checkoutError || !checkoutData?.url) {
+        console.error("[Checkout] Error Stripe:", checkoutError, checkoutData);
         toast.error("Error al iniciar el pago. Inténtalo de nuevo.");
         setIsCheckingOut(false);
         return;
       }
 
       window.location.href = checkoutData.url;
-      // Cart clearing and email are handled by the Stripe webhook after payment
-      return;
-    } catch (stripeError) {
-      console.error("Error creating pack checkout:", stripeError);
-      toast.error("Error al iniciar el pago. Inténtalo de nuevo.");
+    } catch (err) {
+      console.error("[Checkout] Error inesperado:", err);
+      toast.error("Error inesperado al procesar el pedido.");
       setIsCheckingOut(false);
-      return;
     }
   };
 
