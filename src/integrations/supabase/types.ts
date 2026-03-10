@@ -517,8 +517,66 @@ export type Database = {
           },
         ]
       }
+      company_referral_rewards: {
+        Row: {
+          applied_at: string | null
+          applied_by: string | null
+          company_id: string
+          created_at: string
+          expired_at: string | null
+          expires_at: string | null
+          id: string
+          notes: string | null
+          referral_count_used: number
+          reward_type: string
+          status: string
+        }
+        Insert: {
+          applied_at?: string | null
+          applied_by?: string | null
+          company_id: string
+          created_at?: string
+          expired_at?: string | null
+          expires_at?: string | null
+          id?: string
+          notes?: string | null
+          referral_count_used: number
+          reward_type: string
+          status?: string
+        }
+        Update: {
+          applied_at?: string | null
+          applied_by?: string | null
+          company_id?: string
+          created_at?: string
+          expired_at?: string | null
+          expires_at?: string | null
+          id?: string
+          notes?: string | null
+          referral_count_used?: number
+          reward_type?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_referral_rewards_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_referral_rewards_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_referrals: {
         Row: {
+          consumed_in_reward_id: string | null
           created_at: string
           id: string
           notes: string | null
@@ -533,6 +591,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          consumed_in_reward_id?: string | null
           created_at?: string
           id?: string
           notes?: string | null
@@ -547,6 +606,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          consumed_in_reward_id?: string | null
           created_at?: string
           id?: string
           notes?: string | null
@@ -2403,9 +2463,68 @@ export type Database = {
           },
         ]
       }
+      v_company_referral_admin: {
+        Row: {
+          consumed_in_reward_id: string | null
+          created_at: string | null
+          id: string | null
+          notes: string | null
+          referral_code: string | null
+          referred_company_id: string | null
+          referred_company_name: string | null
+          referred_email: string | null
+          referrer_company_id: string | null
+          referrer_company_name: string | null
+          reward_applied_at: string | null
+          reward_applied_by: string | null
+          reward_status: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_referrals_referred_company_id_fkey"
+            columns: ["referred_company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_referrals_referred_company_id_fkey"
+            columns: ["referred_company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_referrals_referrer_company_id_fkey"
+            columns: ["referrer_company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_referrals_referrer_company_id_fkey"
+            columns: ["referrer_company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       am_i_email_verified: { Args: never; Returns: boolean }
+      apply_company_referral_reward:
+        | { Args: { p_reward_id: string }; Returns: boolean }
+        | {
+            Args: {
+              p_admin_user_id: string
+              p_notes?: string
+              p_reward_id: string
+            }
+            Returns: Json
+          }
       approve_company: { Args: { p_company_id: string }; Returns: undefined }
       current_user_owns_approved_company: {
         Args: { p_company_id: string }
@@ -2420,7 +2539,12 @@ export type Database = {
         Returns: undefined
       }
       ensure_referral_code: { Args: { p_company_id: string }; Returns: string }
+      expire_company_referral_rewards: { Args: never; Returns: number }
       extract_email_domain: { Args: { p_email: string }; Returns: string }
+      generate_company_referral_rewards: {
+        Args: { p_company_id: string }
+        Returns: Json
+      }
       get_company_admin_audit: {
         Args: never
         Returns: {
@@ -2431,6 +2555,10 @@ export type Database = {
           created_at: string
           reason: string
         }[]
+      }
+      get_company_referral_reward_summary: {
+        Args: { p_company_id: string }
+        Returns: Json
       }
       get_my_company_status: { Args: never; Returns: string }
       grant_route_access_after_purchase: {

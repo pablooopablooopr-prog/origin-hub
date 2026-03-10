@@ -1,12 +1,11 @@
-import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { Copy, Link2, Users, Clock, CheckCircle, Gift, Loader2 } from "lucide-react";
+import { Copy, Link2, Users, Clock, CheckCircle, Gift, Loader2, Percent, Trophy } from "lucide-react";
 import { useCompanyReferrals } from "@/hooks/useCompanyReferrals";
-import { REFERRAL_THRESHOLD, REFERRAL_STATUS_LABELS } from "@/lib/referrals/types";
+import { REFERRAL_STATUS_LABELS, getReferralProgress, DISCOUNT_THRESHOLD, MONTH_FREE_BLOCK, MAX_FREE_MONTHS } from "@/lib/referrals/types";
 import type { ReferralStatus } from "@/lib/referrals/types";
 
 interface Props {
@@ -21,8 +20,7 @@ export default function CompanyReferralsTab({ companyId }: Props) {
     toast.success(`${label} copiado al portapapeles`);
   };
 
-  const remaining = Math.max(0, REFERRAL_THRESHOLD - (stats.approved % REFERRAL_THRESHOLD));
-  const hasReward = stats.rewardsEligible > 0;
+  const progress = getReferralProgress(stats.approved);
 
   if (loading) {
     return (
@@ -45,6 +43,11 @@ export default function CompanyReferralsTab({ companyId }: Props) {
     );
   };
 
+  // Progress bar percentage toward next milestone
+  const progressPercent = progress.nextMilestone
+    ? Math.round(((progress.nextMilestone.target - progress.remaining) / progress.nextMilestone.target) * 100)
+    : 100;
+
   return (
     <div className="space-y-6">
       {/* Program explanation */}
@@ -55,12 +58,28 @@ export default function CompanyReferralsTab({ companyId }: Props) {
             Programa de Referidos B2B
           </CardTitle>
           <CardDescription className="text-sm leading-relaxed">
-            Invita a otras empresas y productores a unirse a ORIGEN.
-            Por cada {REFERRAL_THRESHOLD} empresas aprobadas que lleguen con tu código,
-            recibirás <strong>1 mes gratis</strong> de suscripción. Las recompensas son
-            revisadas y aplicadas por el equipo de ORIGEN.
+            Invita a otras empresas y productores a unirse a ORIGEN y consigue beneficios exclusivos:
           </CardDescription>
         </CardHeader>
+        <CardContent className="pt-0">
+          <ul className="space-y-1.5 text-sm text-muted-foreground">
+            <li className="flex items-center gap-2">
+              <Percent className="w-4 h-4 text-primary shrink-0" />
+              <span><strong>{DISCOUNT_THRESHOLD} referidos aprobados</strong> → 15% de descuento en tu suscripción (una vez)</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Gift className="w-4 h-4 text-primary shrink-0" />
+              <span><strong>{MONTH_FREE_BLOCK} referidos aprobados</strong> → 1 mes gratis</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-primary shrink-0" />
+              <span>Cada bloque de {MONTH_FREE_BLOCK} referidos más → otro mes gratis (máximo {MAX_FREE_MONTHS} meses)</span>
+            </li>
+          </ul>
+          <p className="text-xs text-muted-foreground mt-3">
+            Las recompensas son revisadas y aplicadas por el equipo de ORIGEN.
+          </p>
+        </CardContent>
       </Card>
 
       {/* Code & Link */}
@@ -137,34 +156,54 @@ export default function CompanyReferralsTab({ companyId }: Props) {
       </div>
 
       {/* Reward progress */}
-      <Card className={hasReward ? "border-emerald-300 bg-emerald-50/50" : ""}>
-        <CardContent className="py-5">
-          {hasReward ? (
+      <Card className={progress.maxedOut ? "border-emerald-300 bg-emerald-50/50" : ""}>
+        <CardContent className="py-5 space-y-3">
+          {progress.maxedOut ? (
             <div className="flex items-center gap-3">
-              <Gift className="w-6 h-6 text-emerald-600" />
+              <Trophy className="w-6 h-6 text-emerald-600" />
               <div>
                 <p className="font-semibold text-emerald-800">
-                  ¡Tienes {stats.rewardsEligible} recompensa{stats.rewardsEligible > 1 ? "s" : ""} disponible{stats.rewardsEligible > 1 ? "s" : ""}!
+                  ¡Has alcanzado el máximo de {MAX_FREE_MONTHS} meses gratis!
                 </p>
                 <p className="text-sm text-emerald-700">
-                  El equipo de ORIGEN aplicará tu mes gratis próximamente.
+                  Gracias por ser un gran embajador de ORIGEN.
                 </p>
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-3">
-              <Users className="w-6 h-6 text-muted-foreground" />
-              <div>
-                <p className="font-medium">
-                  Te {remaining === 1 ? "falta" : "faltan"}{" "}
-                  <span className="text-primary font-bold">{remaining}</span>{" "}
-                  empresa{remaining !== 1 ? "s" : ""} aprobada{remaining !== 1 ? "s" : ""} para conseguir 1 mes gratis
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Comparte tu código con otros productores y negocios.
-                </p>
+            <>
+              <div className="flex items-center gap-3">
+                {progress.hasDiscount ? (
+                  <Gift className="w-6 h-6 text-primary shrink-0" />
+                ) : (
+                  <Percent className="w-6 h-6 text-primary shrink-0" />
+                )}
+                <div className="flex-1">
+                  <p className="font-medium">
+                    Te {progress.remaining === 1 ? "falta" : "faltan"}{" "}
+                    <span className="text-primary font-bold">{progress.remaining}</span>{" "}
+                    empresa{progress.remaining !== 1 ? "s" : ""} aprobada{progress.remaining !== 1 ? "s" : ""} para{" "}
+                    <strong>{progress.nextMilestone?.reward}</strong>
+                  </p>
+                  {progress.hasDiscount && progress.freeMonthsEarned > 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      Ya tienes: 15% descuento + {progress.freeMonthsEarned} mes{progress.freeMonthsEarned > 1 ? "es" : ""} gratis
+                    </p>
+                  )}
+                  {progress.hasDiscount && progress.freeMonthsEarned === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      Ya tienes: 15% de descuento conseguido ✓
+                    </p>
+                  )}
+                  {!progress.hasDiscount && (
+                    <p className="text-sm text-muted-foreground">
+                      Comparte tu código con otros productores y negocios.
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
+              <Progress value={progressPercent} className="h-2" />
+            </>
           )}
         </CardContent>
       </Card>

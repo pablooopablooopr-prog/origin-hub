@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, Shield } from "lucide-react";
+import { LogOut, Shield, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -214,10 +214,16 @@ export default function AdminCompanies() {
             <Shield className="w-7 h-7 text-primary" />
             <h1 className="text-2xl font-bold">Panel de Administración</h1>
           </div>
-          <Button variant="outline" onClick={handleLogout} className="gap-2">
-            <LogOut className="w-4 h-4" />
-            Cerrar sesión
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => navigate("/admin/referrals")} className="gap-2">
+              <Users className="w-4 h-4" />
+              Referidos B2B
+            </Button>
+            <Button variant="outline" onClick={handleLogout} className="gap-2">
+              <LogOut className="w-4 h-4" />
+              Cerrar sesión
+            </Button>
+          </div>
         </div>
 
         <Tabs defaultValue="pending">
