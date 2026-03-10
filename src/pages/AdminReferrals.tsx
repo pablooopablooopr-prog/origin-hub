@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -28,6 +29,7 @@ const FILTER_LABELS: Record<AdminReferralFilter, string> = {
 };
 
 export default function AdminReferrals() {
+  const navigate = useNavigate();
   const {
     referrals, stats, filter, setFilter, loading,
     updateReferralStatus, applyReward, markRewardEligible,
@@ -91,12 +93,21 @@ export default function AdminReferrals() {
       {/* Hero */}
       <section className="bg-gradient-to-r from-slate-800 to-slate-700 text-white py-8">
         <div className="container mx-auto px-6">
-          <div className="flex items-center gap-3">
-            <Shield className="w-8 h-8" />
-            <div>
-              <h1 className="text-2xl font-bold">Referidos de Empresas</h1>
-              <p className="text-white/70">Gestiona referidos B2B y aplica recompensas</p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Shield className="w-8 h-8" />
+              <div>
+                <h1 className="text-2xl font-bold">Referidos de Empresas</h1>
+                <p className="text-white/70">Gestiona referidos B2B y aplica recompensas</p>
+              </div>
             </div>
+            <Button
+              variant="outline"
+              className="border-white/30 text-white hover:bg-white/10"
+              onClick={() => navigate("/admin/companies")}
+            >
+              ← Volver al panel
+            </Button>
           </div>
         </div>
       </section>

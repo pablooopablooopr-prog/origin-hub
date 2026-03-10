@@ -67,7 +67,8 @@ export default function CompanyAuth() {
   );
 
   // Capture referral code from URL
-  const refCode = useMemo(() => searchParams.get("ref") || "", [searchParams]);
+  const initialRefCode = useMemo(() => searchParams.get("ref") || "", [searchParams]);
+  const [refCode, setRefCode] = useState(initialRefCode);
 
   const [user, setUser] = useState<User | null>(null);
   const [existingCompany, setExistingCompany] = useState<CompanyRow | null>(null);
@@ -552,12 +553,22 @@ export default function CompanyAuth() {
 
             <CardContent className="pt-6">
               <form onSubmit={handleCompanyRegistration} className="space-y-6">
-                {refCode && (
-                  <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/5 border border-primary/20 text-sm">
-                    <span className="text-muted-foreground">Código de referido:</span>
-                    <code className="font-mono font-semibold text-primary">{refCode.toUpperCase()}</code>
+                {/* Referral code field — always visible */}
+                <div className="space-y-2">
+                  <Label htmlFor="referral_code">Código de referido (opcional)</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="referral_code"
+                      value={refCode}
+                      onChange={(e) => setRefCode(e.target.value.toUpperCase())}
+                      placeholder="Ej: ABCD1234"
+                      className="font-mono tracking-wider"
+                    />
                   </div>
-                )}
+                  <p className="text-xs text-muted-foreground">
+                    Si otra empresa te invitó, introduce aquí su código.
+                  </p>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="business_name">Nombre del negocio *</Label>
