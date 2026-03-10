@@ -29,6 +29,7 @@ const FILTER_LABELS: Record<AdminReferralFilter, string> = {
 };
 
 export default function AdminReferrals() {
+  const navigate = useNavigate();
   const {
     referrals, stats, filter, setFilter, loading,
     updateReferralStatus, applyReward, markRewardEligible,
