@@ -24,8 +24,8 @@ const SobreOrigen = () => {
     description: "Descubre negocios auténticos verificados por ORIGEN en toda España."
   }, {
     icon: Package,
-    title: "Descubre packs y rutas",
-    description: "Elige entre packs curados o crea rutas personalizadas para explorar."
+    title: "Descubre experiencias y selecciones",
+    description: "Elige entre selecciones curadas o crea experiencias personalizadas para explorar."
   }, {
     icon: Users,
     title: "Apoya la economía local",
