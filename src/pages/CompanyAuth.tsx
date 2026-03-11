@@ -427,23 +427,42 @@ export default function CompanyAuth() {
       // If a referral code was provided, create referral record
       if (refCode && newCompanyRow?.id) {
         try {
+          const normalizedCode = refCode.trim().toUpperCase();
+
           // Look up the referrer company by code
           const { data: codeRow } = await supabase
             .from("company_referral_codes")
             .select("company_id")
-            .eq("code", refCode.toUpperCase())
+            .eq("code", normalizedCode)
             .maybeSingle();
 
-          if (codeRow?.company_id && codeRow.company_id !== newCompanyRow.id) {
-            await supabase.from("company_referrals").insert({
-              referrer_company_id: codeRow.company_id,
-              referred_company_id: newCompanyRow.id,
-              referred_email: user.email,
-              referral_code: refCode.toUpperCase(),
-              status: "pending",
-              reward_status: "none",
-            });
-            console.log("[Referral] Record created for code:", refCode);
+          if (!codeRow?.company_id) {
+            toast.warning("El código de referido no es válido. Tu registro se ha completado sin referido.");
+          } else if (codeRow.company_id === newCompanyRow.id) {
+            toast.warning("No puedes referirte a ti mismo.");
+          } else {
+            // Check for duplicate referral (same referrer + same referred company)
+            const { data: existingRef } = await supabase
+              .from("company_referrals")
+              .select("id")
+              .eq("referrer_company_id", codeRow.company_id)
+              .eq("referred_company_id", newCompanyRow.id)
+              .maybeSingle();
+
+            if (existingRef) {
+              console.log("[Referral] Duplicate prevented for code:", normalizedCode);
+            } else {
+              await supabase.from("company_referrals").insert({
+                referrer_company_id: codeRow.company_id,
+                referred_company_id: newCompanyRow.id,
+                referred_email: user.email,
+                referral_code: normalizedCode,
+                status: "pending",
+                reward_status: "none",
+              });
+              toast.success("Código de referido aplicado correctamente.");
+              console.log("[Referral] Record created for code:", normalizedCode);
+            }
           }
         } catch (refErr) {
           // Non-blocking: don't fail registration if referral record fails

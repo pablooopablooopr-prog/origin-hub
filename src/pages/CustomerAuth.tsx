@@ -48,6 +48,7 @@ const CustomerAuth = () => {
 
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [lastSignupEmail, setLastSignupEmail] = useState<string>("");
   const [showResendOnLogin, setShowResendOnLogin] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
@@ -57,15 +58,32 @@ const CustomerAuth = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    let mounted = true;
+
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
+      if (!mounted) return;
       if (user) {
         setRedirecting(true);
         await postLoginRedirect(navigate, "/mi-cuenta");
         return;
       }
+      setCheckingAuth(false);
     };
     checkUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!mounted) return;
+      if (session?.user) {
+        setRedirecting(true);
+        await postLoginRedirect(navigate, "/mi-cuenta");
+      }
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const handleResendSignupEmail = async () => {
@@ -314,12 +332,14 @@ const CustomerAuth = () => {
 
 
 
-  if (redirecting) {
+  if (checkingAuth || redirecting) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-muted-foreground">Redirigiendo...</p>
+          <p className="text-sm text-muted-foreground">
+            {redirecting ? "Redirigiendo..." : "Comprobando sesión..."}
+          </p>
         </div>
       </div>
     );
