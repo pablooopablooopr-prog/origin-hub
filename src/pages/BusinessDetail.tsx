@@ -712,7 +712,7 @@ const BusinessDetail = () => {
             <section>
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 <Route className="w-6 h-6 text-primary" />
-                Rutas donde aparece
+                Experiencias donde aparece
               </h2>
 
               {routes.length === 0 ? (

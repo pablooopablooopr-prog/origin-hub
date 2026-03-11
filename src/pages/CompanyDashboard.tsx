@@ -816,7 +816,7 @@ export default function CompanyDashboard() {
 
               {/* Rutas donde apareces */}
               <div className="space-y-4">
-                <h2 className="text-2xl font-semibold">Rutas donde apareces</h2>
+                <h2 className="text-2xl font-semibold">Experiencias donde apareces</h2>
                 {companyRoutes.length === 0 ? (
                   <Card>
                     <CardContent className="p-12 text-center">
@@ -925,7 +925,7 @@ export default function CompanyDashboard() {
                     <div className="text-3xl font-bold text-accent-foreground">
                       {companyRoutes.length}
                     </div>
-                    <div className="text-sm text-muted-foreground">Rutas donde apareces</div>
+                    <div className="text-sm text-muted-foreground">Experiencias donde apareces</div>
                   </div>
 
                   {/* Visitas Totales */}
