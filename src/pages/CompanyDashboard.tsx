@@ -925,7 +925,7 @@ export default function CompanyDashboard() {
                     <div className="text-3xl font-bold text-accent-foreground">
                       {companyRoutes.length}
                     </div>
-                    <div className="text-sm text-muted-foreground">Rutas donde apareces</div>
+                    <div className="text-sm text-muted-foreground">Experiencias donde apareces</div>
                   </div>
 
                   {/* Visitas Totales */}

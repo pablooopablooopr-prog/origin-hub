@@ -86,7 +86,7 @@ const SobreOrigen = () => {
               <span>bre ORIGEN</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-light">
-              Preservamos y aseguramos la autenticidad y crecimiento de negocios tradicionales.
+              Creemos en una España viva, conectada a su tierra, a sus oficios y a las personas que la sostienen. ORIGEN nace para dar visibilidad a quienes producen, cocinan y cuidan el territorio.
             </p>
           </div>
         </section>
