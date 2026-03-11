@@ -102,7 +102,7 @@ const SobreOrigen = () => {
               </CardHeader>
               <CardContent className="pt-2 pb-10 px-8 md:px-12">
                 <p className="text-lg md:text-xl text-muted-foreground text-center max-w-4xl mx-auto leading-relaxed">
-                  En ORIGEN creemos que cada producto tiene una historia que merece ser contada. Nuestra misión es
+                  En ORIGEN sabemos que cada producto tiene una historia que merece ser contada. Nuestra misión es
                   conectar a consumidores conscientes con negocios auténticos que mantienen vivas las tradiciones de
                   toda la vida, preservando técnicas artesanales y valores fundamentales como la sostenibilidad y el
                   comercio justo. Construimos puentes entre lo auténtico y quienes lo valoran.
