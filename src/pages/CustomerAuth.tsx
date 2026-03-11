@@ -48,6 +48,7 @@ const CustomerAuth = () => {
 
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [lastSignupEmail, setLastSignupEmail] = useState<string>("");
   const [showResendOnLogin, setShowResendOnLogin] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
@@ -57,15 +58,32 @@ const CustomerAuth = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    let mounted = true;
+
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
+      if (!mounted) return;
       if (user) {
         setRedirecting(true);
         await postLoginRedirect(navigate, "/mi-cuenta");
         return;
       }
+      setCheckingAuth(false);
     };
     checkUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!mounted) return;
+      if (session?.user) {
+        setRedirecting(true);
+        await postLoginRedirect(navigate, "/mi-cuenta");
+      }
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const handleResendSignupEmail = async () => {
