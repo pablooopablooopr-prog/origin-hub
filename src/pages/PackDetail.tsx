@@ -553,6 +553,17 @@ const PackDetail = () => {
                     <Share2 className="w-5 h-5 mr-2" />
                     Compartir
                   </Button>
+                  <Button 
+                    onClick={handleFavorite}
+                    variant="outline"
+                    size="lg"
+                    className={`py-6 border-2 ${isFavorite ? 'bg-red-50 border-red-200' : ''}`}
+                    style={{ borderColor: isFavorite ? undefined : '#8B6F47' }}
+                    disabled={favoriteLoading}
+                  >
+                    <Heart className={`w-5 h-5 mr-2 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
+                    {isFavorite ? 'Guardada' : 'Guardar'}
+                  </Button>
                 </div>
 
               </div>
