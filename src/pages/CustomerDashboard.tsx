@@ -356,7 +356,7 @@ const CustomerDashboard = () => {
       setFavorites(favorites.filter(f => f.id !== favoriteId));
       toast({
         title: "Favorito eliminado",
-        description: "El pack se ha eliminado de tus favoritos",
+        description: "La selección se ha eliminado de tus favoritos",
       });
     } catch (error: any) {
       toast({
