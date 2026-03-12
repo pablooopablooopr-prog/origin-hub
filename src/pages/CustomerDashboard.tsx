@@ -1026,7 +1026,7 @@ const CustomerDashboard = () => {
                 {createdRoutes.length === 0 ? (
                   <div className="text-center py-12">
                     <Route className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-30" />
-                    <p className="text-muted-foreground text-lg mb-4">No has creado ninguna ruta aún</p>
+                    <p className="text-muted-foreground text-lg mb-4">No has creado ninguna experiencia aún</p>
                     <Button 
                       onClick={() => navigate('/crear-ruta')}
                       className="bg-[#8B7355] hover:bg-[#7A6449]"
