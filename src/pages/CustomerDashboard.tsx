@@ -642,11 +642,11 @@ const CustomerDashboard = () => {
             <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Package className="w-5 h-5 text-[#8B7355]" />
-                  Packs Guardados
+              <Package className="w-5 h-5 text-[#8B7355]" />
+                  Selecciones Guardadas
                 </CardTitle>
                 <CardDescription>
-                  Tus packs favoritos guardados
+                  Tus selecciones favoritas guardadas
                 </CardDescription>
               </CardHeader>
               <CardContent>
