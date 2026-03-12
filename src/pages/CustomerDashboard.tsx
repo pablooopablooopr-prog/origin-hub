@@ -829,7 +829,7 @@ const CustomerDashboard = () => {
                       onClick={() => navigate('/packs')}
                       className="bg-[#8B7355] hover:bg-[#7A6449]"
                     >
-                      Explorar Packs
+                      Explorar Selecciones
                     </Button>
                   </div>
                 ) : (
