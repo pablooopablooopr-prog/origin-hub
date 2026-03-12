@@ -1096,62 +1096,6 @@ const CustomerDashboard = () => {
                 )}
               </CardContent>
             </Card>
-
-            {/* Rutas Guardadas */}
-            <Card className="shadow-md">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bookmark className="w-5 h-5 text-[#8B7355]" />
-                  Rutas Guardadas
-                </CardTitle>
-                <CardDescription>
-                  Rutas de otros usuarios que te interesan
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {savedRoutes.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Bookmark className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-30" />
-                    <p className="text-muted-foreground">No tienes rutas guardadas</p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {savedRoutes.map((savedRoute) => (
-                      <Card key={savedRoute.id} className="hover:shadow-lg transition-shadow">
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-base flex items-center justify-between">
-                            {savedRoute.route?.title || "Ruta"}
-                            <Badge variant="outline" className="border-[#8B7355] text-[#8B7355]">
-                              {savedRoute.route?.region?.name || "España"}
-                            </Badge>
-                          </CardTitle>
-                          <CardDescription className="flex gap-4 text-xs">
-                            <span className="flex items-center gap-1">
-                              <Calendar className="w-3 h-3" />
-                              {savedRoute.route?.duration || "1 día"}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <MapPin className="w-3 h-3" />
-                              {savedRoute.route?.total_stops || 0} paradas
-                            </span>
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <Button
-                            variant="default"
-                            className="w-full bg-[#8B7355] hover:bg-[#7A6449]"
-                            size="sm"
-                            onClick={() => navigate(`/rutas/${savedRoute.route?.slug || savedRoute.route_id}`)}
-                          >
-                            Ver Ruta Completa
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
           </TabsContent>
 
           {/* D. CONFIGURACIÓN */}
