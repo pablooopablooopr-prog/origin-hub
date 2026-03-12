@@ -1016,10 +1016,10 @@ const CustomerDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Route className="w-5 h-5 text-[#8B7355]" />
-                  Rutas Creadas
+                  Experiencias Creadas
                 </CardTitle>
                 <CardDescription>
-                  Rutas que has diseñado
+                  Experiencias que has diseñado
                 </CardDescription>
               </CardHeader>
               <CardContent>
