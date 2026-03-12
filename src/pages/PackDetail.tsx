@@ -553,6 +553,17 @@ const PackDetail = () => {
                     <Share2 className="w-5 h-5 mr-2" />
                     Compartir
                   </Button>
+                  <Button 
+                    onClick={handleFavorite}
+                    variant="outline"
+                    size="lg"
+                    className={`py-6 border-2 ${isFavorite ? 'bg-red-50 border-red-200' : ''}`}
+                    style={{ borderColor: isFavorite ? undefined : '#8B6F47' }}
+                    disabled={favoriteLoading}
+                  >
+                    <Heart className={`w-5 h-5 mr-2 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
+                    {isFavorite ? 'Guardada' : 'Guardar'}
+                  </Button>
                 </div>
 
               </div>
@@ -564,17 +575,6 @@ const PackDetail = () => {
                   alt={pack.name}
                   className="w-full h-72 object-cover rounded-xl shadow-2xl"
                 />
-                <div className="absolute top-4 right-4">
-                  <Button 
-                    variant="outline" 
-                    size="icon" 
-                    className={`backdrop-blur ${isFavorite ? 'bg-red-50 border-red-200' : 'bg-background/80'}`}
-                    onClick={handleFavorite}
-                    disabled={favoriteLoading}
-                  >
-                    <Heart className={`w-4 h-4 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
-                  </Button>
-                </div>
               </div>
             </div>
 

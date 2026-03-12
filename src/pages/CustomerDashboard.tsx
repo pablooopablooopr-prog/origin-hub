@@ -356,7 +356,7 @@ const CustomerDashboard = () => {
       setFavorites(favorites.filter(f => f.id !== favoriteId));
       toast({
         title: "Favorito eliminado",
-        description: "El pack se ha eliminado de tus favoritos",
+        description: "La selección se ha eliminado de tus favoritos",
       });
     } catch (error: any) {
       toast({
@@ -628,7 +628,7 @@ const CustomerDashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="routes" className="data-[state=active]:bg-[#8B7355] data-[state=active]:text-white">
               <Route className="w-4 h-4 mr-2" />
-              Mis Rutas
+              Mis Experiencias
             </TabsTrigger>
             <TabsTrigger value="config" className="data-[state=active]:bg-[#8B7355] data-[state=active]:text-white">
               <Settings className="w-4 h-4 mr-2" />
@@ -642,18 +642,18 @@ const CustomerDashboard = () => {
             <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Package className="w-5 h-5 text-[#8B7355]" />
-                  Packs Guardados
+              <Package className="w-5 h-5 text-[#8B7355]" />
+                  Selecciones Guardadas
                 </CardTitle>
                 <CardDescription>
-                  Tus packs favoritos guardados
+                  Tus selecciones favoritas guardadas
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {favorites.length === 0 ? (
                   <div className="text-center py-8">
                     <Heart className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-30" />
-                    <p className="text-muted-foreground">No tienes packs favoritos aún</p>
+                    <p className="text-muted-foreground">No tienes selecciones favoritas aún</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -698,17 +698,17 @@ const CustomerDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Bookmark className="w-5 h-5 text-[#8B7355]" />
-                  Rutas Guardadas
+                  Experiencias Guardadas
                 </CardTitle>
                 <CardDescription>
-                  Rutas que has marcado como favoritas
+                  Experiencias que has marcado como favoritas
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {savedRoutes.length === 0 ? (
                   <div className="text-center py-8">
                     <Bookmark className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-30" />
-                    <p className="text-muted-foreground">No tienes rutas guardadas</p>
+                    <p className="text-muted-foreground">No tienes experiencias guardadas</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -829,7 +829,7 @@ const CustomerDashboard = () => {
                       onClick={() => navigate('/packs')}
                       className="bg-[#8B7355] hover:bg-[#7A6449]"
                     >
-                      Explorar Packs
+                      Explorar Selecciones
                     </Button>
                   </div>
                 ) : (
@@ -955,23 +955,23 @@ const CustomerDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Package className="w-5 h-5 text-[#8B7355]" />
-                  Rutas Compradas
+                  Experiencias Compradas
                 </CardTitle>
                 <CardDescription>
-                  Rutas autoguiadas que has adquirido
+                  Experiencias autoguiadas que has adquirido
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {purchasedRoutes.length === 0 ? (
                   <div className="text-center py-8">
                     <Package className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-30" />
-                    <p className="text-muted-foreground">No has comprado rutas aún</p>
+                    <p className="text-muted-foreground">No has comprado experiencias aún</p>
                     <Button 
                       variant="outline"
                       className="mt-3"
                       onClick={() => navigate('/rutas')}
                     >
-                      Explorar Rutas
+                      Explorar Experiencias
                     </Button>
                   </div>
                 ) : (
@@ -1016,22 +1016,22 @@ const CustomerDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Route className="w-5 h-5 text-[#8B7355]" />
-                  Rutas Creadas
+                  Experiencias Creadas
                 </CardTitle>
                 <CardDescription>
-                  Rutas que has diseñado
+                  Experiencias que has diseñado
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {createdRoutes.length === 0 ? (
                   <div className="text-center py-12">
                     <Route className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-30" />
-                    <p className="text-muted-foreground text-lg mb-4">No has creado ninguna ruta aún</p>
+                    <p className="text-muted-foreground text-lg mb-4">No has creado ninguna experiencia aún</p>
                     <Button 
                       onClick={() => navigate('/crear-ruta')}
                       className="bg-[#8B7355] hover:bg-[#7A6449]"
                     >
-                      Crear Mi Primera Ruta
+                      Crear Mi Primera Experiencia
                     </Button>
                   </div>
                 ) : (

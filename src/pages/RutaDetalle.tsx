@@ -709,15 +709,15 @@ const RutaDetalle = () => {
                   }} 
                   variant={isFavorite ? "default" : "outline"} 
                   size="sm" 
-                  className="w-full text-xs h-8"
+                  className={`w-full text-xs h-8 ${isFavorite ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100' : ''}`}
                   disabled={favoriteLoading}
                 >
-                  <Heart className={`w-3.5 h-3.5 mr-1.5 ${isFavorite ? 'fill-current' : ''}`} />
-                  {isFavorite ? 'Guardado en favoritos' : 'Añadir a favoritos'}
+                  <Heart className={`w-3.5 h-3.5 mr-1.5 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
+                  {isFavorite ? 'Guardada en favoritos' : 'Guardar en favoritos'}
                 </Button>
                 <Button onClick={() => handleShare('whatsapp')} variant="outline" size="sm" className="w-full text-xs h-8">
                   <Share2 className="w-3.5 h-3.5 mr-1.5" />
-                  Compartir Ruta
+                  Compartir Experiencia
                 </Button>
                 <Button onClick={handlePrint} variant="outline" size="sm" className="w-full text-xs h-8">
                   <Printer className="w-3.5 h-3.5 mr-1.5" />
