@@ -698,10 +698,10 @@ const CustomerDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Bookmark className="w-5 h-5 text-[#8B7355]" />
-                  Rutas Guardadas
+                  Experiencias Guardadas
                 </CardTitle>
                 <CardDescription>
-                  Rutas que has marcado como favoritas
+                  Experiencias que has marcado como favoritas
                 </CardDescription>
               </CardHeader>
               <CardContent>
