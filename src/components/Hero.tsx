@@ -20,8 +20,8 @@ const Hero = () => {
 
         {/* Descripción adicional */}
         <p className="text-muted-foreground mb-16 max-w-3xl mx-auto opacity-90 text-lg font-normal font-sans text-center leading-relaxed">
-  Conectamos, sin intermediarios, a consumidores con productores, cooperativas, restaurantes, negocios con identidad y experiencias rurales exclusivas por toda España, impulsando la visibilidad del sector primario y el valor de su origen real.
-</p>
+          Conectamos, sin intermediarios, a consumidores con productores, cooperativas, fincas privadas y cotos, restaurantes y negocios con identidad junto a experiencias rurales exclusivas por toda España, impulsando la visibilidad del sector primario y el valor de su origen real.
+        </p>
 
         {/* Botones de acción */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-4xl mx-auto">
