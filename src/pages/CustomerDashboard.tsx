@@ -965,13 +965,13 @@ const CustomerDashboard = () => {
                 {purchasedRoutes.length === 0 ? (
                   <div className="text-center py-8">
                     <Package className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-30" />
-                    <p className="text-muted-foreground">No has comprado rutas aún</p>
+                    <p className="text-muted-foreground">No has comprado experiencias aún</p>
                     <Button 
                       variant="outline"
                       className="mt-3"
                       onClick={() => navigate('/rutas')}
                     >
-                      Explorar Rutas
+                      Explorar Experiencias
                     </Button>
                   </div>
                 ) : (
