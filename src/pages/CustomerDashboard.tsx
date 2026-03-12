@@ -1096,6 +1096,7 @@ const CustomerDashboard = () => {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
 
           {/* D. CONFIGURACIÓN */}
           <TabsContent value="config" className="space-y-6">
