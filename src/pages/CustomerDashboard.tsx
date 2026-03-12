@@ -1031,7 +1031,7 @@ const CustomerDashboard = () => {
                       onClick={() => navigate('/crear-ruta')}
                       className="bg-[#8B7355] hover:bg-[#7A6449]"
                     >
-                      Crear Mi Primera Ruta
+                      Crear Mi Primera Experiencia
                     </Button>
                   </div>
                 ) : (

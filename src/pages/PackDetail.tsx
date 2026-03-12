@@ -575,17 +575,6 @@ const PackDetail = () => {
                   alt={pack.name}
                   className="w-full h-72 object-cover rounded-xl shadow-2xl"
                 />
-                <div className="absolute top-4 right-4">
-                  <Button 
-                    variant="outline" 
-                    size="icon" 
-                    className={`backdrop-blur ${isFavorite ? 'bg-red-50 border-red-200' : 'bg-background/80'}`}
-                    onClick={handleFavorite}
-                    disabled={favoriteLoading}
-                  >
-                    <Heart className={`w-4 h-4 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
-                  </Button>
-                </div>
               </div>
             </div>
 
