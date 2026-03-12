@@ -628,7 +628,7 @@ const CustomerDashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="routes" className="data-[state=active]:bg-[#8B7355] data-[state=active]:text-white">
               <Route className="w-4 h-4 mr-2" />
-              Mis Rutas
+              Mis Experiencias
             </TabsTrigger>
             <TabsTrigger value="config" className="data-[state=active]:bg-[#8B7355] data-[state=active]:text-white">
               <Settings className="w-4 h-4 mr-2" />
