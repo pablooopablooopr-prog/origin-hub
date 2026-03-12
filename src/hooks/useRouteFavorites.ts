@@ -76,9 +76,8 @@ export const useRouteFavorites = (routeSlug?: string) => {
   const toggleFavorite = useCallback(async () => {
     if (!routeId) {
       toast({
-        title: "Error",
-        description: "Ruta no encontrada en la base de datos",
-        variant: "destructive"
+        title: "No disponible",
+        description: "Esta experiencia no se puede guardar en favoritos todavía",
       });
       return;
     }
