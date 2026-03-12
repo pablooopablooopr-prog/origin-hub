@@ -708,7 +708,7 @@ const CustomerDashboard = () => {
                 {savedRoutes.length === 0 ? (
                   <div className="text-center py-8">
                     <Bookmark className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-30" />
-                    <p className="text-muted-foreground">No tienes rutas guardadas</p>
+                    <p className="text-muted-foreground">No tienes experiencias guardadas</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
