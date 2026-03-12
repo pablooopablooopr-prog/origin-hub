@@ -16,15 +16,15 @@ export const useRouteFavorites = (routeSlug?: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // First, get the actual route UUID from slug
+      // First, try to get the actual route UUID from slug or id
       const { data: routeData } = await supabase
         .from("routes")
         .select("id")
         .or(`slug.eq.${routeSlug},id.eq.${routeSlug}`)
-        .single();
+        .maybeSingle();
 
       if (!routeData) {
-        console.log("Route not found for slug:", routeSlug);
+        console.log("Route not found in DB for slug:", routeSlug, "- favorites disabled for static routes");
         return;
       }
       
