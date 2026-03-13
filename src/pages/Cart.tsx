@@ -498,14 +498,7 @@ const Cart = () => {
                   disabled={selectedCart.items.length === 0}
                 >
                   Pagar Pedido
-                  <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
-
-                <div className="text-xs text-center text-muted-foreground space-y-1">
-                  <p>✓ Pago seguro</p>
-                  <p>✓ Envío incluido en el precio</p>
-                  <p>✓ Garantía ORIGEN</p>
-                </div>
 
                 <Separator />
 
@@ -515,8 +508,8 @@ const Cart = () => {
                     Información del productor
                   </h4>
                   <p className="text-xs text-muted-foreground">
-                    El pedido se envía directamente desde <strong>{selectedCart.company.business_name}</strong>. 
-                    Los tiempos de entrega dependen del productor.
+                    El pedido se envía directamente desde el productor <strong>{selectedCart.company.business_name}</strong>. 
+                    Los tiempos de entrega dependen de cada productor.
                   </p>
                 </div>
 
