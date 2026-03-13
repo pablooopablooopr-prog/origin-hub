@@ -356,7 +356,7 @@ const Cart = () => {
         <Alert className="bg-primary/5 border-primary/20">
           <Store className="h-4 w-4" />
           <AlertDescription>
-            {PAYMENT_MESSAGES.PACK_CHECKOUT.description(selectedCart.company.business_name)}
+            Este pedido será gestionado y enviado directamente por el productor <strong>{selectedCart.company.business_name}</strong>. El productor se encarga del empaquetado, envío y atención al cliente.
           </AlertDescription>
         </Alert>
         
