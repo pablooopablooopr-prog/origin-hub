@@ -2,11 +2,11 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-/** Orden: agricultor → vacas (corte ~7s) → plantación (corte ~12s) */
+/** Orden: agricultor → vacas (corte ~7s) → plantación (corte ~10s) */
 const HERO_VIDEOS: { src: string; maxTime: number }[] = [
-  { src: "https://assets.mixkit.co/videos/46563/46563-720.mp4", maxTime: 99 },   // Agricultor (9s completo)
-  { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 7 },     // Vacas — corte segundo 7
-  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 10 },    // Plantación — corte segundo 10
+  { src: "https://assets.mixkit.co/videos/46563/46563-720.mp4", maxTime: 99 },
+  { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 7 },
+  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 10 },
 ];
 
 const Hero = () => {
@@ -17,7 +17,6 @@ const Hero = () => {
     setCurrentVideo((prev) => (prev + 1) % HERO_VIDEOS.length);
   }, []);
 
-  /* Controlar duración máxima de cada vídeo */
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -36,7 +35,7 @@ const Hero = () => {
   }, [currentVideo, advanceVideo]);
 
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-0">
+    <section className="min-h-[93vh] flex items-center justify-center relative overflow-hidden pt-0">
 
       {/* ── Vídeo de fondo ──────────────────────────────── */}
       <video
@@ -61,7 +60,7 @@ const Hero = () => {
         }}
       />
 
-      {/* ── Símbolo Ensō (marca de agua) ─────────────────── */}
+      {/* ── Símbolo Ensō (marca de agua) — imagen con fondo transparente ── */}
       <div
         className="absolute pointer-events-none"
         style={{
@@ -69,15 +68,13 @@ const Hero = () => {
           left: "50%",
           width: "300px",
           height: "300px",
-          backgroundImage:
-            "url('/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png')",
+          backgroundImage: "url('/lovable-uploads/enso-transparent.png')",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
           backgroundSize: "contain",
-          opacity: 0.85,
+          opacity: 0.15,
           transform: "translate(-50%, -50%)",
           zIndex: 2,
-          mixBlendMode: "multiply",
         }}
       />
 
@@ -95,12 +92,11 @@ const Hero = () => {
         {/* Título principal con Ensō integrado */}
         <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1 drop-shadow-lg">
           <span>Vuelve al</span>
-          <span className="inline-flex items-center">
+          <span className="inline-flex items-center ml-2">
             <img
               src="/lovable-uploads/enso-transparent.png"
               alt="Ensō"
-              className="w-12 h-12 md:w-20 md:h-20 object-contain ml-2 mr-0"
-              style={{ filter: "brightness(0) invert(1)" }}
+              className="w-12 h-12 md:w-20 md:h-20 object-contain"
             />
             <span>rigen</span>
           </span>
