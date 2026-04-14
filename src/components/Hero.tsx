@@ -12,12 +12,17 @@ const HERO_VIDEOS: { src: string; maxTime: number }[] = [
 const Hero = () => {
   const [currentVideo, setCurrentVideo] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const advancingRef = useRef(false);
 
   const advanceVideo = useCallback(() => {
+    /* Evitar doble disparo de timeupdate antes de que React re-renderice */
+    if (advancingRef.current) return;
+    advancingRef.current = true;
     setCurrentVideo((prev) => (prev + 1) % HERO_VIDEOS.length);
   }, []);
 
   useEffect(() => {
+    advancingRef.current = false; // resetear al cambiar de vídeo
     const video = videoRef.current;
     if (!video) return;
 
@@ -25,6 +30,7 @@ const Hero = () => {
 
     const onTimeUpdate = () => {
       if (video.currentTime >= maxTime) {
+        video.removeEventListener("timeupdate", onTimeUpdate);
         video.pause();
         advanceVideo();
       }
@@ -60,7 +66,7 @@ const Hero = () => {
         }}
       />
 
-      {/* ── Símbolo Ensō (marca de agua) — imagen con fondo transparente ── */}
+      {/* ── Símbolo Ensō (marca de agua) — negro sólido sin recuadro ── */}
       <div
         className="absolute pointer-events-none"
         style={{
@@ -72,7 +78,7 @@ const Hero = () => {
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
           backgroundSize: "contain",
-          opacity: 0.15,
+          opacity: 0.4,
           transform: "translate(-50%, -50%)",
           zIndex: 2,
         }}
