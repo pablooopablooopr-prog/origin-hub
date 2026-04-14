@@ -40,6 +40,8 @@ const CustomerDashboard = lazy(() => import("./pages/CustomerDashboard"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const FAQ = lazy(() => import("./pages/FAQ"));
+const Actualidad = lazy(() => import("./pages/Actualidad"));
+const ActualidadArticulo = lazy(() => import("./pages/ActualidadArticulo"));
 const TerminosCondiciones = lazy(() => import("./pages/TerminosCondiciones"));
 const PoliticaPrivacidad = lazy(() => import("./pages/PoliticaPrivacidad"));
 const PoliticaCookies = lazy(() => import("./pages/PoliticaCookies"));
@@ -101,6 +103,8 @@ const App = () => (
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/mi-cuenta" element={<CustomerDashboard />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/actualidad" element={<Actualidad />} />
+            <Route path="/actualidad/:slug" element={<ActualidadArticulo />} />
             <Route path="/terminos-condiciones" element={<TerminosCondiciones />} />
             <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
             <Route path="/politica-cookies" element={<PoliticaCookies />} />

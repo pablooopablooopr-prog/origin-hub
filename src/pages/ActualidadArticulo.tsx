@@ -1,0 +1,105 @@
+import { useParams, Link, Navigate } from "react-router-dom";
+import { ArrowLeft, Clock, BookOpen } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { articulos } from "@/data/articulos";
+
+const ActualidadArticulo = () => {
+  const { slug } = useParams<{ slug: string }>();
+  const articulo = articulos.find((a) => a.slug === slug);
+
+  if (!articulo) return <Navigate to="/actualidad" replace />;
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
+
+      {/* Cabecera del artículo */}
+      <section className="bg-gradient-to-br from-primary to-earth-medium text-white pt-14 pb-16">
+        <div className="container mx-auto px-6 max-w-3xl">
+          <Link
+            to="/actualidad"
+            className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm mb-8 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" /> Volver a Actualidad
+          </Link>
+          <Badge className="mb-5 bg-white/20 text-white border-0 font-medium text-xs uppercase tracking-wide">
+            {articulo.categoria}
+          </Badge>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight mb-6">
+            {articulo.titulo}
+          </h1>
+          <div className="flex flex-wrap items-center gap-5 text-sm text-white/75">
+            <span className="flex items-center gap-1.5">
+              <Clock className="w-4 h-4" />
+              {articulo.tiempoLectura} min de lectura
+            </span>
+            <Separator orientation="vertical" className="h-4 bg-white/30" />
+            <span>{articulo.fechaPublicacion}</span>
+            <Separator orientation="vertical" className="h-4 bg-white/30" />
+            <span className="font-medium text-white">{articulo.autor}</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Extracto destacado */}
+      <div className="bg-muted/40 border-b border-border">
+        <div className="container mx-auto px-6 max-w-3xl py-7">
+          <p className="text-lg text-foreground font-medium leading-relaxed italic border-l-4 border-primary pl-5">
+            {articulo.extracto}
+          </p>
+        </div>
+      </div>
+
+      {/* Cuerpo del artículo */}
+      <main className="flex-1 container mx-auto px-6 py-12 max-w-3xl">
+        <article className="prose-article">
+          {articulo.parrafos.map((parrafo, i) => (
+            <p
+              key={i}
+              className="text-foreground/90 leading-[1.85] text-base md:text-lg mb-6 last:mb-0"
+            >
+              {parrafo}
+            </p>
+          ))}
+        </article>
+
+        {/* Referencias */}
+        {articulo.referencias && articulo.referencias.length > 0 && (
+          <div className="mt-14">
+            <Separator className="mb-8" />
+            <div className="flex items-center gap-2 mb-5">
+              <BookOpen className="w-4 h-4 text-muted-foreground" />
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                Referencias bibliográficas
+              </h2>
+            </div>
+            <ul className="space-y-2">
+              {articulo.referencias.map((ref, i) => (
+                <li key={i} className="text-sm text-muted-foreground leading-relaxed pl-4 border-l-2 border-muted">
+                  {ref}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Volver */}
+        <div className="mt-14 pt-8 border-t border-border">
+          <Link
+            to="/actualidad"
+            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" /> Volver a Actualidad
+          </Link>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default ActualidadArticulo;
