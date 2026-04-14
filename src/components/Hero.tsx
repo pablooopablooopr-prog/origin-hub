@@ -2,8 +2,10 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
+/** Orden: agricultor → vacas (corte ~7s) → plantación (corte ~7s)
+ *  Todos con timeupdate para transición idéntica y sin pausa */
 const HERO_VIDEOS: { src: string; maxTime: number }[] = [
-  { src: "https://assets.mixkit.co/videos/46563/46563-720.mp4", maxTime: 99 },
+  { src: "https://assets.mixkit.co/videos/46563/46563-720.mp4", maxTime: 8.5 },
   { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 7 },
   { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 7 },
 ];
@@ -19,7 +21,6 @@ const Hero = () => {
     setCurrentVideo((prev) => (prev + 1) % HERO_VIDEOS.length);
   }, []);
 
-  /* Al cambiar de vídeo: reproducir el actual, pausar el resto */
   useEffect(() => {
     advancingRef.current = false;
 
@@ -65,7 +66,6 @@ const Hero = () => {
           muted
           playsInline
           preload="auto"
-          onEnded={i === currentVideo ? advanceVideo : undefined}
         />
       ))}
 
@@ -116,6 +116,10 @@ const Hero = () => {
               src="/lovable-uploads/enso-transparent.png"
               alt="Ensō"
               className="w-12 h-12 md:w-20 md:h-20 object-contain"
+              style={{
+                /* Marrón tostado — coincide con --primary hsl(25,35%,35%) */
+                filter: "brightness(0) sepia(1) saturate(2.5) hue-rotate(340deg) brightness(0.65)",
+              }}
             />
             <span>rigen</span>
           </span>
