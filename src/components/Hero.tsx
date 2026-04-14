@@ -1,10 +1,71 @@
+import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+
+const HERO_VIDEOS = [
+  "https://assets.mixkit.co/videos/44923/44923-720.mp4",  // Vacas pastando en pradera
+  "https://assets.mixkit.co/videos/47313/47313-720.mp4",  // Plantación de almendros
+  "https://assets.mixkit.co/videos/46563/46563-720.mp4",  // Agricultor recogiendo tomates
+];
+
 const Hero = () => {
-  return <section className="min-h-screen bg-gradient-warm enso-watermark flex items-center justify-center relative overflow-hidden pt-0">
-      {/* Fondo sutil con textura */}
-      <div className="absolute inset-0 bg-gradient-to-br from-earth-light/20 via-transparent to-moss-light/20"></div>
-      
+  const [currentVideo, setCurrentVideo] = useState(0);
+
+  const handleVideoEnd = useCallback(() => {
+    setCurrentVideo((prev) => (prev + 1) % HERO_VIDEOS.length);
+  }, []);
+
+  return (
+    <section className="min-h-screen bg-gradient-warm flex items-center justify-center relative overflow-hidden pt-0">
+
+      {/* ── Video de fondo ──────────────────────────────── */}
+      <video
+        key={currentVideo}
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ zIndex: 0 }}
+        src={HERO_VIDEOS[currentVideo]}
+        autoPlay
+        muted
+        playsInline
+        onEnded={handleVideoEnd}
+      />
+
+      {/* ── Velo cálido para mantener legibilidad del texto ── */}
+      <div
+        className="absolute inset-0"
+        style={{
+          zIndex: 1,
+          background:
+            "linear-gradient(to bottom right, hsl(35 20% 96% / 0.72), hsl(35 20% 96% / 0.55), hsl(35 20% 96% / 0.72))",
+        }}
+      />
+
+      {/* ── Símbolo Ensō (marca de agua) ─────────────────── */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          top: "50%",
+          left: "50%",
+          width: "300px",
+          height: "300px",
+          backgroundImage:
+            "url('/lovable-uploads/35b2d048-4fcd-4549-adb3-3a28245d7e87.png')",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+          backgroundSize: "contain",
+          opacity: 0.07,
+          transform: "translate(-50%, -50%)",
+          zIndex: 2,
+        }}
+      />
+
+      {/* ── Degradado de color sutil ─────────────────────── */}
+      <div
+        className="absolute inset-0 bg-gradient-to-br from-earth-light/20 via-transparent to-moss-light/20"
+        style={{ zIndex: 3 }}
+      />
+
+      {/* ── Contenido principal ──────────────────────────── */}
       <div className="container mx-auto px-6 py-4 text-center relative z-10">
         {/* Título principal con Ensō integrado */}
         <h1 className="text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1">
@@ -30,13 +91,13 @@ const Hero = () => {
               Explorar el mapa
             </Button>
           </Link>
-          
+
           <Link to="/rutas">
             <Button size="lg" className="px-8 py-4 text-lg bg-earth-dark text-white hover:bg-earth-dark/90 transition-colors">
               Descubrir experiencias
             </Button>
           </Link>
-          
+
           <Link to="/packs">
             <Button variant="secondary" size="lg" className="px-8 py-4 text-lg shadow-moss">
               Selecciones del territorio
@@ -60,6 +121,8 @@ const Hero = () => {
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default Hero;
