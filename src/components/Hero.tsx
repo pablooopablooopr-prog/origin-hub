@@ -122,7 +122,7 @@ const Hero = () => {
               src="/lovable-uploads/enso-transparent.png"
               alt="Ensō"
               className="w-12 h-12 md:w-20 md:h-20 object-contain"
-              style={{ filter: "brightness(0)", opacity: 0.65 }}
+              style={{ filter: "brightness(0)" }}
             />
             <span>rigen</span>
           </span>
