@@ -6,14 +6,15 @@
  * 
  * To enable Stripe:
  * 1. Add STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET to Supabase secrets
- * 2. Change PAYMENTS_MODE to "stripe" 
+ * 2. Set VITE_PAYMENT_MODE=stripe in .env
  * 3. Deploy edge functions
  */
 
 export type PaymentsMode = "mock" | "stripe";
 
-// Global payment mode - change to "stripe" when ready
-const CURRENT_MODE: PaymentsMode = "mock";
+// Read payment mode from environment variable, default to "mock"
+const CURRENT_MODE: PaymentsMode =
+  (import.meta.env.VITE_PAYMENT_MODE as PaymentsMode) || "mock";
 
 // Get current payment mode
 export const getPaymentsMode = (): PaymentsMode => CURRENT_MODE;
