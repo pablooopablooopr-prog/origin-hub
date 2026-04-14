@@ -15,15 +15,12 @@ const Actualidad = () => {
       <Header />
 
       {/* Hero editorial */}
-      <section className="bg-gradient-to-br from-primary to-earth-medium text-white py-16 md:py-20">
+      <section className="bg-gradient-to-br from-primary to-earth-medium text-white py-8 md:py-10">
         <div className="container mx-auto px-6 max-w-5xl text-center">
-          <div className="flex justify-center mb-5">
-            <Newspaper className="w-12 h-12 opacity-80" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+<h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
             Actualidad
           </h1>
-          <p className="text-lg md:text-xl text-white/85 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base text-white/80 max-w-2xl mx-auto leading-relaxed">
             Análisis, contexto y reflexiones sobre el sector primario, el origen de los alimentos y el futuro del campo español.
           </p>
         </div>

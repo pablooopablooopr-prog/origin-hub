@@ -21,13 +21,15 @@ const ActualidadArticulo = () => {
         <div className="container mx-auto px-6 max-w-3xl">
           <Link
             to="/actualidad"
-            className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm mb-8 transition-colors"
+            className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" /> Volver a Actualidad
           </Link>
-          <Badge className="mb-5 bg-white/20 text-white border-0 font-medium text-xs uppercase tracking-wide">
-            {articulo.categoria}
-          </Badge>
+          <div className="mb-5">
+            <Badge className="bg-white/20 text-white border-0 font-medium text-xs uppercase tracking-wide">
+              {articulo.categoria}
+            </Badge>
+          </div>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight mb-6">
             {articulo.titulo}
           </h1>
@@ -59,7 +61,7 @@ const ActualidadArticulo = () => {
           {articulo.parrafos.map((parrafo, i) => (
             <p
               key={i}
-              className="text-foreground/90 leading-[1.85] text-base md:text-lg mb-6 last:mb-0"
+              className="text-foreground/90 leading-[1.85] text-base md:text-lg mb-6 last:mb-0 text-justify hyphens-auto"
             >
               {parrafo}
             </p>
