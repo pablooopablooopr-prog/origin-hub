@@ -2,28 +2,39 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-/** Orden: agricultor → vacas (corte ~7s) → plantación (corte ~10s) */
 const HERO_VIDEOS: { src: string; maxTime: number }[] = [
   { src: "https://assets.mixkit.co/videos/46563/46563-720.mp4", maxTime: 99 },
   { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 7 },
-  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 10 },
+  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 7 },
 ];
 
 const Hero = () => {
   const [currentVideo, setCurrentVideo] = useState(0);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const advancingRef = useRef(false);
 
   const advanceVideo = useCallback(() => {
-    /* Evitar doble disparo de timeupdate antes de que React re-renderice */
     if (advancingRef.current) return;
     advancingRef.current = true;
     setCurrentVideo((prev) => (prev + 1) % HERO_VIDEOS.length);
   }, []);
 
+  /* Al cambiar de vídeo: reproducir el actual, pausar el resto */
   useEffect(() => {
-    advancingRef.current = false; // resetear al cambiar de vídeo
-    const video = videoRef.current;
+    advancingRef.current = false;
+
+    videoRefs.current.forEach((v, i) => {
+      if (!v) return;
+      if (i === currentVideo) {
+        v.currentTime = 0;
+        v.play().catch(() => {});
+      } else {
+        v.pause();
+        v.currentTime = 0;
+      }
+    });
+
+    const video = videoRefs.current[currentVideo];
     if (!video) return;
 
     const { maxTime } = HERO_VIDEOS[currentVideo];
@@ -43,18 +54,20 @@ const Hero = () => {
   return (
     <section className="min-h-[93vh] flex items-center justify-center relative overflow-hidden pt-0">
 
-      {/* ── Vídeo de fondo ──────────────────────────────── */}
-      <video
-        ref={videoRef}
-        key={currentVideo}
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ zIndex: 0 }}
-        src={HERO_VIDEOS[currentVideo].src}
-        autoPlay
-        muted
-        playsInline
-        onEnded={advanceVideo}
-      />
+      {/* ── Los 3 vídeos precargados, solo el activo visible ── */}
+      {HERO_VIDEOS.map((v, i) => (
+        <video
+          key={v.src}
+          ref={(el) => { videoRefs.current[i] = el; }}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+          style={{ zIndex: 0, opacity: i === currentVideo ? 1 : 0 }}
+          src={v.src}
+          muted
+          playsInline
+          preload="auto"
+          onEnded={i === currentVideo ? advanceVideo : undefined}
+        />
+      ))}
 
       {/* ── Velo oscuro para legibilidad ─────────────────── */}
       <div
@@ -66,7 +79,7 @@ const Hero = () => {
         }}
       />
 
-      {/* ── Símbolo Ensō (marca de agua) — negro sólido sin recuadro ── */}
+      {/* ── Símbolo Ensō (marca de agua) — NEGRO TOTAL ──── */}
       <div
         className="absolute pointer-events-none"
         style={{
@@ -78,9 +91,10 @@ const Hero = () => {
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
           backgroundSize: "contain",
-          opacity: 0.4,
+          opacity: 1,
           transform: "translate(-50%, -50%)",
           zIndex: 2,
+          filter: "brightness(0)",
         }}
       />
 
@@ -95,7 +109,6 @@ const Hero = () => {
         className="container mx-auto px-6 py-4 text-center relative z-10"
         style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)" }}
       >
-        {/* Título principal con Ensō integrado */}
         <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1 drop-shadow-lg">
           <span>Vuelve al</span>
           <span className="inline-flex items-center ml-2">
@@ -108,30 +121,25 @@ const Hero = () => {
           </span>
         </h1>
 
-        {/* Subtítulo */}
         <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
           Negocios tradicionales. Calidad real. Comunidad nacional.
         </p>
 
-        {/* Descripción adicional */}
         <p className="text-white/80 mb-16 max-w-3xl mx-auto text-lg font-normal font-sans text-center leading-relaxed">
           Conectamos, sin intermediarios, a consumidores con productores, cooperativas, fincas privadas y cotos, restaurantes y negocios con identidad junto a experiencias rurales exclusivas por toda España, impulsando la visibilidad del sector primario y el valor de su origen real.
         </p>
 
-        {/* Botones de acción */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-4xl mx-auto">
           <Link to="/mapa">
             <Button size="lg" className="group px-8 py-4 text-lg shadow-earth">
               Explorar el mapa
             </Button>
           </Link>
-
           <Link to="/rutas">
             <Button size="lg" className="px-8 py-4 text-lg bg-earth-dark text-white hover:bg-earth-dark/90 transition-colors">
               Descubrir experiencias
             </Button>
           </Link>
-
           <Link to="/packs">
             <Button variant="secondary" size="lg" className="px-8 py-4 text-lg shadow-moss">
               Selecciones del territorio
@@ -139,7 +147,6 @@ const Hero = () => {
           </Link>
         </div>
 
-        {/* Indicadores sutiles */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           <div className="space-y-2">
             <div className="text-2xl font-bold text-white">53</div>
