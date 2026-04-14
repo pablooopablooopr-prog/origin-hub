@@ -118,12 +118,19 @@ const Hero = () => {
         <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1 drop-shadow-lg">
           <span>Vuelve al</span>
           <span className="inline-flex items-center ml-2">
-            <img
-              src="/lovable-uploads/enso-transparent.png"
-              alt="Ensō"
-              className="w-12 h-12 md:w-20 md:h-20 object-contain"
+            <span
+              aria-label="Ensō"
+              className="inline-block w-12 h-12 md:w-20 md:h-20 shrink-0"
               style={{
-                filter: "brightness(0) invert(0.47) sepia(1) saturate(5) hue-rotate(346deg)",
+                backgroundColor: "hsl(20, 25%, 30%)",
+                maskImage: "url('/lovable-uploads/enso-transparent.png')",
+                WebkitMaskImage: "url('/lovable-uploads/enso-transparent.png')",
+                maskSize: "contain",
+                WebkitMaskSize: "contain",
+                maskRepeat: "no-repeat",
+                WebkitMaskRepeat: "no-repeat",
+                maskPosition: "center",
+                WebkitMaskPosition: "center",
               }}
             />
             <span>rigen</span>
