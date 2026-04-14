@@ -2,10 +2,9 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-/** Orden: agricultor → vacas (corte ~7s) → plantación (corte ~7s)
- *  Todos con timeupdate para transición idéntica y sin pausa */
+/** Orden: agricultor → vacas (corte ~7s) → plantación (corte ~7s) */
 const HERO_VIDEOS: { src: string; maxTime: number }[] = [
-  { src: "https://assets.mixkit.co/videos/46563/46563-720.mp4", maxTime: 8.5 },
+  { src: "https://assets.mixkit.co/videos/46563/46563-720.mp4", maxTime: 7.5 },
   { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 7 },
   { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 7 },
 ];
@@ -19,6 +18,13 @@ const Hero = () => {
     if (advancingRef.current) return;
     advancingRef.current = true;
     setCurrentVideo((prev) => (prev + 1) % HERO_VIDEOS.length);
+  }, []);
+
+  /* Precargar todos los vídeos al montar */
+  useEffect(() => {
+    videoRefs.current.forEach((v) => {
+      if (v) v.load();
+    });
   }, []);
 
   useEffect(() => {
@@ -60,8 +66,8 @@ const Hero = () => {
         <video
           key={v.src}
           ref={(el) => { videoRefs.current[i] = el; }}
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
-          style={{ zIndex: 0, opacity: i === currentVideo ? 1 : 0 }}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ zIndex: 0, opacity: i === currentVideo ? 1 : 0, transition: "opacity 0.5s ease-in-out" }}
           src={v.src}
           muted
           playsInline
@@ -79,7 +85,7 @@ const Hero = () => {
         }}
       />
 
-      {/* ── Símbolo Ensō (marca de agua) — NEGRO TOTAL ──── */}
+      {/* ── Símbolo Ensō (marca de agua) — negro 65% ────── */}
       <div
         className="absolute pointer-events-none"
         style={{
@@ -91,7 +97,7 @@ const Hero = () => {
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
           backgroundSize: "contain",
-          opacity: 0.3,
+          opacity: 0.65,
           transform: "translate(-50%, -50%)",
           zIndex: 2,
           filter: "brightness(0)",
@@ -117,8 +123,7 @@ const Hero = () => {
               alt="Ensō"
               className="w-12 h-12 md:w-20 md:h-20 object-contain"
               style={{
-                /* Marrón tostado — coincide con --primary hsl(25,35%,35%) */
-                filter: "invert(1) sepia(1) hue-rotate(340deg) saturate(4) brightness(0.5)",
+                filter: "brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(350deg) brightness(0.42)",
               }}
             />
             <span>rigen</span>
