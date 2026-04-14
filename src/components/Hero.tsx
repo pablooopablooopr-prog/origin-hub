@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const HERO_VIDEOS: { src: string; maxTime: number }[] = [
   { src: "https://assets.mixkit.co/videos/46563/46563-720.mp4", maxTime: 99 },   // Agricultor (9s completo)
   { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 7 },     // Vacas — corte segundo 7
-  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 12 },    // Plantación — corte segundo 12
+  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 10 },    // Plantación — corte segundo 10
 ];
 
 const Hero = () => {
@@ -74,10 +74,10 @@ const Hero = () => {
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
           backgroundSize: "contain",
-          opacity: 0.18,
+          opacity: 0.25,
           transform: "translate(-50%, -50%)",
           zIndex: 2,
-          filter: "brightness(2.5)",
+          mixBlendMode: "multiply",
         }}
       />
 
@@ -100,7 +100,7 @@ const Hero = () => {
               src="/lovable-uploads/enso-transparent.png"
               alt="Ensō"
               className="w-12 h-12 md:w-20 md:h-20 object-contain mx-0"
-              style={{ filter: "brightness(0) invert(1) drop-shadow(0 2px 6px rgba(0,0,0,0.8))" }}
+              style={{ filter: "drop-shadow(0 2px 8px rgba(255,255,255,0.9))" }}
             />
             <span>rigen</span>
           </span>
