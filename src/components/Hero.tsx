@@ -1,42 +1,63 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-const HERO_VIDEOS = [
-  "https://assets.mixkit.co/videos/44923/44923-720.mp4",  // Vacas pastando en pradera
-  "https://assets.mixkit.co/videos/47313/47313-720.mp4",  // Plantación de almendros
-  "https://assets.mixkit.co/videos/46563/46563-720.mp4",  // Agricultor recogiendo tomates
+/** Orden: agricultor → vacas (corte ~7s) → plantación (corte ~12s) */
+const HERO_VIDEOS: { src: string; maxTime: number }[] = [
+  { src: "https://assets.mixkit.co/videos/46563/46563-720.mp4", maxTime: 99 },   // Agricultor (9s completo)
+  { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 7 },     // Vacas — corte segundo 7
+  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 12 },    // Plantación — corte segundo 12
 ];
 
 const Hero = () => {
   const [currentVideo, setCurrentVideo] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  const handleVideoEnd = useCallback(() => {
+  const advanceVideo = useCallback(() => {
     setCurrentVideo((prev) => (prev + 1) % HERO_VIDEOS.length);
   }, []);
 
-  return (
-    <section className="min-h-screen bg-gradient-warm flex items-center justify-center relative overflow-hidden pt-0">
+  /* Controlar duración máxima de cada vídeo */
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
 
-      {/* ── Video de fondo ──────────────────────────────── */}
+    const { maxTime } = HERO_VIDEOS[currentVideo];
+
+    const onTimeUpdate = () => {
+      if (video.currentTime >= maxTime) {
+        video.pause();
+        advanceVideo();
+      }
+    };
+
+    video.addEventListener("timeupdate", onTimeUpdate);
+    return () => video.removeEventListener("timeupdate", onTimeUpdate);
+  }, [currentVideo, advanceVideo]);
+
+  return (
+    <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-0">
+
+      {/* ── Vídeo de fondo ──────────────────────────────── */}
       <video
+        ref={videoRef}
         key={currentVideo}
         className="absolute inset-0 w-full h-full object-cover"
         style={{ zIndex: 0 }}
-        src={HERO_VIDEOS[currentVideo]}
+        src={HERO_VIDEOS[currentVideo].src}
         autoPlay
         muted
         playsInline
-        onEnded={handleVideoEnd}
+        onEnded={advanceVideo}
       />
 
-      {/* ── Velo cálido para mantener legibilidad del texto ── */}
+      {/* ── Velo oscuro para legibilidad ─────────────────── */}
       <div
         className="absolute inset-0"
         style={{
           zIndex: 1,
           background:
-            "linear-gradient(to bottom right, hsl(35 20% 96% / 0.72), hsl(35 20% 96% / 0.55), hsl(35 20% 96% / 0.72))",
+            "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.55) 100%)",
         }}
       />
 
@@ -53,34 +74,45 @@ const Hero = () => {
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
           backgroundSize: "contain",
-          opacity: 0.07,
+          opacity: 0.18,
           transform: "translate(-50%, -50%)",
           zIndex: 2,
+          filter: "brightness(2.5)",
         }}
       />
 
       {/* ── Degradado de color sutil ─────────────────────── */}
       <div
-        className="absolute inset-0 bg-gradient-to-br from-earth-light/20 via-transparent to-moss-light/20"
+        className="absolute inset-0 bg-gradient-to-br from-earth-light/10 via-transparent to-moss-light/10"
         style={{ zIndex: 3 }}
       />
 
       {/* ── Contenido principal ──────────────────────────── */}
-      <div className="container mx-auto px-6 py-4 text-center relative z-10">
+      <div
+        className="container mx-auto px-6 py-4 text-center relative z-10"
+        style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)" }}
+      >
         {/* Título principal con Ensō integrado */}
-        <h1 className="text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1">
+        <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1 drop-shadow-lg">
           <span>Vuelve al</span>
           <span className="inline-flex items-center">
-            <img src="/lovable-uploads/enso-transparent.png" alt="Ensō" className="w-12 h-12 md:w-20 md:h-20 object-contain mx-0" />
+            <img
+              src="/lovable-uploads/enso-transparent.png"
+              alt="Ensō"
+              className="w-12 h-12 md:w-20 md:h-20 object-contain mx-0"
+              style={{ filter: "brightness(0) invert(1) drop-shadow(0 2px 6px rgba(0,0,0,0.8))" }}
+            />
             <span>rigen</span>
           </span>
         </h1>
 
         {/* Subtítulo */}
-        <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-medium">Negocios tradicionales. Calidad real. Comunidad nacional.</p>
+        <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
+          Negocios tradicionales. Calidad real. Comunidad nacional.
+        </p>
 
         {/* Descripción adicional */}
-        <p className="text-muted-foreground mb-16 max-w-3xl mx-auto opacity-90 text-lg font-normal font-sans text-center leading-relaxed">
+        <p className="text-white/80 mb-16 max-w-3xl mx-auto text-lg font-normal font-sans text-center leading-relaxed">
           Conectamos, sin intermediarios, a consumidores con productores, cooperativas, fincas privadas y cotos, restaurantes y negocios con identidad junto a experiencias rurales exclusivas por toda España, impulsando la visibilidad del sector primario y el valor de su origen real.
         </p>
 
@@ -108,16 +140,16 @@ const Hero = () => {
         {/* Indicadores sutiles */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           <div className="space-y-2">
-            <div className="text-2xl font-bold text-primary">53</div>
-            <p className="text-sm text-muted-foreground">Negocios locales</p>
+            <div className="text-2xl font-bold text-white">53</div>
+            <p className="text-sm text-white/70">Negocios locales</p>
           </div>
           <div className="space-y-2">
-            <div className="text-2xl font-bold text-secondary">4</div>
-            <p className="text-sm text-muted-foreground">Provincias cubiertas</p>
+            <div className="text-2xl font-bold text-green-300">4</div>
+            <p className="text-sm text-white/70">Provincias cubiertas</p>
           </div>
           <div className="space-y-2">
-            <div className="text-2xl font-bold text-primary">100+</div>
-            <p className="text-sm text-muted-foreground">Consumidores conscientes</p>
+            <div className="text-2xl font-bold text-white">100+</div>
+            <p className="text-sm text-white/70">Consumidores conscientes</p>
           </div>
         </div>
       </div>
