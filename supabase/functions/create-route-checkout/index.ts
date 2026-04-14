@@ -2,74 +2,84 @@
  * Create Route Checkout Edge Function
  * 
  * Creates a Stripe checkout session for route purchases.
- * This function is DISABLED until Stripe keys are configured.
  * 
- * To enable:
- * 1. Add STRIPE_SECRET_KEY secret to Supabase
- * 2. Change PAYMENTS_MODE to "stripe" in frontend config
+ * Security:
+ * - Zod input validation
+ * - CORS allowlist (no wildcard)
+ * - Auth: Bearer token required
  */
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const allowedOrigins = new Set([
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:8080",
+  "https://origen-natural-mapa.pages.dev",
+  "https://origen.it.com",
+  "https://www.origen.it.com",
+]);
+
+function corsHeaders(origin: string | null) {
+  const o = origin && allowedOrigins.has(origin) ? origin : "https://www.origen.it.com";
+  return {
+    "Access-Control-Allow-Origin": o,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Content-Type": "application/json",
+  };
+}
+
+// Zod schema for request body validation
+const CheckoutRequestSchema = z.object({
+  routeId: z.string().uuid("routeId must be a valid UUID"),
+  routeTitle: z.string().min(1).max(500).optional(),
+  customerId: z.string().uuid("customerId must be a valid UUID"),
+  numPeople: z.number().int().min(1).max(100),
+  totalPrice: z.number().positive("totalPrice must be positive"),
+  successUrl: z.string().url("successUrl must be a valid URL"),
+  cancelUrl: z.string().url("cancelUrl must be a valid URL"),
+});
 
 serve(async (req) => {
-  // Handle CORS preflight
+  const origin = req.headers.get("origin");
+  const headers = corsHeaders(origin);
+
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers });
   }
 
   try {
-    // Check if Stripe is configured
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     
     if (!stripeKey) {
-      console.log("Stripe not configured - returning disabled message");
       return new Response(
-        JSON.stringify({ 
-          error: "Stripe payments are not configured. Using mock mode.",
-          code: "STRIPE_NOT_CONFIGURED"
-        }),
-        { 
-          status: 503,
-          headers: { ...corsHeaders, "Content-Type": "application/json" }
-        }
+        JSON.stringify({ error: "Stripe payments are not configured. Using mock mode.", code: "STRIPE_NOT_CONFIGURED" }),
+        { status: 503, headers }
       );
     }
 
-    // Parse request body
-    const { 
-      routeId,
-      routeTitle,
-      customerId,
-      numPeople,
-      totalPrice,
-      successUrl,
-      cancelUrl,
-    } = await req.json();
+    // Validate input with Zod
+    const rawBody = await req.json().catch(() => ({}));
+    const parsed = CheckoutRequestSchema.safeParse(rawBody);
 
-    // Validate required fields
-    if (!routeId || !customerId || !numPeople || !totalPrice) {
+    if (!parsed.success) {
       return new Response(
-        JSON.stringify({ error: "Missing required fields" }),
-        { 
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" }
-        }
+        JSON.stringify({ error: "Invalid request body", details: parsed.error.flatten().fieldErrors }),
+        { status: 400, headers }
       );
     }
 
-    // Dynamic import Stripe (only when key is available)
+    const { routeId, routeTitle, customerId, numPeople, totalPrice, successUrl, cancelUrl } = parsed.data;
+
+    // Dynamic import Stripe
     const Stripe = (await import("https://esm.sh/stripe@14.21.0?target=deno")).default;
     const stripe = new Stripe(stripeKey, {
       apiVersion: "2023-10-16",
       httpClient: Stripe.createFetchHttpClient(),
     });
 
-    // Create checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -77,10 +87,10 @@ serve(async (req) => {
           price_data: {
             currency: "eur",
             product_data: {
-              name: `Entrada para Ruta: ${routeTitle}`,
+              name: `Entrada para Ruta: ${routeTitle || "Ruta"}`,
               description: `Acceso para ${numPeople} persona(s)`,
             },
-            unit_amount: Math.round(totalPrice * 100), // Stripe uses cents
+            unit_amount: Math.round(totalPrice * 100),
           },
           quantity: 1,
         },
@@ -98,20 +108,13 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ url: session.url, sessionId: session.id }),
-      { 
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
-      }
+      { status: 200, headers }
     );
-
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating checkout session:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { 
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
-      }
+      JSON.stringify({ error: error?.message || "Unknown error" }),
+      { status: 500, headers }
     );
   }
 });
