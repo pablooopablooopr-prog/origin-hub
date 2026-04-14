@@ -74,7 +74,7 @@ const Hero = () => {
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
           backgroundSize: "contain",
-          opacity: 0.25,
+          opacity: 0.85,
           transform: "translate(-50%, -50%)",
           zIndex: 2,
           mixBlendMode: "multiply",
@@ -99,8 +99,8 @@ const Hero = () => {
             <img
               src="/lovable-uploads/enso-transparent.png"
               alt="Ensō"
-              className="w-12 h-12 md:w-20 md:h-20 object-contain mx-0"
-              style={{ filter: "drop-shadow(0 2px 8px rgba(255,255,255,0.9))" }}
+              className="w-12 h-12 md:w-20 md:h-20 object-contain ml-2 mr-0"
+              style={{ filter: "brightness(0) invert(1)" }}
             />
             <span>rigen</span>
           </span>
