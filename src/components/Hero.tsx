@@ -91,7 +91,7 @@ const Hero = () => {
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
           backgroundSize: "contain",
-          opacity: 1,
+          opacity: 0.3,
           transform: "translate(-50%, -50%)",
           zIndex: 2,
           filter: "brightness(0)",
@@ -118,7 +118,7 @@ const Hero = () => {
               className="w-12 h-12 md:w-20 md:h-20 object-contain"
               style={{
                 /* Marrón tostado — coincide con --primary hsl(25,35%,35%) */
-                filter: "brightness(0) sepia(1) saturate(2.5) hue-rotate(340deg) brightness(0.65)",
+                filter: "invert(1) sepia(1) hue-rotate(340deg) saturate(4) brightness(0.5)",
               }}
             />
             <span>rigen</span>
