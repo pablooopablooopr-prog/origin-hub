@@ -57,7 +57,8 @@ const ActualidadArticulo = () => {
 
       {/* Cuerpo del artículo */}
       <main className="flex-1 container mx-auto px-6 py-12 max-w-3xl">
-        <article className="prose-article">
+        <article>
+          {/* Párrafos principales */}
           {articulo.parrafos.map((parrafo, i) => (
             <p
               key={i}
@@ -66,6 +67,64 @@ const ActualidadArticulo = () => {
               {parrafo}
             </p>
           ))}
+
+          {/* Secciones estructuradas (listas, bloques especiales) */}
+          {articulo.secciones && articulo.secciones.length > 0 && (
+            <div className="mt-10 space-y-10">
+              {articulo.secciones.map((seccion, i) => (
+                <div key={i} className="bg-muted/30 rounded-xl border border-border p-6 md:p-8">
+                  <h2 className="text-xl md:text-2xl font-bold text-primary mb-4 leading-snug">
+                    {seccion.titulo}
+                  </h2>
+                  {seccion.contenido && (
+                    <p className="text-foreground/80 leading-relaxed mb-5 text-base text-justify hyphens-auto">
+                      {seccion.contenido}
+                    </p>
+                  )}
+                  {seccion.tipo === "lista-numerada" ? (
+                    <ol className="space-y-3 list-none">
+                      {seccion.items.map((item, j) => (
+                        <li key={j} className="flex gap-3 text-foreground/85 leading-relaxed text-base">
+                          <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-sm flex items-center justify-center mt-0.5">
+                            {j + 1}
+                          </span>
+                          <span className="text-justify hyphens-auto">{item}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  ) : (
+                    <ul className="space-y-3 list-none">
+                      {seccion.items.map((item, j) => (
+                        <li key={j} className="flex gap-3 text-foreground/85 leading-relaxed text-base">
+                          <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-[0.65rem]" />
+                          <span className="text-justify hyphens-auto">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {seccion.nota && (
+                    <p className="mt-5 text-xs text-muted-foreground leading-relaxed italic border-t border-border pt-4">
+                      {seccion.nota}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Párrafos de cierre */}
+          {articulo.parrafosCierre && articulo.parrafosCierre.length > 0 && (
+            <div className="mt-10 space-y-6">
+              {articulo.parrafosCierre.map((parrafo, i) => (
+                <p
+                  key={i}
+                  className="text-foreground/90 leading-[1.85] text-base md:text-lg text-justify hyphens-auto"
+                >
+                  {parrafo}
+                </p>
+              ))}
+            </div>
+          )}
         </article>
 
         {/* Referencias */}
@@ -80,7 +139,10 @@ const ActualidadArticulo = () => {
             </div>
             <ul className="space-y-2">
               {articulo.referencias.map((ref, i) => (
-                <li key={i} className="text-sm text-muted-foreground leading-relaxed pl-4 border-l-2 border-muted">
+                <li
+                  key={i}
+                  className="text-sm text-muted-foreground leading-relaxed pl-4 border-l-2 border-muted"
+                >
                   {ref}
                 </li>
               ))}
