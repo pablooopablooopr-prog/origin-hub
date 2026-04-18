@@ -59,14 +59,23 @@ const ActualidadArticulo = () => {
       <main className="flex-1 container mx-auto px-6 py-12 max-w-3xl">
         <article>
           {/* Párrafos principales */}
-          {articulo.parrafos.map((parrafo, i) => (
-            <p
-              key={i}
-              className="text-foreground/90 leading-[1.85] text-base md:text-lg mb-6 last:mb-0 text-justify hyphens-auto"
-            >
-              {parrafo}
-            </p>
-          ))}
+          {articulo.parrafos.map((parrafo, i) =>
+            parrafo.startsWith('## ') ? (
+              <h2
+                key={i}
+                className="text-xl md:text-2xl font-bold text-foreground mt-10 mb-4 tracking-tight"
+              >
+                {parrafo.slice(3)}
+              </h2>
+            ) : (
+              <p
+                key={i}
+                className="text-foreground/90 leading-[1.85] text-base md:text-lg mb-6 last:mb-0 text-justify hyphens-auto"
+              >
+                {parrafo}
+              </p>
+            )
+          )}
 
           {/* Secciones estructuradas (listas, bloques especiales) */}
           {articulo.secciones && articulo.secciones.length > 0 && (
