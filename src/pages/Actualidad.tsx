@@ -1,12 +1,51 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Clock, BookOpen, ChevronRight, Newspaper } from "lucide-react";
+import { Clock, BookOpen, ChevronRight, Newspaper, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { articulos } from "@/data/articulos";
+import { articulos as fallbackArticulos } from "@/data/articulos";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Articulo {
+  id: string;
+  slug: string;
+  titulo: string;
+  extracto: string;
+  categoria: string;
+  categoria_color: string;
+  fecha_publicacion: string;
+  tiempo_lectura: number;
+  autor: string;
+  destacado: boolean;
+}
 
 const Actualidad = () => {
+  const [articulos, setArticulos] = useState<Articulo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadArticulos = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("articulos")
+          .select("*")
+          .order("fecha_publicacion", { ascending: false });
+
+        if (error) throw error;
+        setArticulos(data || fallbackArticulos);
+      } catch (error) {
+        console.error("Error loading articles:", error);
+        setArticulos(fallbackArticulos);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadArticulos();
+  }, []);
+
   const destacado = articulos.find((a) => a.destacado) ?? articulos[0];
   const resto = articulos.filter((a) => a.id !== destacado.id);
 
@@ -27,7 +66,12 @@ const Actualidad = () => {
       </section>
 
       <main className="flex-1 container mx-auto px-6 py-14 max-w-5xl">
-
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          </div>
+        ) : (
+          <>
         {/* Artículo destacado */}
         <section className="mb-14">
           <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-6">
@@ -112,6 +156,8 @@ const Actualidad = () => {
             <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-40" />
             <p className="text-sm">Próximamente más artículos</p>
           </div>
+        )}
+          </>
         )}
       </main>
 

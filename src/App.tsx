@@ -48,6 +48,7 @@ const PoliticaCookies = lazy(() => import("./pages/PoliticaCookies"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminCompanies = lazy(() => import("./pages/AdminCompanies"));
 const AdminReferrals = lazy(() => import("./pages/AdminReferrals"));
+const AdminArticulos = lazy(() => import("./pages/AdminArticulos"));
 
 // Gate components (small, keep eager)
 import CompanyGate from "./components/CompanyGate";
@@ -111,6 +112,7 @@ const App = () => (
             <Route path="/admin" element={<Navigate to="/admin/companies" replace />} />
             <Route path="/admin/companies" element={<AdminGate><AdminCompanies /></AdminGate>} />
             <Route path="/admin/referrals" element={<AdminGate><AdminReferrals /></AdminGate>} />
+            <Route path="/admin/articulos" element={<AdminGate><AdminArticulos /></AdminGate>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
