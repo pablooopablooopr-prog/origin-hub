@@ -33,7 +33,7 @@ CREATE POLICY "Only admin can insert articles"
     EXISTS (
       SELECT 1 FROM public.user_roles
       WHERE user_id = auth.uid()
-      AND app_role = 'admin'
+      AND role = 'admin'
     )
   );
 
@@ -44,14 +44,14 @@ CREATE POLICY "Only admin can update articles"
     EXISTS (
       SELECT 1 FROM public.user_roles
       WHERE user_id = auth.uid()
-      AND app_role = 'admin'
+      AND role = 'admin'
     )
   )
   WITH CHECK (
     EXISTS (
       SELECT 1 FROM public.user_roles
       WHERE user_id = auth.uid()
-      AND app_role = 'admin'
+      AND role = 'admin'
     )
   );
 
@@ -62,7 +62,7 @@ CREATE POLICY "Only admin can delete articles"
     EXISTS (
       SELECT 1 FROM public.user_roles
       WHERE user_id = auth.uid()
-      AND app_role = 'admin'
+      AND role = 'admin'
     )
   );
 
