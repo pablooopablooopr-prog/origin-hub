@@ -10,6 +10,7 @@ import PackTypeCards from "@/components/PackTypeCards";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { postLoginRedirect } from "@/lib/auth/postLoginRedirect";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -18,6 +19,22 @@ const Index = () => {
   useEffect(() => {
     const check = async () => {
       const { data: { user } } = await supabase.auth.getUser();
+
+      // If admin, redirect to admin panel
+      if (user?.id) {
+        const { data: adminRole } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id)
+          .eq("role", "admin")
+          .maybeSingle();
+
+        if (adminRole) {
+          navigate("/admin/companies", { replace: true });
+          return;
+        }
+      }
+
       if (!user?.id) { setIsCompanyUser(false); return; }
       const { data } = await supabase
         .from("companies")
@@ -29,7 +46,7 @@ const Index = () => {
     check();
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => check());
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate]);
 
   const handleSearchPacks = () => {
     navigate('/packs');

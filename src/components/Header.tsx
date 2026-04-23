@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, ShoppingCart, User } from "lucide-react";
+import { Menu, X, ShoppingCart, User, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -71,8 +71,13 @@ const Header = () => {
     ? "hsl(var(--secondary-foreground))"
     : "hsl(var(--primary-foreground))";
 
-  // Admin header - disabled Mi Cuenta button
+  // Admin header - with logout button
   if (isAdmin) {
+    const handleLogout = async () => {
+      await supabase.auth.signOut();
+      location.href = "/";
+    };
+
     return (
       <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-6 py-3">
@@ -83,9 +88,9 @@ const Header = () => {
             </Link>
             <div className="flex items-center space-x-4">
               {isAuthenticated && <NotificationsDropdown />}
-              <Button size="sm" disabled className="opacity-50 cursor-not-allowed">
-                <User className="w-4 h-4 mr-2" />
-                Mi Cuenta
+              <Button size="sm" onClick={handleLogout} variant="outline" className="gap-2">
+                <LogOut className="w-4 h-4" />
+                Cerrar sesión
               </Button>
               <span className="px-2 py-1 rounded border border-primary text-primary text-xs font-semibold tracking-wide">
                 ADMIN
