@@ -76,7 +76,7 @@ INSERT INTO public.articulos (
   'España sigue siendo una de las grandes potencias agrícolas de Europa. Sin embargo, en paralelo a esa fortaleza productiva, se desarrolla una tendencia menos visible: la pérdida progresiva de control sobre las condiciones en las que compite su propio campo.',
   'Política Agraria',
   'bg-earth-light text-primary',
-  '14 de abril de 2025',
+  '14 de abril de 2026',
   8,
   'Equipo ORIGEN',
   ARRAY[
@@ -125,6 +125,36 @@ INSERT INTO public.articulos (
   ARRAY[
     'Ministerio de Agricultura, Pesca y Alimentación (MAPA) (2023). Informe de la cadena alimentaria.',
     'CNMC (2020). Estudio sobre la cadena de distribución alimentaria.'
+  ],
+  false
+), (
+  'huevos-numero-cascara-que-significa',
+  'Huevos: lo que realmente significa el número que ves en la cáscara',
+  'Cuando compras huevos, ¿sabes qué significa ese número impreso en la cáscara? Detrás de esos dígitos se esconde toda una clasificación sobre cómo han vivido las gallinas. Entenderlo cambia la forma en que comes uno de los alimentos más comunes de la despensa.',
+  'Origen de los Alimentos',
+  'bg-yellow-100 text-yellow-800',
+  '10 de marzo de 2026',
+  6,
+  'Equipo ORIGEN',
+  ARRAY[
+    'Cuando compras huevos en el supermercado, ves un número impreso en la cáscara. Ese número, que parece mundano, es en realidad un código que cuenta una historia completa sobre la vida de la gallina que lo puso.',
+    'En la Unión Europea, este sistema de clasificación es obligatorio desde 2004. El primer dígito del código indica el sistema de cría: 0 significa ecológico, 1 significa campero, 2 significa en jaula enriquecida, y 3 significa en jaula convencional.',
+    '## ¿Qué significa cada número?',
+    'El número 0 es el "huevo feliz": la gallina vive en un sistema ecológico, sin medicamentos sintéticos, alimentada con piensos ecológicos certificados. Tiene acceso a espacios al aire libre y un ambiente natural. Estos huevos son más caros, pero también reflejan mejores condiciones de vida para el animal.',
+    'El número 1, o huevo campero, significa que la gallina pasa parte del día al aire libre. Vive en gallineros con espacios de movimiento, aunque no tan amplios como en el sistema ecológico. Su alimentación es menos restrictiva que la ecológica, pero generalmente de mejor calidad que los sistemas convencionales.',
+    'El número 2 corresponde a huevos de jaula enriquecida. El nombre suena sofisticado, pero la realidad es que la gallina vive la mayor parte de su vida en una jaula, aunque con elementos como perchas y nidos que mejoran ligeramente sus condiciones respecto a las jaulas convencionales.',
+    'El número 3 es el de la jaula convencional: la gallina vive prácticamente toda su existencia en una jaula sin apenas espacio para extender las alas. Es el sistema más barato de producción y el que genera más controversy desde el punto de vista del bienestar animal.',
+    '## Por qué importa más allá del precio',
+    'La diferencia entre sistemas no es solo de ética animal. Los huevos de gallinas criadas en mejores condiciones tienen diferencias nutricionales medibles: más ácidos grasos omega-3, mayor cantidad de vitamina E y mejores perfiles de aminoácidos. El color de la yema también refleja la alimentación: una yema de color naranja intenso típicamente indica una dieta más variada y natural.',
+    'Además, los sistemas de jaula convencional han comenzado a prohibirse en varios países europeos por presión de bienestar animal. La Unión Europea planea eliminarlas gradualmente, lo que significa que los huevos con número 3 irán desapareciendo con el tiempo en el mercado comunitario.',
+    '## Cómo elegir con criterio',
+    'Si tu presupuesto te lo permite, los huevos 0 y 1 ofrecen la mejor garantía: bienestar animal verificado y perfiles nutricionales superiores. Los huevos 2 son una opción intermedia si buscas un equilibrio entre precio y condiciones de producción. Los huevos 3 son los más económicos, pero su sostenibilidad futura es cuestionable.',
+    'Lo importante es que, al mirar ese número en la cáscara, sepas exactamente qué estás comprando. No es solo un código: es la vida entera de una gallina resumida en un dígito.'
+  ],
+  ARRAY[
+    'Autoridad Europea de Seguridad Alimentaria (EFSA) (2023). Scientific Opinion on the welfare aspects of various systems for keeping laying hens.',
+    'Institut de Recerca i Tecnologia Agroalimentàries (IRTA) (2022). Comparativa nutricional de huevos según sistema de cría.',
+    'Comisión Europea (2021). Estrategia de la Granja a la Mesa.'
   ],
   false
 );
