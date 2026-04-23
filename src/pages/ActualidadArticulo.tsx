@@ -1,14 +1,62 @@
 import { useParams, Link, Navigate } from "react-router-dom";
-import { ArrowLeft, Clock, BookOpen } from "lucide-react";
+import { ArrowLeft, Clock, BookOpen, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { articulos } from "@/data/articulos";
+import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react";
+
+interface Articulo {
+  id: string;
+  slug: string;
+  titulo: string;
+  extracto: string;
+  categoria: string;
+  categoria_color?: string;
+  fecha_publicacion: string;
+  tiempo_lectura: number;
+  autor: string;
+  parrafos: string[];
+  referencias?: string[];
+  destacado: boolean;
+}
 
 const ActualidadArticulo = () => {
   const { slug } = useParams<{ slug: string }>();
-  const articulo = articulos.find((a) => a.slug === slug);
+  const [articulo, setArticulo] = useState<Articulo | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchArticulo = async () => {
+      const { data, error } = await supabase
+        .from("articulos")
+        .select("*")
+        .eq("slug", slug)
+        .single();
+
+      if (error || !data) {
+        setArticulo(null);
+      } else {
+        setArticulo(data);
+      }
+      setLoading(false);
+    };
+
+    fetchArticulo();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Header />
+        <div className="flex-1 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!articulo) return <Navigate to="/actualidad" replace />;
 
