@@ -239,6 +239,10 @@ export default function AdminCompanies() {
               <BookOpen className="w-4 h-4" />
               Artículos
             </TabsTrigger>
+            <TabsTrigger value="referidos" className="gap-2">
+              <Users className="w-4 h-4" />
+              Referidos
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="pending">
@@ -350,6 +354,22 @@ export default function AdminCompanies() {
                     });
                   }}
                 />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="referidos">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  Gestor de Referidos B2B
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Aquí puedes gestionar los referidos B2B que envían las empresas.
+                </p>
               </CardContent>
             </Card>
           </TabsContent>
