@@ -99,9 +99,9 @@ const Actualidad = () => {
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1.5">
                           <Clock className="w-3.5 h-3.5" />
-                          {destacado.tiempoLectura} min de lectura
+                          {destacado.tiempo_lectura} min de lectura
                         </span>
-                        <span>{destacado.fechaPublicacion}</span>
+                        <span>{destacado.fecha_publicacion}</span>
                         <span className="font-medium text-foreground">{destacado.autor}</span>
                       </div>
                       <span className="flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all">
@@ -138,9 +138,9 @@ const Actualidad = () => {
                       <div className="flex items-center gap-3 text-xs text-muted-foreground pt-2 border-t border-border">
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
-                          {art.tiempoLectura} min
+                          {art.tiempo_lectura} min
                         </span>
-                        <span>{art.fechaPublicacion}</span>
+                        <span>{art.fecha_publicacion}</span>
                       </div>
                     </CardContent>
                   </Card>

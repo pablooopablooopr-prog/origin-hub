@@ -84,10 +84,10 @@ const ActualidadArticulo = () => {
           <div className="flex flex-wrap items-center gap-5 text-sm text-white/75">
             <span className="flex items-center gap-1.5">
               <Clock className="w-4 h-4" />
-              {articulo.tiempoLectura} min de lectura
+              {articulo.tiempo_lectura} min de lectura
             </span>
             <Separator orientation="vertical" className="h-4 bg-white/30" />
-            <span>{articulo.fechaPublicacion}</span>
+            <span>{articulo.fecha_publicacion}</span>
             <Separator orientation="vertical" className="h-4 bg-white/30" />
             <span className="font-medium text-white">{articulo.autor}</span>
           </div>
