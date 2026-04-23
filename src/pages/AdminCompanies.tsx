@@ -5,9 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, Shield, Users } from "lucide-react";
+import { LogOut, Shield, Users, BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArticuloForm } from "@/components/ArticuloForm";
 
 type CompanyRow = {
   id: string;
@@ -234,6 +235,10 @@ export default function AdminCompanies() {
             <TabsTrigger value="processed">
               Verificadas / Rechazadas {processedCompanies.length > 0 && `(${processedCompanies.length})`}
             </TabsTrigger>
+            <TabsTrigger value="articulos" className="gap-2">
+              <BookOpen className="w-4 h-4" />
+              Artículos
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="pending">
@@ -324,6 +329,27 @@ export default function AdminCompanies() {
                     </table>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="articulos">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="w-5 h-5" />
+                  Gestor de Artículos
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ArticuloForm
+                  onSuccess={() => {
+                    toast({
+                      title: "Éxito",
+                      description: "El artículo se ha creado. Aparecerá en la sección Actualidad.",
+                    });
+                  }}
+                />
               </CardContent>
             </Card>
           </TabsContent>

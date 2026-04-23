@@ -71,6 +71,32 @@ const Header = () => {
     ? "hsl(var(--secondary-foreground))"
     : "hsl(var(--primary-foreground))";
 
+  // Admin header - disabled Mi Cuenta button
+  if (isAdmin) {
+    return (
+      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
+        <div className="container mx-auto px-6 py-3">
+          <div className="flex items-center justify-between">
+            <Link to="/admin/companies" className="text-2xl font-bold tracking-tight text-primary flex items-center">
+              <img src="/lovable-uploads/enso-transparent.png" alt="Ensō" className="w-6 h-6 object-contain mx-0 -ml-4" />
+              <span>RIGEN</span>
+            </Link>
+            <div className="flex items-center space-x-4">
+              {isAuthenticated && <NotificationsDropdown />}
+              <Button size="sm" disabled className="opacity-50 cursor-not-allowed">
+                <User className="w-4 h-4 mr-2" />
+                Mi Cuenta
+              </Button>
+              <span className="px-2 py-1 rounded border border-primary text-primary text-xs font-semibold tracking-wide">
+                ADMIN
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   // Minimal header for logged-in company users: logo + Mi Cuenta only
   if (userType === "company") {
     return (
