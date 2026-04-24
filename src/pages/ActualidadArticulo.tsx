@@ -38,7 +38,15 @@ const ActualidadArticulo = () => {
       if (error || !data) {
         setArticulo(null);
       } else {
-        setArticulo(data);
+        // Transform snake_case from DB to camelCase for component
+        const transformedData = {
+          ...data,
+          tiempoLectura: data.tiempo_lectura,
+          fechaPublicacion: data.fecha_publicacion,
+          categoriaColor: data.categoria_color,
+          parrafosCierre: data.parrafos_cierre,
+        };
+        setArticulo(transformedData);
       }
       setLoading(false);
     };

@@ -34,7 +34,17 @@ const Actualidad = () => {
           .order("fecha_publicacion", { ascending: false });
 
         if (error) throw error;
-        setArticulos(data || fallbackArticulos);
+
+        // Transform snake_case from DB to camelCase for component
+        const transformedData = data?.map(art => ({
+          ...art,
+          tiempoLectura: art.tiempo_lectura,
+          fechaPublicacion: art.fecha_publicacion,
+          categoriaColor: art.categoria_color,
+          parrafosCierre: art.parrafos_cierre,
+        }));
+
+        setArticulos(transformedData || fallbackArticulos);
       } catch (error) {
         console.error("Error loading articles:", error);
         setArticulos(fallbackArticulos);
