@@ -149,9 +149,6 @@ const Header = () => {
               <Link to="/rutas" className="text-muted-foreground hover:text-primary transition-colors">
                 Experiencias
               </Link>
-              <Link to="/packs" className="text-muted-foreground hover:text-primary transition-colors">
-                Selecciones
-              </Link>
               <Link to="/actualidad" className="text-muted-foreground hover:text-primary transition-colors">
                 Actualidad
               </Link>
@@ -232,9 +229,6 @@ const Header = () => {
                   </Link>
                   <Link to="/rutas" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                     Experiencias
-                  </Link>
-                  <Link to="/packs" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
-                    Selecciones
                   </Link>
                   <Link to="/actualidad" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                     Actualidad

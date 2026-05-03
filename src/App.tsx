@@ -10,9 +10,11 @@ import { Loader2 } from "lucide-react";
 // Lazy-loaded pages
 const Index = lazy(() => import("./pages/Index"));
 const Mapa = lazy(() => import("./pages/Mapa"));
-const Packs = lazy(() => import("./pages/Packs"));
-const PacksBuscar = lazy(() => import("./pages/PacksBuscar"));
-const PackDetail = lazy(() => import("./pages/PackDetail"));
+// PACKS DEPRECATED (FASE 3): código preservado pero rutas públicas removidas.
+// Para reactivar: descomentar imports y rutas debajo + restaurar enlaces en Header.
+// const Packs = lazy(() => import("./pages/Packs"));
+// const PacksBuscar = lazy(() => import("./pages/PacksBuscar"));
+// const PackDetail = lazy(() => import("./pages/PackDetail"));
 const Rutas = lazy(() => import("./pages/Rutas"));
 const RutaDetalle = lazy(() => import("./pages/RutaDetalle"));
 const ComprarRuta = lazy(() => import("./pages/ComprarRuta"));
@@ -21,7 +23,8 @@ const Contacto = lazy(() => import("./pages/Contacto"));
 const SoyCliente = lazy(() => import("./pages/SoyCliente"));
 const SoyEmpresa = lazy(() => import("./pages/SoyEmpresa"));
 const SobreOrigen = lazy(() => import("./pages/SobreOrigen"));
-const EditarPack = lazy(() => import("./pages/EditarPack"));
+// EDITAR PACK también pertenece al sistema deprecado de packs.
+// const EditarPack = lazy(() => import("./pages/EditarPack"));
 const EditarRuta = lazy(() => import("./pages/EditarRuta"));
 const BusinessDetail = lazy(() => import("./pages/BusinessDetail"));
 const CreateRoute = lazy(() => import("./pages/CreateRoute"));
@@ -33,7 +36,8 @@ const CompanyAuth = lazy(() => import("./pages/CompanyAuth"));
 const CompanyDashboard = lazy(() => import("./pages/CompanyDashboard"));
 const CompanyPending = lazy(() => import("./pages/CompanyPending"));
 const CompanyRejected = lazy(() => import("./pages/CompanyRejected"));
-const PackBuilder = lazy(() => import("./pages/PackBuilder"));
+// PACK BUILDER también pertenece al sistema deprecado de packs.
+// const PackBuilder = lazy(() => import("./pages/PackBuilder"));
 const CustomerAuth = lazy(() => import("./pages/CustomerAuth"));
 const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const CustomerDashboard = lazy(() => import("./pages/CustomerDashboard"));
@@ -73,9 +77,10 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/mapa" element={<Mapa />} />
-            <Route path="/packs" element={<Packs />} />
-            <Route path="/packs/buscar" element={<PacksBuscar />} />
-            <Route path="/packs/:id" element={<PackDetail />} />
+            {/* PACKS DEPRECATED — rutas removidas en FASE 3 (v2.0).
+                Cualquier visita a /packs* va al catch-all (NotFound).
+                Para reactivar: descomentar en App.tsx, restaurar enlace
+                "Selecciones" en Header.tsx y leer /src/pages/_DEPRECATED_PACKS/README.md */}
             <Route path="/carrito" element={<Cart />} />
             <Route path="/mis-carritos" element={<MisCarritos />} />
             <Route path="/rutas" element={<Rutas />} />
@@ -86,8 +91,7 @@ const App = () => (
             <Route path="/soy-cliente" element={<SoyCliente />} />
             <Route path="/soy-empresa" element={<SoyEmpresa />} />
             <Route path="/sobre-origen" element={<SobreOrigen />} />
-            <Route path="/editar-pack" element={<EditarPack />} />
-            <Route path="/editar-pack/:packId" element={<EditarPack />} />
+            {/* /editar-pack/* DEPRECATED — sistema de packs */}
             <Route path="/editar-ruta/:slug" element={<EditarRuta />} />
             <Route path="/valoraciones" element={<Valoraciones />} />
             <Route path="/escribir-valoracion" element={<EscribirValoracion />} />
@@ -97,8 +101,7 @@ const App = () => (
             <Route path="/company-pending" element={<CompanyPending />} />
             <Route path="/company-rejected" element={<CompanyRejected />} />
             <Route path="/company-dashboard" element={<CompanyGate><CompanyDashboard /></CompanyGate>} />
-            <Route path="/pack-builder" element={<PackBuilder />} />
-            <Route path="/pack-builder/:packId" element={<PackBuilder />} />
+            {/* /pack-builder/* DEPRECATED — sistema de packs */}
             <Route path="/customer-auth" element={<CustomerAuth />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/reset-password" element={<ResetPassword />} />
