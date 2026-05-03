@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X, ShoppingCart, User, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { isAdminUser } from "@/lib/auth/isAdmin";
+import { signOutAndCleanup } from "@/lib/auth/signOut";
 import { NotificationsDropdown } from "@/components/NotificationsDropdown";
 import { useProducerCarts } from "@/hooks/useProducerCarts";
 
@@ -19,6 +20,7 @@ const Header = () => {
   const [userType, setUserType] = useState<UserType>(null);
   const { totalItemCount: itemCount } = useProducerCarts();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isOnAccountPage = ACCOUNT_ROUTES.some((r) => location.pathname.startsWith(r));
   const hideLoginButtons = userType === "company" || isOnAccountPage;
@@ -74,8 +76,8 @@ const Header = () => {
   // Admin header - with logout button
   if (isAdmin) {
     const handleLogout = async () => {
-      await supabase.auth.signOut();
-      location.href = "/";
+      await signOutAndCleanup();
+      navigate("/", { replace: true });
     };
 
     return (

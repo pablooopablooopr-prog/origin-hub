@@ -51,11 +51,13 @@ const MisRutas = () => {
         title: "🎉 ¡Ruta adquirida!",
         description: `Ya tienes acceso permanente a "${purchasedRouteTitle}"`,
       });
-      // Clear the state
-      window.history.replaceState({}, document.title);
+      // Limpiar el state via React Router (no usar window.history directamente
+      // para evitar inconsistencia con el router al pulsar "atrás")
+      navigate(location.pathname, { replace: true, state: null });
     }
-    
+
     loadPurchases();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadPurchases = async () => {

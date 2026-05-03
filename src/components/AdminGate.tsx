@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { isAdminUser } from "@/lib/auth/isAdmin";
+import RouteLoader from "@/components/RouteLoader";
 
 type AdminGateProps = {
   children: ReactNode;
@@ -45,7 +46,7 @@ export default function AdminGate({ children }: AdminGateProps) {
     };
   }, []);
 
-  if (loading) return null;
+  if (loading) return <RouteLoader label="Verificando acceso de administrador..." />;
 
   if (!hasUser) {
     return <Navigate to="/customer-auth" replace />;

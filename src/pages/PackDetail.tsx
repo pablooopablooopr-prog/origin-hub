@@ -27,6 +27,21 @@ const PackDetail = () => {
   const param = slug ?? id ?? '';
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  /**
+   * Navegación "atrás" segura: si hay historial, vuelve atrás;
+   * si la página se abrió directamente (sin historial previo),
+   * navega a la home como fallback. Reemplaza al inseguro
+   * `window.history.back()` que dejaba la pantalla en blanco
+   * cuando no había historial.
+   */
+  const goBackSafe = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/", { replace: true });
+    }
+  };
   const [relatedPacksIndex, setRelatedPacksIndex] = useState(0);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewForm, setReviewForm] = useState({ name: "", rating: 0, comment: "" });
@@ -154,7 +169,7 @@ const PackDetail = () => {
           <div className="text-center">
             <h1 className="text-2xl font-bold text-primary mb-4">Pack no encontrado</h1>
             <p className="text-muted-foreground mb-6">El pack que buscas no existe.</p>
-            <Button onClick={() => window.history.back()}>Volver a Packs</Button>
+            <Button onClick={goBackSafe}>Volver</Button>
           </div>
         </main>
         <Footer />
@@ -429,7 +444,7 @@ const PackDetail = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={() => window.history.back()}
+                onClick={goBackSafe}
                 className="bg-white/90 hover:bg-white border-white/20"
                 style={{ color: getMiniHeroColor(pack.type) }}
               >

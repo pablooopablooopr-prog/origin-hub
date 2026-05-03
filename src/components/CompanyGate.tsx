@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import RouteLoader from "@/components/RouteLoader";
 
 type CompanyGateProps = {
   children: ReactNode;
@@ -66,7 +67,7 @@ const CompanyGate = ({ children }: CompanyGateProps) => {
     };
   }, []);
 
-  if (state === "loading") return null;
+  if (state === "loading") return <RouteLoader label="Verificando acceso de empresa..." />;
   if (state === "ok") return <>{children}</>;
   if (state === "pending") return <Navigate to="/company-pending" replace />;
   if (state === "rejected") return <Navigate to="/company-rejected" replace />;
