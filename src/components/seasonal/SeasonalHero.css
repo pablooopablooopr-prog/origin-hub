@@ -1,0 +1,193 @@
+/* ============================================================
+   SeasonalHero · estilos estructurales
+   ------------------------------------------------------------
+   Los colores variables vienen del prop `data.colors` y se
+   inyectan como CSS custom properties desde el componente
+   (ver style={{ "--season-primary": ... }} en SeasonalHero.tsx).
+   ============================================================ */
+
+.seasonal-hero {
+  position: relative;
+  overflow: hidden;
+  background-color: #2a1c10;
+}
+
+/* ---- Fondo madera ---- */
+.seasonal-hero__wood {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.seasonal-hero__wood-tint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(58, 37, 22, 0.55) 0%,
+    rgba(46, 28, 16, 0.65) 50%,
+    rgba(37, 22, 8, 0.75) 100%
+  );
+  mix-blend-mode: multiply;
+}
+
+.seasonal-hero__wood-planks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 220px,
+    rgba(0, 0, 0, 0.55) 220px,
+    rgba(0, 0, 0, 0.55) 222px,
+    rgba(80, 45, 22, 0.25) 222px,
+    rgba(80, 45, 22, 0.25) 228px,
+    transparent 228px,
+    transparent 460px
+  );
+}
+
+.seasonal-hero__wood-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.25;
+  background-image: repeating-linear-gradient(
+    89.5deg,
+    rgba(0, 0, 0, 0.18) 0,
+    rgba(0, 0, 0, 0.18) 1px,
+    transparent 1px,
+    transparent 7px,
+    rgba(255, 220, 180, 0.05) 7px,
+    rgba(255, 220, 180, 0.05) 8px,
+    transparent 8px,
+    transparent 19px
+  );
+}
+
+.seasonal-hero__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 55%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+}
+
+/* ---- Tarjeta principal de papel ---- */
+.seasonal-hero__paper {
+  position: relative;
+  background: linear-gradient(180deg, #f7eed8 0%, #f1e5c8 50%, #ead7b3 100%);
+  box-shadow:
+    0 30px 60px -20px rgba(0, 0, 0, 0.6),
+    0 12px 24px -6px rgba(0, 0, 0, 0.35),
+    inset 0 0 80px rgba(180, 140, 80, 0.1);
+  clip-path: polygon(
+    0% 1.5%, 4% 0%, 12% 1.8%, 24% 0.4%, 38% 1.6%, 52% 0.2%, 66% 1.8%, 78% 0.4%, 92% 1.5%, 100% 1%,
+    99.5% 14%, 100% 28%, 99% 44%, 100% 60%, 99.4% 76%, 100% 92%,
+    96% 100%, 82% 98.5%, 65% 100%, 48% 99%, 32% 100%, 14% 98.8%, 3% 100%, 0% 96%,
+    0.6% 80%, 0% 64%, 0.7% 48%, 0% 32%, 0.6% 18%
+  );
+}
+
+/* ---- Polaroid ---- */
+.seasonal-hero__polaroid {
+  background: #fafaf3;
+  box-shadow:
+    0 18px 40px -10px rgba(0, 0, 0, 0.6),
+    0 8px 16px -4px rgba(0, 0, 0, 0.35);
+}
+
+/* ---- Cinta beige features (zigzag arriba+abajo) ---- */
+.seasonal-hero__features-ribbon {
+  position: relative;
+  background: linear-gradient(180deg, #f1e5c8 0%, #e8dcc0 60%, #ddd0b0 100%);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), inset 0 0 30px rgba(180, 140, 80, 0.1);
+  clip-path: polygon(
+    0% 8%, 4% 0%, 12% 6%, 22% 0%, 32% 6%, 42% 0%, 52% 6%, 62% 0%, 72% 6%, 82% 0%, 92% 6%, 100% 0%,
+    99% 50%, 100% 100%, 92% 96%, 82% 100%, 72% 96%, 62% 100%, 52% 96%, 42% 100%, 32% 96%,
+    22% 100%, 12% 96%, 4% 100%, 0% 96%, 1% 50%
+  );
+}
+
+/* ---- Cinta verde stats ---- */
+.seasonal-hero__stats-ribbon {
+  position: relative;
+  background: linear-gradient(180deg, #4a5a2e 0%, #3d4a2a 50%, #2f3a20 100%);
+  color: #e8dcc0;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
+  clip-path: polygon(
+    0% 8%, 4% 2%, 9% 6%, 16% 0%, 24% 5%, 33% 1%, 42% 6%, 52% 0%, 62% 5%, 72% 1%, 82% 6%, 90% 0%, 96% 5%, 100% 2%,
+    99% 25%, 100% 50%, 99% 75%, 100% 96%,
+    96% 100%, 84% 96%, 72% 100%, 60% 96%, 48% 100%, 36% 96%, 24% 100%, 12% 96%, 4% 100%, 0% 95%,
+    1% 70%, 0% 45%, 1% 25%
+  );
+}
+
+/* ---- CTA primario sólido ---- */
+.seasonal-hero__cta-primary {
+  background: var(--season-primary, #3d4a2a);
+  color: #f1e5c8;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.45), 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.18s ease;
+}
+.seasonal-hero__cta-primary:hover {
+  transform: translateY(-1px);
+}
+
+/* ---- CTA secundario borde dorado ---- */
+.seasonal-hero__cta-secondary {
+  background: transparent;
+  color: var(--season-accent, #8a6f2e);
+  border: 1.5px solid var(--season-accent, #b8923f);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+.seasonal-hero__cta-secondary:hover {
+  transform: translateY(-1px);
+  background: rgba(184, 146, 63, 0.08);
+}
+
+/* ---- Cita destacada (la grande, no la del polaroid) ---- */
+.seasonal-hero__handwritten {
+  font-family: "Caveat", cursive;
+  color: #f5e4b8;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  line-height: 1.15;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* Tablet: dos columnas más compactas, ocultar manuscrito flotante */
+@media (max-width: 1023px) {
+  .seasonal-hero__handwritten--floating {
+    display: none;
+  }
+}
+
+/* Mobile: una columna, primero papel, luego collage */
+@media (max-width: 767px) {
+  .seasonal-hero__brooch {
+    display: none; /* el broche es decoración premium escritorio */
+  }
+  .seasonal-hero__paper {
+    padding: 28px 22px;
+  }
+  .seasonal-hero__title {
+    font-size: 36px !important;
+    line-height: 1 !important;
+  }
+  .seasonal-hero__clm-stamp {
+    display: none; /* sello CLM solo en desktop por espacio */
+  }
+}

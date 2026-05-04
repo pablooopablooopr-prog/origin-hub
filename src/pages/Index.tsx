@@ -6,7 +6,9 @@ import InteractiveMap from "@/components/InteractiveMap";
 import BusinessSection from "@/components/BusinessSection";
 import HumanRatings from "@/components/HumanRatings";
 import Footer from "@/components/Footer";
-import SeasonHero from "@/components/home/SeasonHero";
+import SeasonalHero from "@/components/seasonal/SeasonalHero";
+import { seasons } from "@/config/seasons";
+import { getCurrentSeason } from "@/utils/getCurrentSeason";
 import SpotlightToday from "@/components/home/SpotlightToday";
 import SeasonalRoutes from "@/components/home/SeasonalRoutes";
 import { Button } from "@/components/ui/button";
@@ -86,8 +88,15 @@ const Index = () => {
         {/* ===== SECCIÓN 1: HERO con vídeo (oculto a empresas logueadas) ===== */}
         {!isCompanyUser && <Hero />}
 
-        {/* ===== SECCIÓN 2: TEMPORADA ACTIVA ===== */}
-        <SeasonHero />
+        {/* ===== SECCIÓN 2: TEMPORADA ACTIVA =====
+            Sistema reutilizable basado en /config/seasons.ts.
+            Para forzar manualmente otra temporada en pruebas:
+              <SeasonalHero data={seasons.queso} />
+              <SeasonalHero data={seasons.mielAceite} />
+              <SeasonalHero data={seasons.caza} />
+              <SeasonalHero data={seasons.vino} />
+        */}
+        <SeasonalHero data={seasons[getCurrentSeason()]} />
 
         {/* ===== SECCIÓN 3: HOY EN ORIGEN ○ (spotlight 6 nichos) ===== */}
         <SpotlightToday />
