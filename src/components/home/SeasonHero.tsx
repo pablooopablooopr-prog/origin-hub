@@ -33,7 +33,7 @@ interface SeasonTheme {
 const SEASON_THEMES: Record<string, SeasonTheme> = {
   queso: {
     conceptIndex: "Concepto 4",
-    seasonName: "PRIMAVERA",
+    seasonName: "QUESO",
     title: "La Temporada\ndel Queso",
     description:
       "Queserías que honran la tradición, restaurantes que lo interpretan con creatividad y rutas que te llevan al origen de todo. Descubre el queso manchego y el sabor auténtico de Castilla–La Mancha en su mejor momento.",
@@ -43,18 +43,18 @@ const SEASON_THEMES: Record<string, SeasonTheme> = {
       "Tierra de pastos infinitos, quesos con historia y personas que cuidan cada detalle.",
     quote: "Sabor que nace\nde la tierra y\nse comparte.",
     heroImage:
-      "https://images.unsplash.com/photo-1631379578550-7d8db9b32a8c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=1200&q=80",
     heroCaption: "Queso Manchego Artesano",
     bottomLeftImage:
-      "https://images.unsplash.com/photo-1533318087102-b3ad366ed041?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1484557985045-edf25e08da73?auto=format&fit=crop&w=600&q=80",
     bottomRightImage:
-      "https://images.unsplash.com/photo-1559561853-08451507cbe7?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=600&q=80",
     productorCount: 12,
     rutaCount: 3,
   },
   miel: {
     conceptIndex: "Concepto 4",
-    seasonName: "VERANO",
+    seasonName: "MIEL",
     title: "La Temporada\nde la Miel",
     description:
       "Apicultores que cuidan colmenas centenarias, almazaras de cosecha temprana y rutas por sierras donde el AOVE y la miel marcan el calendario.",
@@ -75,7 +75,7 @@ const SEASON_THEMES: Record<string, SeasonTheme> = {
   },
   caza: {
     conceptIndex: "Concepto 4",
-    seasonName: "OTOÑO",
+    seasonName: "CAZA",
     title: "La Temporada\nde la Caza",
     description:
       "Monterías gestionadas con rigor, rehalas familiares y restaurantes que devuelven a la mesa el venado, el corzo y la perdiz roja en su punto.",
@@ -96,7 +96,7 @@ const SEASON_THEMES: Record<string, SeasonTheme> = {
   },
   vino: {
     conceptIndex: "Concepto 4",
-    seasonName: "INVIERNO",
+    seasonName: "VINO",
     title: "La Temporada\ndel Vino",
     description:
       "Bodegas centenarias en plena vendimia, catas verticales en cuevas familiares y rutas que recorren las cepas de Tempranillo, Airén y Bobal.",
@@ -166,57 +166,60 @@ const SeasonHero = () => {
         </defs>
       </svg>
 
-      {/* ===== FONDO MADERA: 4 capas ===== */}
-      {/* 1) Base degradado madera */}
+      {/* ===== FONDO MADERA REAL ===== */}
+      {/* 1) Foto de madera oscura como base */}
+      <div
+        className="absolute inset-0 pointer-events-none bg-no-repeat bg-cover bg-center"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1555532538-dcdbd01d373d?auto=format&fit=crop&w=2400&q=80')`,
+        }}
+      />
+      {/* 2) Tinte marrón oscuro encima para unificar tono */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(180deg, #3a2516 0%, #2e1c10 40%, #251608 100%)",
+            "linear-gradient(180deg, rgba(58,37,22,0.78) 0%, rgba(46,28,16,0.85) 50%, rgba(37,22,8,0.92) 100%)",
+          mixBlendMode: "multiply",
         }}
       />
-      {/* 2) Vetas verticales largas (planks) */}
+      {/* 3) Vetas verticales (planks) */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-60"
+        className="absolute inset-0 pointer-events-none opacity-50"
         style={{
           backgroundImage: `repeating-linear-gradient(
             90deg,
             transparent 0,
-            transparent 180px,
-            rgba(0,0,0,0.35) 180px,
-            rgba(0,0,0,0.35) 182px,
-            rgba(70,40,20,0.18) 182px,
-            rgba(70,40,20,0.18) 188px,
-            transparent 188px,
-            transparent 380px
+            transparent 220px,
+            rgba(0,0,0,0.5) 220px,
+            rgba(0,0,0,0.5) 222px,
+            rgba(80,45,22,0.25) 222px,
+            rgba(80,45,22,0.25) 228px,
+            transparent 228px,
+            transparent 460px
           )`,
         }}
       />
-      {/* 3) Vetas finas (grano fino) */}
+      {/* 4) Grano fino horizontal */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-25"
+        className="absolute inset-0 pointer-events-none opacity-30"
         style={{
           backgroundImage: `repeating-linear-gradient(
-            89deg,
-            rgba(0,0,0,0.1) 0,
-            rgba(0,0,0,0.1) 1px,
+            89.5deg,
+            rgba(0,0,0,0.2) 0,
+            rgba(0,0,0,0.2) 1px,
             transparent 1px,
+            transparent 7px,
+            rgba(255,220,180,0.06) 7px,
+            rgba(255,220,180,0.06) 8px,
             transparent 8px,
-            rgba(255,220,180,0.04) 8px,
-            rgba(255,220,180,0.04) 9px,
-            transparent 9px,
-            transparent 22px
+            transparent 19px
           )`,
         }}
       />
-      {/* 4) Grietas/nudos (SVG noise) */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-50 mix-blend-overlay"
-        style={{ filter: "url(#wood-grain-filter)", backgroundColor: "#000" }}
-      />
-      {/* 5) Grietas diagonales largas (overlay sutil) */}
+      {/* 5) Grietas + nudos SVG */}
       <svg
-        className="absolute inset-0 w-full h-full pointer-events-none opacity-30"
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-50"
         preserveAspectRatio="none"
         viewBox="0 0 1200 800"
       >
@@ -224,7 +227,6 @@ const SeasonHero = () => {
         <path d="M0 280 Q 350 290 700 270 T 1200 300" stroke="#0a0502" strokeWidth="1" fill="none" />
         <path d="M0 540 Q 400 530 800 555 T 1200 540" stroke="#0a0502" strokeWidth="1.5" fill="none" />
         <path d="M0 720 Q 300 715 700 730 T 1200 715" stroke="#0a0502" strokeWidth="1" fill="none" />
-        {/* nudos */}
         <ellipse cx="180" cy="220" rx="22" ry="12" fill="none" stroke="#1a0d05" strokeWidth="1" />
         <ellipse cx="180" cy="220" rx="14" ry="7" fill="none" stroke="#1a0d05" strokeWidth="0.6" />
         <ellipse cx="950" cy="450" rx="28" ry="14" fill="none" stroke="#1a0d05" strokeWidth="1" />
@@ -239,8 +241,8 @@ const SeasonHero = () => {
         }}
       />
 
-      {/* ===== HEADER tipo etiqueta ===== */}
-      <div className="relative z-10 max-w-[1280px] mx-auto px-6 pt-6">
+      {/* ===== HEADER tipo etiqueta (pegado al borde superior) ===== */}
+      <div className="relative z-10 max-w-[1280px] mx-auto px-6 pt-3">
         <p
           className="text-[11px] tracking-[0.32em] uppercase font-medium"
           style={{
@@ -253,56 +255,73 @@ const SeasonHero = () => {
       </div>
 
       {/* ===== GRID PRINCIPAL ===== */}
-      <div className="relative z-10 max-w-[1280px] mx-auto px-6 pt-8 pb-6 grid grid-cols-12 gap-6">
+      <div className="relative z-10 max-w-[1280px] mx-auto px-6 pt-3 pb-6 grid grid-cols-12 gap-6">
         {/* ============================================ */}
         {/* COLUMNA IZQUIERDA — TARJETA DE PAPEL          */}
         {/* ============================================ */}
         <div className="col-span-12 lg:col-span-7 relative">
-          {/* ===== BROCHE: cordel verde + sello de cera ===== */}
+          {/* ===== BROCHE: cordel verde ANCHO + sello de cera ===== */}
           <div
             className="absolute z-30 pointer-events-none"
-            style={{ top: "-24px", left: "62%" }}
+            style={{ top: "-24px", left: "55%" }}
             aria-hidden="true"
           >
-            {/* Cordel verde vertical */}
+            {/* Cordel verde vertical (ancho = ancho del sello) */}
             <div
               className="absolute"
               style={{
                 top: 0,
                 left: "50%",
                 transform: "translateX(-50%)",
-                width: "26px",
-                height: "230px",
+                width: "110px",
+                height: "260px",
                 background:
-                  "linear-gradient(180deg, #4a5a2e 0%, #3d4a2a 60%, #324020 100%)",
-                clipPath: "polygon(0 0, 100% 0, 100% 100%, 70% 96%, 50% 100%, 30% 96%, 0 100%)",
-                boxShadow: "2px 2px 6px rgba(0,0,0,0.55)",
+                  "linear-gradient(180deg, #4a5a2e 0%, #3d4a2a 50%, #324020 100%)",
+                clipPath:
+                  "polygon(0 0, 100% 0, 100% 100%, 75% 94%, 50% 100%, 25% 94%, 0 100%)",
+                boxShadow:
+                  "3px 3px 10px rgba(0,0,0,0.6), inset -3px 0 8px rgba(0,0,0,0.25), inset 3px 0 6px rgba(120,140,80,0.25)",
               }}
             />
-            {/* Sombra suave del cordel sobre el papel */}
+            {/* Doblez/pliegue central para dar volumen */}
             <div
               className="absolute"
               style={{
-                top: "12px",
+                top: 0,
                 left: "50%",
-                transform: "translateX(-50%) translateX(4px)",
-                width: "26px",
-                height: "210px",
-                background: "rgba(0,0,0,0.18)",
-                filter: "blur(6px)",
-                clipPath: "polygon(0 0, 100% 0, 100% 100%, 70% 96%, 50% 100%, 30% 96%, 0 100%)",
+                transform: "translateX(-50%)",
+                width: "2px",
+                height: "240px",
+                background:
+                  "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 100%)",
               }}
             />
-            {/* Sello de cera dorado encima del cordel */}
+            {/* Sombra del cordel proyectada */}
+            <div
+              className="absolute"
+              style={{
+                top: "10px",
+                left: "50%",
+                transform: "translateX(-50%) translateX(8px)",
+                width: "110px",
+                height: "240px",
+                background: "rgba(0,0,0,0.30)",
+                filter: "blur(8px)",
+                clipPath:
+                  "polygon(0 0, 100% 0, 100% 100%, 75% 94%, 50% 100%, 25% 94%, 0 100%)",
+                zIndex: -1,
+              }}
+            />
+            {/* Sello de cera dorado encima del cordel (centrado) */}
             <div
               className="relative w-[110px] h-[110px] rounded-full flex items-center justify-center text-center"
               style={{
-                top: "85px",
-                left: "-42px",
+                top: "95px",
+                left: "0",
                 background:
                   "radial-gradient(circle at 32% 28%, #f5d97a 0%, #d4a83a 30%, #b8923f 60%, #8a6f2e 100%)",
                 boxShadow:
-                  "0 10px 22px rgba(0,0,0,0.55), inset -5px -6px 12px rgba(70,40,10,0.55), inset 3px 3px 6px rgba(255,230,160,0.55)",
+                  "0 10px 22px rgba(0,0,0,0.6), inset -5px -6px 12px rgba(70,40,10,0.55), inset 3px 3px 6px rgba(255,230,160,0.55)",
                 border: "2px solid #6b5220",
               }}
             >
@@ -392,10 +411,10 @@ const SeasonHero = () => {
               />
             </div>
 
-            {/* Badges */}
+            {/* Badges (sin círculos decorativos) */}
             <div className="relative flex flex-wrap items-center gap-2 mb-7">
               <span
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] tracking-[0.22em] uppercase font-semibold"
+                className="inline-flex items-center px-5 py-2 rounded-full text-[10px] tracking-[0.22em] uppercase font-semibold"
                 style={{
                   background: "#3d4a2a",
                   color: "#f1e5c8",
@@ -403,13 +422,9 @@ const SeasonHero = () => {
                 }}
               >
                 Temporada activa
-                <span
-                  className="inline-block w-2.5 h-2.5 rounded-full border"
-                  style={{ borderColor: "#f1e5c8" }}
-                />
               </span>
               <span
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] tracking-[0.22em] uppercase font-semibold"
+                className="inline-flex items-center px-5 py-2 rounded-full text-[10px] tracking-[0.22em] uppercase font-semibold"
                 style={{
                   background: "#e8dcc0",
                   color: "#3d4a2a",
@@ -417,10 +432,6 @@ const SeasonHero = () => {
                   fontFamily: "'Cormorant Garamond', serif",
                 }}
               >
-                <span
-                  className="inline-block w-2.5 h-2.5 rounded-full border"
-                  style={{ borderColor: "#3d4a2a" }}
-                />
                 {theme.seasonName}
               </span>
             </div>
@@ -542,17 +553,23 @@ const SeasonHero = () => {
               </div>
             </div>
 
-            {/* Meses */}
+            {/* Meses (cada uno subrayado individualmente) */}
             <p
-              className="relative text-[12px] tracking-[0.4em] uppercase font-semibold mb-1"
+              className="relative text-[13px] tracking-[0.4em] uppercase font-semibold mb-5 flex flex-wrap items-center gap-x-3"
               style={{ color: "#3d4a2a", fontFamily: "'Cormorant Garamond', serif" }}
             >
-              {season.range}
+              <span style={{ borderBottom: "1.5px solid #b8923f", paddingBottom: "2px" }}>
+                Marzo
+              </span>
+              <span aria-hidden="true">·</span>
+              <span style={{ borderBottom: "1.5px solid #b8923f", paddingBottom: "2px" }}>
+                Abril
+              </span>
+              <span aria-hidden="true">·</span>
+              <span style={{ borderBottom: "1.5px solid #b8923f", paddingBottom: "2px" }}>
+                Mayo
+              </span>
             </p>
-            <div
-              className="relative h-[1px] w-[80px] mb-4"
-              style={{ background: "#b8923f" }}
-            />
 
             {/* Cita italica */}
             <p
@@ -687,39 +704,49 @@ const SeasonHero = () => {
               {theme.regionShort}
             </p>
 
-            {/* MAPA REAL DE ESPAÑA con CLM en verde */}
-            <svg viewBox="0 0 130 95" className="w-full h-auto mb-1">
-              {/* Silueta peninsular España (simplificada pero reconocible) */}
+            {/* MAPA ESTILIZADO DE CASTILLA-LA MANCHA (silueta de las 5 provincias) */}
+            <svg viewBox="0 0 130 90" className="w-full h-auto mb-1">
+              {/* Silueta exterior de C-LM con sus 5 provincias (Toledo NO,
+                  Guadalajara NE, Cuenca E, Albacete SE, Ciudad Real SO).
+                  Forma reconocible: borde cóncavo arriba, pico al sur. */}
               <path
-                d="M 8,42 C 6,36 10,28 18,24 C 26,20 38,17 50,16 C 60,15 72,13 84,15 C 96,17 110,20 118,28 C 124,33 122,42 119,48 C 117,54 115,60 110,65 C 105,72 96,76 86,77 C 76,78 64,76 54,77 C 44,78 32,76 22,72 C 14,68 9,60 8,52 C 7,48 8,45 8,42 Z"
-                fill="none"
-                stroke="#3d4a2a"
-                strokeWidth="0.8"
+                d="M 18,32
+                   C 14,28 16,22 22,20
+                   L 36,18
+                   C 42,16 48,18 52,16
+                   L 62,14
+                   C 68,12 76,14 82,18
+                   L 96,22
+                   C 104,24 110,28 112,34
+                   L 116,46
+                   C 118,54 114,62 108,66
+                   L 96,72
+                   C 88,76 80,78 72,78
+                   L 60,80
+                   C 52,82 44,80 38,76
+                   L 28,68
+                   C 22,62 18,54 16,46
+                   L 16,38
+                   C 16,36 17,34 18,32 Z"
+                fill="#f1e5c8"
+                stroke="#7a6a3a"
+                strokeWidth="1"
                 strokeLinejoin="round"
               />
-              {/* Portugal (recorte oeste) */}
+              {/* Subdivisión interior en verde sólido (zona central destacada) */}
               <path
-                d="M 8,42 C 6,38 8,32 12,30 C 14,38 12,48 14,58 C 16,64 18,68 22,72"
-                fill="none"
+                d="M 50,38
+                   C 56,32 66,32 74,36
+                   C 82,40 86,46 84,54
+                   C 80,62 70,64 60,62
+                   C 50,60 44,52 46,46
+                   C 47,42 48,40 50,38 Z"
+                fill="#4a5a2e"
                 stroke="#3d4a2a"
-                strokeWidth="0.6"
-                strokeDasharray="1 1"
-                opacity="0.5"
+                strokeWidth="0.8"
               />
-              {/* Baleares decorativas */}
-              <circle cx="118" cy="50" r="0.8" fill="#3d4a2a" />
-              <circle cx="122" cy="48" r="0.6" fill="#3d4a2a" />
-              <circle cx="120" cy="54" r="0.5" fill="#3d4a2a" />
-
-              {/* CASTILLA - LA MANCHA en verde sólido */}
-              <path
-                d="M 48,42 C 50,38 56,36 64,36 C 72,36 80,38 86,42 C 90,46 91,52 89,57 C 86,62 80,64 72,64 C 64,64 56,62 50,58 C 46,54 46,47 48,42 Z"
-                fill="#5a6b3a"
-                stroke="#3d4a2a"
-                strokeWidth="0.6"
-              />
-              {/* Punto/marca centro */}
-              <circle cx="68" cy="50" r="1.5" fill="#f1e5c8" />
+              {/* Punto-marca centro */}
+              <circle cx="66" cy="48" r="1.4" fill="#f1e5c8" />
             </svg>
 
             {/* GANADO PASTANDO debajo del mapa */}
@@ -781,10 +808,10 @@ const SeasonHero = () => {
             </p>
           </div>
 
-          {/* CITA MANUSCRITA "Sabor que nace..." */}
+          {/* CITA MANUSCRITA "Sabor que nace..." (movida fuera del polaroid) */}
           <div
-            className="hidden md:block absolute z-20 rotate-[-4deg]"
-            style={{ top: "44%", left: "10%", maxWidth: "150px" }}
+            className="hidden md:block absolute z-0 rotate-[-4deg]"
+            style={{ top: "62%", left: "-22%", maxWidth: "150px" }}
             aria-hidden="true"
           >
             <p
