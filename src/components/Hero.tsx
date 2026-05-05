@@ -112,9 +112,10 @@ const Hero = () => {
 
       {/* ── Contenido principal ──────────────────────────── */}
       <div
-        className="relative z-10 w-full flex flex-col items-start justify-center min-h-full pt-8"
+        className="relative z-10 w-full flex flex-col justify-center min-h-full pt-8"
         style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)" }}
       >
+        {/* TÍTULO - Alineado a izquierda */}
         <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center flex-wrap gap-1 drop-shadow-lg pl-4 md:pl-6">
           <span>RITM</span>
           <span className="inline-flex items-center">
@@ -128,6 +129,7 @@ const Hero = () => {
           </span>
         </h1>
 
+        {/* CONTENIDO CENTRAL - Centrado */}
         <div className="w-full flex flex-col items-center text-center px-6 py-4">
           <p className="text-xl md:text-2xl text-white/90 mb-4 max-w-3xl mx-auto leading-relaxed font-medium">
             Negocios tradicionales. Calidad real. Comunidad nacional.
@@ -170,18 +172,21 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center pb-8">
-          <div className="space-y-2">
-            <div className="text-2xl font-bold text-white">53</div>
-            <p className="text-sm text-white/70">Negocios locales</p>
-          </div>
-          <div className="space-y-2">
-            <div className="text-2xl font-bold text-green-300">4</div>
-            <p className="text-sm text-white/70">Provincias cubiertas</p>
-          </div>
-          <div className="space-y-2">
-            <div className="text-2xl font-bold text-white">100+</div>
-            <p className="text-sm text-white/70">Consumidores conscientes</p>
+        {/* ESTADÍSTICAS - Centradas */}
+        <div className="w-full flex justify-center">
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center pb-8">
+            <div className="space-y-2">
+              <div className="text-2xl font-bold text-white">53</div>
+              <p className="text-sm text-white/70">Negocios locales</p>
+            </div>
+            <div className="space-y-2">
+              <div className="text-2xl font-bold text-green-300">4</div>
+              <p className="text-sm text-white/70">Provincias cubiertas</p>
+            </div>
+            <div className="space-y-2">
+              <div className="text-2xl font-bold text-white">100+</div>
+              <p className="text-sm text-white/70">Consumidores conscientes</p>
+            </div>
           </div>
         </div>
       </div>
