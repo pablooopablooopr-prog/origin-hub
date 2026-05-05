@@ -1,10 +1,11 @@
 /**
  * Modal de filtros para mobile
- * Desliza desde la izquierda, overlay oscuro
+ * Desliza desde la izquierda con overlay oscuro
  * Se cierra al seleccionar o clickear X
+ * Usa design tokens para colores y estilos
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { X } from 'lucide-react';
 
 interface MapFiltersModalProps {
@@ -83,50 +84,31 @@ export const MapFiltersModal: React.FC<MapFiltersModalProps> = ({
     <>
       {/* OVERLAY */}
       <div
-        className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+        className="fixed inset-0 bg-black/40 z-30 lg:hidden animate-in fade-in"
         onClick={handleClose}
-        style={{
-          animation: 'fadeIn 0.2s ease-out',
-        }}
       />
 
       {/* MODAL PANEL */}
-      <div
-        className="fixed left-0 top-0 bottom-0 w-72 bg-white z-40 shadow-lg overflow-y-auto lg:hidden"
-        style={{
-          animation: 'slideInLeft 0.3s ease-out',
-        }}
-      >
+      <div className="fixed left-0 top-0 bottom-0 w-72 bg-background z-40 shadow-lg overflow-y-auto lg:hidden animate-in slide-in-from-left duration-300">
         {/* HEADER */}
-        <div
-          className="flex items-center justify-between p-4 border-b"
-          style={{
-            borderColor: '#D4C4A8',
-          }}
-        >
-          <h2
-            className="text-sm font-bold uppercase"
-            style={{ color: '#3D2B1F' }}
-          >
+        <div className="flex items-center justify-between p-5 border-b border-border">
+          <h2 className="text-sm font-semibold uppercase text-foreground tracking-wider">
             Filtros
           </h2>
           <button
             onClick={handleClose}
-            className="p-1 rounded hover:bg-[#F5F0E8]"
+            className="p-1 rounded hover:bg-muted transition-colors"
           >
-            <X size={20} color="#999999" />
+            <X size={20} className="text-muted-foreground" />
           </button>
         </div>
 
         {/* CONTENT */}
-        <div className="p-4 space-y-4">
+        <div className="p-5 space-y-5">
           {/* NICHO */}
-          <div>
-            <label
-              className="block text-xs font-bold uppercase mb-2"
-              style={{ color: '#3D2B1F' }}
-            >
-              Nicho
+          <div className="space-y-2">
+            <label className="block text-xs font-semibold uppercase text-muted-foreground tracking-wider">
+              Categoría
             </label>
             <select
               value={nicho}
@@ -134,11 +116,7 @@ export const MapFiltersModal: React.FC<MapFiltersModalProps> = ({
                 onNichoChange(e.target.value);
                 onClose();
               }}
-              className="w-full px-2.5 py-2 text-sm rounded bg-white border"
-              style={{
-                borderColor: '#CCCCCC',
-                color: '#3D2B1F',
-              }}
+              className="w-full px-3 py-2.5 text-sm rounded-md bg-white border-2 border-border text-foreground focus:outline-none focus:ring-2 focus:ring-moss-medium focus:ring-offset-2 transition-all duration-200"
             >
               {NICHOS.map((opt) => (
                 <option key={opt.id} value={opt.id}>
@@ -149,11 +127,8 @@ export const MapFiltersModal: React.FC<MapFiltersModalProps> = ({
           </div>
 
           {/* PROVINCIA */}
-          <div>
-            <label
-              className="block text-xs font-bold uppercase mb-2"
-              style={{ color: '#3D2B1F' }}
-            >
+          <div className="space-y-2">
+            <label className="block text-xs font-semibold uppercase text-muted-foreground tracking-wider">
               Provincia
             </label>
             <select
@@ -162,11 +137,7 @@ export const MapFiltersModal: React.FC<MapFiltersModalProps> = ({
                 onProvinciaChange(e.target.value);
                 onClose();
               }}
-              className="w-full px-2.5 py-2 text-sm rounded bg-white border"
-              style={{
-                borderColor: '#CCCCCC',
-                color: '#3D2B1F',
-              }}
+              className="w-full px-3 py-2.5 text-sm rounded-md bg-white border-2 border-border text-foreground focus:outline-none focus:ring-2 focus:ring-earth-medium focus:ring-offset-2 transition-all duration-200"
             >
               {PROVINCIAS.map((opt) => (
                 <option key={opt.id} value={opt.id}>
@@ -177,11 +148,8 @@ export const MapFiltersModal: React.FC<MapFiltersModalProps> = ({
           </div>
 
           {/* TIPO */}
-          <div>
-            <label
-              className="block text-xs font-bold uppercase mb-2"
-              style={{ color: '#3D2B1F' }}
-            >
+          <div className="space-y-2">
+            <label className="block text-xs font-semibold uppercase text-muted-foreground tracking-wider">
               Tipo
             </label>
             <select
@@ -190,11 +158,7 @@ export const MapFiltersModal: React.FC<MapFiltersModalProps> = ({
                 onTipoChange(e.target.value);
                 onClose();
               }}
-              className="w-full px-2.5 py-2 text-sm rounded bg-white border"
-              style={{
-                borderColor: '#CCCCCC',
-                color: '#3D2B1F',
-              }}
+              className="w-full px-3 py-2.5 text-sm rounded-md bg-white border-2 border-border text-foreground focus:outline-none focus:ring-2 focus:ring-muted focus:ring-offset-2 transition-all duration-200"
             >
               {TIPOS.map((opt) => (
                 <option key={opt.id} value={opt.id}>
@@ -205,22 +169,21 @@ export const MapFiltersModal: React.FC<MapFiltersModalProps> = ({
           </div>
 
           {/* EN RUTAS */}
-          <div className="border-t pt-4" style={{ borderColor: '#DDDDDD' }}>
-            <div className="flex items-center gap-2">
+          <div className="border-t border-border pt-5 space-y-3">
+            <label className="block text-xs font-semibold uppercase text-muted-foreground tracking-wider">
+              Opciones
+            </label>
+            <div className="flex items-center gap-3 cursor-pointer">
               <input
                 type="checkbox"
                 id="modal-en-rutas"
                 checked={enRutas}
                 onChange={(e) => onEnRutasChange(e.target.checked)}
-                className="w-4 h-4 rounded cursor-pointer"
-                style={{
-                  accentColor: enRutas ? '#B8860B' : '#5C6B2E',
-                }}
+                className="w-5 h-5 rounded cursor-pointer accent-moss-medium"
               />
               <label
                 htmlFor="modal-en-rutas"
-                className="text-sm cursor-pointer select-none"
-                style={{ color: '#3D2B1F' }}
+                className="text-sm font-medium text-foreground cursor-pointer select-none"
               >
                 Mostrar solo en rutas
               </label>
@@ -228,54 +191,33 @@ export const MapFiltersModal: React.FC<MapFiltersModalProps> = ({
           </div>
 
           {/* DESTACADOS */}
-          <div>
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="modal-destacados"
-                checked={destacadosPrimero}
-                onChange={(e) => onDestacadosChange(e.target.checked)}
-                className="w-4 h-4 rounded cursor-pointer"
-                style={{
-                  accentColor: destacadosPrimero ? '#B8860B' : '#5C6B2E',
-                }}
-              />
-              <label
-                htmlFor="modal-destacados"
-                className="text-sm cursor-pointer select-none"
-                style={{ color: '#3D2B1F' }}
-              >
-                Destacados primero
-              </label>
-            </div>
+          <div className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              id="modal-destacados"
+              checked={destacadosPrimero}
+              onChange={(e) => onDestacadosChange(e.target.checked)}
+              className="w-5 h-5 rounded cursor-pointer accent-accent"
+            />
+            <label
+              htmlFor="modal-destacados"
+              className="text-sm font-medium text-foreground cursor-pointer select-none"
+            >
+              Destacados primero
+            </label>
           </div>
 
           {/* BOTÓN RESET */}
           <button
             onClick={handleReset}
-            className="w-full px-3 py-2 text-xs font-medium rounded transition-colors"
-            style={{
-              backgroundColor: 'transparent',
-              color: '#999999',
-              border: '1px solid #DDDDDD',
-            }}
+            className="w-full px-4 py-2.5 text-xs font-semibold uppercase text-muted-foreground border-2 border-border rounded-md hover:border-earth-medium hover:text-earth-medium hover:shadow-soft transition-all duration-200 tracking-wider mt-2"
           >
             Limpiar filtros
           </button>
         </div>
       </div>
 
-      {/* ESTILOS */}
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 0.4; }
-        }
-        @keyframes slideInLeft {
-          from { transform: translateX(-100%); }
-          to { transform: translateX(0); }
-        }
-      `}</style>
+      {/* ANIMATIONS - CSS classes handled by Tailwind animate-in utilities */}
     </>
   );
 };

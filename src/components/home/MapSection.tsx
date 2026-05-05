@@ -256,105 +256,120 @@ export function MapSection() {
 
   // Render
   return (
-    <section className="w-full bg-white">
+    <section className="w-full bg-background">
+      {/* SECCIÓN TÍTULO */}
+      <div className="w-full px-4 md:px-6 py-12 md:py-16 bg-gradient-to-b from-bone via-bone to-transparent">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-3 tracking-tight">
+            Descubre el tejido de Castilla-La Mancha
+          </h2>
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl leading-relaxed">
+            Explora los productores, empresas y experiencias que nos conforman. Cada negocio, una historia de tradición y excelencia.
+          </p>
+        </div>
+      </div>
+
       {/* FILTROS HORIZONTAL ENCIMA DEL MAPA */}
-      <div className="w-full px-4 md:px-6 py-4 bg-white border-b border-[#DDDDDD]">
-        <div className="flex flex-wrap gap-3 items-center justify-between">
+      <div className="w-full px-4 md:px-6 py-6 bg-background border-b border-border shadow-soft">
+        <div className="max-w-7xl mx-auto">
           {/* DESKTOP FILTERS - HORIZONTAL */}
-          <div className="hidden lg:flex gap-3 items-center flex-wrap">
-            {/* NICHO */}
-            <select
-              value={filtros.nicho}
-              onChange={(e) => setNicho(e.target.value)}
-              className="px-3 py-1.5 text-sm rounded bg-white border"
-              style={{
-                borderColor: filtros.nicho === 'todos' ? '#CCCCCC' : '#5C6B2E',
-                color: '#3D2B1F',
-              }}
-            >
-              <option value="todos">Nicho: Todos</option>
-              <option value="quesos">Quesos y Lácteos</option>
-              <option value="carnes">Carnes y Embutidos</option>
-              <option value="vinos">Vinos y Bodegas</option>
-              <option value="caza">Caza y Monterías</option>
-              <option value="miel">Miel y Apicultura</option>
-              <option value="cooperativas">Cooperativas y Aceite</option>
-              <option value="restaurantes">Restaurantes</option>
-              <option value="alojamiento">Alojamiento Rural</option>
-            </select>
+          <div className="hidden lg:flex gap-4 items-center justify-start flex-wrap">
+            {/* NICHO - Moss green themed */}
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Categoría</label>
+              <select
+                value={filtros.nicho}
+                onChange={(e) => setNicho(e.target.value)}
+                className={`px-4 py-2.5 text-sm rounded-md bg-white border-2 transition-all duration-200 font-body ${
+                  filtros.nicho === 'todos'
+                    ? 'border-border text-muted-foreground'
+                    : 'border-moss-medium text-foreground font-semibold'
+                } hover:shadow-soft focus:outline-none focus:ring-2 focus:ring-moss-medium focus:ring-offset-2`}
+              >
+                <option value="todos">Todos</option>
+                <option value="quesos">Quesos y Lácteos</option>
+                <option value="carnes">Carnes y Embutidos</option>
+                <option value="vinos">Vinos y Bodegas</option>
+                <option value="caza">Caza y Monterías</option>
+                <option value="miel">Miel y Apicultura</option>
+                <option value="cooperativas">Cooperativas y Aceite</option>
+                <option value="restaurantes">Restaurantes</option>
+                <option value="alojamiento">Alojamiento Rural</option>
+              </select>
+            </div>
 
-            {/* PROVINCIA */}
-            <select
-              value={filtros.provincia}
-              onChange={(e) => setProvincia(e.target.value)}
-              className="px-3 py-1.5 text-sm rounded bg-white border"
-              style={{
-                borderColor: filtros.provincia === 'todas' ? '#CCCCCC' : '#5C6B2E',
-                color: '#3D2B1F',
-              }}
-            >
-              <option value="todas">Provincia: Todas</option>
-              <option value="ciudad-real">Ciudad Real</option>
-              <option value="toledo">Toledo</option>
-              <option value="cuenca">Cuenca</option>
-              <option value="guadalajara">Guadalajara</option>
-              <option value="albacete">Albacete</option>
-            </select>
+            {/* PROVINCIA - Earth toned */}
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Provincia</label>
+              <select
+                value={filtros.provincia}
+                onChange={(e) => setProvincia(e.target.value)}
+                className={`px-4 py-2.5 text-sm rounded-md bg-white border-2 transition-all duration-200 font-body ${
+                  filtros.provincia === 'todas'
+                    ? 'border-border text-muted-foreground'
+                    : 'border-earth-medium text-foreground font-semibold'
+                } hover:shadow-soft focus:outline-none focus:ring-2 focus:ring-earth-medium focus:ring-offset-2`}
+              >
+                <option value="todas">Todas</option>
+                <option value="ciudad-real">Ciudad Real</option>
+                <option value="toledo">Toledo</option>
+                <option value="cuenca">Cuenca</option>
+                <option value="guadalajara">Guadalajara</option>
+                <option value="albacete">Albacete</option>
+              </select>
+            </div>
 
-            {/* TIPO */}
-            <select
-              value={filtros.tipo}
-              onChange={(e) => setTipo(e.target.value)}
-              className="px-3 py-1.5 text-sm rounded bg-white border"
-              style={{
-                borderColor: filtros.tipo === 'todos' ? '#CCCCCC' : '#5C6B2E',
-                color: '#3D2B1F',
-              }}
-            >
-              <option value="todos">Tipo: Todos</option>
-              <option value="productor">Productor</option>
-              <option value="restaurante">Restaurante</option>
-              <option value="experiencia">Experiencia</option>
-              <option value="alojamiento">Alojamiento</option>
-              <option value="mercado">Mercado/Tienda</option>
-            </select>
+            {/* TIPO - Neutral toned */}
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tipo</label>
+              <select
+                value={filtros.tipo}
+                onChange={(e) => setTipo(e.target.value)}
+                className={`px-4 py-2.5 text-sm rounded-md bg-white border-2 transition-all duration-200 font-body ${
+                  filtros.tipo === 'todos'
+                    ? 'border-border text-muted-foreground'
+                    : 'border-muted text-foreground font-semibold'
+                } hover:shadow-soft focus:outline-none focus:ring-2 focus:ring-muted focus:ring-offset-2`}
+              >
+                <option value="todos">Todos</option>
+                <option value="productor">Productor</option>
+                <option value="restaurante">Restaurante</option>
+                <option value="experiencia">Experiencia</option>
+                <option value="alojamiento">Alojamiento</option>
+                <option value="mercado">Mercado/Tienda</option>
+              </select>
+            </div>
 
-            {/* EN RUTAS */}
-            <label className="flex items-center gap-2 cursor-pointer px-2">
-              <input
-                type="checkbox"
-                checked={filtros.enRutas}
-                onChange={(e) => setEnRutas(e.target.checked)}
-                className="w-4 h-4 rounded cursor-pointer"
-                style={{
-                  accentColor: filtros.enRutas ? '#B8860B' : '#5C6B2E',
-                }}
-              />
-              <span className="text-sm" style={{ color: '#3D2B1F' }}>
-                En rutas
-              </span>
-            </label>
+            {/* EN RUTAS - Checkbox with moss accent */}
+            <div className="flex items-end h-full pb-0">
+              <label className="flex items-center gap-3 cursor-pointer px-4 py-2.5 rounded-md border-2 border-border hover:border-moss-medium hover:shadow-soft transition-all duration-200">
+                <input
+                  type="checkbox"
+                  checked={filtros.enRutas}
+                  onChange={(e) => setEnRutas(e.target.checked)}
+                  className="w-5 h-5 rounded cursor-pointer accent-moss-medium"
+                />
+                <span className="text-sm font-semibold text-foreground">En rutas</span>
+              </label>
+            </div>
 
-            {/* DESTACADOS */}
-            <label className="flex items-center gap-2 cursor-pointer px-2">
-              <input
-                type="checkbox"
-                checked={filtros.mostrarDestacadosFirst}
-                onChange={(e) => setMostrarDestacados(e.target.checked)}
-                className="w-4 h-4 rounded cursor-pointer"
-                style={{
-                  accentColor: filtros.mostrarDestacadosFirst ? '#B8860B' : '#5C6B2E',
-                }}
-              />
-              <span className="text-sm" style={{ color: '#3D2B1F' }}>
-                Destacados
-              </span>
-            </label>
+            {/* DESTACADOS - Checkbox with accent */}
+            <div className="flex items-end h-full pb-0">
+              <label className="flex items-center gap-3 cursor-pointer px-4 py-2.5 rounded-md border-2 border-border hover:border-accent hover:shadow-soft transition-all duration-200">
+                <input
+                  type="checkbox"
+                  checked={filtros.mostrarDestacadosFirst}
+                  onChange={(e) => setMostrarDestacados(e.target.checked)}
+                  className="w-5 h-5 rounded cursor-pointer accent-accent"
+                />
+                <span className="text-sm font-semibold text-foreground">Destacados</span>
+              </label>
+            </div>
 
-            {/* RESET BUTTON */}
+            {/* RESET BUTTON - Subtle but clear */}
             <button
               onClick={resetFiltros}
-              className="px-3 py-1.5 text-xs text-[#999999] border border-[#DDDDDD] rounded hover:text-[#5C6B2E]"
+              className="px-4 py-2.5 text-xs font-semibold text-muted-foreground border-2 border-border rounded-md hover:border-earth-medium hover:text-earth-medium hover:shadow-soft transition-all duration-200 uppercase tracking-wider"
             >
               Limpiar
             </button>
@@ -363,9 +378,9 @@ export function MapSection() {
           {/* MOBILE FILTER TOGGLE BUTTON */}
           <button
             onClick={() => setMobileFiltersOpen(true)}
-            className="lg:hidden p-2 rounded bg-[#F5F0E8] hover:bg-[#E8DFD0]"
+            className="lg:hidden p-3 rounded-md bg-moss-light/10 hover:bg-moss-light/20 border border-moss-medium/30 transition-all duration-200"
           >
-            <Menu size={20} color="#3D2B1F" />
+            <Menu size={20} className="text-moss-medium" />
           </button>
         </div>
       </div>
@@ -388,26 +403,26 @@ export function MapSection() {
       />
 
       {/* MAPA CONTAINER */}
-      <div className="relative w-full">
+      <div className="relative w-full bg-background">
         {/* MAP ITSELF */}
         <div
           ref={lazyLoadRef}
-          className="relative w-full h-[500px] lg:h-[600px] bg-[#F5F0E8]"
+          className="relative w-full h-[420px] lg:h-[480px] bg-bone rounded-lg lg:rounded-xl overflow-hidden shadow-soft"
         >
           {/* LOADING PLACEHOLDER */}
           {!shouldLoadMap && (
-            <div className="absolute inset-0 flex items-center justify-center bg-[#F5F0E8]">
+            <div className="absolute inset-0 flex items-center justify-center bg-bone">
               <div className="text-center">
-                <p className="text-sm text-[#999999]">Cargando mapa...</p>
+                <p className="text-sm text-muted-foreground">Cargando mapa...</p>
               </div>
             </div>
           )}
 
           {/* ERROR STATE */}
           {shouldLoadMap && mapsError && (
-            <div className="absolute inset-0 flex items-center justify-center bg-[#F5F0E8]">
+            <div className="absolute inset-0 flex items-center justify-center bg-bone">
               <div className="text-center">
-                <p className="text-sm text-red-600">Error cargando el mapa</p>
+                <p className="text-sm text-destructive font-semibold">Error cargando el mapa</p>
               </div>
             </div>
           )}
@@ -423,8 +438,8 @@ export function MapSection() {
 
               {/* LOADING SPINNER DURANTE INICIALIZACIÓN */}
               {!mapInitialized && mapsLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
-                  <Loader2 size={32} className="animate-spin text-[#5C6B2E]" />
+                <div className="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-sm z-10">
+                  <Loader2 size={40} className="animate-spin text-moss-medium" strokeWidth={1.5} />
                 </div>
               )}
             </>
@@ -439,9 +454,11 @@ export function MapSection() {
         />
       </div>
 
-      {/* INFO DE EMPRESAS */}
-      <div className="px-4 py-3 bg-white text-xs text-[#999999] text-center border-t border-[#DDDDDD]">
-        Mostrando {empresasOrdenadas.length} de {empresas.length} empresas
+      {/* INFO DE EMPRESAS - Professional footer */}
+      <div className="px-4 md:px-6 py-4 bg-background border-t border-border text-center">
+        <p className="text-sm text-muted-foreground font-medium">
+          Mostrando <span className="font-semibold text-foreground">{empresasOrdenadas.length}</span> de <span className="font-semibold text-foreground">{empresas.length}</span> empresas
+        </p>
       </div>
     </section>
   );
