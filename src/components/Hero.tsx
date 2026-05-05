@@ -115,8 +115,8 @@ const Hero = () => {
         className="relative z-10 w-full flex flex-col justify-center min-h-full pt-8"
         style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)" }}
       >
-        {/* TÍTULO - Alineado a izquierda */}
-        <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center flex-wrap gap-1 drop-shadow-lg pl-4 md:pl-6">
+        {/* TÍTULO - Alineado a esquina izquierda */}
+        <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center flex-wrap gap-1 drop-shadow-lg pl-0 md:pl-1">
           <span>RITM</span>
           <span className="inline-flex items-center">
             <img
@@ -173,7 +173,7 @@ const Hero = () => {
         </div>
 
         {/* ESTADÍSTICAS - Distribuidas (izq, centro, drch) */}
-        <div className="w-full flex justify-between items-center px-6 md:px-12 mt-16 pb-8">
+        <div className="w-full flex justify-between items-center px-6 md:px-12 mt-8 pb-8">
           <div className="text-center">
             <div className="text-2xl font-bold text-white">53</div>
             <p className="text-sm text-white/70">Negocios locales</p>

@@ -131,9 +131,9 @@ const Header = () => {
 
   return <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 py-3">
-        <div className="flex items-center justify-between">
-          {/* Logo RITMORIGEN */}
-          <Link to="/" className="flex items-center">
+        <div className="flex items-center justify-center relative">
+          {/* Logo RITMORIGEN - Centrado */}
+          <Link to="/" className="flex items-center absolute left-6">
             <Logo size={24} showText={true} />
           </Link>
 
