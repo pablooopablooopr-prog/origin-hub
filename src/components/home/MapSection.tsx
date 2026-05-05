@@ -1,24 +1,31 @@
 /**
- * SECCIÓN MAPA — Integración completa
- * Lazy load + filtros + pins + sidebar + performance optimizaciones
+ * SECCIÓN MAPA V2 — Refactorización con layout sidebar + proporciones correctas
  *
- * Pasos:
- * 1. Lazy load del mapa (Intersection Observer)
- * 2. Fetch empresas con caché
- * 3. Filtrar dinámicamente (local, sin network)
- * 4. Renderizar pins con clustering si >150
- * 5. Sidebar al clickear pin
+ * Layout:
+ * - Sidebar: 25-30% izquierda (desktop), modal (mobile)
+ * - Mapa: 70-75% derecha
+ * - Altura: 500-600px (sección, no 100vh)
+ *
+ * Filtros:
+ * - NICHO (dropdown)
+ * - PROVINCIA (nuevo, para futuro nacional)
+ * - TIPO (dropdown)
+ * - EN RUTAS (checkbox nuevo)
+ * - DESTACADOS (checkbox)
  */
 
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
-import { MapFilters } from '@/components/MapFilters';
+import { Loader2, Menu, X } from 'lucide-react';
+import { MapFiltersBar } from '@/components/MapFiltersBar';
+import { MapFiltersModal } from '@/components/MapFiltersModal';
 import { MapSidebar } from '@/components/MapSidebar';
 import { useGoogleMapsLoader } from '@/hooks/useGoogleMapsLoader';
 import { useFetchEmpresas } from '@/hooks/useFetchEmpresas';
 import { useMapFilters } from '@/hooks/useMapFilters';
 import { useMapLazyLoad } from '@/hooks/useMapPerformance';
+import { SPOTLIGHT_POOL } from '@/data/spotlightDemo';
+import type { Empresa } from '@/hooks/useFetchEmpresas';
 
 // Mapa estilo ORIGEN (colores tierra, minimalista)
 const MAP_STYLE: google.maps.MapTypeStyle[] = [
@@ -41,9 +48,37 @@ const MAP_STYLE: google.maps.MapTypeStyle[] = [
   },
 ];
 
-// Centro de Castilla-La Mancha (Ciudad Real)
+// Centro de Castilla-La Mancha
 const REGION_CENTER = { lat: 39.2387, lng: -3.2022 };
 const DEFAULT_ZOOM = 8;
+
+// Convertir datos de spotlightDemo a Empresa[]
+function convertSpotlightToEmpresas(): Empresa[] {
+  const empresas: Empresa[] = [];
+
+  Object.entries(SPOTLIGHT_POOL).forEach(([nicho, companies]) => {
+    companies.forEach((company, index) => {
+      empresas.push({
+        id: company.id,
+        nombre: company.name,
+        nicho: company.category,
+        tipo: 'productor',
+        plan: company.plan,
+        localidad: company.locality,
+        provincia: 'Ciudad Real', // Datos de ejemplo
+        lat: 39.2 + (Math.random() - 0.5) * 0.5,
+        lng: -3.2 + (Math.random() - 0.5) * 0.5,
+        foto: company.image,
+        descripcion: company.description,
+        en_ruta: index === 0, // Primer item de cada nicho en rutas
+        ruta_name: index === 0 ? `Ruta ${nicho}` : null,
+        slug: company.id,
+      });
+    });
+  });
+
+  return empresas;
+}
 
 export function MapSection() {
   const navigate = useNavigate();
@@ -60,7 +95,9 @@ export function MapSection() {
     filtros,
     empresasOrdenadas,
     setNicho,
+    setProvincia,
     setTipo,
+    setEnRutas,
     setMostrarDestacados,
     resetFiltros,
   } = useMapFilters(empresas);
@@ -68,6 +105,7 @@ export function MapSection() {
   // Estado local
   const [selectedEmpresa, setSelectedEmpresa] = useState<string | null>(null);
   const [mapInitialized, setMapInitialized] = useState(false);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   // Obtener empresa seleccionada
   const empresaActual = useMemo(
@@ -220,63 +258,100 @@ export function MapSection() {
   // Render
   return (
     <section className="w-full bg-white">
-      {/* FILTROS */}
-      <MapFilters
-        filtros={filtros}
+      {/* MOBILE FILTERS MODAL */}
+      <MapFiltersModal
+        isOpen={mobileFiltersOpen}
+        onClose={() => setMobileFiltersOpen(false)}
+        nicho={filtros.nicho}
+        provincia={filtros.provincia}
+        tipo={filtros.tipo}
+        enRutas={filtros.enRutas}
+        destacadosPrimero={filtros.mostrarDestacadosFirst}
         onNichoChange={setNicho}
+        onProvinciaChange={setProvincia}
         onTipoChange={setTipo}
+        onEnRutasChange={setEnRutas}
         onDestacadosChange={setMostrarDestacados}
         onReset={resetFiltros}
       />
 
-      {/* CONTENEDOR MAPA */}
-      <div
-        ref={lazyLoadRef}
-        className="relative w-full h-[500px] lg:h-[600px] bg-[#F5F0E8]"
-      >
-        {/* LOADING PLACEHOLDER */}
-        {!shouldLoadMap && (
-          <div className="absolute inset-0 flex items-center justify-center bg-[#F5F0E8]">
-            <div className="text-center">
-              <p className="text-sm text-[#999999]">Cargando mapa...</p>
-            </div>
-          </div>
-        )}
+      {/* MAPA + SIDEBAR CONTAINER */}
+      <div className="relative flex flex-col lg:flex-row w-full">
+        {/* DESKTOP FILTERS SIDEBAR */}
+        <MapFiltersBar
+          nicho={filtros.nicho}
+          provincia={filtros.provincia}
+          tipo={filtros.tipo}
+          enRutas={filtros.enRutas}
+          destacadosPrimero={filtros.mostrarDestacadosFirst}
+          onNichoChange={setNicho}
+          onProvinciaChange={setProvincia}
+          onTipoChange={setTipo}
+          onEnRutasChange={setEnRutas}
+          onDestacadosChange={setMostrarDestacados}
+          onReset={resetFiltros}
+        />
 
-        {/* ERROR STATE */}
-        {shouldLoadMap && mapsError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-[#F5F0E8]">
-            <div className="text-center">
-              <p className="text-sm text-red-600">Error cargando el mapa</p>
-            </div>
-          </div>
-        )}
+        {/* MAPA CONTAINER */}
+        <div className="relative w-full flex-1 flex flex-col">
+          {/* Mobile Filter Toggle Button */}
+          <button
+            onClick={() => setMobileFiltersOpen(true)}
+            className="lg:hidden absolute top-4 left-4 z-20 p-2 rounded bg-white shadow-md hover:shadow-lg"
+          >
+            <Menu size={20} color="#3D2B1F" />
+          </button>
 
-        {/* MAPA */}
-        {shouldLoadMap && (
-          <>
-            <div
-              ref={mapContainer}
-              className="w-full h-full"
-              style={{ display: mapsLoaded ? 'block' : 'none' }}
-            />
-
-            {/* LOADING SPINNER DURANTE INICIALIZACIÓN */}
-            {!mapInitialized && mapsLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
-                <Loader2 size={32} className="animate-spin text-[#5C6B2E]" />
+          {/* MAP ITSELF */}
+          <div
+            ref={lazyLoadRef}
+            className="relative w-full h-[500px] lg:h-[600px] bg-[#F5F0E8]"
+          >
+            {/* LOADING PLACEHOLDER */}
+            {!shouldLoadMap && (
+              <div className="absolute inset-0 flex items-center justify-center bg-[#F5F0E8]">
+                <div className="text-center">
+                  <p className="text-sm text-[#999999]">Cargando mapa...</p>
+                </div>
               </div>
             )}
-          </>
-        )}
-      </div>
 
-      {/* SIDEBAR */}
-      <MapSidebar
-        empresa={empresaActual}
-        onClose={() => setSelectedEmpresa(null)}
-        onViewComplete={handleViewComplete}
-      />
+            {/* ERROR STATE */}
+            {shouldLoadMap && mapsError && (
+              <div className="absolute inset-0 flex items-center justify-center bg-[#F5F0E8]">
+                <div className="text-center">
+                  <p className="text-sm text-red-600">Error cargando el mapa</p>
+                </div>
+              </div>
+            )}
+
+            {/* GOOGLE MAPS CONTAINER */}
+            {shouldLoadMap && (
+              <>
+                <div
+                  ref={mapContainer}
+                  className="w-full h-full"
+                  style={{ display: mapsLoaded ? 'block' : 'none' }}
+                />
+
+                {/* LOADING SPINNER DURANTE INICIALIZACIÓN */}
+                {!mapInitialized && mapsLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
+                    <Loader2 size={32} className="animate-spin text-[#5C6B2E]" />
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* SIDEBAR */}
+        <MapSidebar
+          empresa={empresaActual}
+          onClose={() => setSelectedEmpresa(null)}
+          onViewComplete={handleViewComplete}
+        />
+      </div>
 
       {/* INFO DE EMPRESAS */}
       <div className="px-4 py-3 bg-white text-xs text-[#999999] text-center border-t border-[#DDDDDD]">

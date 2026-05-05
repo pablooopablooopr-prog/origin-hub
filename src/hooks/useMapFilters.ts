@@ -8,19 +8,23 @@ import type { Empresa } from './useFetchEmpresas';
 
 export interface MapFilterState {
   nicho: string; // 'todos' o nombre del nicho
-  tipo: string;  // 'todos' o tipo específico
+  provincia: string; // 'todas' o provincia específica
+  tipo: string; // 'todos' o tipo específico
+  enRutas: boolean; // mostrar solo empresas en rutas activas
   mostrarDestacadosFirst: boolean;
 }
 
 export function useMapFilters(empresas: Empresa[]) {
   const [filtros, setFiltros] = useState<MapFilterState>({
     nicho: 'todos',
+    provincia: 'todas',
     tipo: 'todos',
+    enRutas: false,
     mostrarDestacadosFirst: false,
   });
 
   /**
-   * Empresas filtradas por nicho + tipo
+   * Empresas filtradas por nicho + provincia + tipo + enRutas
    * Se recalcula solo si empresas o filtros cambian (memoized)
    */
   const empresasFiltradas = useMemo(() => {
@@ -33,15 +37,28 @@ export function useMapFilters(empresas: Empresa[]) {
         if (!nichoMatch) return false;
       }
 
+      // Filtro por provincia
+      if (filtros.provincia !== 'todas') {
+        const provinciaMatch = empresa.provincia?.toLowerCase().includes(
+          filtros.provincia.toLowerCase()
+        );
+        if (!provinciaMatch) return false;
+      }
+
       // Filtro por tipo
       if (filtros.tipo !== 'todos') {
         const tipoMatch = empresa.tipo?.toLowerCase() === filtros.tipo.toLowerCase();
         if (!tipoMatch) return false;
       }
 
+      // Filtro "En Rutas"
+      if (filtros.enRutas && !empresa.en_ruta) {
+        return false;
+      }
+
       return true;
     });
-  }, [empresas, filtros.nicho, filtros.tipo]);
+  }, [empresas, filtros.nicho, filtros.provincia, filtros.tipo, filtros.enRutas]);
 
   /**
    * Empresas ordenadas según filtro "mostrar destacados primero"
@@ -73,10 +90,24 @@ export function useMapFilters(empresas: Empresa[]) {
   }, []);
 
   /**
+   * Actualizar filtro de provincia
+   */
+  const setProvincia = useCallback((provincia: string) => {
+    setFiltros((prev) => ({ ...prev, provincia }));
+  }, []);
+
+  /**
    * Actualizar filtro de tipo
    */
   const setTipo = useCallback((tipo: string) => {
     setFiltros((prev) => ({ ...prev, tipo }));
+  }, []);
+
+  /**
+   * Toggle de "mostrar solo en rutas"
+   */
+  const setEnRutas = useCallback((valor: boolean) => {
+    setFiltros((prev) => ({ ...prev, enRutas: valor }));
   }, []);
 
   /**
@@ -92,7 +123,9 @@ export function useMapFilters(empresas: Empresa[]) {
   const resetFiltros = useCallback(() => {
     setFiltros({
       nicho: 'todos',
+      provincia: 'todas',
       tipo: 'todos',
+      enRutas: false,
       mostrarDestacadosFirst: false,
     });
   }, []);
@@ -102,7 +135,9 @@ export function useMapFilters(empresas: Empresa[]) {
     empresasFiltradas,
     empresasOrdenadas,
     setNicho,
+    setProvincia,
     setTipo,
+    setEnRutas,
     setMostrarDestacados,
     resetFiltros,
   };
