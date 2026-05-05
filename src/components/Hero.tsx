@@ -115,8 +115,8 @@ const Hero = () => {
         className="relative z-10 w-full flex flex-col justify-center min-h-full pt-8"
         style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)" }}
       >
-        {/* TÍTULO - Alineado a esquina izquierda */}
-        <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center flex-wrap gap-1 drop-shadow-lg pl-0 md:pl-1">
+        {/* TÍTULO - Centrado */}
+        <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1 drop-shadow-lg">
           <span>RITM</span>
           <span className="inline-flex items-center">
             <img
