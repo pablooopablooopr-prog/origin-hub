@@ -115,8 +115,17 @@ const Hero = () => {
         className="container mx-auto px-6 py-4 text-center relative z-10"
         style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)" }}
       >
-        <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tight drop-shadow-lg">
-          RITMO DE LA TIERRA
+        <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1 drop-shadow-lg">
+          <span>RITM</span>
+          <span className="inline-flex items-center">
+            <img
+              src="/lovable-uploads/enso-transparent.png"
+              alt="Ensō"
+              className="w-12 h-12 md:w-20 md:h-20 object-contain"
+              style={{ filter: "brightness(0)" }}
+            />
+            <span>RIGEN</span>
+          </span>
         </h1>
 
         <p className="text-xl md:text-2xl text-white/90 mb-4 max-w-3xl mx-auto leading-relaxed font-medium">
@@ -124,29 +133,37 @@ const Hero = () => {
         </p>
 
         <p className="text-white text-lg md:text-lg font-sans text-center leading-relaxed max-w-2xl mx-auto mb-12" style={{ textShadow: "0 1px 6px rgba(0,0,0,0.3)" }}>
-          La única plataforma estacional que conecta tu mesa con el ritmo real de cultivo. Productores, empresas, sabores, rutas y experiencias que varían según el calendario agrícola. Porque el territorio no es estático, y nosotros tampoco.
+          <span className="block">La única plataforma estacional que conecta tu mesa con el ritmo real de cultivo.</span>
+          <span className="block mt-3">Productores, empresas, sabores, rutas y experiencias que varían según el calendario agrícola.</span>
+          <span className="block mt-3">Porque el territorio no es estático, y nosotros tampoco.</span>
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-4xl mx-auto">
-          <Link to="/mapa">
-            <Button size="lg" className="px-8 py-3 text-lg font-semibold" style={{ backgroundColor: "#5C6B2E", color: "#FFFFFF" }}>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-5xl mx-auto">
+          {/* BOTÓN IZQUIERDA: DESCUBRIR (Verde) */}
+          <Link to="/mapa" className="w-full sm:w-auto">
+            <Button size="lg" className="w-full px-8 py-3 text-lg font-semibold" style={{ backgroundColor: "#5C6B2E", color: "#FFFFFF" }}>
               DESCUBRIR
             </Button>
           </Link>
-          <Link to="/soy-empresa">
-            <Button size="lg" className="px-8 py-3 text-lg font-semibold" style={{ backgroundColor: "transparent", color: "#FFFFFF", border: "2px solid #B8860B" }}>
-              UNIRME COMO EMPRESA
-            </Button>
-          </Link>
+
+          {/* BOTÓN CENTRO: VER EL MAPA (Blanco/Tamaño medio) */}
           <button
             onClick={() => {
-              const mapSection = document.querySelector('.map-section');
+              const mapSection = document.querySelector('section:has(> div[class*="relative"] > div[class*="flex"])');
               mapSection?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="px-8 py-3 text-lg font-semibold rounded-md text-white border-2 border-white hover:bg-white/10 transition-all"
+            className="w-full sm:w-auto px-6 py-2 text-base font-semibold rounded-md text-white border-2 border-white hover:bg-white/20 transition-all"
+            style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
           >
             VER EL MAPA
           </button>
+
+          {/* BOTÓN DERECHA: UNIRME COMO EMPRESA (Gold/Marrón) */}
+          <Link to="/soy-empresa" className="w-full sm:w-auto">
+            <Button size="lg" className="w-full px-8 py-3 text-lg font-semibold" style={{ backgroundColor: "#B8860B", color: "#3D2B1F", border: "2px solid #B8860B" }}>
+              UNIRME COMO EMPRESA
+            </Button>
+          </Link>
         </div>
 
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">

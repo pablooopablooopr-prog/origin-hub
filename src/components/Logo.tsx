@@ -54,7 +54,8 @@ export const Logo: React.FC<LogoProps> = ({ size = 24, showText = true }) => {
               justifyContent: 'center',
               width: `${fontSize}px`,
               height: `${fontSize}px`,
-              marginLeft: '2px',
+              marginLeft: '1px',
+              marginRight: '1px',
             }}
           >
             {/* The O letter itself (invisible, just for spacing) */}
@@ -75,8 +76,8 @@ export const Logo: React.FC<LogoProps> = ({ size = 24, showText = true }) => {
             />
           </span>
 
-          {/* I G E N — remaining letters */}
-          <span style={{ marginLeft: '2px' }}>IGEN</span>
+          {/* R I G E N — remaining letters */}
+          <span>RIGEN</span>
         </span>
       ) : (
         /* Logo without text — just the enso */
