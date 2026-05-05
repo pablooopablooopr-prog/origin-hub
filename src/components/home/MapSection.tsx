@@ -16,8 +16,7 @@
 
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Menu, X } from 'lucide-react';
-import { MapFiltersBar } from '@/components/MapFiltersBar';
+import { Loader2, Menu } from 'lucide-react';
 import { MapFiltersModal } from '@/components/MapFiltersModal';
 import { MapSidebar } from '@/components/MapSidebar';
 import { useGoogleMapsLoader } from '@/hooks/useGoogleMapsLoader';
@@ -258,6 +257,119 @@ export function MapSection() {
   // Render
   return (
     <section className="w-full bg-white">
+      {/* FILTROS HORIZONTAL ENCIMA DEL MAPA */}
+      <div className="w-full px-4 md:px-6 py-4 bg-white border-b border-[#DDDDDD]">
+        <div className="flex flex-wrap gap-3 items-center justify-between">
+          {/* DESKTOP FILTERS - HORIZONTAL */}
+          <div className="hidden lg:flex gap-3 items-center flex-wrap">
+            {/* NICHO */}
+            <select
+              value={filtros.nicho}
+              onChange={(e) => setNicho(e.target.value)}
+              className="px-3 py-1.5 text-sm rounded bg-white border"
+              style={{
+                borderColor: filtros.nicho === 'todos' ? '#CCCCCC' : '#5C6B2E',
+                color: '#3D2B1F',
+              }}
+            >
+              <option value="todos">Nicho: Todos</option>
+              <option value="quesos">Quesos y Lácteos</option>
+              <option value="carnes">Carnes y Embutidos</option>
+              <option value="vinos">Vinos y Bodegas</option>
+              <option value="caza">Caza y Monterías</option>
+              <option value="miel">Miel y Apicultura</option>
+              <option value="cooperativas">Cooperativas y Aceite</option>
+              <option value="restaurantes">Restaurantes</option>
+              <option value="alojamiento">Alojamiento Rural</option>
+            </select>
+
+            {/* PROVINCIA */}
+            <select
+              value={filtros.provincia}
+              onChange={(e) => setProvincia(e.target.value)}
+              className="px-3 py-1.5 text-sm rounded bg-white border"
+              style={{
+                borderColor: filtros.provincia === 'todas' ? '#CCCCCC' : '#5C6B2E',
+                color: '#3D2B1F',
+              }}
+            >
+              <option value="todas">Provincia: Todas</option>
+              <option value="ciudad-real">Ciudad Real</option>
+              <option value="toledo">Toledo</option>
+              <option value="cuenca">Cuenca</option>
+              <option value="guadalajara">Guadalajara</option>
+              <option value="albacete">Albacete</option>
+            </select>
+
+            {/* TIPO */}
+            <select
+              value={filtros.tipo}
+              onChange={(e) => setTipo(e.target.value)}
+              className="px-3 py-1.5 text-sm rounded bg-white border"
+              style={{
+                borderColor: filtros.tipo === 'todos' ? '#CCCCCC' : '#5C6B2E',
+                color: '#3D2B1F',
+              }}
+            >
+              <option value="todos">Tipo: Todos</option>
+              <option value="productor">Productor</option>
+              <option value="restaurante">Restaurante</option>
+              <option value="experiencia">Experiencia</option>
+              <option value="alojamiento">Alojamiento</option>
+              <option value="mercado">Mercado/Tienda</option>
+            </select>
+
+            {/* EN RUTAS */}
+            <label className="flex items-center gap-2 cursor-pointer px-2">
+              <input
+                type="checkbox"
+                checked={filtros.enRutas}
+                onChange={(e) => setEnRutas(e.target.checked)}
+                className="w-4 h-4 rounded cursor-pointer"
+                style={{
+                  accentColor: filtros.enRutas ? '#B8860B' : '#5C6B2E',
+                }}
+              />
+              <span className="text-sm" style={{ color: '#3D2B1F' }}>
+                En rutas
+              </span>
+            </label>
+
+            {/* DESTACADOS */}
+            <label className="flex items-center gap-2 cursor-pointer px-2">
+              <input
+                type="checkbox"
+                checked={filtros.mostrarDestacadosFirst}
+                onChange={(e) => setMostrarDestacados(e.target.checked)}
+                className="w-4 h-4 rounded cursor-pointer"
+                style={{
+                  accentColor: filtros.mostrarDestacadosFirst ? '#B8860B' : '#5C6B2E',
+                }}
+              />
+              <span className="text-sm" style={{ color: '#3D2B1F' }}>
+                Destacados
+              </span>
+            </label>
+
+            {/* RESET BUTTON */}
+            <button
+              onClick={resetFiltros}
+              className="px-3 py-1.5 text-xs text-[#999999] border border-[#DDDDDD] rounded hover:text-[#5C6B2E]"
+            >
+              Limpiar
+            </button>
+          </div>
+
+          {/* MOBILE FILTER TOGGLE BUTTON */}
+          <button
+            onClick={() => setMobileFiltersOpen(true)}
+            className="lg:hidden p-2 rounded bg-[#F5F0E8] hover:bg-[#E8DFD0]"
+          >
+            <Menu size={20} color="#3D2B1F" />
+          </button>
+        </div>
+      </div>
+
       {/* MOBILE FILTERS MODAL */}
       <MapFiltersModal
         isOpen={mobileFiltersOpen}
@@ -275,74 +387,48 @@ export function MapSection() {
         onReset={resetFiltros}
       />
 
-      {/* MAPA + SIDEBAR CONTAINER */}
-      <div className="relative flex flex-col lg:flex-row w-full">
-        {/* DESKTOP FILTERS SIDEBAR */}
-        <MapFiltersBar
-          nicho={filtros.nicho}
-          provincia={filtros.provincia}
-          tipo={filtros.tipo}
-          enRutas={filtros.enRutas}
-          destacadosPrimero={filtros.mostrarDestacadosFirst}
-          onNichoChange={setNicho}
-          onProvinciaChange={setProvincia}
-          onTipoChange={setTipo}
-          onEnRutasChange={setEnRutas}
-          onDestacadosChange={setMostrarDestacados}
-          onReset={resetFiltros}
-        />
-
-        {/* MAPA CONTAINER */}
-        <div className="relative w-full flex-1 flex flex-col">
-          {/* Mobile Filter Toggle Button */}
-          <button
-            onClick={() => setMobileFiltersOpen(true)}
-            className="lg:hidden absolute top-4 left-4 z-20 p-2 rounded bg-white shadow-md hover:shadow-lg"
-          >
-            <Menu size={20} color="#3D2B1F" />
-          </button>
-
-          {/* MAP ITSELF */}
-          <div
-            ref={lazyLoadRef}
-            className="relative w-full h-[500px] lg:h-[600px] bg-[#F5F0E8]"
-          >
-            {/* LOADING PLACEHOLDER */}
-            {!shouldLoadMap && (
-              <div className="absolute inset-0 flex items-center justify-center bg-[#F5F0E8]">
-                <div className="text-center">
-                  <p className="text-sm text-[#999999]">Cargando mapa...</p>
-                </div>
+      {/* MAPA CONTAINER */}
+      <div className="relative w-full">
+        {/* MAP ITSELF */}
+        <div
+          ref={lazyLoadRef}
+          className="relative w-full h-[500px] lg:h-[600px] bg-[#F5F0E8]"
+        >
+          {/* LOADING PLACEHOLDER */}
+          {!shouldLoadMap && (
+            <div className="absolute inset-0 flex items-center justify-center bg-[#F5F0E8]">
+              <div className="text-center">
+                <p className="text-sm text-[#999999]">Cargando mapa...</p>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* ERROR STATE */}
-            {shouldLoadMap && mapsError && (
-              <div className="absolute inset-0 flex items-center justify-center bg-[#F5F0E8]">
-                <div className="text-center">
-                  <p className="text-sm text-red-600">Error cargando el mapa</p>
-                </div>
+          {/* ERROR STATE */}
+          {shouldLoadMap && mapsError && (
+            <div className="absolute inset-0 flex items-center justify-center bg-[#F5F0E8]">
+              <div className="text-center">
+                <p className="text-sm text-red-600">Error cargando el mapa</p>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* GOOGLE MAPS CONTAINER */}
-            {shouldLoadMap && (
-              <>
-                <div
-                  ref={mapContainer}
-                  className="w-full h-full"
-                  style={{ display: mapsLoaded ? 'block' : 'none' }}
-                />
+          {/* GOOGLE MAPS CONTAINER */}
+          {shouldLoadMap && (
+            <>
+              <div
+                ref={mapContainer}
+                className="w-full h-full"
+                style={{ display: mapsLoaded ? 'block' : 'none' }}
+              />
 
-                {/* LOADING SPINNER DURANTE INICIALIZACIÓN */}
-                {!mapInitialized && mapsLoaded && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
-                    <Loader2 size={32} className="animate-spin text-[#5C6B2E]" />
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+              {/* LOADING SPINNER DURANTE INICIALIZACIÓN */}
+              {!mapInitialized && mapsLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
+                  <Loader2 size={32} className="animate-spin text-[#5C6B2E]" />
+                </div>
+              )}
+            </>
+          )}
         </div>
 
         {/* SIDEBAR */}
