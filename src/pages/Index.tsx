@@ -11,6 +11,7 @@ import { seasons } from "@/config/seasons";
 import { getCurrentSeason } from "@/utils/getCurrentSeason";
 import SpotlightToday from "@/components/home/SpotlightToday";
 import SeasonalRoutes from "@/components/home/SeasonalRoutes";
+import { MapSection } from "@/components/home/MapSection";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -101,9 +102,9 @@ const Index = () => {
         {/* ===== SECCIÓN 3: HOY EN ORIGEN ○ (spotlight 6 nichos) ===== */}
         <SpotlightToday />
 
-        {/* ===== SECCIÓN 4: MAPA INTERACTIVO ===== */}
-        <section className="bg-muted/20 py-2">
-          <div className="container mx-auto px-6 max-w-6xl text-center pt-8 pb-4">
+        {/* ===== SECCIÓN 4: MAPA INTERACTIVO CON FILTROS ===== */}
+        <section className="bg-white">
+          <div className="container mx-auto px-6 max-w-7xl text-center pt-8 pb-4">
             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
               El mapa
             </p>
@@ -111,7 +112,7 @@ const Index = () => {
               Descubre el tejido de Castilla-La Mancha
             </h2>
           </div>
-          <InteractiveMap />
+          <MapSection />
         </section>
 
         {/* ===== SECCIÓN 5: RUTAS DE LA TEMPORADA ===== */}
