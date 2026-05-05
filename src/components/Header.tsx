@@ -131,14 +131,14 @@ const Header = () => {
 
   return <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 py-3">
-        <div className="flex items-center justify-center gap-8">
+        <div className="flex items-center justify-between">
           {/* Logo RITMORIGEN - Izquierda */}
-          <Link to="/" className="flex items-center mr-auto">
+          <Link to="/" className="flex items-center flex-shrink-0">
             <Logo size={24} showText={true} />
           </Link>
 
-          {/* Navegación desktop */}
-            <nav className="hidden md:flex items-center space-x-8">
+          {/* Navegación desktop - Centrada */}
+            <nav className="hidden md:flex items-center space-x-8 flex-1 justify-center">
               <Link to="/mapa" className="text-muted-foreground hover:text-primary transition-colors">
                 Mapa
               </Link>
