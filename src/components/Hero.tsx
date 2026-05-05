@@ -172,21 +172,19 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* ESTADÍSTICAS - Centradas */}
-        <div className="w-full flex justify-center">
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center pb-8">
-            <div className="space-y-2">
-              <div className="text-2xl font-bold text-white">53</div>
-              <p className="text-sm text-white/70">Negocios locales</p>
-            </div>
-            <div className="space-y-2">
-              <div className="text-2xl font-bold text-green-300">4</div>
-              <p className="text-sm text-white/70">Provincias cubiertas</p>
-            </div>
-            <div className="space-y-2">
-              <div className="text-2xl font-bold text-white">100+</div>
-              <p className="text-sm text-white/70">Consumidores conscientes</p>
-            </div>
+        {/* ESTADÍSTICAS - Distribuidas (izq, centro, drch) */}
+        <div className="w-full flex justify-between items-center px-6 md:px-12 mt-16 pb-8">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-white">53</div>
+            <p className="text-sm text-white/70">Negocios locales</p>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-300">4</div>
+            <p className="text-sm text-white/70">Provincias cubiertas</p>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-white">100+</div>
+            <p className="text-sm text-white/70">Consumidores conscientes</p>
           </div>
         </div>
       </div>
