@@ -59,7 +59,7 @@ const FeaturedCard = ({ company }: { company: SpotlightCompany }) => {
       }}
     >
       <div className="relative">
-        <div className="aspect-[4/3] w-full overflow-hidden">
+        <div className="aspect-[16/9] w-full overflow-hidden">
           <img
             src={company.image}
             alt={company.name}
@@ -69,7 +69,7 @@ const FeaturedCard = ({ company }: { company: SpotlightCompany }) => {
         </div>
         {/* Badge DESTACADA dorado */}
         <span
-          className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] tracking-[0.18em] uppercase font-bold"
+          className="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] tracking-[0.18em] uppercase font-bold"
           style={{
             background: "#d4a83a",
             color: "#2a1c10",
@@ -82,9 +82,9 @@ const FeaturedCard = ({ company }: { company: SpotlightCompany }) => {
         </span>
       </div>
 
-      <div className="p-6 md:p-7 space-y-3">
+      <div className="p-4 md:p-5 space-y-1.5">
         <span
-          className="inline-flex items-center px-3 py-1 rounded-full text-[10px] tracking-[0.22em] uppercase font-semibold"
+          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] tracking-[0.22em] uppercase font-semibold"
           style={{
             background: company.categoryColor,
             color: company.categoryTextColor,
@@ -95,7 +95,7 @@ const FeaturedCard = ({ company }: { company: SpotlightCompany }) => {
         </span>
 
         <h3
-          className="text-2xl md:text-[28px] leading-tight tracking-tight"
+          className="text-[20px] md:text-[22px] leading-tight tracking-tight"
           style={{
             fontFamily: "'Playfair Display', serif",
             color: "#2a2418",
@@ -106,7 +106,7 @@ const FeaturedCard = ({ company }: { company: SpotlightCompany }) => {
         </h3>
 
         <p
-          className="text-[14px]"
+          className="text-[12.5px]"
           style={{
             color: "#8a6f2e",
             fontFamily: "'Cormorant Garamond', serif",
@@ -116,7 +116,7 @@ const FeaturedCard = ({ company }: { company: SpotlightCompany }) => {
         </p>
 
         <p
-          className="text-[14px] leading-[1.6] line-clamp-2 max-w-[480px]"
+          className="text-[13px] leading-[1.5] line-clamp-2 max-w-[480px]"
           style={{
             color: "#3a3326",
             fontFamily: "'Cormorant Garamond', serif",
@@ -127,14 +127,14 @@ const FeaturedCard = ({ company }: { company: SpotlightCompany }) => {
 
         <Link
           to={linkTo}
-          className="inline-flex items-center gap-2 text-[11px] tracking-[0.28em] uppercase font-bold pt-1 group"
+          className="inline-flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase font-bold pt-0.5 group"
           style={{
             color: "#8a6f2e",
             fontFamily: "'Cormorant Garamond', serif",
           }}
         >
           Leer ficha
-          <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+          <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
     </article>
@@ -163,9 +163,9 @@ const SmallCard = ({ company }: { company: SpotlightCompany }) => {
         />
       </div>
 
-      <div className="p-4 space-y-2">
+      <div className="p-3 space-y-1">
         <span
-          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] tracking-[0.22em] uppercase font-semibold"
+          className="inline-flex items-center px-2 py-0.5 rounded-full text-[8.5px] tracking-[0.22em] uppercase font-semibold"
           style={{
             background: company.categoryColor,
             color: company.categoryTextColor,
@@ -176,7 +176,7 @@ const SmallCard = ({ company }: { company: SpotlightCompany }) => {
         </span>
 
         <h4
-          className="text-[18px] leading-tight tracking-tight"
+          className="text-[15px] leading-tight tracking-tight"
           style={{
             fontFamily: "'Playfair Display', serif",
             color: "#2a2418",
@@ -187,7 +187,7 @@ const SmallCard = ({ company }: { company: SpotlightCompany }) => {
         </h4>
 
         <p
-          className="text-[12px]"
+          className="text-[11px]"
           style={{
             color: "#8a6f2e",
             fontFamily: "'Cormorant Garamond', serif",
@@ -197,7 +197,7 @@ const SmallCard = ({ company }: { company: SpotlightCompany }) => {
         </p>
 
         <p
-          className="text-[12px] leading-[1.5] line-clamp-2"
+          className="text-[11.5px] leading-[1.4] line-clamp-2"
           style={{
             color: "#3a3326",
             fontFamily: "'Cormorant Garamond', serif",
@@ -208,7 +208,7 @@ const SmallCard = ({ company }: { company: SpotlightCompany }) => {
 
         <Link
           to={linkTo}
-          className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.26em] uppercase font-bold pt-0.5 group"
+          className="inline-flex items-center gap-1.5 text-[9px] tracking-[0.26em] uppercase font-bold pt-0.5 group"
           style={{
             color: "#8a6f2e",
             fontFamily: "'Cormorant Garamond', serif",
@@ -227,7 +227,7 @@ const SmallCard = ({ company }: { company: SpotlightCompany }) => {
 // ============================================================
 const FloatingSeal = () => (
   <div
-    className="hidden lg:flex absolute z-30 w-[110px] h-[110px] rounded-full items-center justify-center -rotate-[6deg]"
+    className="hidden lg:flex absolute z-30 w-[90px] h-[90px] rounded-full items-center justify-center -rotate-[6deg]"
     style={{
       background: "#fdfaf2",
       border: "1.5px solid #d4a83a",
@@ -252,7 +252,7 @@ const FloatingSeal = () => (
       </text>
     </svg>
     {/* Hoja en el centro */}
-    <svg width="36" height="40" viewBox="0 0 36 40" fill="none">
+    <svg width="28" height="32" viewBox="0 0 36 40" fill="none">
       <path
         d="M18 4 Q 8 14 10 24 Q 12 32 18 36 Q 24 32 26 24 Q 28 14 18 4 Z"
         fill="#5a6b3a"
@@ -317,14 +317,14 @@ const SpotlightToday = () => {
 
   return (
     <section
-      className="relative py-16 md:py-20"
+      className="relative py-6 md:py-8"
       style={{ background: "#f5ecd9" }}
     >
       <div className="container mx-auto px-6 max-w-[1280px]">
-        {/* ===== HEADER ===== */}
-        <header className="text-center mb-10 md:mb-12 space-y-3">
+        {/* ===== HEADER (compacto) ===== */}
+        <header className="text-center mb-5 md:mb-6 space-y-1.5">
           <p
-            className="text-[11px] tracking-[0.32em] uppercase font-semibold"
+            className="text-[10px] tracking-[0.32em] uppercase font-semibold"
             style={{
               color: "#8a6f2e",
               fontFamily: "'Cormorant Garamond', serif",
@@ -333,7 +333,7 @@ const SpotlightToday = () => {
             HOY EN ORIGEN ○
           </p>
           <h2
-            className="text-[40px] md:text-[56px] leading-[1] tracking-tight"
+            className="text-[28px] md:text-[36px] leading-[1.05] tracking-tight"
             style={{
               fontFamily: "'Playfair Display', serif",
               color: "#2a2418",
@@ -343,7 +343,7 @@ const SpotlightToday = () => {
             Empresas destacadas de hoy
           </h2>
           <p
-            className="text-[14px] md:text-[15px] flex items-center justify-center gap-3 flex-wrap"
+            className="text-[12.5px] md:text-[13px] flex items-center justify-center gap-2 flex-wrap"
             style={{
               color: "#8a6f2e",
               fontFamily: "'Cormorant Garamond', serif",
@@ -352,42 +352,20 @@ const SpotlightToday = () => {
             <span>Castilla–La Mancha</span>
             <span aria-hidden="true">·</span>
             <span>{dateLabel}</span>
-          </p>
-
-          {/* divider con hojita central */}
-          <div className="flex items-center justify-center gap-3 pt-2">
-            <span className="block w-24 h-px" style={{ background: "#d4a83a" }} />
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-              <path
-                d="M7 1 Q 4 5 5 9 Q 6 12 7 13 Q 8 12 9 9 Q 10 5 7 1 Z"
-                fill="#d4a83a"
-                opacity="0.85"
-              />
-              <line x1="7" y1="3" x2="7" y2="13" stroke="#8a6f2e" strokeWidth="0.4" />
-            </svg>
-            <span className="block w-24 h-px" style={{ background: "#d4a83a" }} />
-          </div>
-
-          <p
-            className="text-[13.5px] pt-1"
-            style={{
-              color: "#5a4a30",
-              fontFamily: "'Cormorant Garamond', serif",
-            }}
-          >
-            Seis empresas seleccionadas que hoy ocupan la portada de ORIGEN ○.
+            <span aria-hidden="true" className="mx-1">·</span>
+            <span className="italic">Seis empresas seleccionadas que hoy ocupan la portada.</span>
           </p>
         </header>
 
-        {/* ===== GRID PRINCIPAL ===== */}
-        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-6">
+        {/* ===== GRID PRINCIPAL (compacto) ===== */}
+        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-4">
           {/* IZQUIERDA: ficha grande */}
           <div className="lg:col-span-7 relative">
             {featured && <FeaturedCard company={featured} />}
           </div>
 
           {/* DERECHA: grid 2×2 fichas pequeñas */}
-          <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+          <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
             {others.map((c, i) => (
               <SmallCard key={`${c.id}-${rotationStep}-${i}`} company={c} />
             ))}
@@ -396,118 +374,97 @@ const SpotlightToday = () => {
           {/* SELLO FLOTANTE entre las dos zonas */}
           <div
             className="absolute z-30"
-            style={{ top: "44%", left: "calc(58.33% - 55px)" }}
+            style={{ top: "44%", left: "calc(58.33% - 45px)" }}
           >
             <FloatingSeal />
           </div>
         </div>
 
-        {/* ===== CINTA INFERIOR DE STATS ===== */}
+        {/* ===== CINTA INFERIOR DE STATS (compacta) ===== */}
         <div
-          className="relative mt-8 md:mt-10 rounded-md px-6 md:px-10 py-5 md:py-6"
+          className="relative mt-3 md:mt-4 rounded-md px-4 md:px-6 py-3"
           style={{
             background: "#fdfaf2",
             border: "1px solid #e0d4b8",
             boxShadow: "0 4px 14px -4px rgba(0,0,0,0.1)",
           }}
         >
-          <div className="flex flex-wrap items-center justify-around gap-5 md:gap-8">
+          <div className="flex flex-wrap items-center justify-around gap-3 md:gap-6">
             {/* Stat 1 */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <div
-                className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
+                className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ border: "1.5px solid #d4a83a" }}
               >
-                <Users className="w-5 h-5" style={{ color: "#8a6f2e" }} />
+                <Users className="w-4 h-4" style={{ color: "#8a6f2e" }} />
               </div>
-              <div className="text-left">
+              <div className="text-left leading-tight">
                 <p
-                  className="text-[13px] leading-tight font-semibold"
-                  style={{
-                    color: "#2a2418",
-                    fontFamily: "'Cormorant Garamond', serif",
-                  }}
+                  className="text-[12px] font-semibold"
+                  style={{ color: "#2a2418", fontFamily: "'Cormorant Garamond', serif" }}
                 >
                   {nichePool.length} empresas
                 </p>
                 <p
-                  className="text-[12px] leading-tight"
-                  style={{
-                    color: "#8a6f2e",
-                    fontFamily: "'Cormorant Garamond', serif",
-                  }}
+                  className="text-[11px]"
+                  style={{ color: "#8a6f2e", fontFamily: "'Cormorant Garamond', serif" }}
                 >
                   en portada hoy
                 </p>
               </div>
             </div>
 
-            <span className="hidden md:inline-block w-px h-10 bg-[#e0d4b8]" />
+            <span className="hidden md:inline-block w-px h-8 bg-[#e0d4b8]" />
 
             {/* Stat 2 — 24h */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <div
-                className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
+                className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ border: "1.5px solid #d4a83a" }}
               >
                 <span
-                  className="text-[10px] font-bold tracking-wide"
-                  style={{
-                    color: "#8a6f2e",
-                    fontFamily: "'Cormorant Garamond', serif",
-                  }}
+                  className="text-[9px] font-bold tracking-wide"
+                  style={{ color: "#8a6f2e", fontFamily: "'Cormorant Garamond', serif" }}
                 >
                   24h
                 </span>
               </div>
-              <div className="text-left">
+              <div className="text-left leading-tight">
                 <p
-                  className="text-[13px] leading-tight font-semibold"
-                  style={{
-                    color: "#2a2418",
-                    fontFamily: "'Cormorant Garamond', serif",
-                  }}
+                  className="text-[12px] font-semibold"
+                  style={{ color: "#2a2418", fontFamily: "'Cormorant Garamond', serif" }}
                 >
                   24h de visibilidad
                 </p>
                 <p
-                  className="text-[12px] leading-tight"
-                  style={{
-                    color: "#8a6f2e",
-                    fontFamily: "'Cormorant Garamond', serif",
-                  }}
+                  className="text-[11px]"
+                  style={{ color: "#8a6f2e", fontFamily: "'Cormorant Garamond', serif" }}
                 >
                   rotatoria
                 </p>
               </div>
             </div>
 
-            <span className="hidden md:inline-block w-px h-10 bg-[#e0d4b8]" />
+            <span className="hidden md:inline-block w-px h-8 bg-[#e0d4b8]" />
 
             {/* Stat 3 — Spotlight */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <div
-                className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
+                className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ border: "1.5px solid #d4a83a" }}
               >
-                <Store className="w-5 h-5" style={{ color: "#8a6f2e" }} />
+                <Store className="w-4 h-4" style={{ color: "#8a6f2e" }} />
               </div>
-              <div className="text-left">
+              <div className="text-left leading-tight">
                 <p
-                  className="text-[13px] leading-tight font-semibold"
-                  style={{
-                    color: "#2a2418",
-                    fontFamily: "'Cormorant Garamond', serif",
-                  }}
+                  className="text-[12px] font-semibold"
+                  style={{ color: "#2a2418", fontFamily: "'Cormorant Garamond', serif" }}
                 >
                   Spotlight para
                 </p>
                 <p
-                  className="text-[12px] leading-tight"
-                  style={{
-                    color: "#8a6f2e",
-                    fontFamily: "'Cormorant Garamond', serif",
-                  }}
+                  className="text-[11px]"
+                  style={{ color: "#8a6f2e", fontFamily: "'Cormorant Garamond', serif" }}
                 >
                   productores y restaurantes
                 </p>
@@ -517,7 +474,7 @@ const SpotlightToday = () => {
             {/* CTA "VER TODAS LAS EMPRESAS" */}
             <Link
               to="/empresas"
-              className="inline-flex items-center gap-3 px-5 py-3 rounded-md text-[11px] tracking-[0.28em] uppercase font-bold transition-all hover:translate-y-[-1px] group"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-[10px] tracking-[0.28em] uppercase font-bold transition-all hover:translate-y-[-1px] group"
               style={{
                 color: "#8a6f2e",
                 border: "1.5px solid #d4a83a",
@@ -525,7 +482,7 @@ const SpotlightToday = () => {
               }}
             >
               Ver todas las empresas
-              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
