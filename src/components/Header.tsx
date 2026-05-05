@@ -8,6 +8,7 @@ import { isAdminUser } from "@/lib/auth/isAdmin";
 import { signOutAndCleanup } from "@/lib/auth/signOut";
 import { NotificationsDropdown } from "@/components/NotificationsDropdown";
 import { useProducerCarts } from "@/hooks/useProducerCarts";
+import { Logo } from "@/components/Logo";
 
 type UserType = "customer" | "company" | null;
 
@@ -84,9 +85,8 @@ const Header = () => {
       <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
-            <Link to="/admin/companies" className="text-2xl font-bold tracking-tight text-primary flex items-center">
-              <img src="/lovable-uploads/enso-transparent.png" alt="Ensō" className="w-6 h-6 object-contain mx-0 -ml-4" />
-              <span>RIGEN</span>
+            <Link to="/" className="flex items-center">
+              <Logo size={24} showText={true} />
             </Link>
             <div className="flex items-center space-x-4">
               {isAuthenticated && <NotificationsDropdown />}
@@ -110,9 +110,8 @@ const Header = () => {
       <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
-            <Link to="/company-dashboard" className="text-2xl font-bold tracking-tight text-primary flex items-center">
-              <img src="/lovable-uploads/enso-transparent.png" alt="Ensō" className="w-6 h-6 object-contain mx-0 -ml-4" />
-              <span>RIGEN</span>
+            <Link to="/" className="flex items-center">
+              <Logo size={24} showText={true} />
             </Link>
             <div className="flex items-center space-x-4">
               {isAuthenticated && <NotificationsDropdown />}
@@ -133,13 +132,10 @@ const Header = () => {
   return <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
-          {/* Logo simplificado */}
-          <div className="flex items-center space-x-3">
-            <Link to="/" className="text-2xl font-bold tracking-tight text-primary flex items-center">
-              <img src="/lovable-uploads/enso-transparent.png" alt="Ensō" className="w-6 h-6 object-contain mx-0 -ml-4" />
-              <span>RIGEN</span>
-            </Link>
-          </div>
+          {/* Logo RITMORIGEN */}
+          <Link to="/" className="flex items-center">
+            <Logo size={24} showText={true} />
+          </Link>
 
           {/* Navegación desktop */}
             <nav className="hidden md:flex items-center space-x-8">

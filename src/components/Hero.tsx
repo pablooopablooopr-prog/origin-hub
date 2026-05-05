@@ -115,43 +115,38 @@ const Hero = () => {
         className="container mx-auto px-6 py-4 text-center relative z-10"
         style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)" }}
       >
-        <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1 drop-shadow-lg">
-          <span>Vuelve al</span>
-          <span className="inline-flex items-center ml-2">
-            <img
-              src="/lovable-uploads/enso-transparent.png"
-              alt="Ensō"
-              className="w-12 h-12 md:w-20 md:h-20 object-contain"
-              style={{ filter: "brightness(0)" }}
-            />
-            <span>rigen</span>
-          </span>
+        <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tight drop-shadow-lg">
+          RITMO DE LA TIERRA
         </h1>
 
-        <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
+        <p className="text-xl md:text-2xl text-white/90 mb-4 max-w-3xl mx-auto leading-relaxed font-medium">
           Negocios tradicionales. Calidad real. Comunidad nacional.
         </p>
 
-        <p className="text-white/80 mb-16 max-w-3xl mx-auto text-lg font-normal font-sans text-center leading-relaxed">
-          Conectamos, sin intermediarios, a consumidores con productores, cooperativas, fincas privadas y cotos, restaurantes y negocios con identidad junto a experiencias rurales exclusivas por toda España, impulsando la visibilidad del sector primario y el valor de su origen real.
+        <p className="text-white text-lg md:text-lg font-sans text-center leading-relaxed max-w-2xl mx-auto mb-12" style={{ textShadow: "0 1px 6px rgba(0,0,0,0.3)" }}>
+          La única plataforma estacional que conecta tu mesa con el ritmo real de cultivo. Productores, empresas, sabores, rutas y experiencias que varían según el calendario agrícola. Porque el territorio no es estático, y nosotros tampoco.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-4xl mx-auto">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-4xl mx-auto">
           <Link to="/mapa">
-            <Button size="lg" className="group px-8 py-4 text-lg shadow-earth">
-              Explorar el mapa
+            <Button size="lg" className="px-8 py-3 text-lg font-semibold" style={{ backgroundColor: "#5C6B2E", color: "#FFFFFF" }}>
+              DESCUBRIR
             </Button>
           </Link>
-          <Link to="/rutas">
-            <Button size="lg" className="px-8 py-4 text-lg bg-earth-dark text-white hover:bg-earth-dark/90 transition-colors">
-              Descubrir experiencias
+          <Link to="/soy-empresa">
+            <Button size="lg" className="px-8 py-3 text-lg font-semibold" style={{ backgroundColor: "transparent", color: "#FFFFFF", border: "2px solid #B8860B" }}>
+              UNIRME COMO EMPRESA
             </Button>
           </Link>
-          <Link to="/packs">
-            <Button variant="secondary" size="lg" className="px-8 py-4 text-lg shadow-moss">
-              Selecciones del territorio
-            </Button>
-          </Link>
+          <button
+            onClick={() => {
+              const mapSection = document.querySelector('.map-section');
+              mapSection?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="px-8 py-3 text-lg font-semibold rounded-md text-white border-2 border-white hover:bg-white/10 transition-all"
+          >
+            VER EL MAPA
+          </button>
         </div>
 
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
