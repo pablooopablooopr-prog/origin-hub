@@ -143,11 +143,11 @@ const Hero = () => {
             Porque el territorio no es estático, y nosotros tampoco.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            {/* BOTÓN IZQUIERDA: DESCUBRIR (Verde) */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-3xl mx-auto w-full">
+            {/* BOTÓN IZQUIERDA: DESCUBRIR EXPERIENCIAS (Verde) */}
             <Link to="/mapa" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full px-8 py-3 text-lg font-semibold" style={{ backgroundColor: "#5C6B2E", color: "#FFFFFF" }}>
-                DESCUBRIR
+              <Button size="lg" className="w-full sm:w-auto px-8 py-3 text-lg font-semibold" style={{ backgroundColor: "#5C6B2E", color: "#FFFFFF" }}>
+                DESCUBRIR EXPERIENCIAS
               </Button>
             </Link>
 
@@ -157,7 +157,7 @@ const Hero = () => {
                 const mapSection = document.querySelector('section:has(> div[class*="relative"] > div[class*="flex"])');
                 mapSection?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="w-full sm:w-auto px-8 py-3 text-lg font-semibold rounded-md text-white transition-all"
+              className="w-full sm:w-auto px-8 py-3 text-lg font-semibold rounded-md text-white transition-all hover:opacity-90"
               style={{ backgroundColor: "#8B6233" }}
             >
               VER EL MAPA
@@ -165,7 +165,7 @@ const Hero = () => {
 
             {/* BOTÓN DERECHA: UNIRME COMO EMPRESA (Gold/Marrón) */}
             <Link to="/soy-empresa" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full px-8 py-3 text-lg font-semibold" style={{ backgroundColor: "#B8860B", color: "#3D2B1F", border: "2px solid #B8860B" }}>
+              <Button size="lg" className="w-full sm:w-auto px-8 py-3 text-lg font-semibold" style={{ backgroundColor: "#B8860B", color: "#3D2B1F", border: "2px solid #B8860B" }}>
                 UNIRME COMO EMPRESA
               </Button>
             </Link>
