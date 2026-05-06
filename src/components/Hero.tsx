@@ -135,8 +135,12 @@ const Hero = () => {
             Negocios tradicionales. Calidad real. Comunidad nacional.
           </p>
 
-          <p className="text-white text-lg md:text-lg font-sans text-center leading-relaxed max-w-5xl mx-auto mb-12" style={{ textShadow: "0 1px 6px rgba(0,0,0,0.3)" }}>
-            La única plataforma estacional que conecta tu mesa con el ritmo real de cultivo. Productores, empresas, sabores, rutas y experiencias que varían según el calendario agrícola. Porque el territorio no es estático, y nosotros tampoco.
+          <p className="text-white text-lg md:text-lg font-sans text-center leading-relaxed max-w-3xl mx-auto mb-12" style={{ textShadow: "0 1px 6px rgba(0,0,0,0.3)" }}>
+            La única plataforma estacional que conecta tu mesa con el ritmo real de cultivo.
+            <br />
+            Productores, empresas, sabores, rutas y experiencias que varían según el calendario agrícola.
+            <br />
+            Porque el territorio no es estático, y nosotros tampoco.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-3xl mx-auto w-full">
@@ -153,7 +157,7 @@ const Hero = () => {
                 const mapSection = document.querySelector('section:has(> div[class*="relative"] > div[class*="flex"])');
                 mapSection?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="w-full sm:w-auto px-8 py-3 text-lg font-semibold rounded-md text-white transition-all hover:opacity-90"
+              className="w-full sm:w-auto px-8 py-3 text-base font-semibold rounded-md text-white transition-all hover:opacity-90 whitespace-nowrap"
               style={{ backgroundColor: "#8B6233" }}
             >
               VER EL MAPA
