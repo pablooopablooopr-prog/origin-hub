@@ -26,14 +26,12 @@ interface MapFiltersModalProps {
 
 const NICHOS = [
   { id: 'todos', label: 'Todos' },
-  { id: 'quesos', label: 'Quesos y Lácteos' },
-  { id: 'carnes', label: 'Carnes y Embutidos' },
-  { id: 'vinos', label: 'Vinos y Bodegas' },
-  { id: 'caza', label: 'Caza y Monterías' },
-  { id: 'miel', label: 'Miel y Apicultura' },
-  { id: 'cooperativas', label: 'Cooperativas y Aceite' },
-  { id: 'restaurantes', label: 'Restaurantes' },
-  { id: 'alojamiento', label: 'Alojamiento Rural' },
+  { id: 'quesos', label: 'Queso' },
+  { id: 'carnes', label: 'Carne' },
+  { id: 'vinos', label: 'Vino' },
+  { id: 'caza', label: 'Caza' },
+  { id: 'miel', label: 'Miel' },
+  { id: 'cooperativas', label: 'Cooperativas' },
 ];
 
 const PROVINCIAS = [
@@ -41,8 +39,8 @@ const PROVINCIAS = [
   { id: 'ciudad-real', label: 'Ciudad Real' },
   { id: 'toledo', label: 'Toledo' },
   { id: 'cuenca', label: 'Cuenca' },
-  { id: 'guadalajara', label: 'Guadalajara' },
   { id: 'albacete', label: 'Albacete' },
+  { id: 'guadalajara', label: 'Guadalajara' },
 ];
 
 const TIPOS = [
@@ -51,7 +49,6 @@ const TIPOS = [
   { id: 'restaurante', label: 'Restaurante' },
   { id: 'experiencia', label: 'Experiencia' },
   { id: 'alojamiento', label: 'Alojamiento' },
-  { id: 'mercado', label: 'Mercado/Tienda' },
 ];
 
 export const MapFiltersModal: React.FC<MapFiltersModalProps> = ({

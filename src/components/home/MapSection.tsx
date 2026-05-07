@@ -1,95 +1,69 @@
 /**
- * SECCIÓN MAPA V2 — Refactorización con layout sidebar + proporciones correctas
+ * SECCIÓN MAPA — Premium editorial.
  *
  * Layout:
- * - Sidebar: 25-30% izquierda (desktop), modal (mobile)
- * - Mapa: 70-75% derecha
- * - Altura: 500-600px (sección, no 100vh)
+ *   - Encabezado único (eyebrow + título + subtítulo + laurel decorativo)
+ *   - Tarjeta premium de filtros con 3 grupos (NICHO, TIPO, PROVINCIA+toggles)
+ *   - Mapa compacto integrado con leyenda flotante + panel lateral derecho
+ *   - Métricas inferiores compactas con iconos + laurel
  *
- * Filtros:
- * - NICHO (dropdown)
- * - PROVINCIA (nuevo, para futuro nacional)
- * - TIPO (dropdown)
- * - EN RUTAS (checkbox nuevo)
- * - DESTACADOS (checkbox)
+ * Datos:
+ *   - Mezcla empresas reales (Supabase) con DEMO si BD vacía o pocos resultados
+ *   - Markers personalizados (nicho/destacado/ruta)
+ *   - Polyline discontinua dorada para rutas activas
  */
 
-import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Menu } from 'lucide-react';
+import { Loader2, SlidersHorizontal } from 'lucide-react';
 import { MapFiltersModal } from '@/components/MapFiltersModal';
-import { MapSidebar } from '@/components/MapSidebar';
+import { MapHeader } from './map/MapHeader';
+import { MapFiltersCard } from './map/MapFiltersCard';
+import { MapEmpresaCard } from './map/MapEmpresaCard';
+import { MapLegend } from './map/MapLegend';
+import { MapMetrics } from './map/MapMetrics';
+import { ORIGEN_MAP_STYLE, ORIGEN_COLORS } from './map/mapStyles';
+import { buildMarkerElement, DASHED_LINE_SYMBOL } from './map/markerHelpers';
 import { useGoogleMapsLoader } from '@/hooks/useGoogleMapsLoader';
 import { useFetchEmpresas } from '@/hooks/useFetchEmpresas';
 import { useMapFilters } from '@/hooks/useMapFilters';
 import { useMapLazyLoad } from '@/hooks/useMapPerformance';
-import { SPOTLIGHT_POOL } from '@/data/spotlightDemo';
+import { MAP_DEMO_EMPRESAS } from '@/data/mapDemoEmpresas';
 import type { Empresa } from '@/hooks/useFetchEmpresas';
 
-// Mapa estilo ORIGEN (colores tierra, minimalista)
-const MAP_STYLE: google.maps.MapTypeStyle[] = [
-  { elementType: 'geometry', stylers: [{ color: '#f5f0e8' }] },
-  { elementType: 'labels.text.fill', stylers: [{ color: '#6b5c4c' }] },
-  {
-    featureType: 'administrative',
-    elementType: 'geometry.stroke',
-    stylers: [{ color: '#c9b99a' }],
-  },
-  {
-    featureType: 'landscape.natural',
-    elementType: 'geometry',
-    stylers: [{ color: '#ede7d9' }],
-  },
-  {
-    featureType: 'water',
-    elementType: 'geometry.fill',
-    stylers: [{ color: '#b8cfe0' }],
-  },
-];
-
-// Centro de Castilla-La Mancha
-const REGION_CENTER = { lat: 39.2387, lng: -3.2022 };
+const REGION_CENTER = { lat: 39.0387, lng: -3.5022 };
 const DEFAULT_ZOOM = 8;
+const MIN_REAL_EMPRESAS_TO_HIDE_DEMO = 8;
 
-// Convertir datos de spotlightDemo a Empresa[]
-function convertSpotlightToEmpresas(): Empresa[] {
-  const empresas: Empresa[] = [];
-
-  Object.entries(SPOTLIGHT_POOL).forEach(([nicho, companies]) => {
-    companies.forEach((company, index) => {
-      empresas.push({
-        id: company.id,
-        nombre: company.name,
-        nicho: company.category,
-        tipo: 'productor',
-        plan: company.plan,
-        localidad: company.locality,
-        provincia: 'Ciudad Real', // Datos de ejemplo
-        lat: 39.2 + (Math.random() - 0.5) * 0.5,
-        lng: -3.2 + (Math.random() - 0.5) * 0.5,
-        foto: company.image,
-        descripcion: company.description,
-        en_ruta: index === 0, // Primer item de cada nicho en rutas
-        ruta_name: index === 0 ? `Ruta ${nicho}` : null,
-        slug: company.id,
-      });
-    });
-  });
-
-  return empresas;
-}
+/** Empresa con flags extra usados por el panel lateral. */
+type EmpresaPlus = Empresa & { featured?: boolean; inRoute?: boolean };
 
 export function MapSection() {
   const navigate = useNavigate();
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
-  const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
+  const polylineRef = useRef<google.maps.Polyline | null>(null);
 
-  // Hooks
+  // Hooks core
   const { loaded: mapsLoaded, error: mapsError } = useGoogleMapsLoader();
   const { shouldLoadMap, mapRef: lazyLoadRef } = useMapLazyLoad();
-  const { empresas, loading: empresasLoading, error: empresasError } = useFetchEmpresas();
+  const { empresas: empresasReales } = useFetchEmpresas();
+
+  // Mezcla con demo si la BD viene corta
+  const empresasFusionadas: EmpresaPlus[] = useMemo(() => {
+    const reales = empresasReales || [];
+    if (reales.length >= MIN_REAL_EMPRESAS_TO_HIDE_DEMO) {
+      return reales as EmpresaPlus[];
+    }
+    return [...MAP_DEMO_EMPRESAS, ...(reales as EmpresaPlus[])];
+  }, [empresasReales]);
+
   const {
     filtros,
     empresasOrdenadas,
@@ -99,34 +73,46 @@ export function MapSection() {
     setEnRutas,
     setMostrarDestacados,
     resetFiltros,
-  } = useMapFilters(empresas);
+  } = useMapFilters(empresasFusionadas);
 
-  // Estado local
-  const [selectedEmpresa, setSelectedEmpresa] = useState<string | null>(null);
+  // Estado UI
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [mapInitialized, setMapInitialized] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  // Obtener empresa seleccionada
-  const empresaActual = useMemo(
-    () => empresasOrdenadas.find((e) => e.id === selectedEmpresa) || null,
-    [empresasOrdenadas, selectedEmpresa]
+  // Métricas calculadas
+  const metricas = useMemo(() => {
+    const total = empresasFusionadas.length;
+    const destacados = empresasFusionadas.filter(
+      (e) => e.featured || e.plan === 'destacado'
+    ).length;
+    const enRutas = empresasFusionadas.filter(
+      (e) => e.inRoute || e.en_ruta
+    ).length;
+    return { total, destacados, enRutas };
+  }, [empresasFusionadas]);
+
+  const empresaSeleccionada = useMemo(
+    () => empresasOrdenadas.find((e) => e.id === selectedId) || null,
+    [empresasOrdenadas, selectedId]
   );
 
-  // Inicializar mapa (una sola vez)
+  // Inicializar mapa
   useEffect(() => {
     if (
       !mapsLoaded ||
       !shouldLoadMap ||
       !mapContainer.current ||
-      mapRef.current ||
-      mapInitialized
+      mapRef.current
     ) {
       return;
     }
 
     const initMap = async () => {
       try {
-        const { Map } = (await google.maps.importLibrary('maps')) as google.maps.MapsLibrary;
+        const { Map } = (await google.maps.importLibrary(
+          'maps'
+        )) as google.maps.MapsLibrary;
 
         mapRef.current = new Map(mapContainer.current!, {
           center: REGION_CENTER,
@@ -136,354 +122,305 @@ export function MapSection() {
           zoomControl: true,
           mapTypeControl: false,
           streetViewControl: false,
-          fullscreenControl: true,
-          styles: MAP_STYLE,
+          fullscreenControl: false,
+          gestureHandling: 'cooperative',
+          styles: ORIGEN_MAP_STYLE,
         });
-
-        // Crear InfoWindow para tooltips
-        infoWindowRef.current = new google.maps.InfoWindow();
 
         setMapInitialized(true);
       } catch (err) {
-        console.error('Error initializing map:', err);
+        console.error('[MapSection] init error:', err);
       }
     };
 
     initMap();
-  }, [mapsLoaded, shouldLoadMap, mapInitialized]);
+  }, [mapsLoaded, shouldLoadMap]);
 
-  // Actualizar marcadores cuando cambian empresas filtradas
+  // Markers
   useEffect(() => {
     if (!mapRef.current || !mapInitialized) return;
 
-    // Limpiar marcadores antiguos
-    markersRef.current.forEach((marker) => {
-      marker.map = null;
-    });
+    // limpiar
+    markersRef.current.forEach((m) => (m.map = null));
     markersRef.current = [];
 
     if (empresasOrdenadas.length === 0) return;
 
-    // Crear nuevos marcadores
-    const createMarkers = async () => {
+    const addMarkers = async () => {
       const { AdvancedMarkerElement } = (await google.maps.importLibrary(
         'marker'
       )) as google.maps.MarkerLibrary;
 
       empresasOrdenadas.forEach((empresa) => {
-        // Crear elemento custom para marker
-        const markerElement = document.createElement('div');
-        markerElement.className = 'custom-marker';
+        const e = empresa as EmpresaPlus;
+        const isFeatured = !!(e.featured || e.plan === 'destacado');
+        const isInRoute = !!(e.inRoute || e.en_ruta);
 
-        const color =
-          empresa.plan === 'destacado'
-            ? '#B8860B'
-            : empresa.plan === 'standard'
-            ? '#A0A0A0'
-            : '#CCCCCC';
-        const size = empresa.plan === 'destacado' ? 32 : empresa.plan === 'standard' ? 28 : 24;
-
-        markerElement.innerHTML = `
-          <div style="
-            width: ${size}px;
-            height: ${size}px;
-            border-radius: 50%;
-            background-color: ${color};
-            border: 2px solid white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            transition: all 0.2s ease;
-          ">
-            ${empresa.plan === 'destacado' ? '★' : ''}
-          </div>
-        `;
-
-        markerElement.addEventListener('mouseenter', () => {
-          markerElement.style.transform = 'scale(1.2)';
-          markerElement.style.boxShadow = `0 4px 12px rgba(184, 134, 11, 0.4)`;
-        });
-
-        markerElement.addEventListener('mouseleave', () => {
-          markerElement.style.transform = 'scale(1)';
-          markerElement.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+        const content = buildMarkerElement({
+          nicho: e.nicho,
+          featured: isFeatured,
+          inRoute: isInRoute,
+          selected: selectedId === e.id,
         });
 
         const marker = new AdvancedMarkerElement({
-          position: { lat: empresa.lat, lng: empresa.lng },
+          position: { lat: e.lat, lng: e.lng },
           map: mapRef.current,
-          content: markerElement,
-          title: empresa.nombre,
+          content,
+          title: e.nombre,
         });
 
-        // Click handler
-        marker.addListener('click', () => {
-          setSelectedEmpresa(empresa.id);
-        });
-
+        marker.addListener('click', () => setSelectedId(e.id));
         markersRef.current.push(marker);
       });
     };
 
-    createMarkers();
+    addMarkers();
+  }, [empresasOrdenadas, mapInitialized, selectedId]);
+
+  // Polyline ruta (empresas inRoute conectadas en orden)
+  useEffect(() => {
+    if (!mapRef.current || !mapInitialized) return;
+
+    if (polylineRef.current) {
+      polylineRef.current.setMap(null);
+      polylineRef.current = null;
+    }
+
+    const enRutaOrden = empresasOrdenadas
+      .filter((e) => (e as EmpresaPlus).inRoute || (e as EmpresaPlus).en_ruta)
+      .map((e) => ({ lat: e.lat, lng: e.lng }));
+
+    if (enRutaOrden.length < 2) return;
+
+    polylineRef.current = new google.maps.Polyline({
+      path: enRutaOrden,
+      geodesic: true,
+      strokeOpacity: 0,
+      icons: [{ icon: DASHED_LINE_SYMBOL, offset: '0', repeat: '14px' }],
+      map: mapRef.current,
+    });
   }, [empresasOrdenadas, mapInitialized]);
 
-  // Recentrar mapa al cambiar filtros (suave)
+  // Centrar mapa al cambiar selección
   useEffect(() => {
-    if (!mapRef.current || empresasOrdenadas.length === 0) return;
-
-    // Calcular bounds de todas las empresas visibles
-    const bounds = new google.maps.LatLngBounds();
-    empresasOrdenadas.forEach((empresa) => {
-      bounds.extend({ lat: empresa.lat, lng: empresa.lng });
+    if (!mapRef.current || !empresaSeleccionada) return;
+    mapRef.current.panTo({
+      lat: empresaSeleccionada.lat,
+      lng: empresaSeleccionada.lng,
     });
+  }, [empresaSeleccionada]);
 
-    // Fit bounds con padding
-    mapRef.current.fitBounds(bounds, { top: 100, right: 50, bottom: 50, left: 350 });
-  }, [empresasOrdenadas]);
+  // Recentrar a bounds al cambiar filtros (sin selección)
+  useEffect(() => {
+    if (!mapRef.current || empresasOrdenadas.length === 0 || selectedId) return;
+    const bounds = new google.maps.LatLngBounds();
+    empresasOrdenadas.forEach((e) => bounds.extend({ lat: e.lat, lng: e.lng }));
+    mapRef.current.fitBounds(bounds, { top: 60, right: 60, bottom: 60, left: 60 });
+  }, [empresasOrdenadas, selectedId]);
 
-  const handleViewComplete = (empresaId: string) => {
-    const empresa = empresas.find((e) => e.id === empresaId);
-    if (empresa?.slug) {
-      navigate(`/negocio/${empresa.slug}`);
-    }
+  const handleViewComplete = (id: string) => {
+    const e = empresasFusionadas.find((x) => x.id === id);
+    if (e?.slug) navigate(`/negocio/${e.slug}`);
   };
 
-  // Render
+  // Empresas destacadas para panel lateral (top 3 visibles)
+  const empresasParaPanel = useMemo(() => {
+    if (empresaSeleccionada) {
+      return [empresaSeleccionada as EmpresaPlus];
+    }
+    return empresasOrdenadas.slice(0, 3) as EmpresaPlus[];
+  }, [empresasOrdenadas, empresaSeleccionada]);
+
   return (
-    <section className="w-full bg-background">
-      {/* SECCIÓN TÍTULO + FILTROS INTEGRADOS */}
-      <div className="w-full px-4 md:px-6 py-12 md:py-16 bg-gradient-to-b from-bone via-bone to-transparent">
-        <div className="max-w-7xl mx-auto">
-          {/* LABEL "EL MAPA" EN ORO */}
-          <div className="mb-4 flex items-center gap-2">
-            <span className="text-xs font-semibold uppercase tracking-widest text-warm-white/60">—</span>
-            <span className="text-xs font-bold uppercase tracking-widest text-warm-white" style={{ color: '#B8860B' }}>
-              EL MAPA
-            </span>
-          </div>
+    <section
+      className="w-full"
+      style={{ backgroundColor: ORIGEN_COLORS.paper }}
+    >
+      <div
+        className="mx-auto px-4 md:px-8 py-12 md:py-16"
+        style={{ maxWidth: '1500px' }}
+      >
+        {/* HEADER ÚNICO */}
+        <MapHeader />
 
-          {/* TÍTULO PRINCIPAL */}
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-3 tracking-tight">
-            Explora Castilla-La Mancha
-          </h2>
-
-          {/* SUBTÍTULO */}
-          <p className="text-base md:text-lg text-muted-foreground max-w-3xl leading-relaxed mb-8">
-            Explora productores, restaurantes, experiencias y alojamientos de la región con una navegación clara, curada y visualmente elegante.
-          </p>
-
-          {/* FILTROS DESKTOP - NICHO COMO BOTONES */}
-          <div className="hidden lg:block space-y-6">
-            {/* NICHO - Visual Buttons */}
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Categoría</label>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { id: 'todos', label: 'Todos' },
-                  { id: 'quesos', label: 'Quesos' },
-                  { id: 'carnes', label: 'Carnes' },
-                  { id: 'vinos', label: 'Vinos' },
-                  { id: 'caza', label: 'Caza' },
-                  { id: 'miel', label: 'Miel' },
-                  { id: 'cooperativas', label: 'Cooperativas' },
-                ].map((option) => (
-                  <button
-                    key={option.id}
-                    onClick={() => setNicho(option.id)}
-                    className={`px-4 py-2 text-sm font-semibold rounded-md transition-all duration-200 ${
-                      filtros.nicho === option.id
-                        ? 'bg-moss-medium text-white shadow-soft'
-                        : 'bg-white border-2 border-border text-foreground hover:border-moss-medium'
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* PROVINCIA + TIPO + CHECKBOXES EN FILA */}
-            <div className="flex flex-wrap gap-6 items-end">
-              {/* PROVINCIA - Dropdown */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Provincia</label>
-                <select
-                  value={filtros.provincia}
-                  onChange={(e) => setProvincia(e.target.value)}
-                  className={`px-4 py-2.5 text-sm rounded-md bg-white border-2 transition-all duration-200 font-body ${
-                    filtros.provincia === 'todas'
-                      ? 'border-border text-muted-foreground'
-                      : 'border-earth-medium text-foreground font-semibold'
-                  } hover:shadow-soft focus:outline-none focus:ring-2 focus:ring-earth-medium focus:ring-offset-2`}
-                >
-                  <option value="todas">Todas</option>
-                  <option value="ciudad-real">Ciudad Real</option>
-                  <option value="toledo">Toledo</option>
-                  <option value="cuenca">Cuenca</option>
-                  <option value="guadalajara">Guadalajara</option>
-                  <option value="albacete">Albacete</option>
-                </select>
-              </div>
-
-              {/* TIPO - Visual Buttons */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tipo</label>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    { id: 'todos', label: 'Todos' },
-                    { id: 'productor', label: 'Productor' },
-                    { id: 'restaurante', label: 'Restaurante' },
-                    { id: 'experiencia', label: 'Experiencia' },
-                    { id: 'alojamiento', label: 'Alojamiento' },
-                  ].map((option) => (
-                    <button
-                      key={option.id}
-                      onClick={() => setTipo(option.id)}
-                      className={`px-3 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
-                        filtros.tipo === option.id
-                          ? 'bg-earth-medium text-white shadow-soft'
-                          : 'bg-white border-2 border-border text-foreground hover:border-earth-medium'
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* EN RUTAS */}
-              <label className="flex items-center gap-3 cursor-pointer px-4 py-2.5 rounded-md border-2 border-border hover:border-moss-medium hover:shadow-soft transition-all duration-200">
-                <input
-                  type="checkbox"
-                  checked={filtros.enRutas}
-                  onChange={(e) => setEnRutas(e.target.checked)}
-                  className="w-5 h-5 rounded cursor-pointer accent-moss-medium"
-                />
-                <span className="text-sm font-semibold text-foreground">En rutas</span>
-              </label>
-
-              {/* DESTACADOS */}
-              <label className="flex items-center gap-3 cursor-pointer px-4 py-2.5 rounded-md border-2 border-border hover:border-accent hover:shadow-soft transition-all duration-200">
-                <input
-                  type="checkbox"
-                  checked={filtros.mostrarDestacadosFirst}
-                  onChange={(e) => setMostrarDestacados(e.target.checked)}
-                  className="w-5 h-5 rounded cursor-pointer accent-accent"
-                />
-                <span className="text-sm font-semibold text-foreground">Destacados</span>
-              </label>
-
-              {/* RESET */}
-              <button
-                onClick={resetFiltros}
-                className="px-4 py-2.5 text-xs font-semibold text-muted-foreground border-2 border-border rounded-md hover:border-earth-medium hover:text-earth-medium hover:shadow-soft transition-all duration-200 uppercase tracking-wider"
-              >
-                Limpiar
-              </button>
-            </div>
-          </div>
-
-          {/* MOBILE FILTER TOGGLE BUTTON */}
-          <button
-            onClick={() => setMobileFiltersOpen(true)}
-            className="lg:hidden p-3 rounded-md bg-moss-light/10 hover:bg-moss-light/20 border border-moss-medium/30 transition-all duration-200"
-          >
-            <Menu size={20} className="text-moss-medium" />
-          </button>
-        </div>
-      </div>
-
-      {/* MOBILE FILTERS MODAL */}
-      <MapFiltersModal
-        isOpen={mobileFiltersOpen}
-        onClose={() => setMobileFiltersOpen(false)}
-        nicho={filtros.nicho}
-        provincia={filtros.provincia}
-        tipo={filtros.tipo}
-        enRutas={filtros.enRutas}
-        destacadosPrimero={filtros.mostrarDestacadosFirst}
-        onNichoChange={setNicho}
-        onProvinciaChange={setProvincia}
-        onTipoChange={setTipo}
-        onEnRutasChange={setEnRutas}
-        onDestacadosChange={setMostrarDestacados}
-        onReset={resetFiltros}
-      />
-
-      {/* MAPA CONTAINER */}
-      <div className="relative w-full bg-background">
-        {/* MAP ITSELF */}
-        <div
-          ref={lazyLoadRef}
-          className="relative w-full h-[420px] lg:h-[480px] bg-bone rounded-lg lg:rounded-xl overflow-hidden shadow-soft"
-        >
-          {/* LOADING PLACEHOLDER */}
-          {!shouldLoadMap && (
-            <div className="absolute inset-0 flex items-center justify-center bg-bone">
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground">Cargando mapa...</p>
-              </div>
-            </div>
-          )}
-
-          {/* ERROR STATE */}
-          {shouldLoadMap && mapsError && (
-            <div className="absolute inset-0 flex items-center justify-center bg-bone">
-              <div className="text-center">
-                <p className="text-sm text-destructive font-semibold">Error cargando el mapa</p>
-              </div>
-            </div>
-          )}
-
-          {/* GOOGLE MAPS CONTAINER */}
-          {shouldLoadMap && (
-            <>
-              <div
-                ref={mapContainer}
-                className="w-full h-full"
-                style={{ display: mapsLoaded ? 'block' : 'none' }}
-              />
-
-              {/* LOADING SPINNER DURANTE INICIALIZACIÓN */}
-              {!mapInitialized && mapsLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-sm z-10">
-                  <Loader2 size={40} className="animate-spin text-moss-medium" strokeWidth={1.5} />
-                </div>
-              )}
-            </>
-          )}
-        </div>
-
-        {/* SIDEBAR */}
-        <MapSidebar
-          empresa={empresaActual}
-          onClose={() => setSelectedEmpresa(null)}
-          onViewComplete={handleViewComplete}
+        {/* FILTROS DESKTOP */}
+        <MapFiltersCard
+          nicho={filtros.nicho}
+          tipo={filtros.tipo}
+          provincia={filtros.provincia}
+          enRutas={filtros.enRutas}
+          destacadosPrimero={filtros.mostrarDestacadosFirst}
+          onNichoChange={setNicho}
+          onTipoChange={setTipo}
+          onProvinciaChange={setProvincia}
+          onEnRutasChange={setEnRutas}
+          onDestacadosChange={setMostrarDestacados}
+          onReset={resetFiltros}
         />
-      </div>
 
-      {/* INFO DE EMPRESAS - ESTADÍSTICAS */}
-      <div className="px-4 md:px-6 py-8 md:py-12 bg-background border-t border-border">
-        <div className="max-w-7xl mx-auto grid grid-cols-3 gap-4 md:gap-8 text-center">
-          <div>
-            <div className="text-2xl md:text-3xl font-bold text-foreground">214</div>
-            <p className="text-xs md:text-sm text-muted-foreground uppercase tracking-wider mt-2">Empresas</p>
+        {/* TOGGLE FILTROS MOBILE */}
+        <button
+          onClick={() => setMobileFiltersOpen(true)}
+          className="lg:hidden mt-6 w-full flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-sm font-semibold transition-all"
+          style={{
+            backgroundColor: ORIGEN_COLORS.cream,
+            border: `1px solid ${ORIGEN_COLORS.beigeSoft}`,
+            color: ORIGEN_COLORS.brown,
+            boxShadow: '0 2px 8px rgba(60, 43, 32, 0.06)',
+          }}
+        >
+          <SlidersHorizontal size={16} style={{ color: ORIGEN_COLORS.olive }} />
+          Filtros
+        </button>
+
+        <MapFiltersModal
+          isOpen={mobileFiltersOpen}
+          onClose={() => setMobileFiltersOpen(false)}
+          nicho={filtros.nicho}
+          provincia={filtros.provincia}
+          tipo={filtros.tipo}
+          enRutas={filtros.enRutas}
+          destacadosPrimero={filtros.mostrarDestacadosFirst}
+          onNichoChange={setNicho}
+          onProvinciaChange={setProvincia}
+          onTipoChange={setTipo}
+          onEnRutasChange={setEnRutas}
+          onDestacadosChange={setMostrarDestacados}
+          onReset={resetFiltros}
+        />
+
+        {/* MAPA + PANEL LATERAL */}
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
+          {/* Mapa */}
+          <div
+            ref={lazyLoadRef}
+            className="relative rounded-3xl overflow-hidden"
+            style={{
+              height: 'clamp(420px, 55vh, 520px)',
+              border: `1px solid ${ORIGEN_COLORS.beigeSoft}`,
+              boxShadow:
+                '0 6px 24px rgba(60, 43, 32, 0.08), 0 1px 3px rgba(60, 43, 32, 0.05)',
+              backgroundColor: ORIGEN_COLORS.paperWarm,
+            }}
+          >
+            {!shouldLoadMap && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <p className="text-sm" style={{ color: ORIGEN_COLORS.brownSoft }}>
+                  Cargando mapa…
+                </p>
+              </div>
+            )}
+
+            {shouldLoadMap && mapsError && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <p
+                  className="text-sm font-semibold"
+                  style={{ color: '#A04545' }}
+                >
+                  Error cargando el mapa
+                </p>
+              </div>
+            )}
+
+            {shouldLoadMap && (
+              <>
+                <div
+                  ref={mapContainer}
+                  className="w-full h-full"
+                  style={{ display: mapsLoaded ? 'block' : 'none' }}
+                />
+
+                {/* Overlay sutil crema/verde para suavizar el mapa */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      'radial-gradient(circle at 50% 50%, rgba(245, 240, 232, 0) 60%, rgba(245, 240, 232, 0.18) 100%)',
+                    mixBlendMode: 'multiply',
+                  }}
+                  aria-hidden="true"
+                />
+
+                {!mapInitialized && mapsLoaded && (
+                  <div
+                    className="absolute inset-0 flex items-center justify-center backdrop-blur-sm z-10"
+                    style={{ backgroundColor: 'rgba(245, 240, 232, 0.6)' }}
+                  >
+                    <Loader2
+                      size={36}
+                      className="animate-spin"
+                      style={{ color: ORIGEN_COLORS.olive }}
+                      strokeWidth={1.5}
+                    />
+                  </div>
+                )}
+
+                {/* Leyenda flotante */}
+                <MapLegend />
+              </>
+            )}
           </div>
-          <div>
-            <div className="text-2xl md:text-3xl font-bold text-moss-medium">32</div>
-            <p className="text-xs md:text-sm text-muted-foreground uppercase tracking-wider mt-2">Destacados</p>
-          </div>
-          <div>
-            <div className="text-2xl md:text-3xl font-bold text-earth-medium">18</div>
-            <p className="text-xs md:text-sm text-muted-foreground uppercase tracking-wider mt-2">En Rutas Activas</p>
-          </div>
+
+          {/* Panel lateral derecho (desktop) / debajo (mobile) */}
+          <aside className="space-y-3">
+            <div
+              className="hidden lg:flex items-center justify-between mb-1"
+            >
+              <span
+                className="text-[11px] font-bold uppercase tracking-[0.2em]"
+                style={{ color: ORIGEN_COLORS.brownSoft }}
+              >
+                {empresaSeleccionada ? 'Seleccionada' : 'Sugerencias'}
+              </span>
+              <span
+                className="text-[11px]"
+                style={{ color: ORIGEN_COLORS.brownSoft }}
+              >
+                {empresasOrdenadas.length} resultados
+              </span>
+            </div>
+
+            {/* Mobile: scroll horizontal · Desktop: stack */}
+            <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0">
+              {empresasParaPanel.length === 0 ? (
+                <div
+                  className="w-full text-center py-8 rounded-2xl"
+                  style={{
+                    backgroundColor: ORIGEN_COLORS.cream,
+                    border: `1px dashed ${ORIGEN_COLORS.beigeSoft}`,
+                    color: ORIGEN_COLORS.brownSoft,
+                  }}
+                >
+                  <p className="text-sm">
+                    Sin resultados con estos filtros.
+                  </p>
+                </div>
+              ) : (
+                empresasParaPanel.map((e) => (
+                  <div
+                    key={e.id}
+                    className="flex-shrink-0 w-[280px] lg:w-auto"
+                  >
+                    <MapEmpresaCard
+                      empresa={e}
+                      isSelected={selectedId === e.id}
+                      onClick={() => setSelectedId(e.id)}
+                      onView={() => handleViewComplete(e.id)}
+                    />
+                  </div>
+                ))
+              )}
+            </div>
+          </aside>
         </div>
+
+        {/* MÉTRICAS INFERIORES */}
+        <MapMetrics
+          empresas={metricas.total}
+          destacados={metricas.destacados}
+          enRutas={metricas.enRutas}
+        />
       </div>
     </section>
   );
