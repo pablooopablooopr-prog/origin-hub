@@ -102,18 +102,10 @@ const Index = () => {
         {/* ===== SECCIÓN 3: HOY EN ORIGEN ○ (spotlight 6 nichos) ===== */}
         <SpotlightToday />
 
-        {/* ===== SECCIÓN 4: MAPA INTERACTIVO CON FILTROS ===== */}
-        <section className="bg-white">
-          <div className="container mx-auto px-6 max-w-7xl text-center pt-8 pb-4">
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
-              El mapa
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-              Descubre el tejido de Castilla-La Mancha
-            </h2>
-          </div>
-          <MapSection />
-        </section>
+        {/* ===== SECCIÓN 4: MAPA INTERACTIVO CON FILTROS =====
+            El componente <MapSection/> ya trae su propio header editorial
+            (eyebrow + título + subtítulo + laurel). NO añadir título extra aquí. */}
+        <MapSection />
 
         {/* ===== SECCIÓN 5: RUTAS DE LA TEMPORADA ===== */}
         <SeasonalRoutes />
