@@ -257,91 +257,107 @@ export function MapSection() {
   // Render
   return (
     <section className="w-full bg-background">
-      {/* SECCIÓN TÍTULO */}
+      {/* SECCIÓN TÍTULO + FILTROS INTEGRADOS */}
       <div className="w-full px-4 md:px-6 py-12 md:py-16 bg-gradient-to-b from-bone via-bone to-transparent">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-3 tracking-tight">
-            Descubre el tejido de Castilla-La Mancha
-          </h2>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            Explora los productores, empresas y experiencias que nos conforman. Cada negocio, una historia de tradición y excelencia.
-          </p>
-        </div>
-      </div>
-
-      {/* FILTROS HORIZONTAL ENCIMA DEL MAPA */}
-      <div className="w-full px-4 md:px-6 py-6 bg-background border-b border-border shadow-soft">
         <div className="max-w-7xl mx-auto">
-          {/* DESKTOP FILTERS - HORIZONTAL */}
-          <div className="hidden lg:flex gap-4 items-center justify-start flex-wrap">
-            {/* NICHO - Moss green themed */}
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Categoría</label>
-              <select
-                value={filtros.nicho}
-                onChange={(e) => setNicho(e.target.value)}
-                className={`px-4 py-2.5 text-sm rounded-md bg-white border-2 transition-all duration-200 font-body ${
-                  filtros.nicho === 'todos'
-                    ? 'border-border text-muted-foreground'
-                    : 'border-moss-medium text-foreground font-semibold'
-                } hover:shadow-soft focus:outline-none focus:ring-2 focus:ring-moss-medium focus:ring-offset-2`}
-              >
-                <option value="todos">Todos</option>
-                <option value="quesos">Quesos y Lácteos</option>
-                <option value="carnes">Carnes y Embutidos</option>
-                <option value="vinos">Vinos y Bodegas</option>
-                <option value="caza">Caza y Monterías</option>
-                <option value="miel">Miel y Apicultura</option>
-                <option value="cooperativas">Cooperativas y Aceite</option>
-                <option value="restaurantes">Restaurantes</option>
-                <option value="alojamiento">Alojamiento Rural</option>
-              </select>
+          {/* LABEL "EL MAPA" EN ORO */}
+          <div className="mb-4 flex items-center gap-2">
+            <span className="text-xs font-semibold uppercase tracking-widest text-warm-white/60">—</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-warm-white" style={{ color: '#B8860B' }}>
+              EL MAPA
+            </span>
+          </div>
+
+          {/* TÍTULO PRINCIPAL */}
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-3 tracking-tight">
+            Explora Castilla-La Mancha
+          </h2>
+
+          {/* SUBTÍTULO */}
+          <p className="text-base md:text-lg text-muted-foreground max-w-3xl leading-relaxed mb-8">
+            Explora productores, restaurantes, experiencias y alojamientos de la región con una navegación clara, curada y visualmente elegante.
+          </p>
+
+          {/* FILTROS DESKTOP - NICHO COMO BOTONES */}
+          <div className="hidden lg:block space-y-6">
+            {/* NICHO - Visual Buttons */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Categoría</label>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { id: 'todos', label: 'Todos' },
+                  { id: 'quesos', label: 'Quesos' },
+                  { id: 'carnes', label: 'Carnes' },
+                  { id: 'vinos', label: 'Vinos' },
+                  { id: 'caza', label: 'Caza' },
+                  { id: 'miel', label: 'Miel' },
+                  { id: 'cooperativas', label: 'Cooperativas' },
+                ].map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => setNicho(option.id)}
+                    className={`px-4 py-2 text-sm font-semibold rounded-md transition-all duration-200 ${
+                      filtros.nicho === option.id
+                        ? 'bg-moss-medium text-white shadow-soft'
+                        : 'bg-white border-2 border-border text-foreground hover:border-moss-medium'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* PROVINCIA - Earth toned */}
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Provincia</label>
-              <select
-                value={filtros.provincia}
-                onChange={(e) => setProvincia(e.target.value)}
-                className={`px-4 py-2.5 text-sm rounded-md bg-white border-2 transition-all duration-200 font-body ${
-                  filtros.provincia === 'todas'
-                    ? 'border-border text-muted-foreground'
-                    : 'border-earth-medium text-foreground font-semibold'
-                } hover:shadow-soft focus:outline-none focus:ring-2 focus:ring-earth-medium focus:ring-offset-2`}
-              >
-                <option value="todas">Todas</option>
-                <option value="ciudad-real">Ciudad Real</option>
-                <option value="toledo">Toledo</option>
-                <option value="cuenca">Cuenca</option>
-                <option value="guadalajara">Guadalajara</option>
-                <option value="albacete">Albacete</option>
-              </select>
-            </div>
+            {/* PROVINCIA + TIPO + CHECKBOXES EN FILA */}
+            <div className="flex flex-wrap gap-6 items-end">
+              {/* PROVINCIA - Dropdown */}
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Provincia</label>
+                <select
+                  value={filtros.provincia}
+                  onChange={(e) => setProvincia(e.target.value)}
+                  className={`px-4 py-2.5 text-sm rounded-md bg-white border-2 transition-all duration-200 font-body ${
+                    filtros.provincia === 'todas'
+                      ? 'border-border text-muted-foreground'
+                      : 'border-earth-medium text-foreground font-semibold'
+                  } hover:shadow-soft focus:outline-none focus:ring-2 focus:ring-earth-medium focus:ring-offset-2`}
+                >
+                  <option value="todas">Todas</option>
+                  <option value="ciudad-real">Ciudad Real</option>
+                  <option value="toledo">Toledo</option>
+                  <option value="cuenca">Cuenca</option>
+                  <option value="guadalajara">Guadalajara</option>
+                  <option value="albacete">Albacete</option>
+                </select>
+              </div>
 
-            {/* TIPO - Neutral toned */}
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tipo</label>
-              <select
-                value={filtros.tipo}
-                onChange={(e) => setTipo(e.target.value)}
-                className={`px-4 py-2.5 text-sm rounded-md bg-white border-2 transition-all duration-200 font-body ${
-                  filtros.tipo === 'todos'
-                    ? 'border-border text-muted-foreground'
-                    : 'border-muted text-foreground font-semibold'
-                } hover:shadow-soft focus:outline-none focus:ring-2 focus:ring-muted focus:ring-offset-2`}
-              >
-                <option value="todos">Todos</option>
-                <option value="productor">Productor</option>
-                <option value="restaurante">Restaurante</option>
-                <option value="experiencia">Experiencia</option>
-                <option value="alojamiento">Alojamiento</option>
-                <option value="mercado">Mercado/Tienda</option>
-              </select>
-            </div>
+              {/* TIPO - Visual Buttons */}
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tipo</label>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { id: 'todos', label: 'Todos' },
+                    { id: 'productor', label: 'Productor' },
+                    { id: 'restaurante', label: 'Restaurante' },
+                    { id: 'experiencia', label: 'Experiencia' },
+                    { id: 'alojamiento', label: 'Alojamiento' },
+                  ].map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => setTipo(option.id)}
+                      className={`px-3 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
+                        filtros.tipo === option.id
+                          ? 'bg-earth-medium text-white shadow-soft'
+                          : 'bg-white border-2 border-border text-foreground hover:border-earth-medium'
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-            {/* EN RUTAS - Checkbox with moss accent */}
-            <div className="flex items-end h-full pb-0">
+              {/* EN RUTAS */}
               <label className="flex items-center gap-3 cursor-pointer px-4 py-2.5 rounded-md border-2 border-border hover:border-moss-medium hover:shadow-soft transition-all duration-200">
                 <input
                   type="checkbox"
@@ -351,10 +367,8 @@ export function MapSection() {
                 />
                 <span className="text-sm font-semibold text-foreground">En rutas</span>
               </label>
-            </div>
 
-            {/* DESTACADOS - Checkbox with accent */}
-            <div className="flex items-end h-full pb-0">
+              {/* DESTACADOS */}
               <label className="flex items-center gap-3 cursor-pointer px-4 py-2.5 rounded-md border-2 border-border hover:border-accent hover:shadow-soft transition-all duration-200">
                 <input
                   type="checkbox"
@@ -364,15 +378,15 @@ export function MapSection() {
                 />
                 <span className="text-sm font-semibold text-foreground">Destacados</span>
               </label>
-            </div>
 
-            {/* RESET BUTTON - Subtle but clear */}
-            <button
-              onClick={resetFiltros}
-              className="px-4 py-2.5 text-xs font-semibold text-muted-foreground border-2 border-border rounded-md hover:border-earth-medium hover:text-earth-medium hover:shadow-soft transition-all duration-200 uppercase tracking-wider"
-            >
-              Limpiar
-            </button>
+              {/* RESET */}
+              <button
+                onClick={resetFiltros}
+                className="px-4 py-2.5 text-xs font-semibold text-muted-foreground border-2 border-border rounded-md hover:border-earth-medium hover:text-earth-medium hover:shadow-soft transition-all duration-200 uppercase tracking-wider"
+              >
+                Limpiar
+              </button>
+            </div>
           </div>
 
           {/* MOBILE FILTER TOGGLE BUTTON */}
@@ -454,11 +468,22 @@ export function MapSection() {
         />
       </div>
 
-      {/* INFO DE EMPRESAS - Professional footer */}
-      <div className="px-4 md:px-6 py-4 bg-background border-t border-border text-center">
-        <p className="text-sm text-muted-foreground font-medium">
-          Mostrando <span className="font-semibold text-foreground">{empresasOrdenadas.length}</span> de <span className="font-semibold text-foreground">{empresas.length}</span> empresas
-        </p>
+      {/* INFO DE EMPRESAS - ESTADÍSTICAS */}
+      <div className="px-4 md:px-6 py-8 md:py-12 bg-background border-t border-border">
+        <div className="max-w-7xl mx-auto grid grid-cols-3 gap-4 md:gap-8 text-center">
+          <div>
+            <div className="text-2xl md:text-3xl font-bold text-foreground">214</div>
+            <p className="text-xs md:text-sm text-muted-foreground uppercase tracking-wider mt-2">Empresas</p>
+          </div>
+          <div>
+            <div className="text-2xl md:text-3xl font-bold text-moss-medium">32</div>
+            <p className="text-xs md:text-sm text-muted-foreground uppercase tracking-wider mt-2">Destacados</p>
+          </div>
+          <div>
+            <div className="text-2xl md:text-3xl font-bold text-earth-medium">18</div>
+            <p className="text-xs md:text-sm text-muted-foreground uppercase tracking-wider mt-2">En Rutas Activas</p>
+          </div>
+        </div>
       </div>
     </section>
   );
