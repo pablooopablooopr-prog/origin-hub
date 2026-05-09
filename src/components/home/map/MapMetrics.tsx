@@ -20,7 +20,7 @@ export const MapMetrics: React.FC<MapMetricsProps> = ({
 }) => {
   return (
     <div
-      className="relative mt-6 rounded-2xl px-4 md:px-8 py-6"
+      className="relative mt-2 rounded-2xl px-4 md:px-8 py-4"
       style={{
         backgroundColor: ORIGEN_COLORS.cream,
         border: `1px solid ${ORIGEN_COLORS.beigeSoft}`,

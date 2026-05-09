@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { ChevronDown, Star, Route, X } from 'lucide-react';
+import { ChevronDown, Star, Route } from 'lucide-react';
 import { ORIGEN_COLORS } from './mapStyles';
 
 type IconKey =
@@ -26,7 +26,7 @@ type IconKey =
 
 const ICONS: Record<IconKey, React.ReactNode> = {
   todos: (
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="7" height="7" rx="1" />
       <rect x="14" y="3" width="7" height="7" rx="1" />
       <rect x="3" y="14" width="7" height="7" rx="1" />
@@ -112,15 +112,15 @@ const NICHO_OPTIONS: { id: string; label: string; icon: IconKey }[] = [
   { id: 'vinos', label: 'Vino', icon: 'vino' },
   { id: 'caza', label: 'Caza', icon: 'caza' },
   { id: 'miel', label: 'Miel', icon: 'miel' },
-  { id: 'cooperativas', label: 'Coop.', icon: 'cooperativas' },
+  { id: 'cooperativas', label: 'Cooperativas', icon: 'cooperativas' },
 ];
 
 const TIPO_OPTIONS: { id: string; label: string; icon: IconKey }[] = [
   { id: 'todos', label: 'Todos', icon: 'todos' },
   { id: 'productor', label: 'Productor', icon: 'productor' },
-  { id: 'restaurante', label: 'Rest.', icon: 'restaurante' },
-  { id: 'experiencia', label: 'Exper.', icon: 'experiencia' },
-  { id: 'alojamiento', label: 'Aloj.', icon: 'alojamiento' },
+  { id: 'restaurante', label: 'Restaurante', icon: 'restaurante' },
+  { id: 'experiencia', label: 'Experiencia', icon: 'experiencia' },
+  { id: 'alojamiento', label: 'Alojamiento', icon: 'alojamiento' },
 ];
 
 const PROVINCIAS = [
@@ -143,7 +143,6 @@ interface MapFiltersCardProps {
   onProvinciaChange: (v: string) => void;
   onEnRutasChange: (v: boolean) => void;
   onDestacadosChange: (v: boolean) => void;
-  onReset: () => void;
 }
 
 interface SubCardProps {
@@ -154,7 +153,7 @@ interface SubCardProps {
 
 const SubCard: React.FC<SubCardProps> = ({ title, children, className = '' }) => (
   <div
-    className={`rounded-2xl px-3 py-2.5 flex flex-col gap-2 ${className}`}
+    className={`rounded-2xl px-3.5 py-3 flex flex-col gap-2 ${className}`}
     style={{
       backgroundColor: 'rgba(255, 250, 240, 0.55)',
       border: `1px solid ${ORIGEN_COLORS.beigeSoft}`,
@@ -181,7 +180,7 @@ const Chip: React.FC<ChipProps> = ({ active, onClick, icon, label }) => (
   <button
     type="button"
     onClick={onClick}
-    className="flex items-center gap-1 px-2 py-1 rounded-xl border transition-all duration-200 flex-shrink-0"
+    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border transition-all duration-200 flex-shrink-0"
     style={{
       backgroundColor: active ? ORIGEN_COLORS.olive : ORIGEN_COLORS.cream,
       borderColor: active ? ORIGEN_COLORS.olive : ORIGEN_COLORS.beigeSoft,
@@ -197,7 +196,7 @@ const Chip: React.FC<ChipProps> = ({ active, onClick, icon, label }) => (
     >
       {icon}
     </span>
-    <span className="text-[11px] font-semibold whitespace-nowrap">{label}</span>
+    <span className="text-[12px] font-semibold whitespace-nowrap">{label}</span>
   </button>
 );
 
@@ -212,7 +211,6 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
   onProvinciaChange,
   onEnRutasChange,
   onDestacadosChange,
-  onReset,
 }) => {
   return (
     <div
@@ -224,10 +222,10 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
           '0 4px 20px rgba(60, 43, 32, 0.06), 0 1px 3px rgba(60, 43, 32, 0.04)',
       }}
     >
-      <div className="grid grid-cols-[2fr_1.4fr_1.2fr] gap-3 items-stretch">
+      <div className="grid grid-cols-[1.15fr_1fr_1.5fr] gap-3 items-stretch">
         {/* SUB-CARD A — NICHO */}
         <SubCard title="Nicho">
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1.5">
             {NICHO_OPTIONS.map((opt) => (
               <Chip
                 key={opt.id}
@@ -242,7 +240,7 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
 
         {/* SUB-CARD B — TIPO */}
         <SubCard title="Tipo">
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1.5">
             {TIPO_OPTIONS.map((opt) => (
               <Chip
                 key={opt.id}
@@ -301,20 +299,6 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
               label="En rutas"
               activeColor={ORIGEN_COLORS.olive}
             />
-            <button
-              type="button"
-              onClick={onReset}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-[11px] font-semibold uppercase tracking-wider transition-all hover:opacity-80"
-              style={{
-                backgroundColor: 'transparent',
-                borderColor: ORIGEN_COLORS.beigeSoft,
-                color: ORIGEN_COLORS.brownSoft,
-              }}
-              title="Limpiar filtros"
-            >
-              <X size={12} />
-              Limpiar
-            </button>
           </div>
         </SubCard>
       </div>

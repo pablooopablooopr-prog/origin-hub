@@ -20,7 +20,7 @@ import React, {
   useMemo,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, SlidersHorizontal } from 'lucide-react';
+import { Loader2, SlidersHorizontal, X } from 'lucide-react';
 import { MapFiltersModal } from '@/components/MapFiltersModal';
 import { MapHeader } from './map/MapHeader';
 import { MapFiltersCard } from './map/MapFiltersCard';
@@ -238,7 +238,7 @@ export function MapSection() {
       style={{ backgroundColor: ORIGEN_COLORS.paper }}
     >
       <div
-        className="mx-auto px-4 md:px-8 pt-16 md:pt-24 pb-12 md:pb-16"
+        className="mx-auto px-4 md:px-8 pt-2 md:pt-3 pb-10 md:pb-14"
         style={{ maxWidth: '1500px' }}
       >
         {/* HEADER ÚNICO */}
@@ -256,7 +256,6 @@ export function MapSection() {
           onProvinciaChange={setProvincia}
           onEnRutasChange={setEnRutas}
           onDestacadosChange={setMostrarDestacados}
-          onReset={resetFiltros}
         />
 
         {/* TOGGLE FILTROS MOBILE */}
@@ -291,7 +290,7 @@ export function MapSection() {
         />
 
         {/* MAPA + PANEL LATERAL */}
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-stretch">
+        <div className="mt-3 md:mt-4 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4 items-stretch">
           {/* Mapa */}
           <div
             ref={lazyLoadRef}
@@ -358,6 +357,24 @@ export function MapSection() {
 
                 {/* Leyenda flotante */}
                 <MapLegend />
+
+                {/* Botón LIMPIAR flotante (esquina superior derecha) */}
+                <button
+                  type="button"
+                  onClick={resetFiltros}
+                  className="absolute top-3 right-3 z-20 flex items-center gap-1.5 px-3 py-2 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all hover:scale-105"
+                  style={{
+                    backgroundColor: ORIGEN_COLORS.cream,
+                    border: `1.5px solid ${ORIGEN_COLORS.gold}`,
+                    color: ORIGEN_COLORS.brown,
+                    boxShadow:
+                      '0 4px 12px rgba(184, 134, 11, 0.18), 0 1px 3px rgba(60, 43, 32, 0.12)',
+                  }}
+                  title="Limpiar todos los filtros"
+                >
+                  <X size={13} strokeWidth={2.5} style={{ color: ORIGEN_COLORS.gold }} />
+                  Limpiar
+                </button>
               </>
             )}
           </div>
