@@ -26,7 +26,7 @@ type IconKey =
 
 const ICONS: Record<IconKey, React.ReactNode> = {
   todos: (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="7" height="7" rx="1" />
       <rect x="14" y="3" width="7" height="7" rx="1" />
       <rect x="3" y="14" width="7" height="7" rx="1" />
@@ -154,7 +154,7 @@ interface SubCardProps {
 
 const SubCard: React.FC<SubCardProps> = ({ title, children, className = '' }) => (
   <div
-    className={`rounded-2xl px-4 py-3.5 flex flex-col gap-2.5 ${className}`}
+    className={`rounded-2xl px-3 py-2.5 flex flex-col gap-2 ${className}`}
     style={{
       backgroundColor: 'rgba(255, 250, 240, 0.55)',
       border: `1px solid ${ORIGEN_COLORS.beigeSoft}`,
@@ -181,7 +181,7 @@ const Chip: React.FC<ChipProps> = ({ active, onClick, icon, label }) => (
   <button
     type="button"
     onClick={onClick}
-    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border transition-all duration-200 flex-shrink-0"
+    className="flex items-center gap-1 px-2 py-1 rounded-xl border transition-all duration-200 flex-shrink-0"
     style={{
       backgroundColor: active ? ORIGEN_COLORS.olive : ORIGEN_COLORS.cream,
       borderColor: active ? ORIGEN_COLORS.olive : ORIGEN_COLORS.beigeSoft,
@@ -197,7 +197,7 @@ const Chip: React.FC<ChipProps> = ({ active, onClick, icon, label }) => (
     >
       {icon}
     </span>
-    <span className="text-[12px] font-semibold whitespace-nowrap">{label}</span>
+    <span className="text-[11px] font-semibold whitespace-nowrap">{label}</span>
   </button>
 );
 
@@ -227,7 +227,7 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
       <div className="grid grid-cols-[2fr_1.4fr_1.2fr] gap-3 items-stretch">
         {/* SUB-CARD A — NICHO */}
         <SubCard title="Nicho">
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1">
             {NICHO_OPTIONS.map((opt) => (
               <Chip
                 key={opt.id}
@@ -242,7 +242,7 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
 
         {/* SUB-CARD B — TIPO */}
         <SubCard title="Tipo">
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1">
             {TIPO_OPTIONS.map((opt) => (
               <Chip
                 key={opt.id}

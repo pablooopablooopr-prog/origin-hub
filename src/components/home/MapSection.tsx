@@ -238,7 +238,7 @@ export function MapSection() {
       style={{ backgroundColor: ORIGEN_COLORS.paper }}
     >
       <div
-        className="mx-auto px-4 md:px-8 py-12 md:py-16"
+        className="mx-auto px-4 md:px-8 pt-16 md:pt-24 pb-12 md:pb-16"
         style={{ maxWidth: '1500px' }}
       >
         {/* HEADER ÚNICO */}
@@ -291,7 +291,7 @@ export function MapSection() {
         />
 
         {/* MAPA + PANEL LATERAL */}
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-stretch">
           {/* Mapa */}
           <div
             ref={lazyLoadRef}
@@ -363,9 +363,9 @@ export function MapSection() {
           </div>
 
           {/* Panel lateral derecho (desktop) / debajo (mobile) */}
-          <aside className="space-y-3">
+          <aside className="space-y-3 flex flex-col">
             <div
-              className="hidden lg:flex items-center justify-between mb-1"
+              className="hidden lg:flex items-center justify-between"
             >
               <span
                 className="text-[11px] font-bold uppercase tracking-[0.2em]"
@@ -382,7 +382,7 @@ export function MapSection() {
             </div>
 
             {/* Mobile: scroll horizontal · Desktop: stack */}
-            <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0">
+            <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0 lg:flex-1">
               {empresasParaPanel.length === 0 ? (
                 <div
                   className="w-full text-center py-8 rounded-2xl"
