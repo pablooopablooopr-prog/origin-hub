@@ -231,7 +231,6 @@ export function MapSection() {
     }
     return empresasOrdenadas as EmpresaPlus[];
   }, [empresasOrdenadas, empresaSeleccionada]);
-  }, [empresasOrdenadas, empresaSeleccionada]);
 
   return (
     <section
