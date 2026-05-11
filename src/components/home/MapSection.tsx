@@ -20,7 +20,7 @@ import React, {
   useMemo,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, SlidersHorizontal, X } from 'lucide-react';
+import { Loader2, SlidersHorizontal } from 'lucide-react';
 import { MapFiltersModal } from '@/components/MapFiltersModal';
 import { MapHeader } from './map/MapHeader';
 import { MapFiltersCard } from './map/MapFiltersCard';
@@ -256,6 +256,7 @@ export function MapSection() {
           onProvinciaChange={setProvincia}
           onEnRutasChange={setEnRutas}
           onDestacadosChange={setMostrarDestacados}
+          onReset={resetFiltros}
         />
 
         {/* TOGGLE FILTROS MOBILE */}
@@ -289,36 +290,27 @@ export function MapSection() {
           onReset={resetFiltros}
         />
 
-        {/* MAPA + PANEL LATERAL */}
-        <div className="mt-3 md:mt-4 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4 items-stretch">
-          {/* Mapa */}
+        {/* MAPA FULL-WIDTH con cards flotantes */}
+        <div className="mt-3 md:mt-4">
           <div
             ref={lazyLoadRef}
-            className="relative rounded-3xl overflow-hidden"
+            className="relative w-full rounded-3xl overflow-hidden"
             style={{
-              height: 'clamp(420px, 55vh, 520px)',
+              height: 'clamp(460px, 58vh, 560px)',
               border: `1px solid ${ORIGEN_COLORS.beigeSoft}`,
-              boxShadow:
-                '0 6px 24px rgba(60, 43, 32, 0.08), 0 1px 3px rgba(60, 43, 32, 0.05)',
+              boxShadow: '0 6px 24px rgba(60, 43, 32, 0.08), 0 1px 3px rgba(60, 43, 32, 0.05)',
               backgroundColor: ORIGEN_COLORS.paperWarm,
             }}
           >
             {!shouldLoadMap && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <p className="text-sm" style={{ color: ORIGEN_COLORS.brownSoft }}>
-                  Cargando mapa…
-                </p>
+                <p className="text-sm" style={{ color: ORIGEN_COLORS.brownSoft }}>Cargando mapa…</p>
               </div>
             )}
 
             {shouldLoadMap && mapsError && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <p
-                  className="text-sm font-semibold"
-                  style={{ color: '#A04545' }}
-                >
-                  Error cargando el mapa
-                </p>
+                <p className="text-sm font-semibold" style={{ color: '#A04545' }}>Error cargando el mapa</p>
               </div>
             )}
 
@@ -330,12 +322,11 @@ export function MapSection() {
                   style={{ display: mapsLoaded ? 'block' : 'none' }}
                 />
 
-                {/* Overlay sutil crema/verde para suavizar el mapa */}
+                {/* Overlay sutil */}
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
-                    background:
-                      'radial-gradient(circle at 50% 50%, rgba(245, 240, 232, 0) 60%, rgba(245, 240, 232, 0.18) 100%)',
+                    background: 'radial-gradient(circle at 50% 50%, rgba(245, 240, 232, 0) 60%, rgba(245, 240, 232, 0.18) 100%)',
                     mixBlendMode: 'multiply',
                   }}
                   aria-hidden="true"
@@ -346,90 +337,81 @@ export function MapSection() {
                     className="absolute inset-0 flex items-center justify-center backdrop-blur-sm z-10"
                     style={{ backgroundColor: 'rgba(245, 240, 232, 0.6)' }}
                   >
-                    <Loader2
-                      size={36}
-                      className="animate-spin"
-                      style={{ color: ORIGEN_COLORS.olive }}
-                      strokeWidth={1.5}
-                    />
+                    <Loader2 size={36} className="animate-spin" style={{ color: ORIGEN_COLORS.olive }} strokeWidth={1.5} />
                   </div>
                 )}
 
-                {/* Leyenda flotante */}
+                {/* Leyenda flotante (abajo-izquierda) */}
                 <MapLegend />
 
-                {/* Botón LIMPIAR flotante (esquina superior derecha) */}
-                <button
-                  type="button"
-                  onClick={resetFiltros}
-                  className="absolute top-3 right-3 z-20 flex items-center gap-1.5 px-3 py-2 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all hover:scale-105"
-                  style={{
-                    backgroundColor: ORIGEN_COLORS.cream,
-                    border: `1.5px solid ${ORIGEN_COLORS.gold}`,
-                    color: ORIGEN_COLORS.brown,
-                    boxShadow:
-                      '0 4px 12px rgba(184, 134, 11, 0.18), 0 1px 3px rgba(60, 43, 32, 0.12)',
-                  }}
-                  title="Limpiar todos los filtros"
-                >
-                  <X size={13} strokeWidth={2.5} style={{ color: ORIGEN_COLORS.gold }} />
-                  Limpiar
-                </button>
+                {/* CARDS FLOTANTES — esquina superior derecha */}
+                <div className="absolute top-3 right-3 z-20 flex flex-col gap-2 w-[280px] pointer-events-auto">
+                  {/* Header resultados */}
+                  <div
+                    className="flex items-center justify-between px-3 py-1.5 rounded-xl"
+                    style={{
+                      backgroundColor: 'rgba(245, 240, 232, 0.92)',
+                      backdropFilter: 'blur(8px)',
+                      border: `1px solid ${ORIGEN_COLORS.beigeSoft}`,
+                    }}
+                  >
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: ORIGEN_COLORS.brownSoft }}>
+                      {empresaSeleccionada ? 'Seleccionada' : 'Sugerencias'}
+                    </span>
+                    <span className="text-[10px]" style={{ color: ORIGEN_COLORS.brownSoft }}>
+                      {empresasOrdenadas.length} resultados
+                    </span>
+                  </div>
+
+                  {/* Cards */}
+                  {empresasParaPanel.length === 0 ? (
+                    <div
+                      className="text-center py-4 rounded-2xl text-sm"
+                      style={{
+                        backgroundColor: 'rgba(245, 240, 232, 0.92)',
+                        backdropFilter: 'blur(8px)',
+                        border: `1px dashed ${ORIGEN_COLORS.beigeSoft}`,
+                        color: ORIGEN_COLORS.brownSoft,
+                      }}
+                    >
+                      Sin resultados con estos filtros.
+                    </div>
+                  ) : (
+                    empresasParaPanel.map((e) => (
+                      <div
+                        key={e.id}
+                        style={{
+                          backdropFilter: 'blur(8px)',
+                          WebkitBackdropFilter: 'blur(8px)',
+                        }}
+                      >
+                        <MapEmpresaCard
+                          empresa={e}
+                          isSelected={selectedId === e.id}
+                          onClick={() => setSelectedId(e.id)}
+                          onView={() => handleViewComplete(e.id)}
+                        />
+                      </div>
+                    ))
+                  )}
+                </div>
               </>
             )}
           </div>
 
-          {/* Panel lateral derecho (desktop) / debajo (mobile) */}
-          <aside className="space-y-3 flex flex-col">
-            <div
-              className="hidden lg:flex items-center justify-between"
-            >
-              <span
-                className="text-[11px] font-bold uppercase tracking-[0.2em]"
-                style={{ color: ORIGEN_COLORS.brownSoft }}
-              >
-                {empresaSeleccionada ? 'Seleccionada' : 'Sugerencias'}
-              </span>
-              <span
-                className="text-[11px]"
-                style={{ color: ORIGEN_COLORS.brownSoft }}
-              >
-                {empresasOrdenadas.length} resultados
-              </span>
-            </div>
-
-            {/* Mobile: scroll horizontal · Desktop: stack */}
-            <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0 lg:flex-1">
-              {empresasParaPanel.length === 0 ? (
-                <div
-                  className="w-full text-center py-8 rounded-2xl"
-                  style={{
-                    backgroundColor: ORIGEN_COLORS.cream,
-                    border: `1px dashed ${ORIGEN_COLORS.beigeSoft}`,
-                    color: ORIGEN_COLORS.brownSoft,
-                  }}
-                >
-                  <p className="text-sm">
-                    Sin resultados con estos filtros.
-                  </p>
-                </div>
-              ) : (
-                empresasParaPanel.map((e) => (
-                  <div
-                    key={e.id}
-                    className="flex-shrink-0 w-[280px] lg:w-auto"
-                  >
-                    <MapEmpresaCard
-                      empresa={e}
-                      isSelected={selectedId === e.id}
-                      onClick={() => setSelectedId(e.id)}
-                      onView={() => handleViewComplete(e.id)}
-                    />
-                  </div>
-                ))
-              )}
-            </div>
-          </aside>
+          {/* Mobile: cards debajo del mapa */}
+          <div className="lg:hidden flex gap-3 overflow-x-auto mt-3 -mx-4 px-4 pb-2">
+            {empresasParaPanel.map((e) => (
+              <div key={e.id} className="flex-shrink-0 w-[280px]">
+                <MapEmpresaCard
+                  empresa={e}
+                  isSelected={selectedId === e.id}
+                  onClick={() => setSelectedId(e.id)}
+                  onView={() => handleViewComplete(e.id)}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* MÉTRICAS INFERIORES */}
