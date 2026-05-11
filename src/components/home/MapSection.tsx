@@ -119,10 +119,10 @@ export function MapSection() {
           zoom: DEFAULT_ZOOM,
           mapId: 'origen-map-section',
           disableDefaultUI: false,
-          zoomControl: true,
+          zoomControl: false,
           mapTypeControl: false,
           streetViewControl: false,
-          fullscreenControl: true,
+          fullscreenControl: false,
           gestureHandling: 'cooperative',
           styles: ORIGEN_MAP_STYLE,
         });
@@ -343,6 +343,67 @@ export function MapSection() {
 
                 {/* Leyenda flotante (abajo-izquierda) */}
                 <MapLegend />
+
+                {/* CONTROLES ZOOM + FULLSCREEN — a la izquierda de las cards */}
+                <div
+                  className="absolute top-3 z-20 flex flex-col gap-1"
+                  style={{ right: '300px' }}
+                >
+                  {/* Zoom in */}
+                  <button
+                    type="button"
+                    onClick={() => mapRef.current?.setZoom((mapRef.current.getZoom() ?? DEFAULT_ZOOM) + 1)}
+                    className="w-8 h-8 flex items-center justify-center rounded-lg text-lg font-bold transition-all hover:scale-105"
+                    style={{
+                      backgroundColor: 'rgba(245,240,232,0.95)',
+                      border: `1px solid ${ORIGEN_COLORS.beigeSoft}`,
+                      color: ORIGEN_COLORS.brown,
+                      boxShadow: '0 2px 8px rgba(60,43,32,0.12)',
+                      backdropFilter: 'blur(6px)',
+                    }}
+                    title="Acercar"
+                  >+</button>
+
+                  {/* Zoom out */}
+                  <button
+                    type="button"
+                    onClick={() => mapRef.current?.setZoom((mapRef.current.getZoom() ?? DEFAULT_ZOOM) - 1)}
+                    className="w-8 h-8 flex items-center justify-center rounded-lg text-lg font-bold transition-all hover:scale-105"
+                    style={{
+                      backgroundColor: 'rgba(245,240,232,0.95)',
+                      border: `1px solid ${ORIGEN_COLORS.beigeSoft}`,
+                      color: ORIGEN_COLORS.brown,
+                      boxShadow: '0 2px 8px rgba(60,43,32,0.12)',
+                      backdropFilter: 'blur(6px)',
+                    }}
+                    title="Alejar"
+                  >−</button>
+
+                  {/* Fullscreen */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const el = mapContainer.current?.parentElement;
+                      if (el) {
+                        if (!document.fullscreenElement) el.requestFullscreen?.();
+                        else document.exitFullscreen?.();
+                      }
+                    }}
+                    className="w-8 h-8 flex items-center justify-center rounded-lg transition-all hover:scale-105 mt-0.5"
+                    style={{
+                      backgroundColor: 'rgba(245,240,232,0.95)',
+                      border: `1px solid ${ORIGEN_COLORS.beigeSoft}`,
+                      color: ORIGEN_COLORS.brown,
+                      boxShadow: '0 2px 8px rgba(60,43,32,0.12)',
+                      backdropFilter: 'blur(6px)',
+                    }}
+                    title="Pantalla completa"
+                  >
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                    </svg>
+                  </button>
+                </div>
 
                 {/* CARDS FLOTANTES — esquina superior derecha */}
                 <div className="absolute top-3 right-3 bottom-3 z-20 flex flex-col gap-2 w-[280px] pointer-events-auto">
