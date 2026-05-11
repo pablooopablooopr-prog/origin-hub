@@ -122,7 +122,7 @@ export function MapSection() {
           zoomControl: true,
           mapTypeControl: false,
           streetViewControl: false,
-          fullscreenControl: false,
+          fullscreenControl: true,
           gestureHandling: 'cooperative',
           styles: ORIGEN_MAP_STYLE,
         });
@@ -229,7 +229,8 @@ export function MapSection() {
     if (empresaSeleccionada) {
       return [empresaSeleccionada as EmpresaPlus];
     }
-    return empresasOrdenadas.slice(0, 3) as EmpresaPlus[];
+    return empresasOrdenadas as EmpresaPlus[];
+  }, [empresasOrdenadas, empresaSeleccionada]);
   }, [empresasOrdenadas, empresaSeleccionada]);
 
   return (
@@ -345,10 +346,10 @@ export function MapSection() {
                 <MapLegend />
 
                 {/* CARDS FLOTANTES — esquina superior derecha */}
-                <div className="absolute top-3 right-3 z-20 flex flex-col gap-2 w-[280px] pointer-events-auto">
+                <div className="absolute top-3 right-3 bottom-3 z-20 flex flex-col gap-2 w-[280px] pointer-events-auto">
                   {/* Header resultados */}
                   <div
-                    className="flex items-center justify-between px-3 py-1.5 rounded-xl"
+                    className="flex items-center justify-between px-3 py-1.5 rounded-xl flex-shrink-0"
                     style={{
                       backgroundColor: 'rgba(245, 240, 232, 0.92)',
                       backdropFilter: 'blur(8px)',
@@ -363,37 +364,36 @@ export function MapSection() {
                     </span>
                   </div>
 
-                  {/* Cards */}
-                  {empresasParaPanel.length === 0 ? (
-                    <div
-                      className="text-center py-4 rounded-2xl text-sm"
-                      style={{
-                        backgroundColor: 'rgba(245, 240, 232, 0.92)',
-                        backdropFilter: 'blur(8px)',
-                        border: `1px dashed ${ORIGEN_COLORS.beigeSoft}`,
-                        color: ORIGEN_COLORS.brownSoft,
-                      }}
-                    >
-                      Sin resultados con estos filtros.
-                    </div>
-                  ) : (
-                    empresasParaPanel.map((e) => (
+                  {/* Cards — scroll interno */}
+                  <div className="flex flex-col gap-2 overflow-y-auto pr-0.5" style={{ scrollbarWidth: 'thin' }}>
+                    {empresasParaPanel.length === 0 ? (
                       <div
-                        key={e.id}
+                        className="text-center py-4 rounded-2xl text-sm"
                         style={{
+                          backgroundColor: 'rgba(245, 240, 232, 0.92)',
                           backdropFilter: 'blur(8px)',
-                          WebkitBackdropFilter: 'blur(8px)',
+                          border: `1px dashed ${ORIGEN_COLORS.beigeSoft}`,
+                          color: ORIGEN_COLORS.brownSoft,
                         }}
                       >
-                        <MapEmpresaCard
-                          empresa={e}
-                          isSelected={selectedId === e.id}
-                          onClick={() => setSelectedId(e.id)}
-                          onView={() => handleViewComplete(e.id)}
-                        />
+                        Sin resultados con estos filtros.
                       </div>
-                    ))
-                  )}
+                    ) : (
+                      empresasParaPanel.map((e) => (
+                        <div
+                          key={e.id}
+                          style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+                        >
+                          <MapEmpresaCard
+                            empresa={e}
+                            isSelected={selectedId === e.id}
+                            onClick={() => setSelectedId(e.id)}
+                            onView={() => handleViewComplete(e.id)}
+                          />
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
               </>
             )}

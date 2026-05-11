@@ -44,21 +44,21 @@ export const MapMetrics: React.FC<MapMetricsProps> = ({
 
       <div className="flex items-center justify-around md:justify-center gap-2 md:gap-12">
         <Metric
-          icon={<Building2 size={20} strokeWidth={1.6} />}
+          icon={<Building2 size={22} strokeWidth={1.6} />}
           value={empresas}
           label="Empresas"
           tone="brown"
         />
         <Separator />
         <Metric
-          icon={<Star size={20} strokeWidth={1.6} fill={ORIGEN_COLORS.gold} />}
+          icon={<Star size={22} strokeWidth={1.6} />}
           value={destacados}
           label="Destacados"
           tone="gold"
         />
         <Separator />
         <Metric
-          icon={<Route size={20} strokeWidth={1.6} />}
+          icon={<Route size={22} strokeWidth={1.6} />}
           value={enRutas}
           label="En rutas activas"
           tone="olive"
@@ -92,25 +92,26 @@ const Metric: React.FC<MetricProps> = ({ icon, value, label, tone }) => {
       : ORIGEN_COLORS.brown;
 
   return (
-    <div className="flex flex-col items-center text-center min-w-[72px]">
-      <span style={{ color: iconColor }}>{icon}</span>
-      <span
-        className="font-bold mt-1.5"
-        style={{
-          color: ORIGEN_COLORS.brown,
-          fontFamily: "'Playfair Display', 'Georgia', serif",
-          fontSize: 'clamp(1.5rem, 1rem + 1.5vw, 2rem)',
-          lineHeight: 1,
-        }}
-      >
-        {value}
-      </span>
-      <span
-        className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.18em] mt-1.5"
-        style={{ color: ORIGEN_COLORS.brownSoft }}
-      >
-        {label}
-      </span>
+    <div className="flex items-center gap-3 text-center">
+      <span style={{ color: iconColor }} className="flex-shrink-0">{icon}</span>
+      <div className="flex flex-col items-start">
+        <span
+          className="font-bold leading-none"
+          style={{
+            color: ORIGEN_COLORS.brown,
+            fontFamily: "'Playfair Display', 'Georgia', serif",
+            fontSize: 'clamp(1.5rem, 1rem + 1.5vw, 2rem)',
+          }}
+        >
+          {value}
+        </span>
+        <span
+          className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.18em] mt-1"
+          style={{ color: ORIGEN_COLORS.brownSoft }}
+        >
+          {label}
+        </span>
+      </div>
     </div>
   );
 };
