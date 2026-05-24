@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-
+import { LaurelDecor } from './LaurelDecor';
 import { ORIGEN_COLORS } from './mapStyles';
 
 export const MapHeader: React.FC = () => {
