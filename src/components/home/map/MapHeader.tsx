@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { LaurelDecor } from './LaurelDecor';
+
 import { ORIGEN_COLORS } from './mapStyles';
 
 export const MapHeader: React.FC = () => {
@@ -61,15 +61,6 @@ export const MapHeader: React.FC = () => {
         Explora productores, restaurantes, experiencias y alojamientos de la
         región con una navegación clara, curada y visualmente elegante.
       </p>
-
-      {/* Divisor laurel decorativo bajo el subtítulo */}
-      <div className="flex justify-center mt-6 opacity-70">
-        <LaurelDecor
-          size={32}
-          color={ORIGEN_COLORS.olive}
-          variant="divider"
-        />
-      </div>
     </header>
   );
 };

@@ -323,21 +323,22 @@ const SpotlightToday = () => {
       <div className="container mx-auto px-6 max-w-[1280px]">
         {/* ===== HEADER (compacto) ===== */}
         <header className="text-center mb-5 md:mb-6 space-y-1.5">
-          <p
-            className="text-[10px] tracking-[0.32em] uppercase font-semibold"
-            style={{
-              color: "#8a6f2e",
-              fontFamily: "'Cormorant Garamond', serif",
-            }}
-          >
-            HOY EN ORIGEN ○
-          </p>
+          <div className="flex items-center justify-center gap-3 mb-1">
+            <span className="block h-px w-10" style={{ backgroundColor: "#b8923f" }} aria-hidden="true" />
+            <span
+              className="text-[11px] font-bold uppercase tracking-[0.3em]"
+              style={{ color: "#b8923f" }}
+            >
+              HOY EN ORIGEN
+            </span>
+            <span className="block h-px w-10" style={{ backgroundColor: "#b8923f" }} aria-hidden="true" />
+          </div>
           <h2
-            className="text-[28px] md:text-[36px] leading-[1.05] tracking-tight"
+            className="font-bold leading-tight tracking-tight"
             style={{
-              fontFamily: "'Playfair Display', serif",
-              color: "#2a2418",
-              fontWeight: 500,
+              fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif",
+              color: "#2a1c10",
+              fontSize: "clamp(1.5rem, 1rem + 2.4vw, 2.875rem)",
             }}
           >
             Empresas destacadas de hoy

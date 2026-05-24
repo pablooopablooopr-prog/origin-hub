@@ -118,7 +118,10 @@ const Index = () => {
         {/* ===== Cómo funciona ORIGEN ===== */}
         <section className="py-10 md:py-14 bg-muted/30">
           <div className="container mx-auto px-6 max-w-4xl">
-            <h2 className="text-4xl md:text-5xl font-bold text-primary text-center mb-8 tracking-tight">
+            <h2
+              className="text-4xl md:text-5xl font-bold text-primary text-center mb-8 tracking-tight"
+              style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif" }}
+            >
               Cómo funciona ORIGEN
             </h2>
 
@@ -168,7 +171,10 @@ const Index = () => {
                       <span className="inline-block md:hidden text-xs font-bold text-secondary tracking-widest uppercase mb-1">
                         Paso {item.step}
                       </span>
-                      <h3 className="text-lg md:text-xl font-bold text-primary mb-1">
+                      <h3
+                        className="text-lg md:text-xl font-bold text-primary mb-1"
+                        style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}
+                      >
                         {item.title}
                       </h3>
                       <p className="text-muted-foreground text-sm leading-relaxed">
@@ -185,7 +191,10 @@ const Index = () => {
         {/* ===== Manifiesto + CTA Final ===== */}
         <section className="py-6 md:py-10 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-6 max-w-2xl text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-primary mb-4 leading-tight tracking-tight italic">
+            <h2
+              className="text-2xl md:text-3xl font-bold text-primary mb-4 leading-tight tracking-tight italic"
+              style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif" }}
+            >
               «Volver al origen siempre fue una forma de avanzar»
             </h2>
             <p className="text-base text-muted-foreground leading-relaxed mb-8">

@@ -51,10 +51,15 @@ const SeasonalHero = ({ data }: Props) => {
 
   return (
     <>
-      {/* ========== HEADER DE SECCIÓN (misma tipografía que MapHeader) ========== */}
-      <div className="w-full py-10 md:py-12 text-center" style={{ backgroundColor: "#f5f0e8" }}>
-        {/* Eyebrow */}
-        <div className="flex items-center justify-center gap-3 mb-4">
+      {/* ========== HEADER DE SECCIÓN — se funde con la madera ========== */}
+      <div
+        className="w-full pt-10 md:pt-12 pb-16 md:pb-24 text-center relative"
+        style={{
+          background: `linear-gradient(to bottom, #f5f0e8 0%, #f5f0e8 55%, ${data.colors.dark}cc 100%)`,
+        }}
+      >
+        {/* Eyebrow con guiones */}
+        <div className="flex items-center justify-center gap-3 mb-4 relative z-10">
           <span className="block h-px w-10" style={{ backgroundColor: "#b8923f" }} aria-hidden="true" />
           <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: "#b8923f" }}>
             {data.seasonLabel} · {data.activeBadge}
@@ -62,9 +67,8 @@ const SeasonalHero = ({ data }: Props) => {
           <span className="block h-px w-10" style={{ backgroundColor: "#b8923f" }} aria-hidden="true" />
         </div>
 
-        {/* Título con laureles */}
-        <div className="flex items-center justify-center gap-4 mb-4">
-          {/* Laurel izquierda */}
+        {/* Título FIJO con laureles */}
+        <div className="flex items-center justify-center gap-4 mb-4 relative z-10">
           <svg viewBox="0 0 80 40" width="52" height="26" aria-hidden="true" style={{ opacity: 0.7 }}>
             <path d="M70,20 C60,8 40,6 25,14 C15,18 10,26 15,30" stroke="#5C6B2E" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
             <path d="M65,18 C55,10 42,10 30,16" stroke="#5C6B2E" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
@@ -84,10 +88,9 @@ const SeasonalHero = ({ data }: Props) => {
               whiteSpace: "nowrap",
             }}
           >
-            {data.title}
+            La Temporada
           </h2>
 
-          {/* Laurel derecha (espejo) */}
           <svg viewBox="0 0 80 40" width="52" height="26" aria-hidden="true" style={{ opacity: 0.7, transform: "scaleX(-1)" }}>
             <path d="M70,20 C60,8 40,6 25,14 C15,18 10,26 15,30" stroke="#5C6B2E" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
             <path d="M65,18 C55,10 42,10 30,16" stroke="#5C6B2E" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
@@ -99,30 +102,20 @@ const SeasonalHero = ({ data }: Props) => {
           </svg>
         </div>
 
-        {/* Subtítulo */}
+        {/* Subtítulo rotacional */}
         <p
-          className="mx-auto leading-relaxed"
+          className="mx-auto leading-relaxed relative z-10"
           style={{
             color: "#6b5a3e",
             fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)",
-            maxWidth: "640px",
+            maxWidth: "680px",
             lineHeight: 1.65,
           }}
         >
-          {data.description.split(".")[0]}.
+          Cada estación, ORIGEN cambia con el ritmo de la tierra. Ahora es el
+          turno de <strong style={{ color: data.colors.primary, fontWeight: 600 }}>{data.productName}</strong> —
+          en su mejor momento de cosecha.
         </p>
-
-        {/* Divisor laurel */}
-        <div className="flex justify-center mt-6 opacity-60">
-          <svg viewBox="0 0 120 18" width="120" height="18" aria-hidden="true">
-            <line x1="0" y1="9" x2="44" y2="9" stroke="#5C6B2E" strokeWidth="0.8" />
-            <circle cx="60" cy="9" r="3.5" fill="none" stroke="#5C6B2E" strokeWidth="0.8" />
-            <circle cx="60" cy="9" r="1.2" fill="#5C6B2E" />
-            <line x1="76" y1="9" x2="120" y2="9" stroke="#5C6B2E" strokeWidth="0.8" />
-            <ellipse cx="48" cy="9" rx="3" ry="2" fill="#5C6B2E" opacity="0.5" />
-            <ellipse cx="72" cy="9" rx="3" ry="2" fill="#5C6B2E" opacity="0.5" />
-          </svg>
-        </div>
       </div>
 
       {/* ========== SECCIÓN OSCURA MADERA ========== */}
@@ -130,6 +123,7 @@ const SeasonalHero = ({ data }: Props) => {
         className={`seasonal-hero ${data.themeClass}`}
         style={
           {
+            marginTop: "-1px",
             "--season-primary": data.colors.primary,
             "--season-accent": data.colors.accent,
             "--season-cream": data.colors.cream,

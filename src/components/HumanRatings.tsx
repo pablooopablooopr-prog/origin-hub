@@ -83,7 +83,7 @@ const HumanRatings = () => {
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif" }}>
             Valoraciones Humanas
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -136,7 +136,7 @@ const HumanRatings = () => {
 
         {/* CTA para valorar */}
         <div className="text-center bg-gradient-warm rounded-lg p-6 shadow-soft">
-          <h3 className="text-xl font-semibold text-primary mb-2">
+          <h3 className="text-xl font-semibold text-primary mb-2" style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}>
             Comparte tu experiencia
           </h3>
           <p className="text-muted-foreground mb-4 max-w-2xl mx-auto text-sm">

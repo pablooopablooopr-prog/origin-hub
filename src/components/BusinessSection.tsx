@@ -29,7 +29,7 @@ const BusinessSection = () => {
       <div className="container mx-auto px-6">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <div>
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif" }}>
               ¿Tienes un negocio con alma?
             </h2>
             <p className="text-xl text-foreground/90 leading-relaxed mb-8">
@@ -48,7 +48,7 @@ const BusinessSection = () => {
                     <IconComponent className="w-7 h-7 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-primary mb-1">{benefit.title}</h3>
+                    <h3 className="font-semibold text-primary mb-1" style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}>{benefit.title}</h3>
                     <p className="text-foreground/70 text-sm">{benefit.description}</p>
                   </div>
                 </div>

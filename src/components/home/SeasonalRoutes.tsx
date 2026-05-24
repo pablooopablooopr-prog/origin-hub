@@ -316,9 +316,13 @@ const SeasonalRoutes = () => {
         <div className="flex flex-col lg:flex-row lg:items-start gap-8">
           {/* Izquierda */}
           <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-bold uppercase tracking-[0.35em] mb-3" style={{ color: C.gold }}>
-              Rutas
-            </p>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="block h-px w-8" style={{ backgroundColor: C.gold }} aria-hidden="true" />
+              <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: C.gold }}>
+                Rutas
+              </span>
+              <span className="block h-px w-8" style={{ backgroundColor: C.gold }} aria-hidden="true" />
+            </div>
             <h2
               className="font-bold leading-tight tracking-tight mb-3"
               style={{
@@ -327,9 +331,9 @@ const SeasonalRoutes = () => {
                 fontSize: "clamp(1.5rem, 1rem + 2.4vw, 2.875rem)",
               }}
             >
-              Experiencias curadas,<br className="hidden sm:block" /> verificadas en persona
+              Experiencias curadas, verificadas en persona
             </h2>
-            <p className="text-[14px] leading-relaxed" style={{ color: C.beigeText, maxWidth: "540px" }}>
+            <p className="text-[14px] leading-relaxed" style={{ color: C.beigeText, maxWidth: "620px" }}>
               Rutas activas para esta temporada. Cada una visitada y aprobada por nuestro equipo antes de salir publicada.
             </p>
           </div>
