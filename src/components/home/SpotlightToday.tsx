@@ -329,14 +329,14 @@ const SpotlightToday = () => {
         {/* ===== HEADER (compacto) ===== */}
         <header className="text-center mb-5 md:mb-6 space-y-1.5">
           <div className="flex items-center justify-center gap-3 mb-1">
-            <span className="block h-px w-10" style={{ backgroundColor: "#c4a455" }} aria-hidden="true" /
+            <span className="block h-px w-10" style={{ backgroundColor: "#c4a455" }} aria-hidden="true" />
             <span
               className="text-[11px] font-bold uppercase tracking-[0.3em]"
               style={{ color: "#c4a455" }}
             >
               HOY EN ORIGEN
             </span>
-            <span className="block h-px w-10" style={{ backgroundColor: "#c4a455" }} aria-hidden="true" /
+            <span className="block h-px w-10" style={{ backgroundColor: "#c4a455" }} aria-hidden="true" />
           </div>
           <h2
             className="font-bold leading-tight tracking-tight"
