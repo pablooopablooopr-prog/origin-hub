@@ -53,9 +53,9 @@ const SeasonalHero = ({ data }: Props) => {
     <>
       {/* ========== HEADER DE SECCIÓN — se funde con la madera ========== */}
       <div
-        className="w-full pt-3 md:pt-4 pb-10 md:pb-16 text-center relative z-10"
+        className="w-full pt-4 md:pt-6 pb-8 md:pb-10 text-center relative z-10"
         style={{
-          background: "#f5f0e8",
+          background: "#2a1c10",
         }}
       >
         {/* Eyebrow con guiones */}
@@ -70,19 +70,19 @@ const SeasonalHero = ({ data }: Props) => {
         {/* Título FIJO con laureles */}
         <div className="flex items-center justify-center gap-4 mb-4 relative z-10">
           <svg viewBox="0 0 80 40" width="52" height="26" aria-hidden="true" style={{ opacity: 0.7 }}>
-            <path d="M70,20 C60,8 40,6 25,14 C15,18 10,26 15,30" stroke="#5C6B2E" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-            <path d="M65,18 C55,10 42,10 30,16" stroke="#5C6B2E" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
-            <path d="M60,15 C52,8 42,9 34,14" stroke="#5C6B2E" strokeWidth="0.6" fill="none" strokeLinecap="round"/>
-            <ellipse cx="28" cy="16" rx="5" ry="3.5" fill="#5C6B2E" opacity="0.6" transform="rotate(-20 28 16)"/>
-            <ellipse cx="20" cy="22" rx="5" ry="3.5" fill="#5C6B2E" opacity="0.5" transform="rotate(-10 20 22)"/>
-            <ellipse cx="38" cy="13" rx="4.5" ry="3" fill="#5C6B2E" opacity="0.55" transform="rotate(-30 38 13)"/>
-            <ellipse cx="50" cy="12" rx="4" ry="2.8" fill="#5C6B2E" opacity="0.5" transform="rotate(-40 50 12)"/>
+            <path d="M70,20 C60,8 40,6 25,14 C15,18 10,26 15,30" stroke="#c4a870" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+            <path d="M65,18 C55,10 42,10 30,16" stroke="#c4a870" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
+            <path d="M60,15 C52,8 42,9 34,14" stroke="#c4a870" strokeWidth="0.6" fill="none" strokeLinecap="round"/>
+            <ellipse cx="28" cy="16" rx="5" ry="3.5" fill="#c4a870" opacity="0.6" transform="rotate(-20 28 16)"/>
+            <ellipse cx="20" cy="22" rx="5" ry="3.5" fill="#c4a870" opacity="0.5" transform="rotate(-10 20 22)"/>
+            <ellipse cx="38" cy="13" rx="4.5" ry="3" fill="#c4a870" opacity="0.55" transform="rotate(-30 38 13)"/>
+            <ellipse cx="50" cy="12" rx="4" ry="2.8" fill="#c4a870" opacity="0.5" transform="rotate(-40 50 12)"/>
           </svg>
 
           <h2
             className="font-bold leading-tight tracking-tight"
             style={{
-              color: "#2a1c10",
+              color: "#f2e4c0",
               fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif",
               fontSize: "clamp(1.5rem, 1rem + 2.4vw, 2.875rem)",
               whiteSpace: "nowrap",
@@ -92,13 +92,13 @@ const SeasonalHero = ({ data }: Props) => {
           </h2>
 
           <svg viewBox="0 0 80 40" width="52" height="26" aria-hidden="true" style={{ opacity: 0.7, transform: "scaleX(-1)" }}>
-            <path d="M70,20 C60,8 40,6 25,14 C15,18 10,26 15,30" stroke="#5C6B2E" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-            <path d="M65,18 C55,10 42,10 30,16" stroke="#5C6B2E" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
-            <path d="M60,15 C52,8 42,9 34,14" stroke="#5C6B2E" strokeWidth="0.6" fill="none" strokeLinecap="round"/>
-            <ellipse cx="28" cy="16" rx="5" ry="3.5" fill="#5C6B2E" opacity="0.6" transform="rotate(-20 28 16)"/>
-            <ellipse cx="20" cy="22" rx="5" ry="3.5" fill="#5C6B2E" opacity="0.5" transform="rotate(-10 20 22)"/>
-            <ellipse cx="38" cy="13" rx="4.5" ry="3" fill="#5C6B2E" opacity="0.55" transform="rotate(-30 38 13)"/>
-            <ellipse cx="50" cy="12" rx="4" ry="2.8" fill="#5C6B2E" opacity="0.5" transform="rotate(-40 50 12)"/>
+            <path d="M70,20 C60,8 40,6 25,14 C15,18 10,26 15,30" stroke="#c4a870" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+            <path d="M65,18 C55,10 42,10 30,16" stroke="#c4a870" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
+            <path d="M60,15 C52,8 42,9 34,14" stroke="#c4a870" strokeWidth="0.6" fill="none" strokeLinecap="round"/>
+            <ellipse cx="28" cy="16" rx="5" ry="3.5" fill="#c4a870" opacity="0.6" transform="rotate(-20 28 16)"/>
+            <ellipse cx="20" cy="22" rx="5" ry="3.5" fill="#c4a870" opacity="0.5" transform="rotate(-10 20 22)"/>
+            <ellipse cx="38" cy="13" rx="4.5" ry="3" fill="#c4a870" opacity="0.55" transform="rotate(-30 38 13)"/>
+            <ellipse cx="50" cy="12" rx="4" ry="2.8" fill="#c4a870" opacity="0.5" transform="rotate(-40 50 12)"/>
           </svg>
         </div>
 
@@ -106,7 +106,7 @@ const SeasonalHero = ({ data }: Props) => {
         <p
           className="mx-auto leading-relaxed relative z-10"
           style={{
-            color: "#3a2c14",
+            color: "#d4b98a",
             fontSize: "clamp(0.9rem, 0.8rem + 0.35vw, 1.05rem)",
             whiteSpace: "nowrap",
             lineHeight: 1.5,
@@ -123,7 +123,7 @@ const SeasonalHero = ({ data }: Props) => {
         className={`seasonal-hero ${data.themeClass}`}
         style={
           {
-            marginTop: "-90px",
+            marginTop: "-1px",
             "--season-primary": data.colors.primary,
             "--season-accent": data.colors.accent,
             "--season-cream": data.colors.cream,
