@@ -52,10 +52,7 @@ const SeasonalHero = ({ data }: Props) => {
   return (
     <div
       style={{
-        backgroundImage: "url('/textures/dark-wood.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
+        background: "#dfd8cc",
         position: "relative",
         isolation: "isolate",
       }}
@@ -64,34 +61,34 @@ const SeasonalHero = ({ data }: Props) => {
       <div
         className="w-full pt-4 md:pt-6 pb-8 md:pb-10 text-center relative z-10"
         style={{
-          background: "linear-gradient(to bottom, rgba(18,12,6,0.72) 0%, rgba(18,12,6,0.52) 100%)",
+          background: "transparent",
         }}
       >
         {/* Eyebrow con guiones */}
         <div className="flex items-center justify-center gap-3 mb-4 relative z-10">
-          <span className="block h-px w-10" style={{ backgroundColor: "#b8923f" }} aria-hidden="true" />
-          <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: "#b8923f" }}>
+          <span className="block h-px w-10" style={{ backgroundColor: "#7a5c2e" }} aria-hidden="true" />
+          <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: "#7a5c2e" }}>
             {data.seasonLabel} · {data.activeBadge}
           </span>
-          <span className="block h-px w-10" style={{ backgroundColor: "#b8923f" }} aria-hidden="true" />
+          <span className="block h-px w-10" style={{ backgroundColor: "#7a5c2e" }} aria-hidden="true" />
         </div>
 
         {/* Título FIJO con laureles */}
         <div className="flex items-center justify-center gap-4 mb-4 relative z-10">
           <svg viewBox="0 0 80 40" width="52" height="26" aria-hidden="true" style={{ opacity: 0.7 }}>
-            <path d="M70,20 C60,8 40,6 25,14 C15,18 10,26 15,30" stroke="#c4a870" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-            <path d="M65,18 C55,10 42,10 30,16" stroke="#c4a870" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
-            <path d="M60,15 C52,8 42,9 34,14" stroke="#c4a870" strokeWidth="0.6" fill="none" strokeLinecap="round"/>
-            <ellipse cx="28" cy="16" rx="5" ry="3.5" fill="#c4a870" opacity="0.6" transform="rotate(-20 28 16)"/>
-            <ellipse cx="20" cy="22" rx="5" ry="3.5" fill="#c4a870" opacity="0.5" transform="rotate(-10 20 22)"/>
-            <ellipse cx="38" cy="13" rx="4.5" ry="3" fill="#c4a870" opacity="0.55" transform="rotate(-30 38 13)"/>
-            <ellipse cx="50" cy="12" rx="4" ry="2.8" fill="#c4a870" opacity="0.5" transform="rotate(-40 50 12)"/>
+            <path d="M70,20 C60,8 40,6 25,14 C15,18 10,26 15,30" stroke="#8a6020" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+            <path d="M65,18 C55,10 42,10 30,16" stroke="#8a6020" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
+            <path d="M60,15 C52,8 42,9 34,14" stroke="#8a6020" strokeWidth="0.6" fill="none" strokeLinecap="round"/>
+            <ellipse cx="28" cy="16" rx="5" ry="3.5" fill="#8a6020" opacity="0.6" transform="rotate(-20 28 16)"/>
+            <ellipse cx="20" cy="22" rx="5" ry="3.5" fill="#8a6020" opacity="0.5" transform="rotate(-10 20 22)"/>
+            <ellipse cx="38" cy="13" rx="4.5" ry="3" fill="#8a6020" opacity="0.55" transform="rotate(-30 38 13)"/>
+            <ellipse cx="50" cy="12" rx="4" ry="2.8" fill="#8a6020" opacity="0.5" transform="rotate(-40 50 12)"/>
           </svg>
 
           <h2
             className="font-bold leading-tight tracking-tight"
             style={{
-              color: "#f2e4c0",
+              color: "#2a1c10",
               fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif",
               fontSize: "clamp(1.5rem, 1rem + 2.4vw, 2.875rem)",
               whiteSpace: "nowrap",
@@ -101,13 +98,13 @@ const SeasonalHero = ({ data }: Props) => {
           </h2>
 
           <svg viewBox="0 0 80 40" width="52" height="26" aria-hidden="true" style={{ opacity: 0.7, transform: "scaleX(-1)" }}>
-            <path d="M70,20 C60,8 40,6 25,14 C15,18 10,26 15,30" stroke="#c4a870" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-            <path d="M65,18 C55,10 42,10 30,16" stroke="#c4a870" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
-            <path d="M60,15 C52,8 42,9 34,14" stroke="#c4a870" strokeWidth="0.6" fill="none" strokeLinecap="round"/>
-            <ellipse cx="28" cy="16" rx="5" ry="3.5" fill="#c4a870" opacity="0.6" transform="rotate(-20 28 16)"/>
-            <ellipse cx="20" cy="22" rx="5" ry="3.5" fill="#c4a870" opacity="0.5" transform="rotate(-10 20 22)"/>
-            <ellipse cx="38" cy="13" rx="4.5" ry="3" fill="#c4a870" opacity="0.55" transform="rotate(-30 38 13)"/>
-            <ellipse cx="50" cy="12" rx="4" ry="2.8" fill="#c4a870" opacity="0.5" transform="rotate(-40 50 12)"/>
+            <path d="M70,20 C60,8 40,6 25,14 C15,18 10,26 15,30" stroke="#8a6020" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+            <path d="M65,18 C55,10 42,10 30,16" stroke="#8a6020" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
+            <path d="M60,15 C52,8 42,9 34,14" stroke="#8a6020" strokeWidth="0.6" fill="none" strokeLinecap="round"/>
+            <ellipse cx="28" cy="16" rx="5" ry="3.5" fill="#8a6020" opacity="0.6" transform="rotate(-20 28 16)"/>
+            <ellipse cx="20" cy="22" rx="5" ry="3.5" fill="#8a6020" opacity="0.5" transform="rotate(-10 20 22)"/>
+            <ellipse cx="38" cy="13" rx="4.5" ry="3" fill="#8a6020" opacity="0.55" transform="rotate(-30 38 13)"/>
+            <ellipse cx="50" cy="12" rx="4" ry="2.8" fill="#8a6020" opacity="0.5" transform="rotate(-40 50 12)"/>
           </svg>
         </div>
 
@@ -115,14 +112,14 @@ const SeasonalHero = ({ data }: Props) => {
         <p
           className="mx-auto leading-relaxed relative z-10"
           style={{
-            color: "#d4b98a",
+            color: "#5a3e20",
             fontSize: "clamp(0.9rem, 0.8rem + 0.35vw, 1.05rem)",
             whiteSpace: "nowrap",
             lineHeight: 1.5,
           }}
         >
           Cada estación, ORIGEN cambia con el ritmo de la tierra. Ahora es el
-          turno de <strong style={{ color: "#e8c060", fontWeight: 700, textShadow: "0 1px 4px rgba(0,0,0,0.6)" }}>{data.productName}</strong> —
+          turno de <strong style={{ color: "#8a5c10", fontWeight: 700, textShadow: "none" }}>{data.productName}</strong> —
           en su mejor momento de cosecha.
         </p>
       </div>
@@ -142,7 +139,7 @@ const SeasonalHero = ({ data }: Props) => {
         }
       >
         {/* Fondo madera */}
-        <div className="seasonal-hero__wood" style={{ backgroundImage: `url('${woodResolved}')`, opacity: 0 }} />
+        <div className="seasonal-hero__wood" style={{ backgroundImage: `url('${woodResolved}')` }} />
         <div className="seasonal-hero__wood-tint" />
         <div className="seasonal-hero__wood-planks" />
         <div className="seasonal-hero__wood-grain" />
