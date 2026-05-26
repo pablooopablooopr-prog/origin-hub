@@ -146,13 +146,9 @@ export const seasons: Record<SeasonKey, SeasonData> = {
       dark: "#2a2418",
     },
     images: {
-      // TODO: Replace with /seasons/queso/hero.jpg when asset is uploaded
-      hero: "/seasons/queso/hero.jpg",
-      // TODO: Replace with /seasons/queso/ovejas.jpg
-      sheep: "/seasons/queso/ovejas.jpg",
-      // TODO: Replace with /seasons/queso/quesero.jpg
-      maker: "/seasons/queso/quesero.jpg",
-      // TODO: Replace with /textures/dark-wood.jpg
+      hero: "https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=1200&q=90",
+      sheep: "https://images.unsplash.com/photo-1484557985045-edf25e08da73?auto=format&fit=crop&w=700&q=85",
+      maker: "https://images.unsplash.com/photo-1605707447752-4cf680f18ead?auto=format&fit=crop&w=700&q=85",
       wood: "/textures/dark-wood.jpg",
       paper: "/textures/paper-aged.jpg",
       greenPaper: "/textures/green-paper.jpg",
