@@ -50,12 +50,20 @@ const SeasonalHero = ({ data }: Props) => {
   };
 
   return (
-    <>
-      {/* ========== HEADER DE SECCIÓN — se funde con la madera ========== */}
+    <div
+      style={{
+        backgroundImage: "url('/textures/dark-wood.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        position: "relative",
+      }}
+    >
+      {/* ========== HEADER DE SECCIÓN — sobre la misma madera ========== */}
       <div
         className="w-full pt-4 md:pt-6 pb-8 md:pb-10 text-center relative z-10"
         style={{
-          background: "#2a1c10",
+          background: "linear-gradient(to bottom, rgba(22,16,12,0.62) 0%, rgba(22,16,12,0.45) 100%)",
         }}
       >
         {/* Eyebrow con guiones */}
@@ -133,7 +141,7 @@ const SeasonalHero = ({ data }: Props) => {
         }
       >
         {/* Fondo madera */}
-        <div className="seasonal-hero__wood" style={{ backgroundImage: `url('${woodResolved}')` }} />
+        <div className="seasonal-hero__wood" style={{ backgroundImage: `url('${woodResolved}')`, opacity: 0 }} />
         <div className="seasonal-hero__wood-tint" />
         <div className="seasonal-hero__wood-planks" />
         <div className="seasonal-hero__wood-grain" />
@@ -466,7 +474,7 @@ const SeasonalHero = ({ data }: Props) => {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

@@ -9,20 +9,18 @@
 .seasonal-hero {
   position: relative;
   overflow: hidden;
-  background-color: #2a1c10;
+  background-color: transparent;
 }
 
-/* Sombra suave en la parte superior */
+/* Viñeteado lateral suave */
 .seasonal-hero::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 80px;
-  z-index: 5;
+  inset: 0;
+  z-index: 2;
   pointer-events: none;
-  background: linear-gradient(to bottom, rgba(20, 10, 2, 0.5) 0%, rgba(20, 10, 2, 0) 100%);
+  background:
+    radial-gradient(ellipse at center, transparent 55%, rgba(10,6,2,0.45) 100%);
 }
 
 /* ---- Fondo madera ---- */
@@ -97,7 +95,7 @@
 }
 
 /* ---- Tarjeta principal de papel ---- */
-.seasonal-hero__paper {
+.seasonal-hero__paper { /* enhanced shadow */
   position: relative;
   background: linear-gradient(180deg, #f7eed8 0%, #f1e5c8 50%, #ead7b3 100%);
   box-shadow:
@@ -193,7 +191,7 @@
   .seasonal-hero__brooch {
     display: none; /* el broche es decoración premium escritorio */
   }
-  .seasonal-hero__paper {
+  .seasonal-hero__paper { /* enhanced shadow */
     padding: 28px 22px;
   }
   .seasonal-hero__title {
