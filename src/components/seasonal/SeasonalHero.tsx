@@ -53,9 +53,9 @@ const SeasonalHero = ({ data }: Props) => {
     <>
       {/* ========== HEADER DE SECCIÓN — se funde con la madera ========== */}
       <div
-        className="w-full pt-10 md:pt-12 pb-16 md:pb-24 text-center relative"
+        className="w-full pt-10 md:pt-12 pb-4 text-center relative"
         style={{
-          background: `linear-gradient(to bottom, #f5f0e8 0%, #f5f0e8 55%, ${data.colors.dark}cc 100%)`,
+          background: `linear-gradient(to bottom, #f5f0e8 0%, #f5f0e8 38%, rgba(80,52,24,0.22) 62%, rgba(40,22,6,0.6) 80%, rgba(24,12,2,0.88) 100%)`,
         }}
       >
         {/* Eyebrow con guiones */}

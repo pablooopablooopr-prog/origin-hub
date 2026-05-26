@@ -331,7 +331,7 @@ const SeasonalRoutes = () => {
                 fontSize: "clamp(1.5rem, 1rem + 2.4vw, 2.875rem)",
               }}
             >
-              Experiencias curadas, verificadas en persona
+              Experiencias curadas, verificadas en&nbsp;persona
             </h2>
             <p className="text-[14px] leading-relaxed" style={{ color: C.beigeText, maxWidth: "620px" }}>
               Rutas activas para esta temporada. Cada una visitada y aprobada por nuestro equipo antes de salir publicada.
