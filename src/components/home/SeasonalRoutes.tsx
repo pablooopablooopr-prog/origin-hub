@@ -328,7 +328,7 @@ const SeasonalRoutes = () => {
               style={{
                 color: C.brown,
                 fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif",
-                fontSize: "clamp(1.3rem, 0.5rem + 1.6vw, 2.1rem)",
+                fontSize: "clamp(1.5rem, 1rem + 2.4vw, 2.875rem)",
                 whiteSpace: "nowrap",
               }}
             >

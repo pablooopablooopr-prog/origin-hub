@@ -116,7 +116,7 @@ const Hero = () => {
         style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)" }}
       >
         {/* TÍTULO - Centrado */}
-        <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1 drop-shadow-lg">
+        <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1 drop-shadow-lg" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}>
           <span>RITM</span>
           <span className="inline-flex items-center">
             <img
