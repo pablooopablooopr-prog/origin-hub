@@ -57,13 +57,14 @@ const SeasonalHero = ({ data }: Props) => {
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         position: "relative",
+        isolation: "isolate",
       }}
     >
       {/* ========== HEADER DE SECCIÓN — sobre la misma madera ========== */}
       <div
         className="w-full pt-4 md:pt-6 pb-8 md:pb-10 text-center relative z-10"
         style={{
-          background: "linear-gradient(to bottom, rgba(22,16,12,0.62) 0%, rgba(22,16,12,0.45) 100%)",
+          background: "linear-gradient(to bottom, rgba(18,12,6,0.72) 0%, rgba(18,12,6,0.52) 100%)",
         }}
       >
         {/* Eyebrow con guiones */}
@@ -121,7 +122,7 @@ const SeasonalHero = ({ data }: Props) => {
           }}
         >
           Cada estación, ORIGEN cambia con el ritmo de la tierra. Ahora es el
-          turno de <strong style={{ color: data.colors.primary, fontWeight: 600 }}>{data.productName}</strong> —
+          turno de <strong style={{ color: "#e8c060", fontWeight: 700, textShadow: "0 1px 4px rgba(0,0,0,0.6)" }}>{data.productName}</strong> —
           en su mejor momento de cosecha.
         </p>
       </div>
@@ -451,7 +452,7 @@ const SeasonalHero = ({ data }: Props) => {
         </div>
 
         {/* CINTA VERDE STATS — directamente pegada a la beige */}
-        <div className="relative z-10 pb-0">
+        <div className="relative z-10 pb-8 md:pb-12">
           <div className="seasonal-hero__stats-ribbon max-w-[1280px] mx-auto px-6 md:px-10 py-5 md:py-6">
             <div className="flex flex-wrap items-center justify-around gap-6 md:gap-10">
               {/* Decoración pastor */}
