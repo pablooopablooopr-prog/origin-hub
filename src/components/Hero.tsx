@@ -116,7 +116,7 @@ const Hero = () => {
         style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)" }}
       >
         {/* TÍTULO - Centrado */}
-        <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1 drop-shadow-lg" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}>
+        <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1 drop-shadow-lg" >
           <span>RITM</span>
           <span className="inline-flex items-center">
             <img
@@ -131,11 +131,11 @@ const Hero = () => {
 
         {/* CONTENIDO CENTRAL - Centrado */}
         <div className="w-full flex flex-col items-center text-center px-6 py-4">
-          <p className="text-xl md:text-2xl text-white/90 mb-4 max-w-3xl mx-auto leading-relaxed font-medium">
+          <p className="text-xl md:text-2xl text-white/90 mb-4 max-w-3xl mx-auto leading-relaxed font-medium" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}>
             Negocios tradicionales. Calidad real. Comunidad nacional.
           </p>
 
-          <p className="text-white text-lg md:text-lg font-sans text-center leading-relaxed max-w-3xl mx-auto mb-12" style={{ textShadow: "0 1px 6px rgba(0,0,0,0.3)" }}>
+          <p className="text-white text-lg md:text-lg text-center leading-relaxed max-w-3xl mx-auto mb-12" style={{ fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif", textShadow: "0 1px 6px rgba(0,0,0,0.3)" }}>
             La única plataforma estacional que conecta tu mesa con el ritmo real de cultivo.
             <br />
             Productores, empresas, sabores, rutas y experiencias que varían según el calendario agrícola.
