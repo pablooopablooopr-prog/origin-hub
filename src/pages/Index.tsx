@@ -197,7 +197,7 @@ const Index = () => {
             >
               «Volver al origen siempre fue una forma de avanzar»
             </h2>
-            <p className="text-base text-muted-foreground leading-relaxed mb-8">
+            <p className="text-muted-foreground leading-relaxed mb-8" style={{ fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)" }}>
               Creemos en una España viva, conectada a su tierra, a sus oficios y
               a las personas que la sostienen. ORIGEN nace para dar visibilidad
               a quienes producen, cocinan y cuidan el territorio.

@@ -328,12 +328,12 @@ const SeasonalRoutes = () => {
               style={{
                 color: C.brown,
                 fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif",
-                fontSize: "clamp(1.5rem, 1rem + 2.4vw, 2.875rem)",
+                fontSize: "clamp(1.3rem, 0.7rem + 1.8vw, 2.2rem)",
               }}
             >
               Experiencias curadas, verificadas en&nbsp;persona
             </h2>
-            <p className="text-[14px] leading-relaxed" style={{ color: C.beigeText, maxWidth: "620px" }}>
+            <p className="leading-relaxed" style={{ color: C.beigeText, maxWidth: "620px", fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)" }}>
               Rutas activas para esta temporada. Cada una visitada y aprobada por nuestro equipo antes de salir publicada.
             </p>
           </div>

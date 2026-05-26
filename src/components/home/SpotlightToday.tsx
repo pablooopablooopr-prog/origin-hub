@@ -344,10 +344,11 @@ const SpotlightToday = () => {
             Empresas destacadas de hoy
           </h2>
           <p
-            className="text-[14px] flex items-center justify-center gap-2 flex-wrap"
+            className="flex items-center justify-center gap-2 flex-wrap"
             style={{
               color: "#8a6f2e",
               fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)",
             }}
           >
             <span>Castilla–La Mancha</span>
