@@ -69,11 +69,11 @@ const SeasonalHero = ({ data }: Props) => {
       >
         {/* Eyebrow con guiones */}
         <div className="flex items-center justify-center gap-3 mb-4 relative z-10">
-          <span className="block h-px w-10" style={{ backgroundColor: "#5c3d12" }} aria-hidden="true" /
+          <span className="block h-px w-10" style={{ backgroundColor: "#5c3d12" }} aria-hidden="true" />
           <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: "#5c3d12" }}>
             {data.seasonLabel} · {data.activeBadge}
           </span>
-          <span className="block h-px w-10" style={{ backgroundColor: "#5c3d12" }} aria-hidden="true" /
+          <span className="block h-px w-10" style={{ backgroundColor: "#5c3d12" }} aria-hidden="true" />
         </div>
 
         {/* Título FIJO con laureles */}
