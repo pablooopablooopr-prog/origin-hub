@@ -53,9 +53,9 @@ const SeasonalHero = ({ data }: Props) => {
     <>
       {/* ========== HEADER DE SECCIÓN — se funde con la madera ========== */}
       <div
-        className="w-full pt-10 md:pt-12 pb-4 text-center relative"
+        className="w-full pt-3 md:pt-4 pb-10 md:pb-16 text-center relative z-10"
         style={{
-          background: `linear-gradient(to bottom, #f5f0e8 0%, #f5f0e8 38%, rgba(80,52,24,0.22) 62%, rgba(40,22,6,0.6) 80%, rgba(24,12,2,0.88) 100%)`,
+          background: "#f5f0e8",
         }}
       >
         {/* Eyebrow con guiones */}
@@ -106,10 +106,10 @@ const SeasonalHero = ({ data }: Props) => {
         <p
           className="mx-auto leading-relaxed relative z-10"
           style={{
-            color: "#6b5a3e",
-            fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)",
-            maxWidth: "680px",
-            lineHeight: 1.65,
+            color: "#3a2c14",
+            fontSize: "clamp(0.9rem, 0.8rem + 0.35vw, 1.05rem)",
+            whiteSpace: "nowrap",
+            lineHeight: 1.5,
           }}
         >
           Cada estación, ORIGEN cambia con el ritmo de la tierra. Ahora es el
@@ -123,7 +123,7 @@ const SeasonalHero = ({ data }: Props) => {
         className={`seasonal-hero ${data.themeClass}`}
         style={
           {
-            marginTop: "-1px",
+            marginTop: "-90px",
             "--season-primary": data.colors.primary,
             "--season-accent": data.colors.accent,
             "--season-cream": data.colors.cream,

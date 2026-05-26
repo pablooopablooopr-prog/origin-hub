@@ -318,7 +318,7 @@ const SpotlightToday = () => {
   return (
     <section
       className="relative py-6 md:py-8"
-      style={{ background: "#f5ecd9" }}
+      style={{ background: "#e8d5b5" }}
     >
       <div className="container mx-auto px-6 max-w-[1280px]">
         {/* ===== HEADER (compacto) ===== */}
