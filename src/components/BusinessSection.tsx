@@ -29,7 +29,7 @@ const BusinessSection = () => {
       <div className="container mx-auto px-6">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <div>
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif" }}>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif", color: "#1a1008" }}>
               ¿Tienes un negocio con alma?
             </h2>
             <p className="text-xl text-foreground/90 leading-relaxed mb-8">

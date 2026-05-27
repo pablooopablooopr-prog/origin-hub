@@ -80,36 +80,36 @@ const Actualidad = () => {
         </div>
       </section>
 
-      <main className="flex-1 container mx-auto px-6 py-6 max-w-5xl">
+      <main className="flex-1 container mx-auto px-6 py-8 max-w-5xl">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-6 h-6 animate-spin text-primary" />
           </div>
         ) : (
-          <div style={{ background: "rgba(245,240,232,0.90)", borderRadius: "16px", padding: "2rem 1.5rem", backdropFilter: "blur(3px)" }}>
+          <div>
         {/* Artículo destacado */}
         <section className="mb-14">
           <div className="flex items-center gap-3 mb-6"><span className="block h-px w-8" style={{ backgroundColor: "#b8923f" }} /><span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: "#b8923f" }}>Artículo destacado</span><span className="block h-px w-8" style={{ backgroundColor: "#b8923f" }} /></div>
           <Link to={`/actualidad/${destacado.slug}`} className="group block">
-            <Card className="overflow-hidden border border-border hover:shadow-[var(--shadow-earth)] transition-shadow duration-300">
+            <Card className="overflow-hidden transition-shadow duration-300" style={{ background: "rgba(25,15,5,0.78)", border: "1px solid rgba(200,160,80,0.35)", backdropFilter: "blur(4px)" }}>
               <CardContent className="p-0">
                 <div className="grid md:grid-cols-5">
                   {/* Franja de color lateral */}
                   <div className="hidden md:block md:col-span-1 min-h-[260px]" style={{ background: "linear-gradient(to bottom, #5c6b2e, #3d4a1e)" }} />
                   <div className="md:col-span-4 p-8 md:p-10 flex flex-col justify-between gap-5">
                     <div>
-                      <Badge className="mb-4 bg-earth-light text-primary border-0 font-medium text-xs uppercase tracking-wide">
+                      <Badge className="mb-4 border-0 font-medium text-xs uppercase tracking-wide" style={{ background: "rgba(196,164,85,0.25)", color: "#e8c060" }}>
                         {destacado.categoria}
                       </Badge>
-                      <h2 className="text-2xl md:text-3xl font-bold leading-snug tracking-tight mb-4 group-hover:text-primary transition-colors" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#2a1c10" }}>
+                      <h2 className="text-2xl md:text-3xl font-bold leading-snug tracking-tight mb-4 transition-colors" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#f2e4c0" }}>
                         {destacado.titulo}
                       </h2>
-                      <p className="text-muted-foreground leading-relaxed text-base line-clamp-3">
+                      <p className="leading-relaxed text-base line-clamp-3" style={{ color: "#c8a87a" }}>
                         {destacado.extracto}
                       </p>
                     </div>
-                    <div className="flex items-center justify-between flex-wrap gap-3 pt-2 border-t border-border">
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center justify-between flex-wrap gap-3 pt-2 border-t" style={{ borderColor: "rgba(200,160,80,0.25)" }}>
+                      <div className="flex items-center gap-4 text-sm" style={{ color: "#a08060" }}>
                         <span className="flex items-center gap-1.5">
                           <Clock className="w-3.5 h-3.5" />
                           {destacado.tiempo_lectura} min de lectura
@@ -117,7 +117,7 @@ const Actualidad = () => {
                         <span>{destacado.fecha_publicacion}</span>
                         <span className="font-medium text-foreground">{destacado.autor}</span>
                       </div>
-                      <span className="flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all">
+                      <span className="flex items-center gap-1 text-sm font-medium group-hover:gap-2 transition-all" style={{ color: "#c4a455" }}>
                         Leer artículo <ChevronRight className="w-4 h-4" />
                       </span>
                     </div>
@@ -135,18 +135,18 @@ const Actualidad = () => {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {resto.map((art) => (
                 <Link key={art.id} to={`/actualidad/${art.slug}`} className="group block">
-                  <Card className="h-full border border-border hover:shadow-[var(--shadow-earth)] transition-shadow duration-300">
+                  <Card className="h-full transition-shadow duration-300" style={{ background: "rgba(25,15,5,0.78)", border: "1px solid rgba(200,160,80,0.30)", backdropFilter: "blur(4px)" }}>
                     <CardContent className="p-6 flex flex-col gap-4 h-full">
-                      <Badge className="self-start bg-earth-light text-primary border-0 font-medium text-xs uppercase tracking-wide">
+                      <Badge className="self-start border-0 font-medium text-xs uppercase tracking-wide" style={{ background: "rgba(196,164,85,0.25)", color: "#e8c060" }}>
                         {art.categoria}
                       </Badge>
-                      <h3 className="text-lg font-bold leading-snug tracking-tight group-hover:text-primary transition-colors line-clamp-3" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#2a1c10" }}>
+                      <h3 className="text-lg font-bold leading-snug tracking-tight transition-colors line-clamp-3" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#f2e4c0" }}>
                         {art.titulo}
                       </h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3 flex-1">
+                      <p className="text-sm leading-relaxed line-clamp-3 flex-1" style={{ color: "#c8a87a" }}>
                         {art.extracto}
                       </p>
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground pt-2 border-t border-border">
+                      <div className="flex items-center gap-3 text-xs pt-2 border-t" style={{ color: "#a08060", borderColor: "rgba(200,160,80,0.25)" }}>
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
                           {art.tiempo_lectura} min
@@ -164,8 +164,8 @@ const Actualidad = () => {
         {/* Estado vacío (sólo artículo destacado) */}
         {resto.length === 0 && (
           <div className="text-center py-12 text-muted-foreground">
-            <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-40" />
-            <p className="text-sm">Próximamente más artículos</p>
+            <BookOpen className="w-10 h-10 mx-auto mb-3" style={{ color: "#c4a455", opacity: 0.6 }} />
+            <p className="text-sm" style={{ color: "#c8a87a" }}>Próximamente más artículos</p>
           </div>
         )}
           </div>

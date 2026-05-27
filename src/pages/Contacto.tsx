@@ -118,27 +118,27 @@ const Contacto = () => {
 
           {/* Tarjetas de información de contacto */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-5xl mx-auto mb-12">
-            <div className="p-6 rounded-lg shadow-soft text-center" style={{ background: "rgba(245,235,210,0.75)", backdropFilter: "blur(4px)", border: "1px solid rgba(180,140,80,0.25)" }}>
+            <div className="p-6 rounded-lg shadow-soft text-center" style={{ backgroundImage: "url('/textures/map-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", border: "1px solid rgba(180,140,80,0.35)", backdropFilter: "blur(2px)" }}>
               <Mail className="w-8 h-8 text-secondary mx-auto mb-3" />
-              <p className="font-semibold text-primary mb-1">Email</p>
-              <p className="text-sm text-muted-foreground">info@origen.it.com</p>
+              <p className="font-semibold mb-1" style={{ color: "#2a1c10", fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}>Email</p>
+              <p className="text-sm" style={{ color: "#5a3e20" }}>info@origen.it.com</p>
             </div>
             
-            <div className="p-6 rounded-lg shadow-soft text-center" style={{ background: "rgba(245,235,210,0.75)", backdropFilter: "blur(4px)", border: "1px solid rgba(180,140,80,0.25)" }}>
+            <div className="p-6 rounded-lg shadow-soft text-center" style={{ backgroundImage: "url('/textures/map-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", border: "1px solid rgba(180,140,80,0.35)", backdropFilter: "blur(2px)" }}>
               <Phone className="w-8 h-8 text-secondary mx-auto mb-3" />
-              <p className="font-semibold text-primary mb-1">Teléfono</p>
-              <p className="text-sm text-muted-foreground">+34 633804448</p>
+              <p className="font-semibold mb-1" style={{ color: "#2a1c10", fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}>Teléfono</p>
+              <p className="text-sm" style={{ color: "#5a3e20" }}>+34 633804448</p>
             </div>
             
-            <div className="p-6 rounded-lg shadow-soft text-center" style={{ background: "rgba(245,235,210,0.75)", backdropFilter: "blur(4px)", border: "1px solid rgba(180,140,80,0.25)" }}>
+            <div className="p-6 rounded-lg shadow-soft text-center" style={{ backgroundImage: "url('/textures/map-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", border: "1px solid rgba(180,140,80,0.35)", backdropFilter: "blur(2px)" }}>
               <MapPin className="w-8 h-8 text-secondary mx-auto mb-3" />
-              <p className="font-semibold text-primary mb-1">Ubicación</p>
-              <p className="text-sm text-muted-foreground">Ciudad Real, España</p>
+              <p className="font-semibold mb-1" style={{ color: "#2a1c10", fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}>Ubicación</p>
+              <p className="text-sm" style={{ color: "#5a3e20" }}>Ciudad Real, España</p>
             </div>
             
-            <div className="p-6 rounded-lg shadow-soft text-center" style={{ background: "rgba(245,235,210,0.75)", backdropFilter: "blur(4px)", border: "1px solid rgba(180,140,80,0.25)" }}>
+            <div className="p-6 rounded-lg shadow-soft text-center" style={{ backgroundImage: "url('/textures/map-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", border: "1px solid rgba(180,140,80,0.35)", backdropFilter: "blur(2px)" }}>
               <Instagram className="w-8 h-8 text-secondary mx-auto mb-3" />
-              <p className="font-semibold text-primary mb-1">Síguenos</p>
+              <p className="font-semibold mb-1" style={{ color: "#2a1c10", fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}>Síguenos</p>
               <a href="https://instagram.com/origen" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-secondary transition-colors">
                 @origen
               </a>
@@ -147,7 +147,7 @@ const Contacto = () => {
 
           {/* Formulario de contacto */}
           <div className="max-w-3xl mx-auto">
-            <div className="bg-card p-6 rounded-lg shadow-soft">
+            <div className="p-6 rounded-lg shadow-soft" style={{ backgroundImage: "url('/textures/map-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", border: "1px solid rgba(180,140,80,0.35)", backdropFilter: "blur(2px)" }}>
               <h2 className="text-xl font-semibold text-primary mb-4">Envíanos un mensaje</h2>
               <form className="space-y-4" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
