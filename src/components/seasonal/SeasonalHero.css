@@ -14,68 +14,16 @@
 }
 
 /* Viñeteado lateral suave */
-.seasonal-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at center, transparent 55%, rgba(10,6,2,0.45) 100%);
-}
+.seasonal-hero::before { display: none; }
 
 /* ---- Fondo madera ---- */
-.seasonal-hero__wood {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  pointer-events: none;
-}
+.seasonal-hero__wood { display: none; }
 
-.seasonal-hero__wood-tint {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: transparent;
-}
+.seasonal-hero__wood-tint { display: none; }
 
-.seasonal-hero__wood-planks {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: repeating-linear-gradient(
-    90deg,
-    transparent 0,
-    transparent 220px,
-    rgba(0, 0, 0, 0.55) 220px,
-    rgba(0, 0, 0, 0.55) 222px,
-    rgba(80, 45, 22, 0.25) 222px,
-    rgba(80, 45, 22, 0.25) 228px,
-    transparent 228px,
-    transparent 460px
-  );
-}
+.seasonal-hero__wood-planks { display: none; }
 
-.seasonal-hero__wood-grain {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.08;
-  background-image: repeating-linear-gradient(
-    89.5deg,
-    rgba(0, 0, 0, 0.18) 0,
-    rgba(0, 0, 0, 0.18) 1px,
-    transparent 1px,
-    transparent 7px,
-    rgba(255, 220, 180, 0.05) 7px,
-    rgba(255, 220, 180, 0.05) 8px,
-    transparent 8px,
-    transparent 19px
-  );
-}
+.seasonal-hero__wood-grain { display: none; }
 
 .seasonal-hero__vignette {
   position: absolute;

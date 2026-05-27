@@ -52,7 +52,7 @@ const SeasonalHero = ({ data }: Props) => {
   return (
     <div
       style={{
-        backgroundImage: "linear-gradient(rgba(205,175,120,0.62), rgba(205,175,120,0.62)), url('/textures/light-wood.jpg')",
+        backgroundImage: "url('/textures/season-wood.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
