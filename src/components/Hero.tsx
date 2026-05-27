@@ -2,15 +2,17 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-/** Orden: agricultor → vacas (corte ~7s) → plantación (corte ~7s) */
+/** Orden: viñedo → vacas originales → cocina/chef → olivos aéreo */
 const HERO_VIDEOS: { src: string; maxTime: number }[] = [
-  { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4", maxTime: 5 },
-  { src: "https://assets.mixkit.co/videos/10276/10276-720.mp4", maxTime: 6 },
-  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 6 },
+  { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4", maxTime: 7 },
+  { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 7 },
+  { src: "https://assets.mixkit.co/videos/43900/43900-720.mp4", maxTime: 7 },
+  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 7 },
 ];
 
 const Hero = () => {
   const [currentVideo, setCurrentVideo] = useState(0);
+  const [fadeIn, setFadeIn] = useState(false);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const advancingRef = useRef(false);
 
@@ -29,6 +31,9 @@ const Hero = () => {
 
   useEffect(() => {
     advancingRef.current = false;
+    setFadeIn(false);
+    // Small delay then fade in
+    const fadeTimer = setTimeout(() => setFadeIn(true), 50);
 
     videoRefs.current.forEach((v, i) => {
       if (!v) return;
@@ -55,7 +60,10 @@ const Hero = () => {
     };
 
     video.addEventListener("timeupdate", onTimeUpdate);
-    return () => video.removeEventListener("timeupdate", onTimeUpdate);
+    return () => {
+      video.removeEventListener("timeupdate", onTimeUpdate);
+      clearTimeout(fadeTimer);
+    };
   }, [currentVideo, advanceVideo]);
 
   return (
@@ -67,7 +75,7 @@ const Hero = () => {
           key={v.src}
           ref={(el) => { videoRefs.current[i] = el; }}
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ zIndex: 0, opacity: i === currentVideo ? 1 : 0, transition: "opacity 0.5s ease-in-out" }}
+          style={{ zIndex: 0, opacity: i === currentVideo ? (fadeIn ? 1 : 0) : 0, transition: i === currentVideo ? "opacity 1s ease-in" : "opacity 0.4s ease-out" }}
           src={v.src}
           muted
           playsInline
