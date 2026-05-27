@@ -319,7 +319,7 @@ const SpotlightToday = () => {
     <section
       className="relative py-6 md:py-8"
       style={{
-        backgroundImage: "url('/textures/adobe-wall.jpg')",
+        backgroundImage: "url('/textures/dark-stone.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -329,20 +329,20 @@ const SpotlightToday = () => {
         {/* ===== HEADER (compacto) ===== */}
         <header className="text-center mb-5 md:mb-6 space-y-1.5">
           <div className="flex items-center justify-center gap-3 mb-1">
-            <span className="block h-px w-10" style={{ backgroundColor: "#7a5020" }} aria-hidden="true" />
+            <span className="block h-px w-10" style={{ backgroundColor: "#c4a455" }} aria-hidden="true" />
             <span
               className="text-[11px] font-bold uppercase tracking-[0.3em]"
-              style={{ color: "#7a5020" }}
+              style={{ color: "#c4a455" }}
             >
               HOY EN ORIGEN
             </span>
-            <span className="block h-px w-10" style={{ backgroundColor: "#7a5020" }} aria-hidden="true" />
+            <span className="block h-px w-10" style={{ backgroundColor: "#c4a455" }} aria-hidden="true" />
           </div>
           <h2
             className="font-bold leading-tight tracking-tight"
             style={{
               fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif",
-              color: "#2a1c10",
+              color: "#f2e4c0",
               fontSize: "clamp(1.5rem, 1rem + 2.4vw, 2.875rem)",
             }}
           >
@@ -351,7 +351,7 @@ const SpotlightToday = () => {
           <p
             className="flex items-center justify-center gap-2 flex-wrap"
             style={{
-              color: "#6b4010",
+              color: "#c8a87a",
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)",
             }}
