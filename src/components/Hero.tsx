@@ -2,11 +2,11 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-/** Orden: viñedo → vacas → olivos aéreo */
+/** Orden: olivos → viñedo → vacas */
 const HERO_VIDEOS: { src: string; maxTime: number }[] = [
+  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 7 },
   { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4", maxTime: 7 },
   { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 7 },
-  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 7 },
 ];
 
 const Hero = () => {
