@@ -43,7 +43,7 @@ const MIN_REAL_EMPRESAS_TO_HIDE_DEMO = 8;
 /** Empresa con flags extra usados por el panel lateral. */
 type EmpresaPlus = Empresa & { featured?: boolean; inRoute?: boolean };
 
-export function MapSection() {
+export function MapSection({ hideHeader = false }: { hideHeader?: boolean }) {
   const navigate = useNavigate();
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
