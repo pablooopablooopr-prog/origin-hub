@@ -25,7 +25,7 @@ const BusinessSection = () => {
   ];
 
   return (
-    <section className="pt-8 pb-12 bg-gradient-earth" id="empresas">
+    <section className="pt-8 pb-12" id="empresas" style={{ backgroundImage: "url('/textures/warm-orange.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
       <div className="container mx-auto px-6">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <div>

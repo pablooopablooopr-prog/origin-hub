@@ -79,7 +79,7 @@ const HumanRatings = () => {
   }];
 
   return (
-    <section className="pt-8 pb-12">
+    <section className="pt-8 pb-12" style={{ backgroundImage: "url('/textures/sage-paper.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-6">
