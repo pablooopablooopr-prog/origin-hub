@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 
 /** Orden: agricultor → vacas (corte ~7s) → plantación (corte ~7s) */
 const HERO_VIDEOS: { src: string; maxTime: number }[] = [
-  { src: "https://videos.pexels.com/video-files/6646735/6646735-hd_1920_1080_25fps.mp4", maxTime: 7.5 },
-  { src: "https://videos.pexels.com/video-files/3929375/3929375-hd_1920_1080_24fps.mp4", maxTime: 7 },
-  { src: "https://videos.pexels.com/video-files/5752595/5752595-hd_1920_1080_25fps.mp4", maxTime: 7 },
+  { src: "https://assets.mixkit.co/videos/46563/46563-720.mp4", maxTime: 7.5 },
+  { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 7 },
+  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 7 },
 ];
 
 const Hero = () => {
