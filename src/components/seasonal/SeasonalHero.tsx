@@ -64,7 +64,7 @@ const SeasonalHero = ({ data }: Props) => {
       <div
         className="w-full pt-4 md:pt-6 pb-2 md:pb-3 text-center relative z-10"
         style={{
-          background: "transparent",
+          background: "linear-gradient(to bottom, rgba(210,175,90,0.82) 0%, rgba(195,158,72,0.65) 40%, rgba(170,130,50,0.30) 75%, transparent 100%)",
         }}
       >
         {/* Eyebrow con guiones */}
