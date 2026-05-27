@@ -6,13 +6,14 @@ import { Link } from "react-router-dom";
 const HERO_VIDEOS: { src: string; maxTime: number }[] = [
   { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4", maxTime: 7 },
   { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 7 },
-  { src: "https://assets.mixkit.co/videos/43900/43900-720.mp4", maxTime: 7 },
+  { src: "https://assets.mixkit.co/videos/46661/46661-720.mp4", maxTime: 7 },
   { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 7 },
 ];
 
 const Hero = () => {
   const [currentVideo, setCurrentVideo] = useState(0);
   const [fadeIn, setFadeIn] = useState(false);
+  const [videoReady, setVideoReady] = useState<boolean[]>(new Array(HERO_VIDEOS.length).fill(false));
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const advancingRef = useRef(false);
 
@@ -75,11 +76,12 @@ const Hero = () => {
           key={v.src}
           ref={(el) => { videoRefs.current[i] = el; }}
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ zIndex: 0, opacity: i === currentVideo ? (fadeIn ? 1 : 0) : 0, transition: i === currentVideo ? "opacity 1s ease-in" : "opacity 0.4s ease-out" }}
+          style={{ zIndex: 0, opacity: i === currentVideo ? (fadeIn && videoReady[i] ? 1 : 0) : 0, transition: i === currentVideo ? "opacity 1s ease-in" : "opacity 0.4s ease-out", filter: v.src.includes("44923") ? "brightness(1.4) contrast(1.05)" : "none" }}
           src={v.src}
           muted
           playsInline
           preload="auto"
+          onCanPlay={() => setVideoReady(prev => { const n = [...prev]; n[i] = true; return n; })}
         />
       ))}
 
