@@ -2,25 +2,26 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-/** Orden: viñedo → vacas originales → cocina/chef → olivos aéreo */
+/** Orden: viñedo → vacas → olivos aéreo */
 const HERO_VIDEOS: { src: string; maxTime: number }[] = [
   { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4", maxTime: 7 },
   { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 7 },
-  { src: "https://assets.mixkit.co/videos/46661/46661-720.mp4", maxTime: 7 },
   { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 7 },
 ];
 
 const Hero = () => {
   const [currentVideo, setCurrentVideo] = useState(0);
-  const [fadeIn, setFadeIn] = useState(false);
-  const [videoReady, setVideoReady] = useState<boolean[]>(new Array(HERO_VIDEOS.length).fill(false));
+  const [prevVideo, setPrevVideo] = useState<number | null>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const advancingRef = useRef(false);
 
   const advanceVideo = useCallback(() => {
     if (advancingRef.current) return;
     advancingRef.current = true;
-    setCurrentVideo((prev) => (prev + 1) % HERO_VIDEOS.length);
+    setCurrentVideo((prev) => {
+      setPrevVideo(prev);
+      return (prev + 1) % HERO_VIDEOS.length;
+    });
   }, []);
 
   /* Precargar todos los vídeos al montar */
@@ -32,20 +33,24 @@ const Hero = () => {
 
   useEffect(() => {
     advancingRef.current = false;
-    setFadeIn(false);
-    // Small delay then fade in
-    const fadeTimer = setTimeout(() => setFadeIn(true), 50);
 
+    // Start new video immediately
     videoRefs.current.forEach((v, i) => {
       if (!v) return;
       if (i === currentVideo) {
         v.currentTime = 0;
         v.play().catch(() => {});
-      } else {
+      } else if (i !== prevVideo) {
+        // Keep prevVideo playing during crossfade, pause others
         v.pause();
         v.currentTime = 0;
       }
     });
+
+    // After crossfade duration, hide the previous video
+    const crossfadeTimer = setTimeout(() => {
+      setPrevVideo(null);
+    }, 1200);
 
     const video = videoRefs.current[currentVideo];
     if (!video) return;
@@ -63,7 +68,7 @@ const Hero = () => {
     video.addEventListener("timeupdate", onTimeUpdate);
     return () => {
       video.removeEventListener("timeupdate", onTimeUpdate);
-      clearTimeout(fadeTimer);
+      clearTimeout(crossfadeTimer);
     };
   }, [currentVideo, advanceVideo]);
 
@@ -76,12 +81,16 @@ const Hero = () => {
           key={v.src}
           ref={(el) => { videoRefs.current[i] = el; }}
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ zIndex: 0, opacity: i === currentVideo ? (fadeIn && videoReady[i] ? 1 : 0) : 0, transition: i === currentVideo ? "opacity 1s ease-in" : "opacity 0.4s ease-out", filter: v.src.includes("44923") ? "brightness(1.4) contrast(1.05)" : "none" }}
+          style={{
+            zIndex: i === currentVideo ? 2 : i === prevVideo ? 1 : 0,
+            opacity: i === currentVideo ? 1 : i === prevVideo ? 1 : 0,
+            transition: i === currentVideo ? "opacity 1.0s ease-in-out" : "none",
+            filter: v.src.includes("44923") ? "brightness(1.4) contrast(1.05)" : "none"
+          }}
           src={v.src}
           muted
           playsInline
           preload="auto"
-          onCanPlay={() => setVideoReady(prev => { const n = [...prev]; n[i] = true; return n; })}
         />
       ))}
 
