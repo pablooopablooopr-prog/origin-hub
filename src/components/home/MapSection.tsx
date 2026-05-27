@@ -242,7 +242,7 @@ export function MapSection() {
         style={{ maxWidth: '1500px' }}
       >
         {/* HEADER ÚNICO */}
-        <MapHeader />
+        {!hideHeader && <MapHeader />}
 
         {/* FILTROS DESKTOP */}
         <MapFiltersCard

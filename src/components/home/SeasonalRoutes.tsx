@@ -269,7 +269,7 @@ const RouteCard = ({ route, catLabel, catColor, catKey }: {
 };
 
 // ─── Componente principal ────────────────────────────────────
-const SeasonalRoutes = () => {
+const SeasonalRoutes = ({ hideHeader = false }: { hideHeader?: boolean }) => {
   const seasonInfo = getCurrentSeasonInfo();
   const { routes: dbRoutes } = useRoutesBySeason({ limit: 3 });
   const [activeFilter, setActiveFilter] = useState("todas");
@@ -313,17 +313,18 @@ const SeasonalRoutes = () => {
           <FloralSprig w={64} h={94} />
         </div>
 
+        {!hideHeader && <div className="sr-only-header-placeholder" />}
         <div className="flex flex-col lg:flex-row lg:items-start gap-8">
           {/* Izquierda */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 mb-3">
+            {!hideHeader && <div className="flex items-center gap-3 mb-3">
               <span className="block h-px w-8" style={{ backgroundColor: C.gold }} aria-hidden="true" />
               <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: C.gold }}>
                 Rutas
               </span>
               <span className="block h-px w-8" style={{ backgroundColor: C.gold }} aria-hidden="true" />
-            </div>
-            <h2
+            </div>}
+            {!hideHeader && <h2
               className="font-bold leading-tight tracking-tight mb-3"
               style={{
                 color: C.brown,
@@ -333,10 +334,10 @@ const SeasonalRoutes = () => {
               }}
             >
               Experiencias curadas, verificadas en&nbsp;persona
-            </h2>
-            <p className="leading-relaxed" style={{ color: C.beigeText, fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)", whiteSpace: "nowrap" }}>
+            </h2>}
+            {!hideHeader && <p className="leading-relaxed" style={{ color: C.beigeText, fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)", whiteSpace: "nowrap" }}>
               Rutas activas para esta temporada. Cada una visitada y aprobada por nuestro equipo antes de salir publicada.
-            </p>
+            </p>}
           </div>
 
           {/* Derecha: sello + claim */}
