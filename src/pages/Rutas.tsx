@@ -8,11 +8,11 @@ const Rutas = () => {
   return (
     <div className="min-h-screen" style={{ backgroundImage: "url('/textures/routes-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed" }}>
       <Header />
-      <main className="pt-6">
-        <div className="container mx-auto px-6 pt-8 pb-0">
+      <main className="pt-2">
+        <div className="container mx-auto px-6 pt-3 pb-0">
           <div className="text-center">
             {/* Eyebrow dorado */}
-            <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="flex items-center justify-center gap-3 mb-2">
               <span className="block h-px w-8" style={{ backgroundColor: GOLD }} aria-hidden="true" />
               <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>
                 Rutas
