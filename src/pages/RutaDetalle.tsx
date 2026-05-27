@@ -369,7 +369,7 @@ const RutaDetalle = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen" style={{ backgroundImage: "url('/textures/routes-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed" }}>
         <Header />
         <div className="flex items-center justify-center py-32">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -384,7 +384,7 @@ const RutaDetalle = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" style={{ backgroundImage: "url('/textures/routes-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed" }}>
       <Header />
       <main className="pt-0">
         {/* Hero Section */}

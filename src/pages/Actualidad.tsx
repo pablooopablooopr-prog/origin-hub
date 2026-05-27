@@ -60,22 +60,22 @@ const Actualidad = () => {
   const resto = articulos.filter((a) => a.id !== destacado.id);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col" style={{ backgroundImage: "url('/textures/dark-stone.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed" }}>
       <Header />
 
       {/* Hero editorial */}
-      <section className="bg-gradient-to-br from-primary to-earth-medium text-white py-8 md:py-10">
+      <section className="py-8 md:py-10" style={{ background: "rgba(20,12,4,0.65)" }}>
         <div className="container mx-auto px-6 max-w-5xl text-center">
-<h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+<h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4" style={ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#f2e4c0" }>
             Actualidad
           </h1>
-          <p className="text-base text-white/80 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base max-w-2xl mx-auto leading-relaxed" style={ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#d4b98a", fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)" }>
             Análisis, contexto y reflexiones sobre el sector primario, el origen de los alimentos y el futuro del campo español.
           </p>
         </div>
       </section>
 
-      <main className="flex-1 container mx-auto px-6 py-14 max-w-5xl">
+      <main className="flex-1 container mx-auto px-6 py-14 max-w-5xl" style={{ background: "rgba(245,240,232,0.92)", backdropFilter: "blur(2px)", borderRadius: "0" }}>
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-6 h-6 animate-spin text-primary" />
