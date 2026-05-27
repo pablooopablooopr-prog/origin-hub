@@ -132,7 +132,7 @@ const SeasonalHero = ({ data }: Props) => {
         className={`seasonal-hero ${data.themeClass}`}
         style={
           {
-            marginTop: "-1px",
+            marginTop: "0",
             "--season-primary": data.colors.primary,
             "--season-accent": data.colors.accent,
             "--season-cream": data.colors.cream,
