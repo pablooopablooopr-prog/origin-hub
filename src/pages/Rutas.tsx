@@ -122,7 +122,7 @@ const Rutas = () => {
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
         ) : (
-          <section className="py-2 bg-gradient-warm enso-watermark relative">
+          <section className="py-2 enso-watermark relative">
             <div className="container mx-auto px-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
                 {routes.map((route) => {
@@ -192,7 +192,7 @@ const Rutas = () => {
               </div>
 
               {/* CTA to create route */}
-              <div className="text-center bg-card rounded-lg p-8 shadow-soft">
+              <div className="text-center rounded-lg p-8 shadow-soft" style={{ background: "rgba(245,240,232,0.92)" }}>
                 <h3 className="text-2xl font-semibold text-primary mb-4">
                   ¿Quieres crear tu propia experiencia?
                 </h3>

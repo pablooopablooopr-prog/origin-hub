@@ -75,13 +75,13 @@ const Actualidad = () => {
         </div>
       </section>
 
-      <main className="flex-1 container mx-auto px-6 py-14 max-w-5xl" style={{ background: "rgba(245,240,232,0.92)", backdropFilter: "blur(2px)", borderRadius: "0" }}>
+      <main className="flex-1 container mx-auto px-6 py-14 max-w-5xl">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-6 h-6 animate-spin text-primary" />
           </div>
         ) : (
-          <>
+          <div style={{ background: "rgba(245,240,232,0.88)", borderRadius: "12px", padding: "2rem 1.5rem" }}>
         {/* Artículo destacado */}
         <section className="mb-14">
           <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-6">
@@ -167,7 +167,7 @@ const Actualidad = () => {
             <p className="text-sm">Próximamente más artículos</p>
           </div>
         )}
-          </>
+          </div>
         )}
       </main>
 

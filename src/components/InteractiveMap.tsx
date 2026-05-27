@@ -345,20 +345,20 @@ const InteractiveMap = ({ showTitle = true }: { showTitle?: boolean }) => {
   }
 
   return (
-    <section className="pt-8 pb-20 enso-watermark" id="mapa">
+    <section className="pt-8 pb-20 enso-watermark" id="mapa" style={{ background: "transparent" }}>
       <div className="container mx-auto px-6">
         {showTitle && (
           <div className="text-center mb-6">
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-2">
+            <h2 className="text-4xl md:text-5xl font-bold mb-2" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#2a1c10" }}>
               Explora el territorio
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#5a3e20", fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)" }}>
               Filtra por provincia, tipo de negocio o experiencia y recorre España a través de su red gastronómica.
             </p>
           </div>
         )}
 
-        <div className="max-w-4xl mx-auto mb-8">
+        <div className="max-w-4xl mx-auto mb-8" style={{ background: "rgba(245,240,232,0.85)", borderRadius: "12px", padding: "1.5rem" }}>
           {/* Search bar */}
           <div className="max-w-3xl mx-auto flex flex-col sm:flex-row gap-3 mb-6">
             <div className="relative flex-1">

@@ -92,7 +92,7 @@ const SobreOrigen = () => {
         </section>
 
         {/* Misión */}
-        <section className="py-16 md:py-20" style={{ background: "rgba(245,240,232,0.88)" }}>
+        <section className="py-16 md:py-20" style={{ background: "rgba(245,240,232,0.88)", backdropFilter: "blur(1px)" }}>
           <div className="container max-w-5xl mx-auto">
             <Card className="border-0 shadow-lg bg-card/80 backdrop-blur-sm">
               <CardHeader className="text-center pb-4">
@@ -113,7 +113,7 @@ const SobreOrigen = () => {
         </section>
 
         {/* Historia - MANTENER IGUAL */}
-        <section className="py-16 md:py-20 bg-muted/20">
+        <section className="py-16 md:py-20" style={{ background: "rgba(245,240,232,0.75)" }}>
           <div className="container">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-14 text-primary tracking-tight">
               Nuestra Historia
@@ -147,7 +147,7 @@ const SobreOrigen = () => {
         </section>
 
         {/* Cómo Funciona */}
-        <section className="py-16 md:py-20" style={{ background: "rgba(245,240,232,0.88)" }}>
+        <section className="py-16 md:py-20" style={{ background: "rgba(245,240,232,0.88)", backdropFilter: "blur(1px)" }}>
           <div className="container max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-14 text-primary tracking-tight">
               Cómo Funciona ORIGEN
@@ -195,7 +195,7 @@ const SobreOrigen = () => {
         </section>
 
         {/* Testimonios */}
-        <section className="py-16 md:py-20" style={{ background: "rgba(245,240,232,0.88)" }}>
+        <section className="py-16 md:py-20" style={{ background: "rgba(245,240,232,0.88)", backdropFilter: "blur(1px)" }}>
           <div className="container max-w-5xl mx-auto">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-14 text-primary tracking-tight">
               Lo Que Dicen de Nosotros
