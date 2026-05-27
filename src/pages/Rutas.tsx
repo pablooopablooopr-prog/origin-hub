@@ -104,14 +104,14 @@ const Rutas = () => {
       <main className="pt-6">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center mb-4">
-            <h1 className="text-4xl md:text-5xl font-bold mb-3 flex items-center justify-center flex-wrap" style={ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#2a1c10" }>
+            <h1 className="text-4xl md:text-5xl font-bold mb-3 flex items-center justify-center flex-wrap" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#2a1c10" }}>
               <span>Experiencias</span>
               <span className="inline-flex items-center ml-3">
                 <img src="/lovable-uploads/enso-transparent.png" alt="Ensō" className="w-10 h-10 md:w-14 md:h-14 object-contain" />
               </span>
               <span>rigen</span>
             </h1>
-            <p className="text-lg max-w-2xl mx-auto" style={ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#5a3e20", fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)" }>
+            <p className="text-lg max-w-2xl mx-auto" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#5a3e20", fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)" }}>
               Recorre caminos que unen productores, restaurantes y lugares con identidad propia. Conoce y descubre cómo los negocios elaboran sus productos en primera persona.
             </p>
           </div>

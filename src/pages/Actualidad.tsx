@@ -66,10 +66,10 @@ const Actualidad = () => {
       {/* Hero editorial */}
       <section className="py-8 md:py-10" style={{ background: "rgba(20,12,4,0.65)" }}>
         <div className="container mx-auto px-6 max-w-5xl text-center">
-<h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4" style={ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#f2e4c0" }>
+<h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#f2e4c0" }}>
             Actualidad
           </h1>
-          <p className="text-base max-w-2xl mx-auto leading-relaxed" style={ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#d4b98a", fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)" }>
+          <p className="text-base max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#d4b98a", fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)" }}>
             Análisis, contexto y reflexiones sobre el sector primario, el origen de los alimentos y el futuro del campo español.
           </p>
         </div>
