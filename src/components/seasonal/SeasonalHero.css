@@ -38,20 +38,14 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    rgba(58, 37, 22, 0.55) 0%,
-    rgba(46, 28, 16, 0.65) 50%,
-    rgba(37, 22, 8, 0.75) 100%
-  );
-  mix-blend-mode: multiply;
+  background: transparent;
 }
 
 .seasonal-hero__wood-planks {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.2;
+  opacity: 0.05;
   background-image: repeating-linear-gradient(
     90deg,
     transparent 0,
@@ -69,7 +63,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.25;
+  opacity: 0.08;
   background-image: repeating-linear-gradient(
     89.5deg,
     rgba(0, 0, 0, 0.18) 0,
