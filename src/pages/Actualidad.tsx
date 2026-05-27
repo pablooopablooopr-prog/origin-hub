@@ -71,8 +71,12 @@ const Actualidad = () => {
             <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: "#b8923f" }}>Actualidad</span>
             <span className="block h-px w-10" style={{ backgroundColor: "#b8923f" }} aria-hidden="true" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-3" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#f2e4c0" }}>
-            Análisis del territorio
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-3 flex items-center justify-center flex-wrap gap-1" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#f2e4c0" }}>
+            <span>Actualidad</span>
+            <span className="inline-flex items-center ml-2">
+              <img src="/lovable-uploads/enso-transparent.png" alt="Ensō" className="w-10 h-10 md:w-14 md:h-14 object-contain" style={{ filter: "brightness(0) invert(1) sepia(1) saturate(0.5) hue-rotate(10deg)" }} />
+            </span>
+            <span>RIGEN</span>
           </h1>
           <p className="max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", color: "#d4b98a", fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)" }}>
             Análisis, contexto y reflexiones sobre el sector primario, el origen de los alimentos y el futuro del campo español.
