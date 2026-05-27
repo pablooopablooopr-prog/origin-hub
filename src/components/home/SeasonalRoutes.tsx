@@ -305,7 +305,7 @@ const SeasonalRoutes = () => {
   const cats = DEMO_CAT[seasonInfo.id] ?? DEMO_CAT.queso;
 
   return (
-    <section style={{ backgroundColor: C.bg }} className="w-full">
+    <section style={{ backgroundImage: "url('/textures/routes-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }} className="w-full">
       {/* ── HEADER SECCIÓN ── */}
       <div className="max-w-[1280px] mx-auto px-6 pt-7 pb-6 relative">
         {/* Ramita floral esquina derecha */}

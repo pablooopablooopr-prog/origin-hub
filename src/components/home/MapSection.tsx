@@ -235,7 +235,7 @@ export function MapSection() {
   return (
     <section
       className="w-full"
-      style={{ backgroundColor: ORIGEN_COLORS.paper }}
+      style={{ backgroundImage: "url('/textures/map-bg.jpg')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
     >
       <div
         className="mx-auto px-4 md:px-8 pt-2 md:pt-3 pb-10 md:pb-14"
