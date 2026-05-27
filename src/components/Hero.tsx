@@ -131,11 +131,11 @@ const Hero = () => {
 
         {/* CONTENIDO CENTRAL - Centrado */}
         <div className="w-full flex flex-col items-center text-center px-6 py-4">
-          <p className="text-xl md:text-2xl text-white/90 mb-4 max-w-3xl mx-auto leading-relaxed font-medium" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}>
+          <p className="text-2xl md:text-3xl text-white/90 mb-4 max-w-3xl mx-auto leading-relaxed font-medium" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}>
             Negocios tradicionales. Calidad real. Comunidad nacional.
           </p>
 
-          <p className="text-white text-lg md:text-lg font-sans text-center leading-relaxed max-w-3xl mx-auto mb-12" style={{ fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif", textShadow: "0 1px 6px rgba(0,0,0,0.3)" }}>
+          <p className="text-white text-xl md:text-xl font-sans text-center leading-relaxed max-w-3xl mx-auto mb-12" style={{ fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif", textShadow: "0 1px 6px rgba(0,0,0,0.3)" }}>
             La única plataforma estacional que conecta tu mesa con el ritmo real de cultivo.
             <br />
             Productores, empresas, sabores, rutas y experiencias que varían según el calendario agrícola.
