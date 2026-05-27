@@ -52,7 +52,7 @@ const SeasonalHero = ({ data }: Props) => {
   return (
     <div
       style={{
-        backgroundImage: "linear-gradient(rgba(225,205,165,0.28), rgba(225,205,165,0.28)), url('/textures/adobe-wall.jpg')",
+        backgroundImage: "url('/textures/adobe-wall.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -64,7 +64,7 @@ const SeasonalHero = ({ data }: Props) => {
       <div
         className="w-full pt-4 md:pt-6 pb-2 md:pb-3 text-center relative z-10"
         style={{
-          background: "linear-gradient(to bottom, rgba(210,175,90,0.82) 0%, rgba(195,158,72,0.65) 40%, rgba(170,130,50,0.30) 75%, transparent 100%)",
+          background: "transparent",
         }}
       >
         {/* Eyebrow con guiones */}
