@@ -118,25 +118,25 @@ const Contacto = () => {
 
           {/* Tarjetas de información de contacto */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-5xl mx-auto mb-12">
-            <div className="bg-card p-6 rounded-lg shadow-soft text-center">
+            <div className="p-6 rounded-lg shadow-soft text-center" style={{ background: "rgba(245,235,210,0.75)", backdropFilter: "blur(4px)", border: "1px solid rgba(180,140,80,0.25)" }}>
               <Mail className="w-8 h-8 text-secondary mx-auto mb-3" />
               <p className="font-semibold text-primary mb-1">Email</p>
               <p className="text-sm text-muted-foreground">info@origen.it.com</p>
             </div>
             
-            <div className="bg-card p-6 rounded-lg shadow-soft text-center">
+            <div className="p-6 rounded-lg shadow-soft text-center" style={{ background: "rgba(245,235,210,0.75)", backdropFilter: "blur(4px)", border: "1px solid rgba(180,140,80,0.25)" }}>
               <Phone className="w-8 h-8 text-secondary mx-auto mb-3" />
               <p className="font-semibold text-primary mb-1">Teléfono</p>
               <p className="text-sm text-muted-foreground">+34 633804448</p>
             </div>
             
-            <div className="bg-card p-6 rounded-lg shadow-soft text-center">
+            <div className="p-6 rounded-lg shadow-soft text-center" style={{ background: "rgba(245,235,210,0.75)", backdropFilter: "blur(4px)", border: "1px solid rgba(180,140,80,0.25)" }}>
               <MapPin className="w-8 h-8 text-secondary mx-auto mb-3" />
               <p className="font-semibold text-primary mb-1">Ubicación</p>
               <p className="text-sm text-muted-foreground">Ciudad Real, España</p>
             </div>
             
-            <div className="bg-card p-6 rounded-lg shadow-soft text-center">
+            <div className="p-6 rounded-lg shadow-soft text-center" style={{ background: "rgba(245,235,210,0.75)", backdropFilter: "blur(4px)", border: "1px solid rgba(180,140,80,0.25)" }}>
               <Instagram className="w-8 h-8 text-secondary mx-auto mb-3" />
               <p className="font-semibold text-primary mb-1">Síguenos</p>
               <a href="https://instagram.com/origen" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-secondary transition-colors">

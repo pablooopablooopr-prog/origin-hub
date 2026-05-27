@@ -9,7 +9,7 @@ const Rutas = () => {
     <div className="min-h-screen" style={{ backgroundImage: "url('/textures/routes-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed" }}>
       <Header />
       <main className="pt-6">
-        <div className="container mx-auto px-6 py-8 pb-2">
+        <div className="container mx-auto px-6 pt-8 pb-0">
           <div className="text-center">
             {/* Eyebrow dorado */}
             <div className="flex items-center justify-center gap-3 mb-4">

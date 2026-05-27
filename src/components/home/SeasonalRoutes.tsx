@@ -307,7 +307,7 @@ const SeasonalRoutes = ({ hideHeader = false }: { hideHeader?: boolean }) => {
   return (
     <section style={{ backgroundImage: "url('/textures/routes-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }} className="w-full">
       {/* ── HEADER SECCIÓN ── */}
-      <div className="max-w-[1280px] mx-auto px-6 pt-7 pb-6 relative">
+      <div className={`max-w-[1280px] mx-auto px-6 pb-6 relative ${hideHeader ? "pt-0" : "pt-7"}`}>
         {/* Ramita floral esquina derecha */}
         <div className="absolute top-4 right-4 hidden md:block pointer-events-none">
           <FloralSprig w={64} h={94} />
@@ -339,7 +339,7 @@ const SeasonalRoutes = ({ hideHeader = false }: { hideHeader?: boolean }) => {
             </p>}
           </div>
 
-          {/* Derecha: sello + claim */}
+          {!hideHeader && (
           <div className="flex items-center gap-5 flex-shrink-0">
             <div className="hidden lg:block w-px self-stretch my-2" style={{ background: "rgba(184,146,63,0.3)" }} />
             <HeaderStamp />
@@ -347,6 +347,7 @@ const SeasonalRoutes = ({ hideHeader = false }: { hideHeader?: boolean }) => {
               Solo recomendamos lo que hemos vivido.
             </p>
           </div>
+          )}
         </div>
 
         {/* ── FILTROS + ORDENAR ── */}
