@@ -313,7 +313,6 @@ const SeasonalRoutes = ({ hideHeader = false }: { hideHeader?: boolean }) => {
           <FloralSprig w={64} h={94} />
         </div>
 
-        {!hideHeader && <div className="sr-only-header-placeholder" />}
         <div className="flex flex-col lg:flex-row lg:items-start gap-8">
           {/* Izquierda */}
           <div className="flex-1 min-w-0">
