@@ -52,7 +52,7 @@ const SeasonalHero = ({ data }: Props) => {
   return (
     <div
       style={{
-        backgroundImage: "url('/textures/season-wood.jpg')",
+        backgroundImage: "linear-gradient(rgba(225,205,165,0.28), rgba(225,205,165,0.28)), url('/textures/season-wood.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -62,7 +62,7 @@ const SeasonalHero = ({ data }: Props) => {
     >
       {/* ========== HEADER DE SECCIÓN — sobre la misma madera ========== */}
       <div
-        className="w-full pt-4 md:pt-6 pb-8 md:pb-10 text-center relative z-10"
+        className="w-full pt-4 md:pt-6 pb-2 md:pb-3 text-center relative z-10"
         style={{
           background: "transparent",
         }}
