@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import InteractiveMap from "@/components/InteractiveMap";
+import { MapSection } from "@/components/home/MapSection";
 
 const Mapa = () => {
   return (
@@ -21,7 +21,7 @@ const Mapa = () => {
             </p>
           </div>
         </div>
-        <InteractiveMap showTitle={false} />
+        <MapSection />
       </main>
       <Footer />
     </div>
