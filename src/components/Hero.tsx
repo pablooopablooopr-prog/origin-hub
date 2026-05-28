@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const HERO_VIDEOS: { src: string; maxTime: number }[] = [
-  { src: "https://assets.mixkit.co/videos/39767/39767-720.mp4", maxTime: 4 },
-  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 3 },
-  { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4", maxTime: 3 },
-  { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 3 },
+  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 4 }, // olivos
+  { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4", maxTime: 3 }, // viñedo
+  { src: "https://assets.mixkit.co/videos/46661/46661-720.mp4", maxTime: 4 }, // manos recogiendo vegetales
+  { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 3 }, // vacas
 ];
 
 const Hero = () => {
