@@ -1,518 +1,179 @@
-import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Star, Users, Store } from "lucide-react";
-import {
-  SPOTLIGHT_POOL,
-  SPOTLIGHT_NICHO_ORDER,
-  type SpotlightCompany,
-  type SpotlightNicho,
-} from "@/data/spotlightDemo";
+import { MapPin, User, ArrowRight, CalendarDays } from "lucide-react";
 
-/**
- * SECCIÓN 3 de la home — "HOY EN ORIGEN ○ · Empresas destacadas de hoy".
- *
- * Layout editorial (mockup Atelier):
- *   - 1 ficha grande izquierda (la "destacada" de turno) con borde dorado
- *   - 4 fichas pequeñas derecha en grid 2×2
- *   - sello circular flotante "LO NUESTRO ES ORIGEN" entre ambas zonas
- *   - cinta inferior con 3 stats + botón "VER TODAS LAS EMPRESAS"
- *
- * Comportamiento dinámico:
- *   1. La FECHA bajo el título es el día actual (es-ES, "17 de mayo de 2025")
- *      y se refresca al cambiar de día.
- *   2. ROTACIÓN automática:
- *      - 5 fichas del MISMO nicho a la vez
- *      - cada 7 s, todas las fichas avanzan una posición
- *        (la grande pasa al final de las pequeñas, la primera pequeña sube
- *         a grande)
- *      - tras 15 rotaciones (cada ficha ha sido destacada 3 veces) se
- *        cambia al siguiente nicho del orden definido en SPOTLIGHT_NICHO_ORDER
- *      - el ciclo es infinito y se reinicia en quesos cuando completa
- *
- * El cronograma se puede pausar pasando `paused` desde el padre, pero por
- * defecto está siempre activo en home.
- */
-
-const SECONDS_PER_ROTATION = 7;
-const ROTATIONS_BEFORE_NICHE_SWITCH = 15; // 5 fichas × 3 turnos cada una
-
-const formatTodayLabel = (date: Date): string => {
-  return date.toLocaleDateString("es-ES", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+const C = {
+  olive: "#5C6B2E",
+  cream: "#F5F0E8",
+  beige: "#C8B89A",
+  brown: "#3D2B1F",
+  gold: "#B8860B",
+  dark: "#1f1a14",
+  darkCard: "#2a241c",
 };
 
-// ============================================================
-// FICHA GRANDE (izquierda)
-// ============================================================
-const FeaturedCard = ({ company }: { company: SpotlightCompany }) => {
-  const linkTo = company.slug ? `/negocio/${company.slug}` : "/soy-empresa";
-  return (
-    <article
-      className="relative h-full rounded-md overflow-hidden bg-[#fdfaf2] border-2 transition-all duration-500"
-      style={{
-        borderColor: "#d4a83a",
-        boxShadow:
-          "0 12px 32px -10px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(212,168,58,0.2)",
-      }}
-    >
-      <div className="relative">
-        <div className="aspect-[16/9] w-full overflow-hidden">
-          <img
-            src={company.image}
-            alt={company.name}
-            className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]"
-            loading="lazy"
-          />
-        </div>
-        {/* Badge DESTACADA dorado */}
-        <span
-          className="absolute top-3 left-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] tracking-[0.18em] uppercase font-bold"
-          style={{
-            background: "#d4a83a",
-            color: "#2a1c10",
-            fontFamily: "'Cormorant Garamond', serif",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-          }}
-        >
-          <Star className="w-3 h-3 fill-current" />
-          Destacada
-        </span>
+// Datos mock — 4 empresas destacadas de hoy (TODO: rotación diaria desde BD)
+const EMPRESAS = [
+  {
+    id: "1",
+    nombre: "Finca Los Álamos",
+    ubicacion: "Albacete",
+    categoria: "Hortalizas",
+    badge: "PRODUCTOR LOCAL",
+    badgeColor: "#5C6B2E",
+    descripcion: "Cultivo ecológico con sabor de verdad, directo de nuestra huerta a tu mesa.",
+    persona: "Familia García",
+    img: "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=700&q=85",
+    slug: "finca-los-alamos",
+  },
+  {
+    id: "2",
+    nombre: "Quesería El Refugio",
+    ubicacion: "Ciudad Real",
+    categoria: "Quesos",
+    badge: "ARTESANO",
+    badgeColor: "#6b3a20",
+    descripcion: "Quesos artesanos madurados con tiempo, paciencia y pasión por lo auténtico.",
+    persona: "Manuel López",
+    img: "https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=700&q=85",
+    slug: "queseria-el-refugio",
+  },
+  {
+    id: "3",
+    nombre: "La Era de Don Quijote",
+    ubicacion: "Toledo",
+    categoria: "Cocina tradicional",
+    badge: "RESTAURANTE",
+    badgeColor: "#5C6B2E",
+    descripcion: "Cocina de siempre con producto local y recetas que cuentan historias.",
+    persona: "Elena Martín",
+    img: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=700&q=85",
+    slug: "la-era-de-don-quijote",
+  },
+  {
+    id: "4",
+    nombre: "Taller Tierra Viva",
+    ubicacion: "Cuenca",
+    categoria: "Experiencias",
+    badge: "EXPERIENCIA",
+    badgeColor: "#6b3a20",
+    descripcion: "Vive la artesanía en primera persona y conecta con lo esencial.",
+    persona: "Julio Romero",
+    img: "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&w=700&q=85",
+    slug: "taller-tierra-viva",
+  },
+];
+
+const EmpresaCard = ({ e }: { e: typeof EMPRESAS[0] }) => (
+  <article className="flex flex-col rounded-2xl overflow-hidden" style={{ backgroundColor: C.cream }}>
+    {/* Imagen + badge */}
+    <div className="relative w-full overflow-hidden" style={{ height: "200px" }}>
+      <img src={e.img} alt={e.nombre} className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" />
+      <span
+        className="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-bold tracking-[0.16em] uppercase"
+        style={{ backgroundColor: e.badgeColor, color: "#fff" }}
+      >
+        {e.badge}
+      </span>
+    </div>
+
+    {/* Contenido */}
+    <div className="flex flex-col flex-1 p-5 gap-3">
+      <h3 className="leading-tight" style={{ color: C.brown, fontFamily: "'Playfair Display', 'Georgia', serif", fontSize: "21px", fontWeight: 600 }}>
+        {e.nombre}
+      </h3>
+
+      <div className="flex items-center gap-2 flex-wrap text-[14px]" style={{ color: "#7a6a52" }}>
+        <span className="flex items-center gap-1"><MapPin size={14} style={{ color: C.olive }} />{e.ubicacion}</span>
+        <span style={{ color: C.beige }}>·</span>
+        <span className="px-2.5 py-0.5 rounded-full text-[12px] font-medium" style={{ border: `1px solid ${C.beige}`, color: C.brown }}>{e.categoria}</span>
       </div>
 
-      <div className="p-4 md:p-5 space-y-1.5">
-        <span
-          className="inline-flex items-center px-3 py-1 rounded-full text-[11px] tracking-[0.18em] uppercase font-semibold"
-          style={{
-            background: company.categoryColor,
-            color: company.categoryTextColor,
-            fontFamily: "'Cormorant Garamond', serif",
-          }}
-        >
-          {company.category}
+      <p className="text-[14.5px] leading-[1.55] flex-1" style={{ color: "#6b5a44" }}>{e.descripcion}</p>
+
+      <div className="flex items-center justify-between pt-2 mt-1" style={{ borderTop: `1px solid ${C.beige}55` }}>
+        <span className="flex items-center gap-1.5 text-[13px]" style={{ color: "#8a7a62" }}>
+          <User size={14} />{e.persona}
         </span>
-
-        <h3
-          className="text-[24px] md:text-[28px] leading-tight tracking-tight"
-          style={{
-            fontFamily: "'Playfair Display', serif",
-            color: "#2a2418",
-            fontWeight: 500,
-          }}
-        >
-          {company.name}
-        </h3>
-
-        <p
-          className="text-[16px]"
-          style={{
-            color: "#8a6f2e",
-            fontFamily: "'Cormorant Garamond', serif",
-          }}
-        >
-          {company.locality}
-        </p>
-
-        <p
-          className="text-[17px] leading-[1.65] line-clamp-3 max-w-[480px]"
-          style={{
-            color: "#3a3326",
-            fontFamily: "'Cormorant Garamond', serif",
-          }}
-        >
-          {company.description}
-        </p>
-
-        <Link
-          to={linkTo}
-          className="inline-flex items-center gap-2 text-[12px] tracking-[0.22em] uppercase font-bold pt-1 group"
-          style={{
-            color: "#8a6f2e",
-            fontFamily: "'Cormorant Garamond', serif",
-          }}
-        >
-          Leer ficha
-          <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
+        <Link to={`/empresa/${e.slug}`} className="flex items-center gap-1.5 text-[13px] font-semibold group" style={{ color: C.olive }}>
+          Ver perfil
+          <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
         </Link>
       </div>
-    </article>
-  );
-};
-
-// ============================================================
-// FICHA PEQUEÑA (derecha 2×2)
-// ============================================================
-const SmallCard = ({ company }: { company: SpotlightCompany }) => {
-  const linkTo = company.slug ? `/negocio/${company.slug}` : "/soy-empresa";
-  return (
-    <article
-      className="relative rounded-md overflow-hidden bg-[#fdfaf2] border transition-all duration-500"
-      style={{
-        borderColor: "#e0d4b8",
-        boxShadow: "0 6px 16px -6px rgba(0,0,0,0.15)",
-      }}
-    >
-      <div className="aspect-[16/9] w-full overflow-hidden">
-        <img
-          src={company.image}
-          alt={company.name}
-          className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]"
-          loading="lazy"
-        />
-      </div>
-
-      <div className="p-5 space-y-2">
-        <span
-          className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] tracking-[0.18em] uppercase font-semibold"
-          style={{
-            background: company.categoryColor,
-            color: company.categoryTextColor,
-            fontFamily: "'Cormorant Garamond', serif",
-          }}
-        >
-          {company.category}
-        </span>
-
-        <h4
-          className="text-[19px] leading-tight tracking-tight"
-          style={{
-            fontFamily: "'Playfair Display', serif",
-            color: "#2a2418",
-            fontWeight: 500,
-          }}
-        >
-          {company.name}
-        </h4>
-
-        <p
-          className="text-[15px]"
-          style={{
-            color: "#8a6f2e",
-            fontFamily: "'Cormorant Garamond', serif",
-          }}
-        >
-          {company.locality}
-        </p>
-
-        <p
-          className="text-[15px] leading-[1.6] line-clamp-3"
-          style={{
-            color: "#3a3326",
-            fontFamily: "'Cormorant Garamond', serif",
-          }}
-        >
-          {company.description}
-        </p>
-
-        <Link
-          to={linkTo}
-          className="inline-flex items-center gap-1.5 text-[12px] tracking-[0.2em] uppercase font-bold pt-1 group"
-          style={{
-            color: "#8a6f2e",
-            fontFamily: "'Cormorant Garamond', serif",
-          }}
-        >
-          Leer ficha
-          <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
-        </Link>
-      </div>
-    </article>
-  );
-};
-
-// ============================================================
-// SELLO CIRCULAR FLOTANTE "LO NUESTRO ES ORIGEN"
-// ============================================================
-const FloatingSeal = () => (
-  <div
-    className="hidden lg:flex absolute z-30 w-[90px] h-[90px] rounded-full items-center justify-center -rotate-[6deg]"
-    style={{
-      background: "#fdfaf2",
-      border: "1.5px solid #d4a83a",
-      boxShadow: "0 8px 20px rgba(0,0,0,0.18)",
-    }}
-    aria-hidden="true"
-  >
-    <svg viewBox="0 0 110 110" className="absolute inset-0 w-full h-full">
-      <defs>
-        <path id="seal-circle-top" d="M 55,55 m -42,0 a 42,42 0 0,1 84,0" />
-        <path id="seal-circle-bot" d="M 55,55 m -42,0 a 42,42 0 1,0 84,0" />
-      </defs>
-      <text fill="#8a6f2e" style={{ fontSize: "8.5px", letterSpacing: "0.32em" }}>
-        <textPath href="#seal-circle-top" startOffset="50%" textAnchor="middle">
-          LO NUESTRO
-        </textPath>
-      </text>
-      <text fill="#8a6f2e" style={{ fontSize: "8.5px", letterSpacing: "0.32em" }}>
-        <textPath href="#seal-circle-bot" startOffset="50%" textAnchor="middle">
-          ES ORIGEN
-        </textPath>
-      </text>
-    </svg>
-    {/* Hoja en el centro */}
-    <svg width="28" height="32" viewBox="0 0 36 40" fill="none">
-      <path
-        d="M18 4 Q 8 14 10 24 Q 12 32 18 36 Q 24 32 26 24 Q 28 14 18 4 Z"
-        fill="#5a6b3a"
-        opacity="0.85"
-      />
-      <line x1="18" y1="6" x2="18" y2="36" stroke="#3d4a2a" strokeWidth="0.6" />
-      <path d="M18 14 L 12 20 M18 18 L 24 24 M18 22 L 12 28 M18 26 L 24 32" stroke="#3d4a2a" strokeWidth="0.4" />
-      <circle cx="18" cy="38" r="1" fill="#3d4a2a" />
-    </svg>
-  </div>
+    </div>
+  </article>
 );
 
-// ============================================================
-// SECCIÓN PRINCIPAL
-// ============================================================
 const SpotlightToday = () => {
-  const [today, setToday] = useState<Date>(new Date());
-  const [nicheIndex, setNicheIndex] = useState(0);
-  const [rotationStep, setRotationStep] = useState(0);
-
-  // ---- Refresca la fecha si cambia el día ----
-  useEffect(() => {
-    const id = setInterval(() => {
-      const now = new Date();
-      // Sólo actualiza si es un día distinto (evita re-render innecesario)
-      if (now.getDate() !== today.getDate() || now.getMonth() !== today.getMonth()) {
-        setToday(now);
-      }
-    }, 60_000); // cada minuto basta para detectar cambio de día
-    return () => clearInterval(id);
-  }, [today]);
-
-  // ---- Rotación automática ----
-  useEffect(() => {
-    const id = setInterval(() => {
-      setRotationStep((prev) => {
-        const next = prev + 1;
-        if (next >= ROTATIONS_BEFORE_NICHE_SWITCH) {
-          setNicheIndex((nIdx) => (nIdx + 1) % SPOTLIGHT_NICHO_ORDER.length);
-          return 0;
-        }
-        return next;
-      });
-    }, SECONDS_PER_ROTATION * 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  const currentNiche: SpotlightNicho = SPOTLIGHT_NICHO_ORDER[nicheIndex];
-  const nichePool = SPOTLIGHT_POOL[currentNiche];
-
-  // Reordena el pool según el step actual: la posición 0 es "destacada",
-  // las 1..4 son las pequeñas. Cada step desplaza una posición.
-  const visibleCompanies = useMemo(() => {
-    const len = nichePool.length;
-    return Array.from({ length: len }, (_, i) => nichePool[(i + rotationStep) % len]);
-  }, [nichePool, rotationStep]);
-
-  const featured = visibleCompanies[0];
-  const others = visibleCompanies.slice(1, 5); // hasta 4 pequeñas
-
-  const dateLabel = formatTodayLabel(today);
-
   return (
-    <section
-      className="relative py-6 md:py-8"
-      style={{
-        backgroundImage: "url('/textures/dark-stone.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      <div className="container mx-auto px-6 max-w-[1280px]">
-        {/* ===== HEADER (compacto) ===== */}
-        <header className="text-center mb-5 md:mb-6 space-y-1.5">
-          <div className="flex items-center justify-center gap-3 mb-1">
-            <span className="block h-px w-10" style={{ backgroundColor: "#c4a455" }} aria-hidden="true" />
-            <span
-              className="text-[11px] font-bold uppercase tracking-[0.3em]"
-              style={{ color: "#c4a455" }}
-            >
-              HOY EN ORIGEN
-            </span>
-            <span className="block h-px w-10" style={{ backgroundColor: "#c4a455" }} aria-hidden="true" />
-          </div>
-          <h2
-            className="font-bold leading-tight tracking-tight"
-            style={{
-              fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif",
-              color: "#f2e4c0",
-              fontSize: "clamp(1.5rem, 1rem + 2.4vw, 2.875rem)",
-            }}
-          >
-            Empresas destacadas de hoy
-          </h2>
-          <p
-            className="flex items-center justify-center gap-2 flex-wrap"
-            style={{
-              color: "#c8a87a",
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)",
-            }}
-          >
-            <span>Castilla–La Mancha</span>
-            <span aria-hidden="true">·</span>
-            <span>{dateLabel}</span>
-            <span aria-hidden="true" className="mx-1">·</span>
-            <span className="italic text-[15px]">Seis empresas seleccionadas que hoy ocupan la portada.</span>
-          </p>
-        </header>
-
-        {/* ===== GRID PRINCIPAL (compacto) ===== */}
-        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-4">
-          {/* IZQUIERDA: ficha grande */}
-          <div className="lg:col-span-7 relative">
-            {featured && <FeaturedCard company={featured} />}
-          </div>
-
-          {/* DERECHA: grid 2×2 fichas pequeñas */}
-          <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {others.map((c, i) => (
-              <SmallCard key={`${c.id}-${rotationStep}-${i}`} company={c} />
-            ))}
-          </div>
-
-          {/* SELLO FLOTANTE entre las dos zonas */}
-          <div
-            className="absolute z-30"
-            style={{ top: "44%", left: "calc(58.33% - 45px)" }}
-          >
-            <FloatingSeal />
-          </div>
-        </div>
-
-        {/* ===== CINTA INFERIOR DE STATS (compacta) ===== */}
-        <div
-          className="relative mt-3 md:mt-4 rounded-md px-4 md:px-6 py-3"
-          style={{
-            background: "#fdfaf2",
-            border: "1px solid #e0d4b8",
-            boxShadow: "0 4px 14px -4px rgba(0,0,0,0.1)",
-          }}
-        >
-          <div className="flex flex-wrap items-center justify-around gap-3 md:gap-6">
-            {/* Stat 1 */}
-            <div className="flex items-center gap-2.5">
-              <div
-                className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ border: "1.5px solid #d4a83a" }}
-              >
-                <Users className="w-4 h-4" style={{ color: "#8a6f2e" }} />
-              </div>
-              <div className="text-left leading-tight">
-                <p
-                  className="text-[14px] font-semibold"
-                  style={{ color: "#2a2418", fontFamily: "'Cormorant Garamond', serif" }}
-                >
-                  {nichePool.length} empresas
-                </p>
-                <p
-                  className="text-[13px]"
-                  style={{ color: "#8a6f2e", fontFamily: "'Cormorant Garamond', serif" }}
-                >
-                  en portada hoy
-                </p>
-              </div>
-            </div>
-
-            <span className="hidden md:inline-block w-px h-8 bg-[#e0d4b8]" />
-
-            {/* Stat 2 — 24h */}
-            <div className="flex items-center gap-2.5">
-              <div
-                className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ border: "1.5px solid #d4a83a" }}
-              >
-                <span
-                  className="text-[9px] font-bold tracking-wide"
-                  style={{ color: "#8a6f2e", fontFamily: "'Cormorant Garamond', serif" }}
-                >
-                  24h
-                </span>
-              </div>
-              <div className="text-left leading-tight">
-                <p
-                  className="text-[14px] font-semibold"
-                  style={{ color: "#2a2418", fontFamily: "'Cormorant Garamond', serif" }}
-                >
-                  24h de visibilidad
-                </p>
-                <p
-                  className="text-[13px]"
-                  style={{ color: "#8a6f2e", fontFamily: "'Cormorant Garamond', serif" }}
-                >
-                  rotatoria
-                </p>
-              </div>
-            </div>
-
-            <span className="hidden md:inline-block w-px h-8 bg-[#e0d4b8]" />
-
-            {/* Stat 3 — Spotlight */}
-            <div className="flex items-center gap-2.5">
-              <div
-                className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ border: "1.5px solid #d4a83a" }}
-              >
-                <Store className="w-4 h-4" style={{ color: "#8a6f2e" }} />
-              </div>
-              <div className="text-left leading-tight">
-                <p
-                  className="text-[14px] font-semibold"
-                  style={{ color: "#2a2418", fontFamily: "'Cormorant Garamond', serif" }}
-                >
-                  Spotlight para
-                </p>
-                <p
-                  className="text-[13px]"
-                  style={{ color: "#8a6f2e", fontFamily: "'Cormorant Garamond', serif" }}
-                >
-                  productores y restaurantes
-                </p>
-              </div>
-            </div>
-
-            {/* CTA "VER TODAS LAS EMPRESAS" */}
-            <Link
-              to="/empresas"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-[10px] tracking-[0.28em] uppercase font-bold transition-all hover:translate-y-[-1px] group"
+    <section className="relative w-full" style={{ backgroundColor: C.dark }}>
+      <div className="max-w-[1280px] mx-auto px-6 py-14 md:py-20">
+        {/* ── HEADER ── */}
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-10">
+          <div className="flex-1">
+            <p className="text-[12px] font-bold uppercase tracking-[0.28em] mb-3" style={{ color: C.gold }}>
+              Hoy en Ritmo Origen
+            </p>
+            <h2
+              className="font-bold leading-[1.05] tracking-tight mb-4"
               style={{
-                color: "#8a6f2e",
-                border: "1.5px solid #d4a83a",
-                fontFamily: "'Cormorant Garamond', serif",
+                color: C.cream,
+                fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif",
+                fontSize: "clamp(2.1rem, 1.4rem + 2.6vw, 3.4rem)",
               }}
             >
-              Ver todas las empresas
-              <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
+              Empresas destacadas de hoy
+            </h2>
+            <p className="text-[16px] leading-relaxed mb-4" style={{ color: "#c5bba8", maxWidth: "560px" }}>
+              Cada día, 4 negocios auténticos tienen su momento en la portada de RITMO ORIGEN. Conócelos, apóyalos y forma parte del ritmo real.
+            </p>
+            <Link to="/empresas" className="inline-flex items-center gap-2 text-[14px] font-semibold group" style={{ color: C.gold }}>
+              Cómo funciona
+              <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
+
+          {/* Lateral derecho */}
+          <div className="flex items-center gap-4 flex-shrink-0">
+            <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(184,134,11,0.12)" }}>
+              <CalendarDays size={26} style={{ color: C.gold }} strokeWidth={1.5} />
+            </div>
+            <div>
+              <p className="text-[15px] font-semibold mb-0.5" style={{ color: C.cream }}>Nuevas empresas cada 24 horas</p>
+              <p className="text-[13px] leading-snug" style={{ color: "#a89878", maxWidth: "200px" }}>La portada se renueva cada día a las 00:00h.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* ── GRID 4 CARDS ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {EMPRESAS.map((e) => <EmpresaCard key={e.id} e={e} />)}
+        </div>
+
+        {/* ── CTA ── */}
+        <div className="flex justify-center mt-10">
+          <Link to="/empresas">
+            <button
+              className="px-9 py-3.5 rounded-xl text-[14px] font-semibold tracking-[0.06em] transition-all hover:-translate-y-0.5 flex items-center gap-2"
+              style={{ border: `1.5px solid ${C.gold}`, color: C.cream, backgroundColor: "transparent" }}
+            >
+              Ver todas las empresas
+              <ArrowRight size={16} style={{ color: C.gold }} />
+            </button>
+          </Link>
+        </div>
+
+        {/* Decoración laurel */}
+        <div className="flex justify-center mt-8 opacity-50">
+          <svg viewBox="0 0 120 16" width="110" height="15" aria-hidden="true">
+            <line x1="0" y1="8" x2="40" y2="8" stroke={C.gold} strokeWidth="0.6" />
+            <line x1="80" y1="8" x2="120" y2="8" stroke={C.gold} strokeWidth="0.6" />
+            <g transform="translate(54,8)" stroke={C.gold} strokeWidth="0.7" fill="none">
+              <path d="M0,0 C4,-4 9,-3 11,1" /><path d="M0,0 C-4,-4 -9,-3 -11,1" />
+              <path d="M5,-1 C6,-4 9,-4 10,-2" /><path d="M-5,-1 C-6,-4 -9,-4 -10,-2" />
+            </g>
+          </svg>
         </div>
       </div>
-
-      {/* Sprig botánico decorativo en borde derecho */}
-      <svg
-        className="hidden lg:block absolute right-2 bottom-12 opacity-50 pointer-events-none"
-        width="60"
-        height="120"
-        viewBox="0 0 60 120"
-        fill="none"
-        aria-hidden="true"
-      >
-        <path d="M30 4 Q 28 50 30 116" stroke="#8a6f2e" strokeWidth="0.8" fill="none" />
-        <ellipse cx="20" cy="22" rx="5" ry="2.5" fill="#8a6f2e" opacity="0.6" />
-        <ellipse cx="40" cy="34" rx="5" ry="2.5" fill="#8a6f2e" opacity="0.6" />
-        <ellipse cx="18" cy="48" rx="5.5" ry="2.8" fill="#8a6f2e" opacity="0.6" />
-        <ellipse cx="42" cy="60" rx="5.5" ry="2.8" fill="#8a6f2e" opacity="0.6" />
-        <ellipse cx="20" cy="76" rx="5" ry="2.5" fill="#8a6f2e" opacity="0.6" />
-        <ellipse cx="40" cy="88" rx="5" ry="2.5" fill="#8a6f2e" opacity="0.6" />
-        <ellipse cx="22" cy="104" rx="4.5" ry="2.3" fill="#8a6f2e" opacity="0.6" />
-      </svg>
     </section>
   );
 };

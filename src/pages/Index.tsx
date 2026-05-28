@@ -12,6 +12,7 @@ import { getCurrentSeason } from "@/utils/getCurrentSeason";
 import SpotlightToday from "@/components/home/SpotlightToday";
 import SeasonalRoutes from "@/components/home/SeasonalRoutes";
 import { MapSection } from "@/components/home/MapSection";
+import HowItWorks from "@/components/home/HowItWorks";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -115,78 +116,7 @@ const Index = () => {
 
         <HumanRatings />
 
-        {/* ===== Cómo funciona ORIGEN ===== */}
-        <section className="py-10 md:py-14 bg-muted/30">
-          <div className="container mx-auto px-6 max-w-4xl">
-            <h2
-              className="text-4xl md:text-5xl font-bold text-primary text-center mb-8 tracking-tight"
-              style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif" }}
-            >
-              Cómo funciona ORIGEN
-            </h2>
-
-            <div className="relative">
-              <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-border md:-translate-x-px hidden md:block" />
-
-              {[
-                {
-                  step: "01",
-                  title: "Explora",
-                  description:
-                    "Descubre lugares, productores y rutas desde el mapa.",
-                  align: "right" as const,
-                },
-                {
-                  step: "02",
-                  title: "Conecta",
-                  description:
-                    "Visita, reserva, recorre o compra directamente en origen.",
-                  align: "left" as const,
-                },
-                {
-                  step: "03",
-                  title: "Vuelve",
-                  description:
-                    "Guarda lugares, completa rutas y sigue descubriendo nuevos territorios.",
-                  align: "right" as const,
-                },
-              ].map((item, i) => (
-                <div
-                  key={i}
-                  className={`relative flex items-center mb-6 last:mb-0 md:justify-${
-                    item.align === "right" ? "start" : "end"
-                  }`}
-                >
-                  <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary text-primary-foreground items-center justify-center text-xs font-bold shadow-md z-10">
-                    {item.step}
-                  </div>
-                  <div
-                    className={`w-full md:w-[calc(50%-2.5rem)] ${
-                      item.align === "right"
-                        ? "md:ml-0 md:mr-auto"
-                        : "md:mr-0 md:ml-auto"
-                    }`}
-                  >
-                    <div className="bg-card rounded-xl p-5 shadow-sm border border-border/50 hover:shadow-md transition-shadow">
-                      <span className="inline-block md:hidden text-xs font-bold text-secondary tracking-widest uppercase mb-1">
-                        Paso {item.step}
-                      </span>
-                      <h3
-                        className="text-lg md:text-xl font-bold text-primary mb-1"
-                        style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}
-                      >
-                        {item.title}
-                      </h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed">
-                        {item.description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <HowItWorks />
 
         {/* ===== Manifiesto + CTA Final ===== */}
         <section className="py-6 md:py-10 bg-gradient-to-b from-primary/5 to-background">
