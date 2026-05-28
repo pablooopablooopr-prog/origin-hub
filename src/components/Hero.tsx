@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const HERO_VIDEOS: { src: string; maxTime: number }[] = [
-  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 4 }, // olivos
-  { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4", maxTime: 3 }, // viñedo
-  { src: "https://assets.mixkit.co/videos/46661/46661-720.mp4", maxTime: 4 }, // manos recogiendo vegetales
-  { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 3 }, // vacas
+  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4",                                   maxTime: 3 }, // olivos
+  { src: "https://videos.pexels.com/video-files/28872852/28872852-hd_1920_1080_25fps.mp4",        maxTime: 4 }, // cosechadora aérea
+  { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4",                                   maxTime: 3 }, // viñedo (va hacia adentro)
+  { src: "https://videos.pexels.com/video-files/15909400/15909400-hd_1920_1080_25fps.mp4",        maxTime: 4 }, // hombre campo maíz
 ];
 
 const Hero = () => {
@@ -58,6 +58,15 @@ const Hero = () => {
         <video
           key={v.src}
           ref={(el) => { videoRefs.current[i] = el; }}
+          onError={(e) => {
+            // Si falla 25fps, intentar 30fps (Pexels puede variar)
+            const vid = e.currentTarget;
+            if (vid.src.includes("25fps") && !vid.dataset.retried) {
+              vid.dataset.retried = "1";
+              vid.src = vid.src.replace("25fps", "30fps");
+              vid.load();
+            }
+          }}
           className="absolute inset-0 w-full h-full object-cover"
           style={{
             zIndex: i === currentVideo ? 2 : i === prevVideo ? 1 : 0,
