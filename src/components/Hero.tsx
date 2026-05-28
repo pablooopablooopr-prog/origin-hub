@@ -4,9 +4,10 @@ import { Link } from "react-router-dom";
 
 /** Orden: olivos → viñedo → vacas */
 const HERO_VIDEOS: { src: string; maxTime: number }[] = [
-  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 4 },
-  { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4", maxTime: 7 },
-  { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 7 },
+  { src: "https://assets.mixkit.co/videos/4508/4508-720.mp4",  maxTime: 4 },  // recolector verduras
+  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 3 }, // olivos
+  { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4", maxTime: 3 }, // viñedo
+  { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 3 }, // vacas
 ];
 
 const Hero = () => {
@@ -85,7 +86,7 @@ const Hero = () => {
             zIndex: i === currentVideo ? 2 : i === prevVideo ? 1 : 0,
             opacity: i === currentVideo ? 1 : i === prevVideo ? 1 : 0,
             transition: i === currentVideo ? "opacity 1.0s ease-in-out" : "none",
-            filter: "brightness(1.15) contrast(1.12) saturate(1.1)"
+            filter: "none"
           }}
           src={v.src}
           muted
@@ -131,7 +132,7 @@ const Hero = () => {
 
       {/* ── Contenido principal ──────────────────────────── */}
       <div
-        className="relative z-10 w-full flex flex-col justify-between min-h-screen pt-8"
+        className="relative z-10 w-full flex flex-col justify-between min-h-screen pt-6"
         style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)" }}
       >
         {/* TÍTULO - Centrado */}
@@ -154,7 +155,7 @@ const Hero = () => {
             Negocios tradicionales. Calidad real. Comunidad nacional.
           </p>
 
-          <p className="text-white text-xl md:text-2xl font-sans text-center leading-relaxed max-w-5xl mx-auto mb-20" style={{ fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif", textShadow: "0 2px 10px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.7)" }}>
+          <p className="text-white text-xl md:text-2xl font-sans text-center leading-relaxed max-w-5xl mx-auto mb-8" style={{ fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif", textShadow: "0 2px 10px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.7)" }}>
             La única plataforma estacional que conecta tu mesa con el ritmo real de cultivo.
             <br />
             Productores, empresas, sabores, rutas y experiencias que varían según el calendario agrícola.

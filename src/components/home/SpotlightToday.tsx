@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MapPin, User, ArrowRight, CalendarDays } from "lucide-react";
+import { MapPin, User, ArrowRight } from "lucide-react";
 
 const C = {
   olive: "#5C6B2E",
@@ -130,17 +130,6 @@ const SpotlightToday = () => {
               Cómo funciona
               <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
             </Link>
-          </div>
-
-          {/* Lateral derecho */}
-          <div className="flex items-center gap-4 flex-shrink-0">
-            <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(184,134,11,0.12)" }}>
-              <CalendarDays size={26} style={{ color: C.gold }} strokeWidth={1.5} />
-            </div>
-            <div>
-              <p className="text-[15px] font-semibold mb-0.5" style={{ color: C.cream }}>Nuevas empresas cada 24 horas</p>
-              <p className="text-[13px] leading-snug" style={{ color: "#a89878", maxWidth: "200px" }}>La portada se renueva cada día a las 00:00h.</p>
-            </div>
           </div>
         </div>
 
