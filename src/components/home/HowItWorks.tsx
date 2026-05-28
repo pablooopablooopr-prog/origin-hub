@@ -25,7 +25,7 @@ const VALUES = [
 
 const HowItWorks = () => {
   return (
-    <section className="relative w-full overflow-hidden" style={{ backgroundColor: C.paper }}>
+    <section className="relative w-full overflow-hidden" style={{ backgroundColor: "#ddd0b8" }}>
       <div className="relative max-w-[1280px] mx-auto px-6 py-10 md:py-14">
         {/* HEADER */}
         <div className="text-center mb-12">

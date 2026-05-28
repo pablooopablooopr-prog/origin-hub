@@ -133,10 +133,37 @@ const SpotlightToday = () => {
           </div>
         </div>
 
-        {/* ── GRID 4 CARDS ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* ── GRID 4 CARDS + columna periódico ── */}
+      <div className="relative">
+        {/* Columna de periódico decorativa — extremo derecho */}
+        <div
+          className="hidden xl:flex absolute right-0 top-0 bottom-0 w-[88px] flex-col gap-3 py-1 overflow-hidden pointer-events-none select-none"
+          style={{ borderLeft: "1px solid rgba(255,255,255,0.07)" }}
+          aria-hidden="true"
+        >
+          <p className="text-[7px] font-bold uppercase tracking-[0.3em] px-3 mb-1" style={{ color: "rgba(184,134,11,0.7)", writingMode: "horizontal-tb" }}>
+            — Origen · {new Date().toLocaleDateString("es-ES", { day: "numeric", month: "short" })} —
+          </p>
+          {[
+            "Queso manchego de Porzuna, temporada de primavera",
+            "Bodegas familiares de Valdepeñas abren sus puertas al viajero",
+            "La trashumancia regresa a las rutas del campo",
+            "Productores locales: el tejido vivo de Castilla-La Mancha",
+            "Turismo de proximidad, la tendencia que transforma el territorio",
+            "Cosecha 2026: los mejores vinos de la región ya están disponibles",
+          ].map((txt, i) => (
+            <div key={i} className="px-3 py-2" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <p className="text-[9px] leading-[1.45]" style={{ color: "rgba(197,187,168,0.55)", fontFamily: "'Cormorant Garamond', serif" }}>
+                {txt}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 xl:pr-[96px]">
           {EMPRESAS.map((e) => <EmpresaCard key={e.id} e={e} />)}
         </div>
+      </div>
 
         {/* ── CTA ── */}
         <div className="flex justify-center mt-10">

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 /** Orden: olivos → viñedo → vacas */
 const HERO_VIDEOS: { src: string; maxTime: number }[] = [
-  { src: "https://assets.mixkit.co/videos/4508/4508-720.mp4",  maxTime: 4 },  // recolector verduras
+  { src: "https://assets.mixkit.co/videos/39767/39767-720.mp4", maxTime: 4 }, // recolector verduras/campo
   { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4", maxTime: 3 }, // olivos
   { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4", maxTime: 3 }, // viñedo
   { src: "https://assets.mixkit.co/videos/44923/44923-720.mp4", maxTime: 3 }, // vacas
@@ -74,7 +74,7 @@ const Hero = () => {
   }, [currentVideo, advanceVideo]);
 
   return (
-    <section className="min-h-screen flex flex-col items-center justify-start relative overflow-hidden pt-0">
+    <section className="relative overflow-hidden" style={{ height: "100vh" }}>
 
       {/* ── Los 3 vídeos precargados, solo el activo visible ── */}
       {HERO_VIDEOS.map((v, i) => (
@@ -132,9 +132,10 @@ const Hero = () => {
 
       {/* ── Contenido principal ──────────────────────────── */}
       <div
-        className="relative z-10 w-full flex flex-col justify-between min-h-screen pt-6"
+        className="relative z-10 w-full flex flex-col h-screen"
         style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)" }}
       >
+        <div className="flex-1" />
         {/* TÍTULO - Centrado */}
         <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1" style={{ textShadow: "0 3px 16px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,0.8)" }} >
           <span>RITM</span>
@@ -150,12 +151,12 @@ const Hero = () => {
         </h1>
 
         {/* CONTENIDO CENTRAL - Centrado */}
-        <div className="w-full flex flex-col items-center text-center px-4 md:px-8 py-4">
+        <div className="w-full flex flex-col items-center text-center px-4 md:px-8 py-2">
           <p className="text-2xl md:text-[2.1rem] text-white mb-4 mx-auto leading-relaxed font-medium" style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif", whiteSpace: "nowrap" }}>
             Negocios tradicionales. Calidad real. Comunidad nacional.
           </p>
 
-          <p className="text-white text-xl md:text-2xl font-sans text-center leading-relaxed max-w-5xl mx-auto mb-8" style={{ fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif", textShadow: "0 2px 10px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.7)" }}>
+          <p className="text-white text-xl md:text-2xl font-sans text-center leading-relaxed max-w-5xl mx-auto mb-6" style={{ fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif", textShadow: "0 2px 10px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.7)" }}>
             La única plataforma estacional que conecta tu mesa con el ritmo real de cultivo.
             <br />
             Productores, empresas, sabores, rutas y experiencias que varían según el calendario agrícola.
@@ -192,6 +193,7 @@ const Hero = () => {
           </div>
         </div>
 
+        <div className="flex-[0.6]" />
         {/* ESTADÍSTICAS - Distribuidas (izq, centro, drch) */}
         <div className="w-full flex justify-between items-center px-6 md:px-12 pb-5 pt-3 mt-auto" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%)" }}>
           <div className="text-center">
