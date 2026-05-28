@@ -52,12 +52,13 @@ const SeasonalHero = ({ data }: Props) => {
   return (
     <div
       style={{
-        backgroundImage: "url('/textures/adobe-wall.jpg')",
+        backgroundImage: "url('/textures/seasonal-wall-bg.jpg')",
         backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundPosition: "center top",
         backgroundRepeat: "no-repeat",
         position: "relative",
         isolation: "isolate",
+        overflow: "hidden",
       }}
     >
       {/* ========== HEADER DE SECCIÓN — sobre la misma madera ========== */}
@@ -146,14 +147,6 @@ const SeasonalHero = ({ data }: Props) => {
         <div className="seasonal-hero__wood-tint" />
         <div className="seasonal-hero__wood-planks" />
         <div className="seasonal-hero__wood-grain" />
-        {/* Vetas SVG */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30" preserveAspectRatio="none" viewBox="0 0 1200 700" aria-hidden="true">
-          <path d="M0 100 Q 300 92 600 108 T 1200 118" stroke="#0a0502" strokeWidth="1.2" fill="none" />
-          <path d="M0 260 Q 350 270 700 255 T 1200 280" stroke="#0a0502" strokeWidth="0.9" fill="none" />
-          <path d="M0 480 Q 400 470 800 490 T 1200 475" stroke="#0a0502" strokeWidth="1.2" fill="none" />
-          <ellipse cx="150" cy="200" rx="20" ry="10" fill="none" stroke="#1a0d05" strokeWidth="0.9" />
-          <ellipse cx="900" cy="380" rx="25" ry="12" fill="none" stroke="#1a0d05" strokeWidth="0.9" />
-        </svg>
         <div className="seasonal-hero__vignette" />
 
         {/* GRID PRINCIPAL */}

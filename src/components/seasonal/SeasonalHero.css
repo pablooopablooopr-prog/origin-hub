@@ -8,7 +8,7 @@
 
 .seasonal-hero {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   background-color: transparent;
   padding-bottom: 0;
 }
