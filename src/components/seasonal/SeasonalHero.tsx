@@ -268,7 +268,7 @@ const SeasonalHero = ({ data }: Props) => {
 
               {/* Descripción + sello CLM */}
               <div className="relative flex flex-col md:flex-row gap-4 items-start mb-4">
-                <p className="text-[14px] leading-[1.6] flex-1 max-w-[420px]" style={{ color: "#3a3326", fontFamily: "'Cormorant Garamond', serif" }}>
+                <p className="text-[17px] leading-[1.65] flex-1 max-w-[420px]" style={{ color: "#3a3326", fontFamily: "'Cormorant Garamond', serif" }}>
                   {data.description}
                 </p>
 
@@ -302,7 +302,7 @@ const SeasonalHero = ({ data }: Props) => {
               </div>
 
               {/* Cita italic */}
-              <p className="relative text-[13.5px] italic mb-4 pb-4" style={{ color: "#5a4a30", fontFamily: "'Cormorant Garamond', serif", borderBottom: `1px dashed ${data.colors.beige}` }}>
+              <p className="relative text-[16px] italic mb-4 pb-4" style={{ color: "#5a4a30", fontFamily: "'Cormorant Garamond', serif", borderBottom: `1px dashed ${data.colors.beige}` }}>
                 {data.quote}
               </p>
 
@@ -399,7 +399,7 @@ const SeasonalHero = ({ data }: Props) => {
                 <text x="100" y="55" textAnchor="middle" fill="#7a6040" style={{ fontSize: "5px", fontFamily: "serif" }}>ALBACETE</text>
               </svg>
 
-              <p className="text-[10px] leading-[1.4] text-center" style={{ color: "#3a3326", fontFamily: "'Cormorant Garamond', serif" }}>
+              <p className="text-[12px] leading-[1.5] text-center" style={{ color: "#3a3326", fontFamily: "'Cormorant Garamond', serif" }}>
                 {data.sideNote.text}
               </p>
             </div>
@@ -441,7 +441,7 @@ const SeasonalHero = ({ data }: Props) => {
                 return (
                   <div key={f.label} className="flex items-center justify-center md:justify-start gap-3">
                     <Icon className="w-6 h-6 flex-shrink-0" style={{ color: data.colors.primary, strokeWidth: 1.4 }} />
-                    <p className="text-[13px] leading-[1.2] font-medium" style={{ color: "#3a3326", fontFamily: "'Cormorant Garamond', serif" }}>
+                    <p className="text-[15px] leading-[1.3] font-medium" style={{ color: "#3a3326", fontFamily: "'Cormorant Garamond', serif" }}>
                       {f.label}
                     </p>
                   </div>
@@ -506,13 +506,13 @@ const StatBlock = ({ value, label, icon, accent, href }: StatBlockProps) => {
         <>
           <span className="text-[38px] leading-none font-semibold" style={{ fontFamily: "'Playfair Display', serif", color: accent }}>{value}</span>
           <div className="text-left">
-            <p className="text-[13px] leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#e8dcc0" }}>{label.split(" ")[0]}</p>
-            <p className="text-[13px] leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#e8dcc0" }}>{label.split(" ").slice(1).join(" ")}</p>
+            <p className="text-[15px] leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#e8dcc0" }}>{label.split(" ")[0]}</p>
+            <p className="text-[15px] leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#e8dcc0" }}>{label.split(" ").slice(1).join(" ")}</p>
           </div>
         </>
       ) : (
         <div className="text-left">
-          <p className="text-[13px] leading-tight font-medium" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#e8dcc0" }}>{value}</p>
+          <p className="text-[15px] leading-tight font-medium" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#e8dcc0" }}>{value}</p>
           <p className="text-[13px] leading-tight underline decoration-dotted underline-offset-4" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#e8dcc0" }}>{label}</p>
         </div>
       )}

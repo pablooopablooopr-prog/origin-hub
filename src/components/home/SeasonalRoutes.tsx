@@ -234,7 +234,7 @@ const RouteCard = ({ route, catLabel, catColor, catKey }: {
       </div>
 
       <div className="flex flex-col flex-1 px-5 pt-8 pb-5 gap-3">
-        <h3 className="leading-tight" style={{ color: C.brown, fontFamily: "'Playfair Display', 'Georgia', serif", fontSize: "clamp(1.05rem, 1.2vw + 0.6rem, 1.28rem)", fontWeight: 600 }}>
+        <h3 className="leading-tight truncate" style={{ color: C.brown, fontFamily: "'Playfair Display', 'Georgia', serif", fontSize: "clamp(0.95rem, 0.9vw + 0.5rem, 1.15rem)", fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {route.title}
         </h3>
         <p className="text-[15px] leading-[1.6] line-clamp-2" style={{ color: C.beigeText, fontFamily: "'Cormorant Garamond', 'Georgia', serif" }}>
