@@ -132,7 +132,7 @@ export const seasons: Record<SeasonKey, SeasonData> = {
     title: "La Temporada del Queso",
     description:
       "Queserías que honran la tradición, restaurantes que lo interpretan con creatividad y rutas que te llevan al origen de todo. Descubre el queso manchego y el sabor auténtico de Castilla–La Mancha en su mejor momento.",
-    months: ["MARZO", "ABRIL", "MAYO"],
+    months: ["MARZO", "ABRIL", "MAYO", "JUNIO"],
     quote: "Una plataforma que cambia con el ritmo de la tierra.",
     ctas: {
       primary: { label: "VER RUTAS DE ESTA ESTACIÓN", href: "/rutas?temporada=queso" },
