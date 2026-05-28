@@ -108,7 +108,7 @@ const Hero = () => {
 
         {/* TAGLINE */}
         <p
-          className="text-center font-medium text-white mb-5 px-6"
+          className="text-center font-medium text-white mb-5 px-6 mt-10"
           style={{
             fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif",
             fontSize: "clamp(1.25rem, 1.5vw + 0.5rem, 2.1rem)",

@@ -133,42 +133,24 @@ const SpotlightToday = () => {
           </div>
         </div>
 
-      {/* ── GRID 4 CARDS + columna periódico ── */}
+      {/* ── GRID 4 CARDS con periódico de fondo (derecha) ── */}
       <div className="relative">
-        {/* Columna de periódico — desde el borde derecho hasta la mitad de la 4ª card */}
+        {/* Periódico difuminado — fondo derecho, DETRÁS de las cards */}
         <div
-          className="hidden xl:flex absolute right-0 top-0 bottom-0 z-10 flex-col gap-0 overflow-hidden pointer-events-none select-none"
+          className="hidden xl:block absolute top-0 bottom-0 right-0 pointer-events-none"
           style={{
-            width: "calc(25% / 2 + 8px)", // mitad de una card (1/4 del grid)
-            background: "linear-gradient(to right, transparent 0%, rgba(15,10,5,0.82) 22%, rgba(15,10,5,0.95) 100%)",
-            borderLeft: "1px solid rgba(184,134,11,0.15)",
+            width: "50%",
+            backgroundImage: "url('/textures/newspaper-bg.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            opacity: 0.07,
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 35%, black 100%)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 35%, black 100%)",
+            filter: "grayscale(100%) contrast(1.2)",
           }}
           aria-hidden="true"
-        >
-          <div className="px-3 pt-3 pb-2">
-            <p className="text-[8px] font-bold uppercase tracking-[0.3em] mb-2" style={{ color: "rgba(184,134,11,0.8)" }}>
-              — Origen · {new Date().toLocaleDateString("es-ES", { day: "numeric", month: "short" }).toUpperCase()} —
-            </p>
-            <div className="w-full h-px mb-3" style={{ backgroundColor: "rgba(184,134,11,0.25)" }} />
-          </div>
-          {[
-            "Queso manchego de Porzuna, temporada de primavera en su mejor momento",
-            "Bodegas familiares de Valdepeñas abren sus puertas al viajero consciente",
-            "La trashumancia regresa a las rutas del campo manchego",
-            "Productores locales: el tejido vivo de Castilla-La Mancha en cada mesa",
-            "Turismo de proximidad, la tendencia que transforma el territorio",
-            "Cosecha 2026: los mejores aceites de la región ya disponibles",
-            "Miel de encina de Cuenca, tradición apícola en peligro de extinción",
-          ].map((txt, i) => (
-            <div key={i} className="px-3 py-2.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-              <p className="text-[8.5px] leading-[1.5]" style={{ color: "rgba(197,187,168,0.6)", fontFamily: "'Cormorant Garamond', serif" }}>
-                {txt}
-              </p>
-            </div>
-          ))}
-        </div>
+        />
 
-        {/* Grid sin padding derecho — la columna solapa la última card */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {EMPRESAS.map((e) => <EmpresaCard key={e.id} e={e} />)}
         </div>
