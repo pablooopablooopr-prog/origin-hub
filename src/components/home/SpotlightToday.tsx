@@ -135,23 +135,23 @@ const SpotlightToday = () => {
 
       {/* ── GRID 4 CARDS con periódico de fondo (derecha) ── */}
       <div className="relative">
-        {/* Periódico difuminado — fondo derecho, DETRÁS de las cards */}
+        {/* Periódico difuminado — fondo lado derecho, DETRÁS de las cards */}
         <div
-          className="hidden xl:block absolute top-0 bottom-0 right-0 pointer-events-none"
+          className="hidden xl:block absolute top-0 bottom-0 right-0 pointer-events-none z-0"
           style={{
             width: "50%",
             backgroundImage: "url('/textures/newspaper-bg.jpg')",
             backgroundSize: "cover",
-            backgroundPosition: "center",
-            opacity: 0.07,
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 35%, black 100%)",
-            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 35%, black 100%)",
-            filter: "grayscale(100%) contrast(1.2)",
+            backgroundPosition: "center top",
+            opacity: 0.13,
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 40%)",
+            maskImage: "linear-gradient(to right, transparent 0%, black 40%)",
+            filter: "grayscale(100%) contrast(1.3) brightness(1.4)",
+            mixBlendMode: "luminosity",
           }}
           aria-hidden="true"
         />
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {EMPRESAS.map((e) => <EmpresaCard key={e.id} e={e} />)}
         </div>
       </div>
