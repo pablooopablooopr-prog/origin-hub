@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const HERO_VIDEOS: { src: string; maxTime: number; startTime?: number }[] = [
-  { src: "https://videos.pexels.com/video-files/28872852/12501337_640_360_30fps.mp4",         maxTime: 3,              },  // dron cosechadora
-  { src: "https://videos.pexels.com/video-files/15909400/15909400-hd_1920_1080_30fps.mp4",   maxTime: 8, startTime: 2 },  // agricultor maíz (empieza s2, dura 6s)
-  { src: "https://videos.pexels.com/video-files/8659129/8659129-hd_1920_1080_30fps.mp4",     maxTime: 3,              },  // manos cosechando
-  { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4",                              maxTime: 5,              },  // viñedo agricultor
+  { src: "https://videos.pexels.com/video-files/28872852/12501337_640_360_30fps.mp4",       maxTime: 3              }, // 1. campo desde alto (dron)
+  { src: "https://videos.pexels.com/video-files/8659129/8659129-hd_1920_1080_30fps.mp4",   maxTime: 8, startTime: 2 }, // 2. manos cosechando (6s desde s2)
+  { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4",                            maxTime: 3              }, // 3. viñedo
+  { src: "https://videos.pexels.com/video-files/15909400/15909400-hd_1920_1080_30fps.mp4", maxTime: 5              }, // 4. agricultor maíz
 ];
 
 const Hero = () => {
