@@ -26,7 +26,7 @@ const VALUES = [
 const HowItWorks = () => {
   return (
     <section className="relative w-full overflow-hidden" style={{ backgroundColor: C.paper }}>
-      <div className="relative max-w-[1280px] mx-auto px-6 py-14 md:py-20">
+      <div className="relative max-w-[1280px] mx-auto px-6 py-10 md:py-14">
         {/* HEADER */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-3">
@@ -35,11 +35,11 @@ const HowItWorks = () => {
           </div>
           <h2
             className="font-bold leading-[1.05] tracking-tight mb-3"
-            style={{ color: C.brown, fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif", fontSize: "clamp(2.1rem, 1.4rem + 2.6vw, 3.4rem)" }}
+            style={{ color: C.brown, fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif", fontSize: "clamp(1.7rem, 1.2rem + 1.8vw, 2.6rem)" }}
           >
             Así es el ritmo de RITMO ORIGEN
           </h2>
-          <p className="text-[17px]" style={{ color: "#6b5a44", fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-[15px]" style={{ color: "#6b5a44", fontFamily: "'Cormorant Garamond', serif" }}>
             Conectar es fácil. Formar parte del cambio, también.
           </p>
           <div className="flex justify-center mt-3">
@@ -62,16 +62,16 @@ const HowItWorks = () => {
                 </div>
                 {/* Card */}
                 <div className="flex flex-col rounded-2xl overflow-hidden flex-1" style={{ backgroundColor: "#fffdf8", boxShadow: "0 3px 16px rgba(61,43,31,0.09)" }}>
-                  <div className="relative h-32 overflow-hidden">
+                  <div className="relative h-24 overflow-hidden">
                     <img src={s.img} alt={s.title} className="w-full h-full object-cover" loading="lazy" />
                   </div>
-                  <div className="relative px-5 pb-6 pt-8 text-center flex-1">
+                  <div className="relative px-4 pb-5 pt-8 text-center flex-1">
                     {/* Icono circular solapando */}
-                    <div className="absolute -top-7 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full flex items-center justify-center" style={{ backgroundColor: C.cream, boxShadow: "0 3px 10px rgba(61,43,31,0.15)" }}>
-                      <Icon size={26} strokeWidth={1.5} style={{ color: C.brown }} />
+                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: C.cream, boxShadow: "0 3px 10px rgba(61,43,31,0.15)" }}>
+                      <Icon size={22} strokeWidth={1.5} style={{ color: C.brown }} />
                     </div>
-                    <h3 className="font-bold mb-2" style={{ color: C.brown, fontFamily: "'Playfair Display', serif", fontSize: "22px" }}>{s.title}</h3>
-                    <p className="text-[14px] leading-[1.5]" style={{ color: "#6b5a44" }}>{s.text}</p>
+                    <h3 className="font-bold mb-2" style={{ color: C.brown, fontFamily: "'Playfair Display', serif", fontSize: "18px" }}>{s.title}</h3>
+                    <p className="text-[13px] leading-[1.45]" style={{ color: "#6b5a44" }}>{s.text}</p>
                     <div className="flex justify-center mt-3"><span className="block h-px w-10" style={{ backgroundColor: C.beige }} /></div>
                   </div>
                 </div>
@@ -100,8 +100,8 @@ const HowItWorks = () => {
         </div>
 
         {/* Cierre manuscrito */}
-        <div className="flex items-center justify-center gap-3 mt-12">
-          <p className="text-[28px]" style={{ fontFamily: "'Caveat', cursive", color: C.olive }}>Juntos, damos ritmo al origen.</p>
+        <div className="flex items-center justify-center gap-3 mt-8">
+          <p className="text-[22px]" style={{ fontFamily: "'Caveat', cursive", color: C.olive }}>Juntos, damos ritmo al origen.</p>
           <Heart size={26} fill={C.gold} stroke="none" />
         </div>
       </div>
