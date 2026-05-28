@@ -172,31 +172,25 @@ const SeasonalHero = ({ data }: Props) => {
 
       {/* ── FRANJA OSCURA: Productores destacados ── */}
       <div
-        className="relative w-full overflow-hidden flex items-center"
+        className="relative w-full flex items-center"
         style={{
-          minHeight: "96px",
+          minHeight: "80px",
           backgroundImage: "url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1600&q=80')",
           backgroundSize: "cover",
           backgroundPosition: "center 60%",
         }}
       >
-        {/* Overlay oscuro */}
-        <div className="absolute inset-0" style={{ backgroundColor: "rgba(42,28,16,0.72)" }} aria-hidden="true" />
-        {/* Borde rasgado superior */}
-        <svg className="absolute top-0 left-0 w-full pointer-events-none" style={{ height: "28px", display: "block" }} viewBox="0 0 1440 28" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,0 L0,14 Q60,28 120,12 T240,18 T360,8 T480,20 T600,10 T720,22 T840,8 T960,18 T1080,10 T1200,20 T1320,8 T1440,16 L1440,0 Z" fill={C.paperWarm} />
-        </svg>
-
-        <div className="relative z-10 w-full max-w-[1280px] mx-auto px-8 md:px-12 flex items-center justify-between gap-4 py-6">
+        <div className="absolute inset-0" style={{ backgroundColor: "rgba(30,22,12,0.82)" }} aria-hidden="true" />
+        <div className="relative z-10 w-full max-w-[1280px] mx-auto px-8 md:px-12 flex items-center justify-between gap-4 py-5">
           <div>
-            <p className="font-bold leading-tight" style={{ color: C.cream, fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.1rem, 1vw + 0.8rem, 1.5rem)" }}>
+            <p className="font-bold leading-tight" style={{ color: C.cream, fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.1rem, 1vw + 0.8rem, 1.45rem)" }}>
               Productores destacados
             </p>
-            <p className="text-[13px] mt-0.5" style={{ color: "#c5bba8" }}>Elegidos para esta temporada</p>
+            <p className="text-[13px] mt-0.5" style={{ color: "#a89878" }}>Elegidos para esta temporada</p>
           </div>
           <Link to="/empresas" className="flex items-center gap-2 text-[14px] font-semibold group flex-shrink-0" style={{ color: C.cream }}>
             Ver todos los productores
-            <ArrowRight size={16} style={{ color: C.gold }} className="transition-transform group-hover:translate-x-0.5" />
+            <ArrowRight size={15} style={{ color: C.gold }} className="transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
       </div>

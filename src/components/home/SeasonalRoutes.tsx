@@ -102,16 +102,14 @@ const SeasonalRoutes = () => {
           "radial-gradient(circle at 12% 18%, rgba(184,134,11,0.06) 0%, transparent 28%), radial-gradient(circle at 88% 24%, rgba(120,90,40,0.05) 0%, transparent 30%)",
       }}
     >
-      {/* Huellas/trazos suaves de camino */}
-      <svg className="absolute top-20 right-0 w-1/2 h-64 pointer-events-none opacity-40 hidden lg:block" viewBox="0 0 600 260" fill="none" aria-hidden="true">
-        <path d="M20 200 Q 180 120 320 150 T 580 80" stroke={C.gold} strokeWidth="1.5" strokeDasharray="4 8" fill="none" />
-        {[[60,185],[160,140],[280,150],[400,120],[520,90]].map(([x,y],i) => (
-          <g key={i}>
-            <path d={`M${x},${y} l0,-12`} stroke={C.brown} strokeWidth="2" />
-            <circle cx={x} cy={y-14} r="3.5" fill="none" stroke={C.brown} strokeWidth="1.5" />
-          </g>
-        ))}
-      </svg>
+        {/* Ilustración paisaje con pines — esquina superior derecha */}
+        <img
+          src="/textures/rutas-illustration.png"
+          alt=""
+          aria-hidden="true"
+          className="absolute top-0 right-0 h-[220px] w-auto pointer-events-none hidden lg:block"
+          style={{ objectFit: "contain", objectPosition: "right top" }}
+        />
 
       <div className="relative max-w-[1280px] mx-auto px-6 py-14 md:py-18">
         {/* HEADER */}
