@@ -107,8 +107,15 @@ const SeasonalRoutes = () => {
           src="/textures/rutas-illustration.png"
           alt=""
           aria-hidden="true"
-          className="absolute top-0 right-0 h-[220px] w-auto pointer-events-none hidden lg:block"
-          style={{ objectFit: "contain", objectPosition: "right top" }}
+          className="absolute top-0 right-0 pointer-events-none hidden lg:block"
+          style={{
+            height: "280px",
+            width: "auto",
+            objectFit: "contain",
+            objectPosition: "right top",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 18%, black 42%)",
+            maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 18%, black 42%)",
+          }}
         />
 
       <div className="relative max-w-[1280px] mx-auto px-6 py-14 md:py-18">
