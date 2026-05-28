@@ -135,9 +135,9 @@ const Hero = () => {
         className="relative z-10 w-full flex flex-col h-screen"
         style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)" }}
       >
-        <div className="flex-1" />
+        <div className="flex-[0.25]" />
         {/* TÍTULO - Centrado */}
-        <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tight flex items-center justify-center flex-wrap gap-1" style={{ textShadow: "0 3px 16px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,0.8)" }} >
+        <h1 className="text-4xl md:text-7xl font-bold text-white mb-10 tracking-tight flex items-center justify-center flex-wrap gap-1" style={{ textShadow: "0 3px 16px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,0.8)" }} >
           <span>RITM</span>
           <span className="inline-flex items-center">
             <img
@@ -193,7 +193,7 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="flex-[0.6]" />
+        <div className="flex-[0.25]" />
         {/* ESTADÍSTICAS - Distribuidas (izq, centro, drch) */}
         <div className="w-full flex justify-between items-center px-6 md:px-12 pb-5 pt-3 mt-auto" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%)" }}>
           <div className="text-center">

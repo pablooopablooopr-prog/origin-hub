@@ -57,7 +57,7 @@ const BusinessSection = () => {
           </div>
 
           {/* Lista de verificación */}
-          <div className="backdrop-blur-sm rounded-lg p-6 space-y-4 text-left max-w-md mx-auto" style={{ backgroundColor: "rgba(245,240,232,0.15)", border: "1px solid rgba(255,255,255,0.2)" }}>
+          <div className="rounded-lg p-6 space-y-4 text-left max-w-md mx-auto" style={{ backgroundColor: "rgba(184,134,11,0.08)", border: "none" }}>
             <h4 className="font-semibold text-primary mb-4 text-center">¿Tu negocio es ORIGEN?</h4>
             <div className="space-y-3">
               {[
