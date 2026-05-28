@@ -6,7 +6,7 @@ const GOLD = "#b8923f";
 
 const Rutas = () => {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#f5f0e8" }}>
+    <div className="min-h-screen" style={{ backgroundImage: "url('/textures/routes-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed" }}>
       <Header />
       <main className="pt-2">
         <div className="container mx-auto px-6 pt-3 pb-0">
