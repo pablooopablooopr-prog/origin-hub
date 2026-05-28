@@ -106,7 +106,7 @@ const FeaturedCard = ({ company }: { company: SpotlightCompany }) => {
         </h3>
 
         <p
-          className="text-[12.5px]"
+          className="text-[14px]"
           style={{
             color: "#8a6f2e",
             fontFamily: "'Cormorant Garamond', serif",
@@ -116,7 +116,7 @@ const FeaturedCard = ({ company }: { company: SpotlightCompany }) => {
         </p>
 
         <p
-          className="text-[13px] leading-[1.5] line-clamp-2 max-w-[480px]"
+          className="text-[15px] leading-[1.6] line-clamp-2 max-w-[480px]"
           style={{
             color: "#3a3326",
             fontFamily: "'Cormorant Garamond', serif",
@@ -163,9 +163,9 @@ const SmallCard = ({ company }: { company: SpotlightCompany }) => {
         />
       </div>
 
-      <div className="p-3 space-y-1">
+      <div className="p-4 space-y-1.5">
         <span
-          className="inline-flex items-center px-2 py-0.5 rounded-full text-[8.5px] tracking-[0.22em] uppercase font-semibold"
+          className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] tracking-[0.18em] uppercase font-semibold"
           style={{
             background: company.categoryColor,
             color: company.categoryTextColor,
@@ -176,7 +176,7 @@ const SmallCard = ({ company }: { company: SpotlightCompany }) => {
         </span>
 
         <h4
-          className="text-[15px] leading-tight tracking-tight"
+          className="text-[17px] leading-tight tracking-tight"
           style={{
             fontFamily: "'Playfair Display', serif",
             color: "#2a2418",
@@ -187,7 +187,7 @@ const SmallCard = ({ company }: { company: SpotlightCompany }) => {
         </h4>
 
         <p
-          className="text-[11px]"
+          className="text-[13px]"
           style={{
             color: "#8a6f2e",
             fontFamily: "'Cormorant Garamond', serif",
@@ -197,7 +197,7 @@ const SmallCard = ({ company }: { company: SpotlightCompany }) => {
         </p>
 
         <p
-          className="text-[11.5px] leading-[1.4] line-clamp-2"
+          className="text-[13.5px] leading-[1.5] line-clamp-2"
           style={{
             color: "#3a3326",
             fontFamily: "'Cormorant Garamond', serif",
@@ -208,7 +208,7 @@ const SmallCard = ({ company }: { company: SpotlightCompany }) => {
 
         <Link
           to={linkTo}
-          className="inline-flex items-center gap-1.5 text-[9px] tracking-[0.26em] uppercase font-bold pt-0.5 group"
+          className="inline-flex items-center gap-1.5 text-[10.5px] tracking-[0.22em] uppercase font-bold pt-0.5 group"
           style={{
             color: "#8a6f2e",
             fontFamily: "'Cormorant Garamond', serif",
@@ -413,7 +413,7 @@ const SpotlightToday = () => {
                   {nichePool.length} empresas
                 </p>
                 <p
-                  className="text-[11px]"
+                  className="text-[13px]"
                   style={{ color: "#8a6f2e", fontFamily: "'Cormorant Garamond', serif" }}
                 >
                   en portada hoy
@@ -444,7 +444,7 @@ const SpotlightToday = () => {
                   24h de visibilidad
                 </p>
                 <p
-                  className="text-[11px]"
+                  className="text-[13px]"
                   style={{ color: "#8a6f2e", fontFamily: "'Cormorant Garamond', serif" }}
                 >
                   rotatoria
@@ -470,7 +470,7 @@ const SpotlightToday = () => {
                   Spotlight para
                 </p>
                 <p
-                  className="text-[11px]"
+                  className="text-[13px]"
                   style={{ color: "#8a6f2e", fontFamily: "'Cormorant Garamond', serif" }}
                 >
                   productores y restaurantes

@@ -369,7 +369,7 @@ const RutaDetalle = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen" style={{ backgroundImage: "url('/textures/routes-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed" }}>
+      <div className="min-h-screen" style={{ backgroundColor: "#f5f0e8" }}>
         <Header />
         <div className="flex items-center justify-center py-32">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -384,7 +384,7 @@ const RutaDetalle = () => {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundImage: "url('/textures/routes-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "#f5f0e8" }}>
       <Header />
       <main className="pt-0">
         {/* Hero Section */}
@@ -392,10 +392,10 @@ const RutaDetalle = () => {
           <div className="container mx-auto px-6">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-6">
-                <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">
+                <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2" style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}>
                   {route.title}
                 </h1>
-                <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
+                <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto" style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif" }}>
                   {route.description}
                 </p>
               </div>
@@ -404,30 +404,30 @@ const RutaDetalle = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div className="bg-card rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
                   <Clock className="w-6 h-6 text-primary mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">Duración</p>
-                  <p className="font-semibold text-base">{route.duration}</p>
+                  <p className="text-sm text-muted-foreground" style={{ fontFamily: "'Cormorant Garamond', serif", letterSpacing: "0.1em" }}>Duración</p>
+                  <p className="font-semibold text-lg" style={{ fontFamily: "'Playfair Display', serif" }}>{route.duration}</p>
                 </div>
                 <div className="bg-card rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
                   <MapPin className="w-6 h-6 text-primary mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">Paradas</p>
-                  <p className="font-semibold text-base">{route.businesses} lugares</p>
+                  <p className="text-sm text-muted-foreground" style={{ fontFamily: "'Cormorant Garamond', serif", letterSpacing: "0.1em" }}>Paradas</p>
+                  <p className="font-semibold text-lg" style={{ fontFamily: "'Playfair Display', serif" }}>{route.businesses} lugares</p>
                 </div>
                 <div className="bg-card rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
                   <Route className="w-6 h-6 text-primary mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">Dificultad</p>
-                  <p className="font-semibold text-base">{route.difficulty}</p>
+                  <p className="text-sm text-muted-foreground" style={{ fontFamily: "'Cormorant Garamond', serif", letterSpacing: "0.1em" }}>Dificultad</p>
+                  <p className="font-semibold text-lg" style={{ fontFamily: "'Playfair Display', serif" }}>{route.difficulty}</p>
                 </div>
                 <div className="bg-card rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
                   <Users className="w-6 h-6 text-primary mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">Han ido</p>
-                  <p className="font-semibold text-base">{route.participants} personas</p>
+                  <p className="text-sm text-muted-foreground" style={{ fontFamily: "'Cormorant Garamond', serif", letterSpacing: "0.1em" }}>Han ido</p>
+                  <p className="font-semibold text-lg" style={{ fontFamily: "'Playfair Display', serif" }}>{route.participants} personas</p>
                 </div>
               </div>
 
               {/* Route Experience */}
               <div className="bg-card rounded-lg p-6 shadow-sm">
-                <h2 className="text-xl font-bold text-primary mb-3">La Experiencia</h2>
-                <p className="text-muted-foreground leading-relaxed text-base">{route.narrative}</p>
+                <h2 className="text-2xl font-bold text-primary mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>La Experiencia</h2>
+                <p className="text-muted-foreground leading-relaxed text-[17px]" style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif" }}>{route.narrative}</p>
               </div>
             </div>
           </div>
@@ -453,9 +453,9 @@ const RutaDetalle = () => {
                         <div className="flex-1">
                           <div className="flex items-start justify-between mb-1">
                             <div>
-                              <h3 className="text-lg font-bold text-foreground mb-1">{stop.name}</h3>
+                              <h3 className="text-xl font-bold text-foreground mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>{stop.name}</h3>
                               <div className="flex items-center gap-2">
-                                <p className="text-muted-foreground text-sm">{stop.type}</p>
+                                <p className="text-muted-foreground text-base" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{stop.type}</p>
                                 <div className="flex items-center gap-1">
                                   <Star className="w-3.5 h-3.5 text-yellow-400 fill-current" />
                                   <span className="text-xs font-medium">4.8</span>
@@ -482,16 +482,16 @@ const RutaDetalle = () => {
                       </div>
                     </div>
 
-                    <p className="text-muted-foreground mb-4 leading-relaxed text-[15px]">{stop.description}</p>
+                    <p className="text-muted-foreground mb-4 leading-relaxed text-[16px]" style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif" }}>{stop.description}</p>
 
                     {stop.whatToDo && stop.whatToDo.length > 0 && (
                       <div className="mb-4">
-                        <h4 className="font-semibold text-foreground mb-2 text-[15px]">Qué puedes hacer:</h4>
+                        <h4 className="font-semibold text-foreground mb-2 text-base" style={{ fontFamily: "'Playfair Display', serif" }}>Qué puedes hacer:</h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
                           {stop.whatToDo.map((activity, idx) => (
                             <div key={idx} className="flex items-start space-x-2">
                               <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-1.5 flex-shrink-0" />
-                              <span className="text-sm text-muted-foreground leading-snug">{activity}</span>
+                              <span className="text-[15px] text-muted-foreground leading-snug" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{activity}</span>
                             </div>
                           ))}
                         </div>

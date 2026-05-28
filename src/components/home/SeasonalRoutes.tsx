@@ -234,25 +234,27 @@ const RouteCard = ({ route, catLabel, catColor, catKey }: {
       </div>
 
       <div className="flex flex-col flex-1 px-5 pt-8 pb-5 gap-3">
-        <h3 className="leading-tight" style={{ color: C.brown, fontFamily: "'Playfair Display', 'Georgia', serif", fontSize: "clamp(1rem, 1.2vw + 0.6rem, 1.2rem)", fontWeight: 600 }}>
+        <h3 className="leading-tight" style={{ color: C.brown, fontFamily: "'Playfair Display', 'Georgia', serif", fontSize: "clamp(1.05rem, 1.2vw + 0.6rem, 1.28rem)", fontWeight: 600 }}>
           {route.title}
         </h3>
-        <p className="text-[13px] leading-[1.55] line-clamp-2" style={{ color: C.beigeText }}>
+        <p className="text-[15px] leading-[1.6] line-clamp-2" style={{ color: C.beigeText, fontFamily: "'Cormorant Garamond', 'Georgia', serif" }}>
           {route.description}
         </p>
-        <div className="flex items-center gap-4 text-[12px] pt-1 flex-wrap" style={{ color: C.beigeText }}>
+        <div className="flex items-center gap-4 text-[14px] pt-1 flex-wrap" style={{ color: C.beigeText, fontFamily: "'Cormorant Garamond', serif" }}>
           <span className="flex items-center gap-1"><MapPin size={12} style={{ color: C.olive }} />{route.stops} paradas</span>
           <span className="flex items-center gap-1"><Clock size={12} style={{ color: C.olive }} />{route.duration}</span>
           <span className="flex items-center gap-1"><Users size={12} style={{ color: C.olive }} />Máx. {route.capacity}</span>
         </div>
-        <div className="flex items-center gap-1 pt-0.5">
-          {Array.from({ length: 5 }).map((_, i) => <StarIcon key={i} filled={i < Math.round(route.rating)} />)}
-          <span className="text-[12px] font-semibold ml-1.5" style={{ color: C.brownMid }}>{route.rating.toFixed(1)}</span>
-          <span className="text-[11px] ml-0.5" style={{ color: C.beigeText }}>({route.reviews})</span>
-        </div>
+        {route.rating > 0 && (
+          <div className="flex items-center gap-1 pt-0.5">
+            {Array.from({ length: 5 }).map((_, i) => <StarIcon key={i} filled={i < Math.round(route.rating)} />)}
+            <span className="text-[13px] font-semibold ml-1.5" style={{ color: C.brownMid }}>{route.rating.toFixed(1)}</span>
+            <span className="text-[12px] ml-0.5" style={{ color: C.beigeText }}>({route.reviews})</span>
+          </div>
+        )}
         <div className="flex items-center gap-2 mt-1">
           <Link to={`/rutas/${route.slug}`} className="flex-1">
-            <button className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[12px] font-bold tracking-[0.14em] uppercase transition-all hover:opacity-90" style={{ background: C.brown, color: C.cream }}>
+            <button className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[13px] font-bold tracking-[0.14em] uppercase transition-all hover:opacity-90" style={{ background: C.brown, color: C.cream }}>
               Ver ruta completa<ArrowRight size={13} />
             </button>
           </Link>
@@ -285,7 +287,7 @@ const SeasonalRoutes = ({ hideHeader = false }: { hideHeader?: boolean }) => {
           description: r.description ?? "",
           duration: r.duration ?? "1 día",
           capacity: 25,
-          rating: r.avg_rating ?? 0,
+          rating: r.avg_rating ?? 0,  // shown only if > 0
           stops: r.total_stops ?? 3,
           reviews: Math.max(1, Math.floor((r.avg_rating ?? 4) * 5 + 8)),
           image: r.image_url ?? undefined,
