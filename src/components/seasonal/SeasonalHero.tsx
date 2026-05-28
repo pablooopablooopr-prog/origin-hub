@@ -147,17 +147,6 @@ const SeasonalHero = ({ data }: Props) => {
         <div className="seasonal-hero__wood-tint" />
         <div className="seasonal-hero__wood-planks" />
         <div className="seasonal-hero__wood-grain" />
-        {/* Gradiente de fusión superior — elimina el corte con el header */}
-        <div
-          className="absolute top-0 left-0 right-0 pointer-events-none z-20"
-          style={{
-            height: "80px",
-            background: "linear-gradient(to bottom, rgba(180,130,80,0.55) 0%, transparent 100%)",
-          }}
-          aria-hidden="true"
-        />
-        <div className="seasonal-hero__vignette" />
-
         {/* GRID PRINCIPAL */}
         <div className="relative z-10 max-w-[1280px] mx-auto px-6 pt-5 pb-4 grid grid-cols-12 gap-5">
 

@@ -1,11 +1,3 @@
-/* ============================================================
-   SeasonalHero · estilos estructurales
-   ------------------------------------------------------------
-   Los colores variables vienen del prop `data.colors` y se
-   inyectan como CSS custom properties desde el componente
-   (ver style={{ "--season-primary": ... }} en SeasonalHero.tsx).
-   ============================================================ */
-
 .seasonal-hero {
   position: relative;
   overflow: visible;
@@ -13,55 +5,62 @@
   padding-bottom: 0;
 }
 
-/* Viñeteado lateral suave */
 .seasonal-hero::before { display: none; }
 
-/* ---- Fondo madera ---- */
+/* Wood elements — ocultos, usa fondo del wrapper */
 .seasonal-hero__wood { display: none; }
-
 .seasonal-hero__wood-tint { display: none; }
-
 .seasonal-hero__wood-planks { display: none; }
-
 .seasonal-hero__wood-grain { display: none; }
 
-.seasonal-hero__vignette {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 55%,
-    rgba(0, 0, 0, 0.45) 100%
-  );
-}
+/* Vignette — eliminado para no crear borde */
+.seasonal-hero__vignette { display: none; }
 
 /* ---- Tarjeta principal de papel ---- */
-.seasonal-hero__paper { /* enhanced shadow */
+.seasonal-hero__paper {
   position: relative;
   background: linear-gradient(180deg, #f7eed8 0%, #f1e5c8 50%, #ead7b3 100%);
   box-shadow:
     0 30px 60px -20px rgba(0, 0, 0, 0.6),
     0 12px 24px -6px rgba(0, 0, 0, 0.35),
-    inset 0 0 80px rgba(180, 140, 80, 0.1);
-  clip-path: polygon(
-    0% 1.5%, 4% 0%, 12% 1.8%, 24% 0.4%, 38% 1.6%, 52% 0.2%, 66% 1.8%, 78% 0.4%, 92% 1.5%, 100% 1%,
-    99.5% 14%, 100% 28%, 99% 44%, 100% 60%, 99.4% 76%, 100% 92%,
-    96% 100%, 82% 98.5%, 65% 100%, 48% 99%, 32% 100%, 14% 98.8%, 3% 100%, 0% 96%,
-    0.6% 80%, 0% 64%, 0.7% 48%, 0% 32%, 0.6% 18%
-  );
+    inset 0 1px 0 rgba(255, 248, 230, 0.9),
+    inset 0 -1px 0 rgba(150, 110, 60, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
 }
 
-/* ---- Polaroid ---- */
+/* ---- Broche cinta ---- */
+.seasonal-hero__brooch {
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
+}
+
+/* ---- Sello CLM ---- */
+.seasonal-hero__clm-stamp {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* ---- Polaroids ---- */
 .seasonal-hero__polaroid {
+  position: relative;
   background: #fafaf3;
   box-shadow:
-    0 18px 40px -10px rgba(0, 0, 0, 0.6),
-    0 8px 16px -4px rgba(0, 0, 0, 0.35);
+    0 20px 40px -10px rgba(0, 0, 0, 0.55),
+    0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 1px;
 }
 
-/* ---- Cinta beige features (zigzag arriba+abajo) ---- */
+/* ---- Texto manuscrito ---- */
+.seasonal-hero__handwritten {
+  font-family: 'Caveat', 'Segoe Print', cursive;
+  color: rgba(245, 230, 190, 0.88);
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+.seasonal-hero__handwritten--floating {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* ---- Features ribbon (cinta beige) ---- */
 .seasonal-hero__features-ribbon {
   position: relative;
   background: linear-gradient(180deg, #f1e5c8 0%, #e8dcc0 60%, #ddd0b0 100%);
@@ -73,10 +72,10 @@
   );
 }
 
-/* ---- Cinta verde stats — pegada a la beige ---- */
+/* ---- Stats ribbon (cinta verde) ---- */
 .seasonal-hero__stats-ribbon {
   position: relative;
-  background: linear-gradient(180deg, #7a5230 0%, #6b4422 50%, #5a3518 100%);
+  background: linear-gradient(180deg, #4a5a2e 0%, #3d4a2a 50%, #2f3a20 100%);
   color: #e8dcc0;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   clip-path: polygon(
@@ -87,61 +86,34 @@
   );
 }
 
-/* ---- CTA primario sólido ---- */
+/* ---- CTA buttons ---- */
 .seasonal-hero__cta-primary {
-  background: var(--season-primary, #6b4422);
+  background-color: #3d4a2a;
   color: #f1e5c8;
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.45), 0 8px 16px rgba(0, 0, 0, 0.2);
-  transition: transform 0.18s ease;
+  border: 1.5px solid #2d3a1a;
+  border-radius: 2px;
+  transition: background-color 0.15s ease, transform 0.15s ease;
 }
 .seasonal-hero__cta-primary:hover {
+  background-color: #4a5a32;
   transform: translateY(-1px);
 }
 
-/* ---- CTA secundario borde dorado ---- */
 .seasonal-hero__cta-secondary {
   background: transparent;
-  color: var(--season-accent, #8a6f2e);
-  border: 1.5px solid var(--season-accent, #b8923f);
-  transition: transform 0.18s ease, background 0.18s ease;
+  color: #3d4a2a;
+  border: 1.5px solid #3d4a2a;
+  border-radius: 2px;
+  transition: background 0.18s ease, transform 0.15s ease;
 }
 .seasonal-hero__cta-secondary:hover {
+  background: rgba(61, 74, 42, 0.08);
   transform: translateY(-1px);
-  background: rgba(184, 146, 63, 0.08);
 }
 
-/* ---- Cita destacada (la grande, no la del polaroid) ---- */
-.seasonal-hero__handwritten {
-  font-family: "Caveat", cursive;
-  color: #f5e4b8;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
-  line-height: 1.15;
-}
-
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
-
-/* Tablet: dos columnas más compactas, ocultar manuscrito flotante */
+/* ---- Responsive ---- */
 @media (max-width: 1023px) {
-  .seasonal-hero__handwritten--floating {
-    display: none;
-  }
-}
-
-/* Mobile: una columna, primero papel, luego collage */
-@media (max-width: 767px) {
-  .seasonal-hero__brooch {
-    display: none; /* el broche es decoración premium escritorio */
-  }
-  .seasonal-hero__paper { /* enhanced shadow */
-    padding: 28px 22px;
-  }
-  .seasonal-hero__title {
-    font-size: 36px !important;
-    line-height: 1 !important;
-  }
-  .seasonal-hero__clm-stamp {
-    display: none; /* sello CLM solo en desktop por espacio */
+  .seasonal-hero__paper {
+    padding: 1.25rem;
   }
 }
