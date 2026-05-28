@@ -135,32 +135,41 @@ const SpotlightToday = () => {
 
       {/* ── GRID 4 CARDS + columna periódico ── */}
       <div className="relative">
-        {/* Columna de periódico decorativa — extremo derecho */}
+        {/* Columna de periódico — desde el borde derecho hasta la mitad de la 4ª card */}
         <div
-          className="hidden xl:flex absolute right-0 top-0 bottom-0 w-[88px] flex-col gap-3 py-1 overflow-hidden pointer-events-none select-none"
-          style={{ borderLeft: "1px solid rgba(255,255,255,0.07)" }}
+          className="hidden xl:flex absolute right-0 top-0 bottom-0 z-10 flex-col gap-0 overflow-hidden pointer-events-none select-none"
+          style={{
+            width: "calc(25% / 2 + 8px)", // mitad de una card (1/4 del grid)
+            background: "linear-gradient(to right, transparent 0%, rgba(15,10,5,0.82) 22%, rgba(15,10,5,0.95) 100%)",
+            borderLeft: "1px solid rgba(184,134,11,0.15)",
+          }}
           aria-hidden="true"
         >
-          <p className="text-[7px] font-bold uppercase tracking-[0.3em] px-3 mb-1" style={{ color: "rgba(184,134,11,0.7)", writingMode: "horizontal-tb" }}>
-            — Origen · {new Date().toLocaleDateString("es-ES", { day: "numeric", month: "short" })} —
-          </p>
+          <div className="px-3 pt-3 pb-2">
+            <p className="text-[8px] font-bold uppercase tracking-[0.3em] mb-2" style={{ color: "rgba(184,134,11,0.8)" }}>
+              — Origen · {new Date().toLocaleDateString("es-ES", { day: "numeric", month: "short" }).toUpperCase()} —
+            </p>
+            <div className="w-full h-px mb-3" style={{ backgroundColor: "rgba(184,134,11,0.25)" }} />
+          </div>
           {[
-            "Queso manchego de Porzuna, temporada de primavera",
-            "Bodegas familiares de Valdepeñas abren sus puertas al viajero",
-            "La trashumancia regresa a las rutas del campo",
-            "Productores locales: el tejido vivo de Castilla-La Mancha",
+            "Queso manchego de Porzuna, temporada de primavera en su mejor momento",
+            "Bodegas familiares de Valdepeñas abren sus puertas al viajero consciente",
+            "La trashumancia regresa a las rutas del campo manchego",
+            "Productores locales: el tejido vivo de Castilla-La Mancha en cada mesa",
             "Turismo de proximidad, la tendencia que transforma el territorio",
-            "Cosecha 2026: los mejores vinos de la región ya están disponibles",
+            "Cosecha 2026: los mejores aceites de la región ya disponibles",
+            "Miel de encina de Cuenca, tradición apícola en peligro de extinción",
           ].map((txt, i) => (
-            <div key={i} className="px-3 py-2" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-              <p className="text-[9px] leading-[1.45]" style={{ color: "rgba(197,187,168,0.55)", fontFamily: "'Cormorant Garamond', serif" }}>
+            <div key={i} className="px-3 py-2.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+              <p className="text-[8.5px] leading-[1.5]" style={{ color: "rgba(197,187,168,0.6)", fontFamily: "'Cormorant Garamond', serif" }}>
                 {txt}
               </p>
             </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 xl:pr-[96px]">
+        {/* Grid sin padding derecho — la columna solapa la última card */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {EMPRESAS.map((e) => <EmpresaCard key={e.id} e={e} />)}
         </div>
       </div>
