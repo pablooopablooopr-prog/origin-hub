@@ -2,10 +2,11 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-const HERO_VIDEOS: { src: string; maxTime: number }[] = [
-  { src: "https://assets.mixkit.co/videos/47313/47313-720.mp4",                                       maxTime: 3 }, // olivos
-  { src: "https://videos.pexels.com/video-files/8659129/8659129-hd_1920_1080_30fps.mp4",              maxTime: 4 }, // manos cosechando maíz
-  { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4",                                       maxTime: 3 }, // viñedo
+const HERO_VIDEOS: { src: string; maxTime: number; startTime?: number }[] = [
+  { src: "https://videos.pexels.com/video-files/28872852/12501337_640_360_30fps.mp4",         maxTime: 3,              },  // dron cosechadora
+  { src: "https://videos.pexels.com/video-files/15909400/15909400-hd_1920_1080_30fps.mp4",   maxTime: 8, startTime: 2 },  // agricultor maíz (empieza s2, dura 6s)
+  { src: "https://videos.pexels.com/video-files/8659129/8659129-hd_1920_1080_30fps.mp4",     maxTime: 3,              },  // manos cosechando
+  { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4",                              maxTime: 5,              },  // viñedo agricultor
 ];
 
 const Hero = () => {
@@ -31,7 +32,7 @@ const Hero = () => {
     advancingRef.current = false;
     videoRefs.current.forEach((v, i) => {
       if (!v) return;
-      if (i === currentVideo) { v.currentTime = 0; v.play().catch(() => {}); }
+      if (i === currentVideo) { v.currentTime = HERO_VIDEOS[i].startTime ?? 0; v.play().catch(() => {}); }
       else if (i !== prevVideo) { v.pause(); v.currentTime = 0; }
     });
     const crossfadeTimer = setTimeout(() => { setPrevVideo(null); }, 1200);
