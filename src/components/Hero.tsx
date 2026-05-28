@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const HERO_VIDEOS: { src: string; maxTime: number; startTime?: number }[] = [
-  { src: "https://videos.pexels.com/video-files/8659129/8659129-hd_1920_1080_30fps.mp4",                              maxTime: 8, startTime: 2 }, // 1. manos cosechando (6s desde s2)
+  { src: "https://videos.pexels.com/video-files/8659129/8659129-hd_1920_1080_30fps.mp4",                              maxTime: 6, startTime: 2 }, // 1. manos cosechando (empieza s2, termina en s6)
   { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4",                                                       maxTime: 3              }, // 2. cosecha viñedo (se abre)
   { src: "https://content.pexels.com/ai-gc-bundle/videos/f6d68df7-de1a-462e-bbb6-854a45eb8bdc.mp4",                  maxTime: 5              }, // 3. agricultor andando maíz
 ];
@@ -46,7 +46,12 @@ const Hero = () => {
       }
     };
     video.addEventListener("timeupdate", onTimeUpdate);
-    return () => { video.removeEventListener("timeupdate", onTimeUpdate); clearTimeout(crossfadeTimer); };
+    video.addEventListener("ended", advanceVideo, { once: true });
+    return () => {
+      video.removeEventListener("timeupdate", onTimeUpdate);
+      video.removeEventListener("ended", advanceVideo);
+      clearTimeout(crossfadeTimer);
+    };
   }, [currentVideo, advanceVideo]);
 
   return (
