@@ -181,6 +181,19 @@ const SeasonalHero = ({ data }: Props) => {
         }}
       >
         <div className="absolute inset-0" style={{ backgroundColor: "rgba(30,22,12,0.82)" }} aria-hidden="true" />
+        {/* Borde rasgado superior */}
+        <svg
+          className="absolute top-0 left-0 w-full pointer-events-none"
+          style={{ transform: "translateY(-99%)", display: "block" }}
+          viewBox="0 0 1440 30"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M0,30 L0,22 Q18,14 36,20 T72,16 T108,22 T144,14 T180,20 T216,12 T252,18 T288,22 T324,14 T360,20 T396,16 T432,22 T468,14 T504,18 T540,22 T576,16 T612,20 T648,14 T684,22 T720,18 T756,14 T792,20 T828,16 T864,22 T900,14 T936,20 T972,16 T1008,22 T1044,14 T1080,18 T1116,22 T1152,16 T1188,20 T1224,14 T1260,22 T1296,18 T1332,14 T1368,20 T1404,16 T1440,22 L1440,30 Z"
+            fill="rgba(30,22,12,0.82)"
+          />
+        </svg>
         <div className="relative z-10 w-full max-w-[1280px] mx-auto px-8 md:px-12 flex items-center justify-between gap-4 py-5">
           <div>
             <p className="font-bold leading-tight" style={{ color: C.cream, fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.1rem, 1vw + 0.8rem, 1.45rem)" }}>
