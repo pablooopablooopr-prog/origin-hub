@@ -59,7 +59,7 @@ const ActualidadArticulo = () => {
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
         <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <Loader2 className="w-8 h-8 animate-spin " />
         </div>
         <Footer />
       </div>
@@ -138,7 +138,7 @@ const ActualidadArticulo = () => {
             <div className="mt-10 space-y-10">
               {articulo.secciones.map((seccion, i) => (
                 <div key={i} className="bg-muted/30 rounded-xl border border-border p-6 md:p-8">
-                  <h2 className="text-xl md:text-2xl font-bold text-primary mb-4 leading-snug">
+                  <h2 className="text-xl md:text-2xl font-bold mb-4 leading-snug">
                     {seccion.titulo}
                   </h2>
                   {seccion.contenido && (
@@ -150,7 +150,7 @@ const ActualidadArticulo = () => {
                     <ol className="space-y-3 list-none">
                       {seccion.items.map((item, j) => (
                         <li key={j} className="flex gap-3 text-foreground/85 leading-relaxed text-base">
-                          <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-sm flex items-center justify-center mt-0.5">
+                          <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10  font-bold text-sm flex items-center justify-center mt-0.5">
                             {j + 1}
                           </span>
                           <span className="text-justify hyphens-auto">{item}</span>
@@ -219,7 +219,7 @@ const ActualidadArticulo = () => {
         <div className="mt-14 pt-8 border-t border-border">
           <Link
             to="/actualidad"
-            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors"
+            className="inline-flex items-center gap-2  hover:/80 font-medium transition-colors"
           >
             <ArrowLeft className="w-4 h-4" /> Volver a Actualidad
           </Link>
