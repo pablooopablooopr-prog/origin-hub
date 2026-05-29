@@ -121,7 +121,7 @@ const Hero = () => {
 
         {/* TAGLINE */}
         <p
-          className="text-center font-medium text-white mb-5 px-6 mt-10"
+          className="text-center font-medium text-white mb-5 px-4 mt-10"
           style={{
             fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif",
             fontSize: "clamp(1.25rem, 1.5vw + 0.5rem, 2.1rem)",
@@ -137,7 +137,7 @@ const Hero = () => {
           className="text-white text-center leading-relaxed max-w-4xl mx-auto mb-8 px-6"
           style={{
             fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontSize: "clamp(1rem, 1vw + 0.5rem, 1.35rem)",
+            fontSize: "clamp(1.08rem, 1.1vw + 0.55rem, 1.45rem)",
             textShadow: "0 2px 10px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.7)",
           }}
         >
@@ -147,7 +147,7 @@ const Hero = () => {
         </p>
 
         {/* BOTONES */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-6 mx-auto w-full max-w-3xl">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4 mx-auto w-full max-w-4xl">
           <Link to="/mapa" className="w-full sm:w-auto">
             <Button size="lg" className="w-full sm:w-auto px-8 py-3 text-lg font-semibold" style={{ backgroundColor: "#5C6B2E", color: "#FFFFFF" }}>
               DESCUBRIR EXPERIENCIAS
