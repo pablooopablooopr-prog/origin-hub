@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const HERO_VIDEOS: { src: string; maxTime: number; startTime?: number }[] = [
   { src: "https://videos.pexels.com/video-files/8659129/8659129-hd_1920_1080_30fps.mp4",                              maxTime: 6, startTime: 2 }, // 1. manos cosechando (empieza s2, termina en s6)
   { src: "https://assets.mixkit.co/videos/29340/29340-720.mp4",                                                       maxTime: 3              }, // 2. cosecha viñedo (se abre)
-  { src: "https://videos.pexels.com/video-files/15909400/15909400-hd_1920_1080_30fps.mp4",   maxTime: 5              }, // 3. agricultor andando maíz
+  { src: "https://videos.pexels.com/video-files/15909400/15909400-uhd_2560_1440_25fps.mp4", maxTime: 5 }, // 3. agricultor andando maíz
 ];
 
 const Hero = () => {
