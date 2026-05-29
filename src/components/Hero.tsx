@@ -55,7 +55,7 @@ const Hero = () => {
   }, [currentVideo, advanceVideo]);
 
   return (
-    <section className="relative overflow-hidden" style={{ height: "100vh" }}>
+    <section className="relative overflow-hidden" style={{ height: "92vh" }}>
 
       {/* Vídeos */}
       {HERO_VIDEOS.map((v, i) => (
@@ -102,10 +102,10 @@ const Hero = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-earth-light/10 via-transparent to-moss-light/10" style={{ zIndex: 4 }} />
 
       {/* Contenido */}
-      <div className="relative flex flex-col h-full" style={{ zIndex: 10 }}>
+      <div className="relative flex flex-col" style={{ zIndex: 10, height: "92vh" }}>
 
         {/* Spacer top */}
-        <div style={{ flex: "0 0 14%" }} />
+        <div style={{ flex: "0 0 10%" }} />
 
         {/* TÍTULO */}
         <h1
