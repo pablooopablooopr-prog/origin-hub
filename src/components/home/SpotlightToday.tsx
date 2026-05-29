@@ -105,7 +105,7 @@ const EmpresaCard = ({ e }: { e: typeof EMPRESAS[0] }) => (
 
 const SpotlightToday = () => {
   return (
-    <section className="relative w-full" style={{ backgroundColor: C.dark }}>
+    <section className="relative w-full" style={{ backgroundImage: "url('/textures/hoy-origen-newspaper.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
       <div className="max-w-[1280px] mx-auto px-6 py-14 md:py-20">
         {/* ── HEADER ── */}
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-10">
@@ -133,24 +133,8 @@ const SpotlightToday = () => {
           </div>
         </div>
 
-      {/* ── GRID 4 CARDS con periódico de fondo (derecha) ── */}
+      {/* ── GRID 4 CARDS ── */}
       <div className="relative">
-        {/* Periódico difuminado — fondo lado derecho, DETRÁS de las cards */}
-        <div
-          className="hidden xl:block absolute top-0 bottom-0 right-0 pointer-events-none z-0"
-          style={{
-            width: "50%",
-            backgroundImage: "url('/textures/newspaper-bg.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center top",
-            opacity: 0.13,
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 40%)",
-            maskImage: "linear-gradient(to right, transparent 0%, black 40%)",
-            filter: "grayscale(100%) contrast(1.3) brightness(1.4)",
-            mixBlendMode: "luminosity",
-          }}
-          aria-hidden="true"
-        />
         <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {EMPRESAS.map((e) => <EmpresaCard key={e.id} e={e} />)}
         </div>
