@@ -105,7 +105,7 @@ const Hero = () => {
       <div className="relative flex flex-col h-full" style={{ zIndex: 10 }}>
 
         {/* Spacer top */}
-        <div style={{ flex: "0 0 8%" }} />
+        <div style={{ flex: "0 0 14%" }} />
 
         {/* TÍTULO */}
         <h1
