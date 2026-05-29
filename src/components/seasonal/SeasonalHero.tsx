@@ -170,41 +170,34 @@ const SeasonalHero = ({ data }: Props) => {
         </div>
       </div>
 
-      {/* ── FRANJA OSCURA: Productores destacados ── */}
-      <div
-        className="relative w-full flex items-center"
-        style={{
-          minHeight: "80px",
-          backgroundImage: "url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1600&q=80')",
-          backgroundSize: "cover",
-          backgroundPosition: "center 60%",
-        }}
-      >
-        <div className="absolute inset-0" style={{ backgroundColor: "rgba(30,22,12,0.82)" }} aria-hidden="true" />
-        {/* Borde rasgado superior */}
-        <svg
-          className="absolute top-0 left-0 w-full pointer-events-none"
-          style={{ transform: "translateY(-99%)", display: "block" }}
-          viewBox="0 0 1440 30"
-          preserveAspectRatio="none"
-          aria-hidden="true"
+      {/* ── FRANJA RASGADA: Productores destacados ── */}
+      <div className="relative w-full" style={{ marginTop: "-8px" }}>
+        <div
+          className="relative w-full flex items-center"
+          style={{
+            minHeight: "90px",
+            backgroundImage: "url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1600&q=80')",
+            backgroundSize: "cover",
+            backgroundPosition: "center 60%",
+            clipPath: `polygon(
+              0% 18%, 2% 12%, 3.5% 16%, 5% 8%, 7% 14%, 8.5% 6%, 10% 12%, 12% 4%, 14% 10%, 15.5% 14%, 17% 6%, 19% 12%, 20.5% 8%, 22% 14%, 24% 4%, 26% 10%, 27.5% 16%, 29% 6%, 31% 12%, 33% 8%, 35% 14%, 36.5% 4%, 38% 10%, 40% 16%, 42% 6%, 44% 12%, 45.5% 8%, 47% 14%, 49% 4%, 51% 12%, 53% 8%, 55% 16%, 57% 6%, 59% 12%, 60.5% 4%, 62% 14%, 64% 8%, 66% 12%, 68% 6%, 70% 16%, 72% 8%, 74% 14%, 75.5% 4%, 77% 10%, 79% 16%, 81% 6%, 83% 12%, 85% 8%, 87% 14%, 88.5% 4%, 90% 10%, 92% 16%, 94% 6%, 96% 12%, 98% 8%, 100% 14%,
+              100% 84%, 98% 90%, 96% 86%, 94% 94%, 92% 88%, 90% 96%, 88% 90%, 86% 84%, 84% 92%, 82% 88%, 80% 96%, 78% 90%, 76% 84%, 74% 92%, 72% 88%, 70% 96%, 68% 90%, 66% 84%, 64% 92%, 62% 88%, 60% 96%, 58% 90%, 56% 86%, 54% 94%, 52% 88%, 50% 96%, 48% 90%, 46% 84%, 44% 92%, 42% 88%, 40% 96%, 38% 90%, 36% 84%, 34% 92%, 32% 88%, 30% 96%, 28% 90%, 26% 84%, 24% 92%, 22% 88%, 20% 96%, 18% 90%, 16% 86%, 14% 94%, 12% 88%, 10% 96%, 8% 90%, 6% 86%, 4% 94%, 2% 88%, 0% 94%
+            )`,
+          }}
         >
-          <path
-            d="M0,30 L0,22 Q18,14 36,20 T72,16 T108,22 T144,14 T180,20 T216,12 T252,18 T288,22 T324,14 T360,20 T396,16 T432,22 T468,14 T504,18 T540,22 T576,16 T612,20 T648,14 T684,22 T720,18 T756,14 T792,20 T828,16 T864,22 T900,14 T936,20 T972,16 T1008,22 T1044,14 T1080,18 T1116,22 T1152,16 T1188,20 T1224,14 T1260,22 T1296,18 T1332,14 T1368,20 T1404,16 T1440,22 L1440,30 Z"
-            fill="rgba(30,22,12,0.82)"
-          />
-        </svg>
-        <div className="relative z-10 w-full max-w-[1280px] mx-auto px-8 md:px-12 flex items-center justify-between gap-4 py-5">
-          <div>
-            <p className="font-bold leading-tight" style={{ color: C.cream, fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.1rem, 1vw + 0.8rem, 1.45rem)" }}>
-              Productores destacados
-            </p>
-            <p className="text-[13px] mt-0.5" style={{ color: "#a89878" }}>Elegidos para esta temporada</p>
+          <div className="absolute inset-0" style={{ backgroundColor: "rgba(42,30,16,0.84)" }} aria-hidden="true" />
+          <div className="relative z-10 w-full max-w-[1280px] mx-auto px-8 md:px-12 flex items-center justify-between gap-4 py-6">
+            <div>
+              <p className="font-bold leading-tight" style={{ color: C.cream, fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.1rem, 1vw + 0.8rem, 1.45rem)" }}>
+                Productores destacados
+              </p>
+              <p className="text-[13px] mt-0.5" style={{ color: "#a89878" }}>Elegidos para esta temporada</p>
+            </div>
+            <Link to="/empresas" className="flex items-center gap-2 text-[14px] font-semibold group flex-shrink-0" style={{ color: C.cream }}>
+              Ver todos los productores
+              <ArrowRight size={15} style={{ color: C.gold }} className="transition-transform group-hover:translate-x-0.5" />
+            </Link>
           </div>
-          <Link to="/empresas" className="flex items-center gap-2 text-[14px] font-semibold group flex-shrink-0" style={{ color: C.cream }}>
-            Ver todos los productores
-            <ArrowRight size={15} style={{ color: C.gold }} className="transition-transform group-hover:translate-x-0.5" />
-          </Link>
         </div>
       </div>
 
