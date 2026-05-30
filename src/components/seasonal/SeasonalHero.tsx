@@ -268,20 +268,25 @@ const SeasonalHero = ({ data }: Props) => {
             height: "100%",
             backgroundImage: "url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1600&q=80')",
             backgroundSize: "cover",
-            backgroundPosition: "center 60%",
+            backgroundPosition: "center 58%",
             clipPath: `polygon(
-              0% 18%, 2% 12%, 3.5% 16%, 5% 8%, 7% 14%, 8.5% 6%, 10% 12%, 12% 4%, 14% 10%, 15.5% 14%, 17% 6%, 19% 12%, 20.5% 8%, 22% 14%, 24% 4%, 26% 10%, 27.5% 16%, 29% 6%, 31% 12%, 33% 8%, 35% 14%, 36.5% 4%, 38% 10%, 40% 16%, 42% 6%, 44% 12%, 45.5% 8%, 47% 14%, 49% 4%, 51% 12%, 53% 8%, 55% 16%, 57% 6%, 59% 12%, 60.5% 4%, 62% 14%, 64% 8%, 66% 12%, 68% 6%, 70% 16%, 72% 8%, 74% 14%, 75.5% 4%, 77% 10%, 79% 16%, 81% 6%, 83% 12%, 85% 8%, 87% 14%, 88.5% 4%, 90% 10%, 92% 16%, 94% 6%, 96% 12%, 98% 8%, 100% 14%,
-              100% 84%, 98% 90%, 96% 86%, 94% 94%, 92% 88%, 90% 96%, 88% 90%, 86% 84%, 84% 92%, 82% 88%, 80% 96%, 78% 90%, 76% 84%, 74% 92%, 72% 88%, 70% 96%, 68% 90%, 66% 84%, 64% 92%, 62% 88%, 60% 96%, 58% 90%, 56% 86%, 54% 94%, 52% 88%, 50% 96%, 48% 90%, 46% 84%, 44% 92%, 42% 88%, 40% 96%, 38% 90%, 36% 84%, 34% 92%, 32% 88%, 30% 96%, 28% 90%, 26% 84%, 24% 92%, 22% 88%, 20% 96%, 18% 90%, 16% 86%, 14% 94%, 12% 88%, 10% 96%, 8% 90%, 6% 86%, 4% 94%, 2% 88%, 0% 94%
+              0% 18%, 2% 13%, 4% 17%, 6% 10%, 8% 15%, 10% 8%, 12% 14%, 14% 11%, 16% 16%, 18% 9%,
+              20% 13%, 22% 7%, 24% 14%, 26% 10%, 28% 16%, 30% 8%, 32% 13%, 34% 9%, 36% 16%, 38% 10%,
+              40% 13%, 42% 7%, 44% 14%, 46% 9%, 48% 16%, 50% 8%, 52% 14%, 54% 10%, 56% 16%, 58% 8%,
+              60% 13%, 62% 10%, 64% 16%, 66% 8%, 68% 14%, 70% 10%, 72% 16%, 74% 9%, 76% 14%, 78% 11%,
+              80% 16%, 82% 8%, 84% 14%, 86% 10%, 88% 16%, 90% 8%, 92% 14%, 94% 10%, 96% 16%, 98% 9%, 100% 14%,
+              100% 100%, 0% 100%
             )`,
           }}
         >
-          <div className="absolute inset-0" style={{ backgroundColor: "rgba(42,30,16,0.84)" }} aria-hidden="true" />
-          <div className="relative z-10 mx-auto flex w-full max-w-none flex-col gap-5 px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8 md:px-[clamp(38px,3.25vw,52px)] md:pt-7">
+          <div className="absolute inset-0" style={{ backgroundColor: "rgba(45,31,14,0.66)" }} aria-hidden="true" />
+          <div className="absolute inset-0 opacity-45 mix-blend-screen" style={{ background: "linear-gradient(180deg, rgba(124,94,48,0.22), rgba(62,40,17,0.06))" }} aria-hidden="true" />
+          <div className="relative z-10 mx-auto flex w-full max-w-none flex-col gap-5 px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8 md:px-[clamp(38px,3.25vw,52px)] md:pb-6 md:pt-11">
             <div>
-              <p className="font-bold leading-tight" style={{ color: C.cream, fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.6rem, 2.2vw, 2.3rem)" }}>
+              <p className="font-bold leading-tight" style={{ color: C.cream, fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.6rem, 2.05vw, 2.15rem)" }}>
                 Productos destacados
               </p>
-              <p className="mt-1 text-[15px]" style={{ color: "#d8c9a7" }}>
+              <p className="mt-1 text-[15px]" style={{ color: "#eadfbd" }}>
                 Elegidos para esta temporada
               </p>
             </div>
