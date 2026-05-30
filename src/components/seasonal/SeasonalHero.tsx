@@ -168,7 +168,7 @@ const SeasonalHero = ({ data }: Props) => {
             </p>
 
             <div className="flex flex-col gap-4 sm:flex-row">
-              <Link to={data.ctas.primary.href} className="inline-flex">
+              <Link to="/empresas" className="inline-flex">
                 <button
                   className="min-h-[58px] w-full rounded-lg px-6 py-4 text-[15px] font-semibold transition-all hover:opacity-95 sm:w-auto md:px-7 md:text-[18px]"
                   style={{ backgroundColor: C.olive, color: C.cream, boxShadow: "0 12px 26px rgba(92,107,46,0.22)" }}
@@ -294,7 +294,7 @@ const SeasonalHero = ({ data }: Props) => {
                 Elegidos para esta temporada
               </p>
             </div>
-            <Link to={data.ctas.primary.href} className="group flex flex-shrink-0 items-center gap-2 text-[14px] font-semibold" style={{ color: C.cream }}>
+            <Link to="/empresas" className="group flex flex-shrink-0 items-center gap-2 text-[14px] font-semibold" style={{ color: C.cream }}>
               Ver todos los productores
               <ArrowRight size={15} style={{ color: C.gold }} className="transition-transform group-hover:translate-x-0.5" />
             </Link>

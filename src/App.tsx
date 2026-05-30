@@ -16,6 +16,7 @@ const Mapa = lazy(() => import("./pages/Mapa"));
 // const PacksBuscar = lazy(() => import("./pages/PacksBuscar"));
 // const PackDetail = lazy(() => import("./pages/PackDetail"));
 const Rutas = lazy(() => import("./pages/Rutas"));
+const Empresas = lazy(() => import("./pages/Empresas"));
 const RutaDetalle = lazy(() => import("./pages/RutaDetalle"));
 const ComprarRuta = lazy(() => import("./pages/ComprarRuta"));
 const MisRutas = lazy(() => import("./pages/MisRutas"));
@@ -85,6 +86,7 @@ const App = () => (
             <Route path="/mis-carritos" element={<MisCarritos />} />
             <Route path="/rutas" element={<Rutas />} />
             <Route path="/experiencias" element={<Rutas />} />
+            <Route path="/empresas" element={<Empresas />} />
             <Route path="/rutas/:id" element={<RutaDetalle />} />
             <Route path="/comprar-ruta/:slug" element={<ComprarRuta />} />
             <Route path="/mis-rutas" element={<MisRutas />} />
