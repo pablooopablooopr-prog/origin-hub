@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
+import { articulos } from "@/data/articulos";
 
 interface Articulo {
   id: string;
@@ -18,9 +19,34 @@ interface Articulo {
   tiempo_lectura: number;
   autor: string;
   parrafos: string[];
+  secciones?: {
+    titulo: string;
+    tipo: "lista" | "lista-numerada" | "texto";
+    contenido?: string;
+    items: string[];
+    nota?: string;
+  }[];
+  parrafosCierre?: string[];
   referencias?: string[];
   destacado: boolean;
 }
+
+const localArticleToDetail = (article: (typeof articulos)[number]): Articulo => ({
+  id: article.id,
+  slug: article.slug,
+  titulo: article.titulo,
+  extracto: article.extracto,
+  categoria: article.categoria,
+  categoria_color: article.categoriaColor,
+  fecha_publicacion: article.fechaPublicacion,
+  tiempo_lectura: article.tiempoLectura,
+  autor: article.autor,
+  parrafos: article.parrafos,
+  secciones: article.secciones,
+  parrafosCierre: article.parrafosCierre,
+  referencias: article.referencias,
+  destacado: article.destacado ?? false,
+});
 
 const ActualidadArticulo = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -36,7 +62,8 @@ const ActualidadArticulo = () => {
         .single();
 
       if (error || !data) {
-        setArticulo(null);
+        const localArticle = articulos.find((item) => item.slug === slug);
+        setArticulo(localArticle ? localArticleToDetail(localArticle) : null);
       } else {
         // Transform snake_case from DB to camelCase for component
         const transformedData = {

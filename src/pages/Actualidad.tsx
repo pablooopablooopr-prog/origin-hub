@@ -1,8 +1,8 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Grid3X3, List, UserRound } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { articulos } from "@/data/articulos";
 
 const C = {
   olive: "#5C6B2E",
@@ -18,96 +18,43 @@ interface DisplayArticle {
   id: string;
   slug: string;
   title: string;
-  excerpt?: string;
+  excerpt: string;
   category: string;
-  secondaryCategory?: string;
   date: string;
   readTime: number;
-  author?: string;
+  author: string;
   image: string;
   featured?: boolean;
 }
 
-const categories = [
-  "Todos",
-  "Salud",
-  "Alimentación",
-  "Territorio",
-  "Temporada",
-  "Sostenibilidad",
-  "Estudios científicos",
-];
-
-const featuredArticle: DisplayArticle = {
-  id: "featured",
-  slug: "dieta-mediterranea-salud-cardiovascular",
-  title: "Dieta mediterránea y salud cardiovascular: la evidencia actual.",
-  excerpt:
-    "Un análisis de los últimos estudios que demuestran cómo los patrones alimentarios tradicionales del Mediterráneo protegen nuestro corazón.",
-  category: "Salud",
-  secondaryCategory: "Artículo científico comentado",
-  date: "20 Mayo 2025",
-  readTime: 8,
-  author: "Equipo RITMO ORIGEN",
-  image:
-    "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=820&q=88",
-  featured: true,
+const articleImages: Record<string, string> = {
+  "efecto-mercosur-futuro-campo-espanol":
+    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=920&q=88",
+  "pesticidas-glifosato-rastro-invisible-tu-cuerpo":
+    "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=720&q=86",
+  "del-campo-al-supermercado-pagas-mas-agricultor-cobra-menos":
+    "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=720&q=86",
 };
 
-const articles: DisplayArticle[] = [
-  {
-    id: "territorio",
-    slug: "ganaderia-extensiva-territorio-vivo-sostenible",
-    title: "Ganadería extensiva: clave para un territorio vivo y sostenible",
-    category: "Territorio",
-    date: "18 Mayo 2025",
-    readTime: 6,
-    image:
-      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=680&q=86",
-  },
-  {
-    id: "alimentacion",
-    slug: "fermentados-tradicionales-ciencia-detras-tradicion",
-    title: "Fermentados tradicionales: ciencia detrás de la tradición",
-    category: "Alimentación",
-    date: "15 Mayo 2025",
-    readTime: 7,
-    image:
-      "https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=680&q=86",
-  },
-  {
-    id: "salud",
-    slug: "polifenoles-naturales-microbiota-intestinal",
-    title: "Polifenoles naturales y microbiota intestinal",
-    category: "Salud",
-    secondaryCategory: "Estudio científico",
-    date: "12 Mayo 2025",
-    readTime: 9,
-    image:
-      "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=680&q=86",
-  },
-  {
-    id: "sostenibilidad",
-    slug: "agricultura-regenerativa-beneficios-salud-suelo",
-    title: "Agricultura regenerativa: beneficios para la salud del suelo",
-    category: "Sostenibilidad",
-    date: "10 Mayo 2025",
-    readTime: 5,
-    image:
-      "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=680&q=86",
-  },
-];
+const formatDate = (date: string) => date.replace(" de ", " ").replace(" de ", " ");
 
-const filterArticles = (selected: string) => {
-  if (selected === "Todos") return articles;
-  if (selected === "Estudios científicos") return articles.filter((article) => article.secondaryCategory?.toLowerCase().includes("estudio"));
-  return articles.filter((article) => article.category === selected || article.secondaryCategory === selected);
-};
+const displayArticles: DisplayArticle[] = articulos.map((article) => ({
+  id: article.id,
+  slug: article.slug,
+  title: article.titulo,
+  excerpt: article.extracto,
+  category: article.categoria,
+  date: formatDate(article.fechaPublicacion),
+  readTime: article.tiempoLectura,
+  author: article.autor,
+  image: articleImages[article.slug],
+  featured: article.destacado,
+}));
+
+const featuredArticle = displayArticles.find((article) => article.featured) ?? displayArticles[0];
+const visibleArticles = displayArticles.filter((article) => article.slug !== featuredArticle.slug);
 
 const Actualidad = () => {
-  const [selectedCategory, setSelectedCategory] = useState("Todos");
-  const visibleArticles = filterArticles(selectedCategory);
-
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: C.cream }}>
       <Header />
@@ -123,7 +70,7 @@ const Actualidad = () => {
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[#17120c]/95 via-[#17120c]/72 to-[#17120c]/22" aria-hidden="true" />
-        <div className="relative z-10 mx-auto flex h-full max-w-[1284px] flex-col px-6 py-10 md:px-0 md:pb-5 md:pt-[50px]">
+        <div className="relative z-10 mx-auto flex h-full w-full max-w-[1284px] flex-col px-5 py-10 sm:px-6 lg:px-8 xl:px-0 md:pb-5 md:pt-[50px]">
           <div className="max-w-[860px]">
             <p className="mb-4 text-[13px] font-semibold uppercase tracking-[0.08em]" style={{ color: C.gold }}>
               Actualidad
@@ -145,29 +92,7 @@ const Actualidad = () => {
             </p>
           </div>
 
-          <div className="mt-8 flex flex-wrap gap-4">
-            {categories.map((category) => {
-              const active = selectedCategory === category;
-              return (
-                <button
-                  key={category}
-                  type="button"
-                  onClick={() => setSelectedCategory(category)}
-                  className="h-[38px] rounded-md border px-6 text-[13px] font-medium transition-colors"
-                  style={{
-                    minWidth: category === "Todos" ? "86px" : undefined,
-                    color: active ? C.brown : C.cream,
-                    backgroundColor: active ? "#fffaf1" : "rgba(23,18,12,0.25)",
-                    borderColor: active ? "#fffaf1" : "rgba(200,184,154,0.62)",
-                  }}
-                >
-                  {category}
-                </button>
-              );
-            })}
-          </div>
-
-          <Link to="/actualidad" className="group mt-5 block md:mt-auto">
+          <Link to={`/actualidad/${featuredArticle.slug}`} className="group mt-10 block md:mt-auto">
             <article
               className="grid overflow-hidden rounded-lg md:h-[266px] md:grid-cols-[422px_1fr]"
               style={{
@@ -193,7 +118,7 @@ const Actualidad = () => {
                   <div className="mb-5 flex items-center gap-3 text-[12px] font-semibold uppercase tracking-[0.08em]" style={{ color: C.olive }}>
                     <span>{featuredArticle.category}</span>
                     <span style={{ color: C.inkMuted }}>·</span>
-                    <span>{featuredArticle.secondaryCategory}</span>
+                    <span>Artículo comentado</span>
                   </div>
                   <h2
                     className="mb-4 max-w-[700px] font-bold leading-[1.1]"
@@ -236,7 +161,7 @@ const Actualidad = () => {
       </section>
 
       <main className="flex-1" style={{ backgroundColor: C.paper }}>
-        <div className="mx-auto max-w-[1284px] px-6 py-6 md:px-0">
+        <div className="mx-auto w-full max-w-[1284px] px-5 py-8 sm:px-6 lg:px-8 xl:px-0">
           <div className="mb-5 flex items-center justify-between gap-4">
             <h2 className="font-bold" style={{ color: C.brown, fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif", fontSize: "clamp(1.45rem, 2vw, 1.7rem)" }}>
               Todos los artículos
@@ -257,9 +182,9 @@ const Actualidad = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {visibleArticles.map((article) => (
-              <Link key={article.id} to="/actualidad" className="group block">
+              <Link key={article.id} to={`/actualidad/${article.slug}`} className="group block">
                 <article
                   className="flex h-full min-h-[260px] flex-col overflow-hidden rounded-lg"
                   style={{
@@ -279,11 +204,6 @@ const Actualidad = () => {
                       <span className="rounded-md px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.05em]" style={{ backgroundColor: "#77552c", color: "#fffaf1" }}>
                         {article.category}
                       </span>
-                      {article.secondaryCategory && (
-                        <span className="rounded-md px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.05em]" style={{ backgroundColor: "#77552c", color: "#fffaf1" }}>
-                          {article.secondaryCategory}
-                        </span>
-                      )}
                     </div>
                   </div>
                   <div className="flex flex-1 flex-col p-4">
