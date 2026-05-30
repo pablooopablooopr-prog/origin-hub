@@ -24,7 +24,7 @@ interface Props {
 }
 
 const formatMonth = (month: string | undefined, fallback: string) =>
-  month ? month.charAt(0).toUpperCase() + month.slice(1).toLowerCase() : fallback;
+  month ? month.toLocaleLowerCase("es-ES") : fallback;
 
 const SeasonalHero = ({ data }: Props) => {
   const heroImg = HERO_IMG[data.id] ?? HERO_IMG.queso;
@@ -44,21 +44,21 @@ const SeasonalHero = ({ data }: Props) => {
 
   return (
     <section
-      className="relative w-full overflow-hidden"
+      className="relative w-full overflow-hidden md:h-[calc(100svh-68px)] md:min-h-[800px] md:max-h-[960px]"
       style={{
         backgroundColor: C.paperWarm,
-        backgroundImage: "url('/textures/seasonal-wall-bg.jpg')",
-        backgroundSize: "760px auto",
+        backgroundImage: "url('/textures/map-bg.jpg')",
+        backgroundSize: "cover",
       }}
     >
-      <div className="relative min-h-[720px] md:min-h-[760px]">
-        <div className="absolute inset-y-0 right-0 hidden w-[58%] md:block" aria-hidden="true">
-          <img src={heroImg} alt="" className="h-full w-full object-cover object-center" loading="eager" />
+      <div className="relative min-h-[690px] md:h-[84%] md:min-h-0">
+        <div className="absolute right-0 top-0 hidden h-[74%] w-[57%] md:block" aria-hidden="true">
+          <img src={heroImg} alt="" className="h-full w-full object-cover object-center" style={{ objectPosition: "right center" }} loading="eager" />
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                "linear-gradient(90deg, rgba(239,227,202,0.98) 0%, rgba(239,227,202,0.82) 17%, rgba(239,227,202,0.25) 42%, rgba(239,227,202,0.02) 74%)",
+                "linear-gradient(90deg, rgba(239,227,202,0.98) 0%, rgba(239,227,202,0.62) 17%, rgba(239,227,202,0.14) 38%, rgba(239,227,202,0.02) 74%)",
             }}
           />
         </div>
@@ -67,13 +67,13 @@ const SeasonalHero = ({ data }: Props) => {
           className="absolute inset-0 pointer-events-none opacity-80"
           style={{
             background:
-              "radial-gradient(circle at 17% 18%, rgba(184,134,11,0.13) 0%, transparent 29%), radial-gradient(circle at 65% 12%, rgba(255,255,255,0.36) 0%, transparent 28%)",
+              "radial-gradient(circle at 17% 18%, rgba(184,134,11,0.08) 0%, transparent 28%), radial-gradient(circle at 62% 12%, rgba(255,255,255,0.26) 0%, transparent 26%)",
           }}
           aria-hidden="true"
         />
 
         <div
-          className="absolute left-[60%] top-10 z-20 hidden h-[142px] w-[142px] items-center justify-center rounded-full md:flex"
+          className="absolute left-[61.5%] top-[4.5%] z-20 hidden h-[150px] w-[150px] items-center justify-center rounded-full md:flex"
           style={{
             border: `1.5px solid ${C.brown}`,
             backgroundColor: "rgba(245,240,232,0.16)",
@@ -137,18 +137,18 @@ const SeasonalHero = ({ data }: Props) => {
           </svg>
         </div>
 
-        <div className="relative z-10 mx-auto flex min-h-[720px] max-w-[1540px] flex-col px-6 pb-12 pt-20 sm:px-8 md:min-h-[760px] md:px-12 md:pb-0 md:pt-24 lg:px-12">
-          <div className="max-w-[690px] md:max-w-[650px]">
-            <p className="mb-5 text-[12px] font-bold uppercase tracking-[0.18em] sm:text-[14px]" style={{ color: C.inkSoft }}>
+        <div className="relative z-10 mx-auto flex min-h-[690px] max-w-none flex-col px-6 pb-12 pt-20 sm:px-8 md:h-full md:min-h-0 md:px-[clamp(38px,3.25vw,52px)] md:pb-0 md:pt-[clamp(76px,9.2vh,96px)]">
+          <div className="max-w-[690px] md:max-w-[670px]">
+            <p className="mb-6 text-[12px] font-bold uppercase tracking-[0.13em] sm:text-[14px] md:text-[17px]" style={{ color: C.inkSoft }}>
               Temporada actual
             </p>
 
             <h1
-              className="mb-7 font-bold leading-[0.98]"
+              className="mb-8 font-bold leading-[0.95]"
               style={{
                 color: C.brown,
                 fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif",
-                fontSize: "clamp(3.4rem, 8vw, 6.7rem)",
+                fontSize: "clamp(3.15rem, 4.9vw, 5.35rem)",
                 letterSpacing: "0",
               }}
             >
@@ -156,16 +156,16 @@ const SeasonalHero = ({ data }: Props) => {
             </h1>
 
             <p
-              className="mb-10 max-w-[620px] leading-relaxed"
-              style={{ color: "#2f251a", fontSize: "clamp(1.04rem, 1.1vw, 1.35rem)" }}
+              className="mb-9 max-w-[590px] leading-[1.38]"
+              style={{ color: "#2f251a", fontSize: "clamp(1rem, 1.32vw, 1.35rem)" }}
             >
-              De {seasonStart} a {seasonEnd}, el {data.id === "queso" ? "queso manchego" : data.productName.toLowerCase()} alcanza su mejor momento. Un sabor intenso que nace del pasto fresco y de una tradición que se mantiene viva.
+              De {seasonStart} a {seasonEnd}, el {data.id === "queso" ? "queso manchego" : data.productName.toLowerCase()} alcanza su mejor momento. Un sabor intenso que hace del pasto fresco y de una tradición que se mantiene viva.
             </p>
 
             <div className="flex flex-col gap-4 sm:flex-row">
               <Link to={data.ctas.primary.href} className="inline-flex">
                 <button
-                  className="min-h-[58px] w-full rounded-lg px-7 py-4 text-[15px] font-semibold transition-all hover:opacity-95 sm:w-auto sm:text-[16px]"
+                  className="min-h-[58px] w-full rounded-lg px-6 py-4 text-[15px] font-semibold transition-all hover:opacity-95 sm:w-auto md:px-7 md:text-[18px]"
                   style={{ backgroundColor: C.olive, color: C.cream, boxShadow: "0 12px 26px rgba(92,107,46,0.22)" }}
                 >
                   Descubrir productos de temporada
@@ -173,7 +173,7 @@ const SeasonalHero = ({ data }: Props) => {
               </Link>
               <Link to="/rutas" className="inline-flex">
                 <button
-                  className="min-h-[58px] w-full rounded-lg px-8 py-4 text-[15px] font-semibold transition-all hover:bg-white/45 sm:w-auto sm:text-[16px]"
+                  className="min-h-[58px] w-full rounded-lg px-8 py-4 text-[15px] font-semibold transition-all hover:bg-white/45 sm:w-auto md:px-10 md:text-[18px]"
                   style={{
                     border: "1.5px solid rgba(61,43,31,0.48)",
                     color: C.brown,
@@ -230,9 +230,9 @@ const SeasonalHero = ({ data }: Props) => {
           </div>
 
           <div
-            className="relative z-20 mt-10 grid grid-cols-1 gap-6 rounded-[18px] px-7 py-8 shadow-[0_22px_48px_rgba(61,43,31,0.14)] sm:grid-cols-2 md:mt-auto md:translate-y-1/2 lg:grid-cols-4 lg:gap-0 lg:px-9"
+            className="relative z-20 mt-10 grid grid-cols-1 gap-6 rounded-[18px] px-7 py-8 shadow-[0_16px_32px_rgba(61,43,31,0.13)] sm:grid-cols-2 md:absolute md:bottom-[34px] md:left-[clamp(38px,3.25vw,52px)] md:right-[clamp(38px,3.25vw,52px)] md:mt-0 md:min-h-[170px] md:items-center lg:grid-cols-4 lg:gap-0 lg:px-9"
             style={{
-              backgroundColor: "rgba(255,252,246,0.9)",
+              backgroundColor: "rgba(255,252,246,0.88)",
               border: "1px solid rgba(200,184,154,0.5)",
               backdropFilter: "blur(6px)",
             }}
@@ -242,14 +242,14 @@ const SeasonalHero = ({ data }: Props) => {
               return (
                 <div key={i} className="relative flex items-start gap-5 lg:px-7">
                   {i > 0 && (
-                    <span className="absolute left-0 top-2 hidden h-[78px] w-px lg:block" style={{ backgroundColor: `${C.beige}99` }} aria-hidden="true" />
+                    <span className="absolute left-0 top-2 hidden h-[90px] w-px lg:block" style={{ backgroundColor: `${C.beige}99` }} aria-hidden="true" />
                   )}
-                  <Icon size={44} strokeWidth={1.25} style={{ color: C.brown, flexShrink: 0, marginTop: "2px" }} />
+                  <Icon size={46} strokeWidth={1.25} style={{ color: C.brown, flexShrink: 0, marginTop: "2px" }} />
                   <div>
-                    <h3 className="mb-2 font-bold leading-tight" style={{ color: C.brown, fontFamily: "'Playfair Display', serif", fontSize: "17px" }}>
+                    <h3 className="mb-2 font-bold leading-tight" style={{ color: C.brown, fontFamily: "'Playfair Display', serif", fontSize: "18px" }}>
                       {f.title}
                     </h3>
-                    <p className="text-[14px] leading-relaxed" style={{ color: "#5d4b37" }}>
+                    <p className="text-[15px] leading-relaxed" style={{ color: "#5d4b37" }}>
                       {f.text}
                     </p>
                   </div>
@@ -260,11 +260,12 @@ const SeasonalHero = ({ data }: Props) => {
         </div>
       </div>
 
-      <div className="relative w-full md:pt-[86px]">
+      <div className="relative w-full md:h-[16%]">
         <div
           className="relative flex w-full items-center"
           style={{
-            minHeight: "138px",
+            minHeight: "126px",
+            height: "100%",
             backgroundImage: "url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1600&q=80')",
             backgroundSize: "cover",
             backgroundPosition: "center 60%",
@@ -275,17 +276,17 @@ const SeasonalHero = ({ data }: Props) => {
           }}
         >
           <div className="absolute inset-0" style={{ backgroundColor: "rgba(42,30,16,0.84)" }} aria-hidden="true" />
-          <div className="relative z-10 mx-auto flex w-full max-w-[1540px] flex-col gap-5 px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8 md:px-12">
+          <div className="relative z-10 mx-auto flex w-full max-w-none flex-col gap-5 px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8 md:px-[clamp(38px,3.25vw,52px)] md:pt-7">
             <div>
               <p className="font-bold leading-tight" style={{ color: C.cream, fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.6rem, 2.2vw, 2.3rem)" }}>
-                Productores destacados
+                Productos destacados
               </p>
               <p className="mt-1 text-[15px]" style={{ color: "#d8c9a7" }}>
                 Elegidos para esta temporada
               </p>
             </div>
-            <Link to="/empresas" className="group flex flex-shrink-0 items-center gap-2 text-[14px] font-semibold" style={{ color: C.cream }}>
-              Ver todos los productores
+            <Link to={data.ctas.primary.href} className="group flex flex-shrink-0 items-center gap-2 text-[14px] font-semibold" style={{ color: C.cream }}>
+              Ver todos los productos
               <ArrowRight size={15} style={{ color: C.gold }} className="transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
