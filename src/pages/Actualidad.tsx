@@ -53,6 +53,7 @@ const displayArticles: DisplayArticle[] = articulos.map((article) => ({
 
 const featuredArticle = displayArticles.find((article) => article.featured) ?? displayArticles[0];
 const visibleArticles = displayArticles.filter((article) => article.slug !== featuredArticle.slug);
+const contentShellStyle = { width: "min(calc(100% - 64px), 1180px)" };
 
 const Actualidad = () => {
   return (
@@ -70,7 +71,7 @@ const Actualidad = () => {
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[#17120c]/95 via-[#17120c]/72 to-[#17120c]/22" aria-hidden="true" />
-        <div className="relative z-10 mx-auto flex h-full w-full max-w-[1284px] flex-col px-5 py-10 sm:px-6 lg:px-8 xl:px-0 md:pb-5 md:pt-[50px]">
+        <div className="relative z-10 mx-auto flex h-full flex-col py-10 md:pb-8 md:pt-[50px]" style={contentShellStyle}>
           <div className="max-w-[860px]">
             <p className="mb-4 text-[13px] font-semibold uppercase tracking-[0.08em]" style={{ color: C.gold }}>
               Actualidad
@@ -94,7 +95,7 @@ const Actualidad = () => {
 
           <Link to={`/actualidad/${featuredArticle.slug}`} className="group mt-10 block md:mt-auto">
             <article
-              className="grid overflow-hidden rounded-lg md:h-[266px] md:grid-cols-[422px_1fr]"
+              className="grid overflow-hidden rounded-lg md:min-h-[306px] md:grid-cols-[390px_1fr]"
               style={{
                 backgroundColor: "rgba(255,251,244,0.98)",
                 boxShadow: "0 18px 45px rgba(0,0,0,0.26)",
@@ -113,7 +114,7 @@ const Actualidad = () => {
                 </span>
               </div>
 
-              <div className="flex min-w-0 flex-col justify-between gap-4 p-7 md:px-10 md:py-7">
+              <div className="flex min-w-0 flex-col justify-between gap-6 p-7 md:px-10 md:py-8">
                 <div>
                   <div className="mb-5 flex items-center gap-3 text-[12px] font-semibold uppercase tracking-[0.08em]" style={{ color: C.olive }}>
                     <span>{featuredArticle.category}</span>
@@ -136,7 +137,7 @@ const Actualidad = () => {
                   </p>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-4 text-[13px]" style={{ color: "#6f614f" }}>
+                <div className="flex flex-wrap items-center justify-between gap-5 text-[13px]" style={{ color: "#6f614f" }}>
                   <div className="flex flex-wrap items-center gap-3">
                     <span className="flex items-center gap-1.5">
                       <UserRound size={15} fill="#c8b89a" strokeWidth={1.4} />
@@ -161,7 +162,7 @@ const Actualidad = () => {
       </section>
 
       <main className="flex-1" style={{ backgroundColor: C.paper }}>
-        <div className="mx-auto w-full max-w-[1284px] px-5 py-8 sm:px-6 lg:px-8 xl:px-0">
+        <div className="mx-auto py-9" style={contentShellStyle}>
           <div className="mb-5 flex items-center justify-between gap-4">
             <h2 className="font-bold" style={{ color: C.brown, fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif", fontSize: "clamp(1.45rem, 2vw, 1.7rem)" }}>
               Todos los artículos
@@ -182,18 +183,18 @@ const Actualidad = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {visibleArticles.map((article) => (
               <Link key={article.id} to={`/actualidad/${article.slug}`} className="group block">
                 <article
-                  className="flex h-full min-h-[260px] flex-col overflow-hidden rounded-lg"
+                  className="flex h-full min-h-[246px] flex-col overflow-hidden rounded-lg"
                   style={{
                     backgroundColor: "#fffaf1",
                     border: `1px solid ${C.beige}66`,
                     boxShadow: "0 4px 16px rgba(61,43,31,0.07)",
                   }}
                 >
-                  <div className="relative h-[148px] overflow-hidden">
+                  <div className="relative h-[142px] overflow-hidden">
                     <img
                       src={article.image}
                       alt={article.title}
@@ -206,7 +207,7 @@ const Actualidad = () => {
                       </span>
                     </div>
                   </div>
-                  <div className="flex flex-1 flex-col p-4">
+                  <div className="flex flex-1 flex-col p-5">
                     <h3
                       className="line-clamp-2 font-bold leading-[1.18]"
                       style={{
