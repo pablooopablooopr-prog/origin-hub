@@ -39,7 +39,7 @@ const SeasonalHero = ({ data }: Props) => {
     { icon: Leaf, title: "Sabor de la estación", text: "El pasto fresco aporta matices únicos y naturales." },
     { icon: User, title: "Productores locales", text: "Apoyamos a quienes mantienen viva la tradición." },
     { icon: Calendar, title: "Disponible por tiempo limitado", text: `Aprovecha lo mejor de la temporada hasta ${seasonEnd}.` },
-    { icon: BadgeCheck, title: "Calidad certificada", text: "Productos artesanales con origen y trazabilidad real." },
+    { icon: BadgeCheck, title: "Calidad certificada", text: "Productores artesanales con origen y trazabilidad real." },
   ];
 
   return (
@@ -159,7 +159,12 @@ const SeasonalHero = ({ data }: Props) => {
               className="mb-9 max-w-[590px] leading-[1.38]"
               style={{ color: "#2f251a", fontSize: "clamp(1rem, 1.32vw, 1.35rem)" }}
             >
-              De {seasonStart} a {seasonEnd}, el {data.id === "queso" ? "queso manchego" : data.productName.toLowerCase()} alcanza su mejor momento. Un sabor intenso que hace del pasto fresco y de una tradición que se mantiene viva.
+              <span className="block">
+                De {seasonStart} a {seasonEnd}, el {data.id === "queso" ? "queso manchego" : data.productName.toLowerCase()} alcanza su mejor momento.
+              </span>
+              <span className="block">
+                Un sabor intenso que hace del pasto fresco y de una tradición que se mantiene viva.
+              </span>
             </p>
 
             <div className="flex flex-col gap-4 sm:flex-row">
@@ -168,7 +173,7 @@ const SeasonalHero = ({ data }: Props) => {
                   className="min-h-[58px] w-full rounded-lg px-6 py-4 text-[15px] font-semibold transition-all hover:opacity-95 sm:w-auto md:px-7 md:text-[18px]"
                   style={{ backgroundColor: C.olive, color: C.cream, boxShadow: "0 12px 26px rgba(92,107,46,0.22)" }}
                 >
-                  Descubrir productos de temporada
+                  Descubrir productores de temporada
                 </button>
               </Link>
               <Link to="/rutas" className="inline-flex">
@@ -269,29 +274,28 @@ const SeasonalHero = ({ data }: Props) => {
             backgroundImage: "url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1600&q=80')",
             backgroundSize: "cover",
             backgroundPosition: "center 58%",
-            clipPath: `polygon(
-              0% 18%, 2% 13%, 4% 17%, 6% 10%, 8% 15%, 10% 8%, 12% 14%, 14% 11%, 16% 16%, 18% 9%,
-              20% 13%, 22% 7%, 24% 14%, 26% 10%, 28% 16%, 30% 8%, 32% 13%, 34% 9%, 36% 16%, 38% 10%,
-              40% 13%, 42% 7%, 44% 14%, 46% 9%, 48% 16%, 50% 8%, 52% 14%, 54% 10%, 56% 16%, 58% 8%,
-              60% 13%, 62% 10%, 64% 16%, 66% 8%, 68% 14%, 70% 10%, 72% 16%, 74% 9%, 76% 14%, 78% 11%,
-              80% 16%, 82% 8%, 84% 14%, 86% 10%, 88% 16%, 90% 8%, 92% 14%, 94% 10%, 96% 16%, 98% 9%, 100% 14%,
-              100% 100%, 0% 100%
-            )`,
           }}
         >
-          <div className="absolute inset-0" style={{ backgroundColor: "rgba(45,31,14,0.66)" }} aria-hidden="true" />
-          <div className="absolute inset-0 opacity-45 mix-blend-screen" style={{ background: "linear-gradient(180deg, rgba(124,94,48,0.22), rgba(62,40,17,0.06))" }} aria-hidden="true" />
+          <div className="absolute inset-0" style={{ backgroundColor: "rgba(92,68,35,0.46)" }} aria-hidden="true" />
+          <div className="absolute inset-0 opacity-55 mix-blend-screen" style={{ background: "linear-gradient(180deg, rgba(178,142,82,0.25), rgba(78,52,24,0.04))" }} aria-hidden="true" />
+          <svg className="absolute left-0 top-0 z-10 h-[32px] w-full -translate-y-px" viewBox="0 0 1440 38" preserveAspectRatio="none" aria-hidden="true">
+            <path
+              fill={C.paperWarm}
+              opacity="0.96"
+              d="M0 0H1440V17.5C1415 12.5 1396 22 1373 16C1348 9.5 1325 22 1300 16.8C1276 11.8 1252 19.6 1228 15.2C1203 10.7 1183 21.2 1158 16.1C1133 11 1112 19.8 1087 15.4C1062 11.1 1040 21.5 1016 16.6C991 11.4 969 19.6 944 15.4C919 11.1 898 22.4 873 16.1C849 10.2 826 19.5 801 15.2C776 10.8 755 21.2 730 16.2C706 11.4 684 19.8 659 15.4C634 11.1 613 21.6 588 16.8C563 12.1 542 19.4 517 15.3C492 11.2 471 22.3 446 16.1C421 10.1 399 19.6 374 15.3C349 11 328 21.5 303 16.5C279 11.6 256 19.8 232 15.4C207 10.8 186 22.2 161 16.3C136 10.4 114 19.5 89 15.2C64 10.9 43 21.8 18 16.7C11 15.2 5 14.5 0 15.1V0Z"
+            />
+          </svg>
           <div className="relative z-10 mx-auto flex w-full max-w-none flex-col gap-5 px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8 md:px-[clamp(38px,3.25vw,52px)] md:pb-6 md:pt-11">
             <div>
               <p className="font-bold leading-tight" style={{ color: C.cream, fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.6rem, 2.05vw, 2.15rem)" }}>
-                Productos destacados
+                Productores destacados
               </p>
               <p className="mt-1 text-[15px]" style={{ color: "#eadfbd" }}>
                 Elegidos para esta temporada
               </p>
             </div>
             <Link to={data.ctas.primary.href} className="group flex flex-shrink-0 items-center gap-2 text-[14px] font-semibold" style={{ color: C.cream }}>
-              Ver todos los productos
+              Ver todos los productores
               <ArrowRight size={15} style={{ color: C.gold }} className="transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
