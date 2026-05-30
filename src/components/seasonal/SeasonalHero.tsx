@@ -8,174 +8,263 @@ const C = {
   beige: "#C8B89A",
   brown: "#3D2B1F",
   gold: "#B8860B",
-  paperWarm: "#f0e6d3",
+  paperWarm: "#efe3ca",
+  inkSoft: "#5b4935",
 };
 
 const HERO_IMG: Record<string, string> = {
   queso: "/seasons/queso/hero-cheese.jpg",
-  vino:  "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1100&q=90",
-  caza:  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1100&q=90",
+  vino: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1100&q=90",
+  caza: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1100&q=90",
   mielAceite: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=1100&q=90",
 };
 
-interface Props { data: SeasonData; }
+interface Props {
+  data: SeasonData;
+}
+
+const formatMonth = (month: string | undefined, fallback: string) =>
+  month ? month.charAt(0).toUpperCase() + month.slice(1).toLowerCase() : fallback;
 
 const SeasonalHero = ({ data }: Props) => {
   const heroImg = HERO_IMG[data.id] ?? HERO_IMG.queso;
   const titleProduct = data.id === "queso" ? "Queso Manchego" : data.productName;
-  const sealTop    = data.months[0]?.slice(0, 3) ?? "MAR";
+  const sealTop = data.months[0]?.slice(0, 3) ?? "MAR";
   const sealBottom = data.months[data.months.length - 1]?.slice(0, 3) ?? "JUN";
+  const seasonStart = formatMonth(data.months[0], "marzo");
+  const seasonEnd = formatMonth(data.months[data.months.length - 1], "junio");
+  const sealPathId = `seal-top-${data.id}`;
 
   const features = [
-    { icon: Leaf,       title: "Sabor de la estación",           text: "El pasto fresco aporta matices únicos y naturales." },
-    { icon: User,       title: "Productores locales",            text: "Apoyamos a quienes mantienen viva la tradición." },
-    { icon: Calendar,   title: "Disponible por tiempo limitado", text: `Aprovecha lo mejor de la temporada hasta ${data.months[data.months.length-1]?.charAt(0).toUpperCase() + data.months[data.months.length-1]?.slice(1).toLowerCase() ?? "junio"}.` },
-    { icon: BadgeCheck, title: "Calidad certificada",            text: "Productos artesanales con origen y trazabilidad real." },
+    { icon: Leaf, title: "Sabor de la estación", text: "El pasto fresco aporta matices únicos y naturales." },
+    { icon: User, title: "Productores locales", text: "Apoyamos a quienes mantienen viva la tradición." },
+    { icon: Calendar, title: "Disponible por tiempo limitado", text: `Aprovecha lo mejor de la temporada hasta ${seasonEnd}.` },
+    { icon: BadgeCheck, title: "Calidad certificada", text: "Productos artesanales con origen y trazabilidad real." },
   ];
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ backgroundColor: C.paperWarm }}>
-
-      {/* ─── SPLIT HERO ─── */}
-      <div className="relative flex flex-col lg:flex-row" style={{ minHeight: "520px" }}>
-
-        {/* ── IZQUIERDA: texto sobre fondo crema ── */}
-        <div
-          className="relative z-10 flex flex-col justify-center px-8 md:px-12 lg:px-16 py-14 lg:py-16"
-          style={{ flex: "0 0 50%", maxWidth: "50%", backgroundColor: C.paperWarm }}
-        >
-          {/* Textura papel sutil */}
-          <div className="absolute inset-0 pointer-events-none opacity-40"
-            style={{ backgroundImage: "radial-gradient(circle at 20% 30%, rgba(184,134,11,0.07) 0%, transparent 30%)" }}
-            aria-hidden="true" />
-
-          <p className="relative text-[12px] font-bold uppercase tracking-[0.3em] mb-5" style={{ color: C.olive }}>
-            Temporada actual
-          </p>
-
-          <h1
-            className="relative font-bold leading-[1.02] tracking-tight mb-6"
-            style={{
-              color: C.brown,
-              fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif",
-              fontSize: "clamp(2.6rem, 2rem + 2.8vw, 4.5rem)",
-            }}
-          >
-            La Temporada del<br />{titleProduct}
-          </h1>
-
-          <p
-            className="relative mb-8 leading-relaxed"
-            style={{ color: "#5a4a38", fontSize: "clamp(1.05rem, 0.95rem + 0.3vw, 1.18rem)", maxWidth: "440px" }}
-          >
-            De {data.months[0]?.charAt(0).toUpperCase() + data.months[0]?.slice(1).toLowerCase() ?? "marzo"} a {data.months[data.months.length-1]?.charAt(0).toUpperCase() + data.months[data.months.length-1]?.slice(1).toLowerCase() ?? "mayo"}, el {data.id === "queso" ? "queso manchego" : data.productName.toLowerCase()} alcanza su mejor momento. Un sabor intenso que nace del pasto fresco y de una tradición que se mantiene viva.
-          </p>
-
-          <div className="relative flex flex-wrap gap-4">
-            <Link to={data.ctas.primary.href}>
-              <button
-                className="px-7 py-3.5 rounded-xl text-[15px] font-semibold transition-all hover:opacity-90 hover:-translate-y-0.5"
-                style={{ backgroundColor: C.olive, color: C.cream }}
-              >
-                Descubrir productos de temporada
-              </button>
-            </Link>
-            <Link to="/rutas">
-              <button
-                className="px-7 py-3.5 rounded-xl text-[15px] font-semibold transition-all hover:bg-white/60"
-                style={{ border: `1.5px solid ${C.beige}`, color: C.brown, backgroundColor: "rgba(255,255,255,0.3)" }}
-              >
-                Ver experiencias
-              </button>
-            </Link>
-          </div>
-        </div>
-
-        {/* ── DERECHA: foto a sangre, sin tarjeta, sin bordes ── */}
-        <div className="relative" style={{ flex: "0 0 50%", maxWidth: "50%", minHeight: "420px" }}>
-          <img
-            src={heroImg}
-            alt={titleProduct}
-            className="absolute inset-0 w-full h-full object-cover"
-            loading="eager"
-          />
-
-          {/* Gradiente sutil izquierda para fundir con el texto */}
+    <section
+      className="relative w-full overflow-hidden"
+      style={{
+        backgroundColor: C.paperWarm,
+        backgroundImage: "url('/textures/seasonal-wall-bg.jpg')",
+        backgroundSize: "760px auto",
+      }}
+    >
+      <div className="relative min-h-[720px] md:min-h-[760px]">
+        <div className="absolute inset-y-0 right-0 hidden w-[58%] md:block" aria-hidden="true">
+          <img src={heroImg} alt="" className="h-full w-full object-cover object-center" loading="eager" />
           <div
             className="absolute inset-0 pointer-events-none"
-            style={{ background: "linear-gradient(to right, rgba(240,230,211,0.35) 0%, transparent 30%)" }}
-            aria-hidden="true"
-          />
-
-          {/* ── Sello PRODUCTO DE TEMPORADA ── encima de la foto */}
-          <div
-            className="absolute top-8 left-8 w-[118px] h-[118px] rounded-full flex items-center justify-center z-20"
             style={{
-              backgroundColor: "rgba(245,240,232,0.96)",
-              border: `1.5px solid ${C.olive}`,
-              boxShadow: "0 8px 24px rgba(61,43,31,0.22)",
+              background:
+                "linear-gradient(90deg, rgba(239,227,202,0.98) 0%, rgba(239,227,202,0.82) 17%, rgba(239,227,202,0.25) 42%, rgba(239,227,202,0.02) 74%)",
+            }}
+          />
+        </div>
+
+        <div
+          className="absolute inset-0 pointer-events-none opacity-80"
+          style={{
+            background:
+              "radial-gradient(circle at 17% 18%, rgba(184,134,11,0.13) 0%, transparent 29%), radial-gradient(circle at 65% 12%, rgba(255,255,255,0.36) 0%, transparent 28%)",
+          }}
+          aria-hidden="true"
+        />
+
+        <div
+          className="absolute left-[60%] top-10 z-20 hidden h-[142px] w-[142px] items-center justify-center rounded-full md:flex"
+          style={{
+            border: `1.5px solid ${C.brown}`,
+            backgroundColor: "rgba(245,240,232,0.16)",
+            boxShadow: "0 14px 34px rgba(61,43,31,0.08)",
+          }}
+        >
+          <svg viewBox="0 0 130 130" width="132" height="132" aria-hidden="true">
+            <defs>
+              <path id={sealPathId} d="M 65,65 m -48,0 a 48,48 0 0,1 96,0" />
+            </defs>
+            <text
+              fill={C.brown}
+              style={{
+                fontSize: "8.8px",
+                letterSpacing: "0.13em",
+                fontFamily: "serif",
+                fontWeight: 600,
+              }}
+            >
+              <textPath href={`#${sealPathId}`} startOffset="50%" textAnchor="middle">
+                PRODUCTO DE TEMPORADA
+              </textPath>
+            </text>
+            <g stroke={C.olive} strokeWidth="1.15" fill="none" opacity="0.8" transform="translate(65,93)">
+              <path d="M-21,0 C-17,-6 -9,-8 -3,-5" />
+              <path d="M-17,-1 C-19,-6 -18,-10 -14,-10" />
+              <path d="M-11,-4 C-13,-9 -11,-13 -7,-12" />
+              <path d="M21,0 C17,-6 9,-8 3,-5" />
+              <path d="M17,-1 C19,-6 18,-10 14,-10" />
+              <path d="M11,-4 C13,-9 11,-13 7,-12" />
+            </g>
+            <text
+              x="65"
+              y="56"
+              textAnchor="middle"
+              fill={C.brown}
+              style={{
+                fontSize: "18px",
+                fontFamily: "'Playfair Display', serif",
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+              }}
+            >
+              {sealTop}
+            </text>
+            <line x1="42" y1="65" x2="88" y2="65" stroke={C.brown} strokeWidth="1" />
+            <text
+              x="65"
+              y="84"
+              textAnchor="middle"
+              fill={C.brown}
+              style={{
+                fontSize: "18px",
+                fontFamily: "'Playfair Display', serif",
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+              }}
+            >
+              {sealBottom}
+            </text>
+          </svg>
+        </div>
+
+        <div className="relative z-10 mx-auto flex min-h-[720px] max-w-[1540px] flex-col px-6 pb-12 pt-20 sm:px-8 md:min-h-[760px] md:px-12 md:pb-0 md:pt-24 lg:px-12">
+          <div className="max-w-[690px] md:max-w-[650px]">
+            <p className="mb-5 text-[12px] font-bold uppercase tracking-[0.18em] sm:text-[14px]" style={{ color: C.inkSoft }}>
+              Temporada actual
+            </p>
+
+            <h1
+              className="mb-7 font-bold leading-[0.98]"
+              style={{
+                color: C.brown,
+                fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif",
+                fontSize: "clamp(3.4rem, 8vw, 6.7rem)",
+                letterSpacing: "0",
+              }}
+            >
+              La Temporada del<br />{titleProduct}
+            </h1>
+
+            <p
+              className="mb-10 max-w-[620px] leading-relaxed"
+              style={{ color: "#2f251a", fontSize: "clamp(1.04rem, 1.1vw, 1.35rem)" }}
+            >
+              De {seasonStart} a {seasonEnd}, el {data.id === "queso" ? "queso manchego" : data.productName.toLowerCase()} alcanza su mejor momento. Un sabor intenso que nace del pasto fresco y de una tradición que se mantiene viva.
+            </p>
+
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <Link to={data.ctas.primary.href} className="inline-flex">
+                <button
+                  className="min-h-[58px] w-full rounded-lg px-7 py-4 text-[15px] font-semibold transition-all hover:opacity-95 sm:w-auto sm:text-[16px]"
+                  style={{ backgroundColor: C.olive, color: C.cream, boxShadow: "0 12px 26px rgba(92,107,46,0.22)" }}
+                >
+                  Descubrir productos de temporada
+                </button>
+              </Link>
+              <Link to="/rutas" className="inline-flex">
+                <button
+                  className="min-h-[58px] w-full rounded-lg px-8 py-4 text-[15px] font-semibold transition-all hover:bg-white/45 sm:w-auto sm:text-[16px]"
+                  style={{
+                    border: "1.5px solid rgba(61,43,31,0.48)",
+                    color: C.brown,
+                    backgroundColor: "rgba(255,255,255,0.18)",
+                  }}
+                >
+                  Ver experiencias
+                </button>
+              </Link>
+            </div>
+          </div>
+
+          <div className="relative mt-10 overflow-hidden rounded-[18px] shadow-[0_18px_38px_rgba(61,43,31,0.16)] md:hidden">
+            <img src={heroImg} alt={titleProduct} className="h-[320px] w-full object-cover object-center" loading="eager" />
+            <div
+              className="absolute left-4 top-4 flex h-[104px] w-[104px] items-center justify-center rounded-full"
+              style={{
+                border: `1px solid ${C.brown}`,
+                backgroundColor: "rgba(245,240,232,0.76)",
+              }}
+            >
+              <svg viewBox="0 0 130 130" width="98" height="98" aria-hidden="true">
+                <text
+                  x="65"
+                  y="56"
+                  textAnchor="middle"
+                  fill={C.brown}
+                  style={{
+                    fontSize: "19px",
+                    fontFamily: "'Playfair Display', serif",
+                    fontWeight: 700,
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  {sealTop}
+                </text>
+                <line x1="42" y1="65" x2="88" y2="65" stroke={C.brown} strokeWidth="1" />
+                <text
+                  x="65"
+                  y="84"
+                  textAnchor="middle"
+                  fill={C.brown}
+                  style={{
+                    fontSize: "19px",
+                    fontFamily: "'Playfair Display', serif",
+                    fontWeight: 700,
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  {sealBottom}
+                </text>
+              </svg>
+            </div>
+          </div>
+
+          <div
+            className="relative z-20 mt-10 grid grid-cols-1 gap-6 rounded-[18px] px-7 py-8 shadow-[0_22px_48px_rgba(61,43,31,0.14)] sm:grid-cols-2 md:mt-auto md:translate-y-1/2 lg:grid-cols-4 lg:gap-0 lg:px-9"
+            style={{
+              backgroundColor: "rgba(255,252,246,0.9)",
+              border: "1px solid rgba(200,184,154,0.5)",
+              backdropFilter: "blur(6px)",
             }}
           >
-            <svg viewBox="0 0 130 130" width="118" height="118">
-              <defs>
-                <path id="seal-top" d="M 65,65 m -48,0 a 48,48 0 0,1 96,0" />
-              </defs>
-              <text fill={C.olive} style={{ fontSize: "8.5px", letterSpacing: "0.13em", fontFamily: "serif", fontWeight: 600 }}>
-                <textPath href="#seal-top" startOffset="50%" textAnchor="middle">PRODUCTO DE TEMPORADA</textPath>
-              </text>
-              {/* Laurel inferior */}
-              <g stroke={C.olive} strokeWidth="1.1" fill="none" opacity="0.75" transform="translate(65,93)">
-                <path d="M-18,0 C-14,-5 -8,-6 -3,-4" />
-                <path d="M-14,-1 C-16,-5 -15,-8 -12,-8" />
-                <path d="M-9,-3 C-11,-7 -10,-10 -7,-9" />
-                <path d="M18,0 C14,-5 8,-6 3,-4" />
-                <path d="M14,-1 C16,-5 15,-8 12,-8" />
-                <path d="M9,-3 C11,-7 10,-10 7,-9" />
-              </g>
-              {/* Meses */}
-              <text x="65" y="57" textAnchor="middle" fill={C.brown}
-                style={{ fontSize: "17px", fontFamily: "'Playfair Display', serif", fontWeight: 700, letterSpacing: "0.04em" }}>
-                {sealTop}
-              </text>
-              <line x1="44" y1="65" x2="86" y2="65" stroke={C.olive} strokeWidth="1" />
-              <text x="65" y="83" textAnchor="middle" fill={C.brown}
-                style={{ fontSize: "17px", fontFamily: "'Playfair Display', serif", fontWeight: 700, letterSpacing: "0.04em" }}>
-                {sealBottom}
-              </text>
-            </svg>
+            {features.map((f, i) => {
+              const Icon = f.icon;
+              return (
+                <div key={i} className="relative flex items-start gap-5 lg:px-7">
+                  {i > 0 && (
+                    <span className="absolute left-0 top-2 hidden h-[78px] w-px lg:block" style={{ backgroundColor: `${C.beige}99` }} aria-hidden="true" />
+                  )}
+                  <Icon size={44} strokeWidth={1.25} style={{ color: C.brown, flexShrink: 0, marginTop: "2px" }} />
+                  <div>
+                    <h3 className="mb-2 font-bold leading-tight" style={{ color: C.brown, fontFamily: "'Playfair Display', serif", fontSize: "17px" }}>
+                      {f.title}
+                    </h3>
+                    <p className="text-[14px] leading-relaxed" style={{ color: "#5d4b37" }}>
+                      {f.text}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
 
-      {/* ── FRANJA BENEFICIOS ── */}
-      <div className="relative px-6 md:px-10 py-7" style={{ backgroundColor: "rgba(255,253,248,0.85)", borderTop: `1px solid ${C.beige}55` }}>
-        <div className="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4">
-          {features.map((f, i) => {
-            const Icon = f.icon;
-            return (
-              <div key={i} className="flex items-start gap-3.5 relative">
-                {i > 0 && (
-                  <span className="hidden lg:block absolute -left-2 top-1 bottom-1 w-px" style={{ backgroundColor: `${C.beige}77` }} aria-hidden="true" />
-                )}
-                <Icon size={30} strokeWidth={1.4} style={{ color: C.brown, flexShrink: 0, marginTop: "2px" }} />
-                <div>
-                  <h3 className="font-bold mb-1 leading-tight" style={{ color: C.brown, fontFamily: "'Playfair Display', serif", fontSize: "15px" }}>
-                    {f.title}
-                  </h3>
-                  <p className="text-[13px] leading-snug" style={{ color: "#7a6a52" }}>{f.text}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ── FRANJA RASGADA: Productores destacados ── */}
-      <div className="relative w-full" style={{ marginTop: "-8px" }}>
+      <div className="relative w-full md:pt-[86px]">
         <div
-          className="relative w-full flex items-center"
+          className="relative flex w-full items-center"
           style={{
-            minHeight: "90px",
+            minHeight: "138px",
             backgroundImage: "url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1600&q=80')",
             backgroundSize: "cover",
             backgroundPosition: "center 60%",
@@ -186,21 +275,22 @@ const SeasonalHero = ({ data }: Props) => {
           }}
         >
           <div className="absolute inset-0" style={{ backgroundColor: "rgba(42,30,16,0.84)" }} aria-hidden="true" />
-          <div className="relative z-10 w-full max-w-[1280px] mx-auto px-8 md:px-12 flex items-center justify-between gap-4 py-6">
+          <div className="relative z-10 mx-auto flex w-full max-w-[1540px] flex-col gap-5 px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8 md:px-12">
             <div>
-              <p className="font-bold leading-tight" style={{ color: C.cream, fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.1rem, 1vw + 0.8rem, 1.45rem)" }}>
+              <p className="font-bold leading-tight" style={{ color: C.cream, fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.6rem, 2.2vw, 2.3rem)" }}>
                 Productores destacados
               </p>
-              <p className="text-[13px] mt-0.5" style={{ color: "#a89878" }}>Elegidos para esta temporada</p>
+              <p className="mt-1 text-[15px]" style={{ color: "#d8c9a7" }}>
+                Elegidos para esta temporada
+              </p>
             </div>
-            <Link to="/empresas" className="flex items-center gap-2 text-[14px] font-semibold group flex-shrink-0" style={{ color: C.cream }}>
+            <Link to="/empresas" className="group flex flex-shrink-0 items-center gap-2 text-[14px] font-semibold" style={{ color: C.cream }}>
               Ver todos los productores
               <ArrowRight size={15} style={{ color: C.gold }} className="transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
         </div>
       </div>
-
     </section>
   );
 };

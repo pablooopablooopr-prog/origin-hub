@@ -242,7 +242,7 @@ const PacksBuscar = () => {
                     <Button 
                       className="w-full" 
                       size="sm"
-                      onClick={() => navigate(`/packs/${pack.slug}`)}
+                      onClick={() => navigate("/mapa")}
                     >
                       Ver más
                     </Button>
@@ -306,7 +306,7 @@ const PacksBuscar = () => {
                     <Button 
                       className="w-full" 
                       size="sm"
-                      onClick={() => navigate(`/packs/${pack.id}`)}
+                      onClick={() => navigate("/mapa")}
                     >
                       Ver más
                     </Button>

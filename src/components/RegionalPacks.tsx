@@ -13,7 +13,7 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
   const [filteredPacks, setFilteredPacks] = useState(companyPacks);
   
   const handlePackClick = (packId: string) => {
-    const targetPath = `/packs/${packId}`;
+    const targetPath = "/mapa";
     try {
       navigate(targetPath);
     } catch (error) {
@@ -143,7 +143,7 @@ const RegionalPacks = ({ showTitle = true }: { showTitle?: boolean }) => {
               )}
               
               <CardHeader className="text-center pb-4">
-                <Link to={`/packs?packType=${pack.type}`} className="mb-2 block">
+                <Link to="/experiencias" className="mb-2 block">
                   <div className="text-sm font-bold text-primary mb-1 cursor-pointer hover:underline transition-all">
                     {getPackTypeName(pack.type)}
                   </div>

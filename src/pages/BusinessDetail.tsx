@@ -684,7 +684,7 @@ const BusinessDetail = () => {
                     <Card
                       key={pack.id}
                       className="hover:shadow-lg transition-all cursor-pointer group"
-                      onClick={() => navigate(`/packs/${pack.slug || pack.id}`)}
+                      onClick={() => navigate("/mapa")}
                     >
                       <CardHeader className="pb-2">
                         <CardTitle className="text-base group-hover:text-primary transition-colors">{pack.title}</CardTitle>

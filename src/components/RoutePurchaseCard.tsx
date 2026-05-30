@@ -74,6 +74,15 @@ export const RoutePurchaseCard = React.forwardRef<HTMLDivElement, RoutePurchaseC
   };
 
   const handlePurchase = async () => {
+    if (PAYMENTS_MODE === "mock") {
+      toast({
+        title: "Pago online próximamente",
+        description: "Esta experiencia todavía no tiene pago online activo. Escríbenos y te informamos.",
+      });
+      navigate("/contacto");
+      return;
+    }
+
     if (!isAuthenticated) {
       toast({
         title: "Inicia sesión",
@@ -248,7 +257,7 @@ export const RoutePurchaseCard = React.forwardRef<HTMLDivElement, RoutePurchaseC
         {PAYMENTS_MODE === "mock" && (
           <div className="p-2 bg-muted/50 rounded-lg border border-dashed border-border">
             <p className="text-[10px] text-muted-foreground text-center">
-              🧪 Modo demo · La reserva se completa directamente
+              Pago online próximamente · Solicita información
             </p>
           </div>
         )}
@@ -259,11 +268,13 @@ export const RoutePurchaseCard = React.forwardRef<HTMLDivElement, RoutePurchaseC
           size="sm"
           onClick={handlePurchase}
         >
-          Comprar entrada
+          {PAYMENTS_MODE === "mock" ? "Solicitar información" : "Comprar entrada"}
         </Button>
 
         <p className="text-[10px] text-center text-muted-foreground">
-          Pago seguro · Acceso garantizado · Ruta disponible siempre en tu cuenta
+          {PAYMENTS_MODE === "mock"
+            ? "Sin pago online activo todavía"
+            : "Pago seguro · Acceso garantizado · Ruta disponible siempre en tu cuenta"}
         </p>
       </CardContent>
     </Card>

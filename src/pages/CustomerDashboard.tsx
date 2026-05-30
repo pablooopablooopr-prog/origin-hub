@@ -463,7 +463,7 @@ const CustomerDashboard = () => {
   };
 
   const repeatOrder = (packId: string) => {
-    navigate(`/packs/${packId}`);
+    navigate("/mapa");
     toast({
       title: "Repetir compra",
       description: "Te hemos redirigido al pack para repetir la compra",
@@ -672,7 +672,7 @@ const CustomerDashboard = () => {
                             variant="default"
                             className="w-full bg-[#8B7355] hover:bg-[#7A6449]"
                             size="sm"
-                            onClick={() => navigate(`/packs/${favorite.company_packs?.id}`)}
+                            onClick={() => navigate("/mapa")}
                           >
                             Ver Pack
                           </Button>
@@ -826,7 +826,7 @@ const CustomerDashboard = () => {
                     <Package className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-30" />
                     <p className="text-muted-foreground text-lg mb-4">No tienes pedidos aún</p>
                     <Button 
-                      onClick={() => navigate('/packs')}
+                      onClick={() => navigate('/mapa')}
                       className="bg-[#8B7355] hover:bg-[#7A6449]"
                     >
                       Explorar Selecciones

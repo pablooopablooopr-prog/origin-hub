@@ -92,6 +92,15 @@ const ComprarRuta = () => {
   };
 
   const handlePayment = async () => {
+    if (PAYMENTS_MODE === "mock") {
+      toast({
+        title: "Pago online próximamente",
+        description: "Esta experiencia todavía no tiene pago online activo. Escríbenos y te informamos.",
+      });
+      navigate("/contacto");
+      return;
+    }
+
     if (!customerId) {
       toast({
         title: "Error",
@@ -270,18 +279,19 @@ const ComprarRuta = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Ticket className="w-5 h-5 text-primary" />
-                  Reservar entrada
+                  {PAYMENTS_MODE === "mock" ? "Solicitar información" : "Reservar entrada"}
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  Acceso garantizado a esta ruta con productores participantes
+                  {PAYMENTS_MODE === "mock"
+                    ? "Pago online próximamente. Podemos informarte sobre esta experiencia."
+                    : "Acceso garantizado a esta ruta con productores participantes"}
                 </p>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Payment mode indicator */}
                 {PAYMENTS_MODE === "mock" && (
                   <div className="p-3 bg-muted/50 rounded-lg border border-dashed border-border">
                     <p className="text-xs text-muted-foreground text-center">
-                      🧪 Modo de prueba activo - La reserva se completará directamente
+                      Pago online próximamente. Solicita información para esta experiencia.
                     </p>
                   </div>
                 )}
@@ -298,14 +308,20 @@ const ComprarRuta = () => {
                     </>
                   ) : (
                     <>
-                      Reservar entrada · {formatPrice(pricing.totalPrice)}
+                      {PAYMENTS_MODE === "mock"
+                        ? "Solicitar información"
+                        : `Reservar entrada · ${formatPrice(pricing.totalPrice)}`}
                     </>
                   )}
                 </Button>
 
                 <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
                   <Shield className="w-4 h-4" />
-                  <span>Pago seguro · Acceso garantizado · Ruta disponible siempre en tu cuenta</span>
+                  <span>
+                    {PAYMENTS_MODE === "mock"
+                      ? "Sin pago online activo todavía"
+                      : "Pago seguro · Acceso garantizado · Ruta disponible siempre en tu cuenta"}
+                  </span>
                 </div>
               </CardContent>
             </Card>

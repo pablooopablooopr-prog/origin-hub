@@ -78,12 +78,13 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/mapa" element={<Mapa />} />
             {/* PACKS DEPRECATED — rutas removidas en FASE 3 (v2.0).
-                Cualquier visita a /packs* va al catch-all (NotFound).
+                Cualquier visita a las rutas antiguas de packs va al catch-all (NotFound).
                 Para reactivar: descomentar en App.tsx, restaurar enlace
                 "Selecciones" en Header.tsx y leer /src/pages/_DEPRECATED_PACKS/README.md */}
             <Route path="/carrito" element={<Cart />} />
             <Route path="/mis-carritos" element={<MisCarritos />} />
             <Route path="/rutas" element={<Rutas />} />
+            <Route path="/experiencias" element={<Rutas />} />
             <Route path="/rutas/:id" element={<RutaDetalle />} />
             <Route path="/comprar-ruta/:slug" element={<ComprarRuta />} />
             <Route path="/mis-rutas" element={<MisRutas />} />

@@ -9,6 +9,7 @@ import { ShoppingCart, Trash2, Plus, Minus, Package, ArrowRight, Store, Loader2,
 import { toast } from "sonner";
 import { useProducerCarts } from "@/hooks/useProducerCarts";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { PAYMENTS_MODE } from "@/lib/payments";
 
 const MisCarritos = () => {
   const { 
@@ -48,6 +49,11 @@ const MisCarritos = () => {
   };
 
   const goToCheckout = (companyId: string) => {
+    if (PAYMENTS_MODE === "mock") {
+      toast.info("Pago online próximamente. Escríbenos y te informamos sobre este pedido.");
+      navigate("/contacto");
+      return;
+    }
     navigate(`/carrito?productor=${companyId}`);
   };
 
@@ -124,7 +130,7 @@ const MisCarritos = () => {
               Explora nuestros packs y añade productos a tu carrito
             </p>
             <Button asChild>
-              <Link to="/packs">Explorar Packs</Link>
+              <Link to="/mapa">Explorar Packs</Link>
             </Button>
           </div>
         ) : (
@@ -177,7 +183,7 @@ const MisCarritos = () => {
                           
                           <div className="flex-1 min-w-0">
                             <Link 
-                              to={pack ? `/packs/${pack.slug}` : '#'}
+                              to={pack ? "/mapa" : '#'}
                               className="font-medium text-primary hover:underline line-clamp-1"
                             >
                               {name}
@@ -246,7 +252,7 @@ const MisCarritos = () => {
                         Vaciar carrito
                       </Button>
                       <Button onClick={() => goToCheckout(cart.company.id)}>
-                        Pagar este pedido
+                        {PAYMENTS_MODE === "mock" ? "Solicitar información" : "Pagar este pedido"}
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
                     </div>
@@ -261,7 +267,7 @@ const MisCarritos = () => {
         {carts.length > 0 && (
           <div className="text-center mt-8">
             <Button variant="outline" asChild>
-              <Link to="/packs">Seguir explorando packs</Link>
+              <Link to="/mapa">Seguir explorando packs</Link>
             </Button>
           </div>
         )}

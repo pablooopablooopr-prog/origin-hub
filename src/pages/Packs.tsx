@@ -332,7 +332,7 @@ const Packs = () => {
                           <Button 
                             className="w-full" 
                             size="sm"
-                            onClick={() => navigate(`/packs/${data.routeParam}`)}
+                            onClick={() => navigate("/mapa")}
                           >
                             Ver más
                           </Button>

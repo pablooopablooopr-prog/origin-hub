@@ -46,7 +46,7 @@ const PackTypeCards = () => {
       {packTypes.map((pack) => (
         <Card key={pack.name} className={`${pack.bgColor} border-0 shadow-md`}>
           <CardContent className="p-6 text-center">
-            <Link to={`/packs?packType=${pack.filterType}`}>
+            <Link to="/experiencias">
               <h3 className="text-xl font-bold text-primary mb-4 cursor-pointer hover:underline transition-all">
                 {pack.name}
               </h3>

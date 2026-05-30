@@ -68,7 +68,7 @@ function customerTemplate(name: string) {
     </ul>
 
     <div style="text-align:center; margin:22px 0;">
-      <a href="${SITE_URL}/packs"
+      <a href="${SITE_URL}/mapa"
         style="display:inline-block; background:#8B7355; color:#fff; padding:12px 18px; text-decoration:none; border-radius:10px; font-weight:bold;">
         Explorar packs
       </a>

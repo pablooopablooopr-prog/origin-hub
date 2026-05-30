@@ -15,6 +15,7 @@ import { useProducerCarts, type ProducerCart } from "@/hooks/useProducerCarts";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PAYMENT_MESSAGES } from "@/lib/paymentRules";
+import { PAYMENTS_MODE } from "@/lib/payments";
 import {
   Dialog,
   DialogContent,
@@ -82,10 +83,21 @@ const Cart = () => {
       toast.error("Tu carrito está vacío");
       return;
     }
+    if (PAYMENTS_MODE === "mock") {
+      toast.info("Pago online próximamente. Escríbenos y te informamos sobre este pedido.");
+      navigate("/contacto");
+      return;
+    }
     setShowCheckoutDialog(true);
   };
 
   const handleConfirmOrder = async () => {
+    if (PAYMENTS_MODE === "mock") {
+      toast.info("Pago online próximamente. Escríbenos y te informamos sobre este pedido.");
+      navigate("/contacto");
+      return;
+    }
+
     if (!checkoutForm.address || !checkoutForm.city || !checkoutForm.postalCode) {
       toast.error("Por favor completa la dirección de envío");
       return;
@@ -302,7 +314,7 @@ const Cart = () => {
               No tienes productos en tu carrito
             </p>
             <Button asChild>
-              <Link to="/packs">Explorar Packs</Link>
+              <Link to="/mapa">Explorar Packs</Link>
             </Button>
           </div>
         </main>
@@ -364,7 +376,15 @@ const Cart = () => {
         <Alert className="bg-green-50 border-green-200">
           <CreditCard className="h-4 w-4 text-green-600" />
           <AlertDescription className="text-green-800">
-            <strong>Pago directo al productor:</strong> {PAYMENT_MESSAGES.PACK_CHECKOUT.paymentInfo} ORIGEN no cobra comisión.
+            {PAYMENTS_MODE === "mock" ? (
+              <>
+                <strong>Pago online próximamente:</strong> solicita información para este pedido.
+              </>
+            ) : (
+              <>
+                <strong>Pago directo al productor:</strong> {PAYMENT_MESSAGES.PACK_CHECKOUT.paymentInfo} ORIGEN no cobra comisión.
+              </>
+            )}
           </AlertDescription>
         </Alert>
       </div>
@@ -400,7 +420,7 @@ const Cart = () => {
                         
                         <div className="md:col-span-3 space-y-2">
                           <Link 
-                            to={pack ? `/packs/${pack.slug}` : '#'}
+                            to={pack ? "/mapa" : '#'}
                             className="font-semibold text-primary hover:underline"
                           >
                             {name}
@@ -497,7 +517,7 @@ const Cart = () => {
                   onClick={proceedToCheckout}
                   disabled={selectedCart.items.length === 0}
                 >
-                  Pagar Pedido
+                  {PAYMENTS_MODE === "mock" ? "Solicitar información" : "Pagar Pedido"}
                 </Button>
 
                 <Separator />
@@ -514,7 +534,7 @@ const Cart = () => {
                 </div>
 
                 <Button variant="outline" className="w-full" asChild>
-                  <Link to="/packs">
+                  <Link to="/mapa">
                     Seguir Comprando
                   </Link>
                 </Button>
@@ -652,7 +672,7 @@ const Cart = () => {
                 className="flex-1"
                 onClick={() => {
                   setShowSuccessDialog(false);
-                  navigate('/packs');
+                  navigate('/mapa');
                 }}
               >
                 Seguir Comprando

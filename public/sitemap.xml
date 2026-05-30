@@ -11,12 +11,12 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.origen.it.com/packs</loc>
+    <loc>https://www.origen.it.com/experiencias</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.origen.it.com/packs/buscar</loc>
+    <loc>https://www.origen.it.com/mapa</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>

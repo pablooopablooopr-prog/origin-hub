@@ -144,7 +144,7 @@ const PackDetail = () => {
 
   
   if (!param) {
-    return <Navigate to="/packs" replace />;
+    return <Navigate to="/mapa" replace />;
   }
 
   if (packLoading) {
@@ -426,13 +426,13 @@ const PackDetail = () => {
                   <BreadcrumbSeparator className="text-white/70" />
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                      <Link to="/packs" className="text-white hover:text-white/80">Packs</Link>
+                      <Link to="/experiencias" className="text-white hover:text-white/80">Packs</Link>
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator className="text-white/70" />
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                      <Link to="/packs" className="text-white hover:text-white/80">{pack.autonomousCommunity}</Link>
+                      <Link to="/mapa" className="text-white hover:text-white/80">{pack.autonomousCommunity}</Link>
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator className="text-white/70" />
@@ -463,7 +463,7 @@ const PackDetail = () => {
               {/* Pack Info */}
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center gap-2 mb-4">
-                  <Link to={`/packs?packType=${pack.type}`}>
+                  <Link to="/experiencias">
                     <Badge variant="secondary" className="bg-[#8B6F47] text-white border-[#8B6F47]/30 cursor-pointer hover:brightness-110 transition-all">
                       {getPackTypeName(pack.type)}
                     </Badge>
@@ -491,7 +491,7 @@ const PackDetail = () => {
                   )}
                 </div>
                 
-                <Link to={`/packs?packType=${pack.type}`}>
+                <Link to="/experiencias">
                   <h1 className="text-4xl md:text-5xl font-bold text-primary mb-2 cursor-pointer hover:underline transition-all">
                     {getPackTypeName(pack.type)}
                   </h1>
@@ -1032,7 +1032,7 @@ const PackDetail = () => {
                           return (
                             <Link
                               key={relatedPack.id}
-                              to={`/packs/${relatedPack.id}`}
+                              to="/mapa"
                               className="min-w-[calc(33.333%-1rem)] flex-shrink-0"
                             >
                               <Card className="hover:shadow-xl transition-all duration-300 h-full">

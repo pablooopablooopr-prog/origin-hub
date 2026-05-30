@@ -38,7 +38,7 @@ const Footer = () => {
               <Link to="/rutas" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Experiencias
               </Link>
-              <Link to="/packs" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+              <Link to="/experiencias" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Selecciones
               </Link>
             </nav>

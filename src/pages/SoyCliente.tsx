@@ -143,12 +143,12 @@ const SoyCliente = () => {
               Selecciones especiales basadas en los mejores negocios de tu área
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/packs">
+              <Link to="/mapa">
                 <Button size="lg" className="shadow-earth">
                   Pack Madrid Centro
                 </Button>
               </Link>
-              <Link to="/packs">
+              <Link to="/mapa">
                 <Button variant="secondary" size="lg" className="shadow-moss">
                   Pack Mercados Locales
                 </Button>

@@ -24,7 +24,6 @@ function safeInternalPath(maybeUrlOrPath: string | null, fallback = "/mi-cuenta"
 
 export default function AuthCallback() {
   const navigate = useNavigate();
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [status, setStatus] = useState<"working" | "done" | "error">("working");
 
   const targetAfter = useMemo(() => {
@@ -39,7 +38,6 @@ export default function AuthCallback() {
     const run = async () => {
       try {
         setStatus("working");
-        setErrorMsg(null);
 
         const params = new URLSearchParams(window.location.search);
         const code = params.get("code");
@@ -94,7 +92,6 @@ export default function AuthCallback() {
         console.error("[AuthCallback] error:", err);
         if (cancelled) return;
         setStatus("error");
-        setErrorMsg(err?.message ?? "Error de autenticación");
       }
     };
 
@@ -111,12 +108,8 @@ export default function AuthCallback() {
         <div className="max-w-md w-full text-center space-y-3">
           <h1 className="text-xl font-semibold">No se pudo confirmar tu sesión</h1>
           <p className="text-sm text-muted-foreground">
-            {errorMsg ?? "Hubo un problema procesando el enlace."}
+            Hubo un problema procesando el enlace. Vuelve a intentarlo desde el email o solicita uno nuevo.
           </p>
-          <div className="rounded border bg-muted/30 p-3 text-left">
-            <p className="text-xs font-medium text-muted-foreground">URL actual</p>
-            <p className="text-xs break-all">{window.location.href}</p>
-          </div>
 
           <div className="text-sm text-muted-foreground">
             Consejos rápidos:
