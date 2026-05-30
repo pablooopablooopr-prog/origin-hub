@@ -3,16 +3,11 @@ import { ArrowRight, Grid3X3, List, UserRound } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { articulos } from "@/data/articulos";
-
-const C = {
-  olive: "#5C6B2E",
-  cream: "#F5F0E8",
-  beige: "#C8B89A",
-  brown: "#3D2B1F",
-  gold: "#B8860B",
-  paper: "#f3eadb",
-  inkMuted: "#8a7a62",
-};
+import {
+  actualidadColors as C,
+  formatActualidadDate,
+  getActualidadArticleImage,
+} from "@/lib/actualidadVisual";
 
 interface DisplayArticle {
   id: string;
@@ -27,16 +22,8 @@ interface DisplayArticle {
   featured?: boolean;
 }
 
-const articleImages: Record<string, string> = {
-  "efecto-mercosur-futuro-campo-espanol":
-    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=920&q=88",
-  "pesticidas-glifosato-rastro-invisible-tu-cuerpo":
-    "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=720&q=86",
-  "del-campo-al-supermercado-pagas-mas-agricultor-cobra-menos":
-    "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=720&q=86",
-};
-
-const formatDate = (date: string) => date.replace(" de ", " ").replace(" de ", " ");
+const pageShell = "mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8";
+const editorialFont = "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif";
 
 const displayArticles: DisplayArticle[] = articulos.map((article) => ({
   id: article.id,
@@ -44,24 +31,23 @@ const displayArticles: DisplayArticle[] = articulos.map((article) => ({
   title: article.titulo,
   excerpt: article.extracto,
   category: article.categoria,
-  date: formatDate(article.fechaPublicacion),
+  date: formatActualidadDate(article.fechaPublicacion),
   readTime: article.tiempoLectura,
   author: article.autor,
-  image: articleImages[article.slug],
+  image: getActualidadArticleImage(article.slug),
   featured: article.destacado,
 }));
 
 const featuredArticle = displayArticles.find((article) => article.featured) ?? displayArticles[0];
 const visibleArticles = displayArticles.filter((article) => article.slug !== featuredArticle.slug);
-const contentShellStyle = { width: "min(calc(100% - 64px), 1180px)" };
 
 const Actualidad = () => {
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: C.cream }}>
+    <div className="min-h-screen flex flex-col overflow-x-hidden" style={{ backgroundColor: C.cream }}>
       <Header />
 
       <section
-        className="relative w-full overflow-hidden md:h-[60svh] md:min-h-[585px] md:max-h-[650px]"
+        className="relative w-full overflow-hidden"
         style={{
           backgroundColor: "#17120c",
           backgroundImage: "url('/textures/actualidad-hero-bg.jpg')",
@@ -70,75 +56,74 @@ const Actualidad = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-[#17120c]/95 via-[#17120c]/72 to-[#17120c]/22" aria-hidden="true" />
-        <div className="relative z-10 mx-auto flex h-full flex-col py-10 md:pb-8 md:pt-[50px]" style={contentShellStyle}>
-          <div className="max-w-[860px]">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#17120c]/95 via-[#17120c]/76 to-[#17120c]/28" aria-hidden="true" />
+
+        <div className={`${pageShell} relative z-10 flex min-h-[640px] flex-col justify-between gap-10 py-12 lg:py-14`}>
+          <div className="max-w-4xl">
             <p className="mb-4 text-[13px] font-semibold uppercase tracking-[0.08em]" style={{ color: C.gold }}>
               Actualidad
             </p>
             <h1
-              className="mb-4 font-bold leading-[1.05]"
+              className="mb-5 text-balance font-bold leading-[1.05]"
               style={{
                 color: C.cream,
-                fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif",
-                fontSize: "clamp(2.2rem, 2.95vw, 3rem)",
+                fontFamily: editorialFont,
+                fontSize: "clamp(2.15rem, 4vw, 3.6rem)",
                 letterSpacing: "0",
               }}
             >
-              Artículos, estudios y conocimientos<br className="hidden md:block" /> sobre alimentación, territorio y salud
+              Artículos, estudios y conocimientos sobre alimentación, territorio y salud
             </h1>
-            <p className="max-w-[610px] text-[16px] leading-[1.55] md:text-[17px]" style={{ color: "#f0e7d7" }}>
-              Investigación, tradición y evidencia científica para comprender mejor<br className="hidden md:block" />
-              lo que comemos y cómo impacta en nuestro bienestar.
+            <p className="max-w-2xl text-[16px] leading-[1.65] md:text-[18px]" style={{ color: "#f0e7d7" }}>
+              Investigación, tradición y evidencia científica para comprender mejor lo que comemos y cómo impacta en nuestro bienestar.
             </p>
           </div>
 
-          <Link to={`/actualidad/${featuredArticle.slug}`} className="group mt-10 block md:mt-auto">
+          <Link to={`/actualidad/${featuredArticle.slug}`} className="group block w-full">
             <article
-              className="grid overflow-hidden rounded-lg md:min-h-[306px] md:grid-cols-[390px_1fr]"
+              className="grid min-h-[310px] overflow-hidden rounded-lg lg:grid-cols-[390px_minmax(0,1fr)]"
               style={{
-                backgroundColor: "rgba(255,251,244,0.98)",
-                boxShadow: "0 18px 45px rgba(0,0,0,0.26)",
+                backgroundColor: "rgba(255,250,241,0.98)",
+                boxShadow: "0 20px 46px rgba(0,0,0,0.26)",
               }}
             >
-              <div className="relative min-h-[220px] overflow-hidden md:min-h-0">
+              <div className="relative min-h-[230px] overflow-hidden lg:min-h-0">
                 <img
                   src={featuredArticle.image}
                   alt={featuredArticle.title}
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  style={{ objectPosition: "center center" }}
                   loading="eager"
                 />
-                <span className="absolute left-4 top-5 rounded-md px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.06em]" style={{ backgroundColor: C.olive, color: "#fffaf1" }}>
+                <span className="absolute left-5 top-5 rounded-md px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.06em]" style={{ backgroundColor: C.olive, color: C.card }}>
                   Artículo destacado
                 </span>
               </div>
 
-              <div className="flex min-w-0 flex-col justify-between gap-6 p-7 md:px-10 md:py-8">
+              <div className="flex min-w-0 flex-col justify-between gap-7 p-6 sm:p-8 lg:px-10">
                 <div>
-                  <div className="mb-5 flex items-center gap-3 text-[12px] font-semibold uppercase tracking-[0.08em]" style={{ color: C.olive }}>
+                  <div className="mb-5 flex flex-wrap items-center gap-3 text-[12px] font-semibold uppercase tracking-[0.08em]" style={{ color: C.olive }}>
                     <span>{featuredArticle.category}</span>
                     <span style={{ color: C.inkMuted }}>·</span>
                     <span>Artículo comentado</span>
                   </div>
                   <h2
-                    className="mb-4 max-w-[700px] font-bold leading-[1.1]"
+                    className="mb-4 max-w-4xl text-balance font-bold leading-[1.1]"
                     style={{
                       color: C.brown,
-                      fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif",
-                      fontSize: "clamp(1.65rem, 2.05vw, 2.35rem)",
+                      fontFamily: editorialFont,
+                      fontSize: "clamp(1.65rem, 3vw, 2.5rem)",
                       letterSpacing: "0",
                     }}
                   >
                     {featuredArticle.title}
                   </h2>
-                  <p className="max-w-[690px] text-[15px] leading-[1.45] md:text-[16px]" style={{ color: "#292016" }}>
+                  <p className="max-w-3xl text-[15px] leading-[1.55] md:text-[16px]" style={{ color: "#292016" }}>
                     {featuredArticle.excerpt}
                   </p>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-5 text-[13px]" style={{ color: "#6f614f" }}>
-                  <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-col gap-5 text-[13px] sm:flex-row sm:items-center sm:justify-between" style={{ color: "#6f614f" }}>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                     <span className="flex items-center gap-1.5">
                       <UserRound size={15} fill="#c8b89a" strokeWidth={1.4} />
                       {featuredArticle.author}
@@ -149,7 +134,7 @@ const Actualidad = () => {
                     <span>{featuredArticle.readTime} min de lectura</span>
                   </div>
                   <span
-                    className="inline-flex h-[42px] items-center gap-2 rounded-md px-5 text-[14px] font-semibold transition-all group-hover:gap-3"
+                    className="inline-flex h-[44px] shrink-0 items-center justify-center gap-2 self-start rounded-md px-6 text-[14px] font-semibold transition-all group-hover:gap-3 sm:self-auto"
                     style={{ border: `1px solid ${C.beige}`, color: C.brown }}
                   >
                     Leer análisis <ArrowRight size={16} />
@@ -162,74 +147,76 @@ const Actualidad = () => {
       </section>
 
       <main className="flex-1" style={{ backgroundColor: C.paper }}>
-        <div className="mx-auto py-9" style={contentShellStyle}>
-          <div className="mb-5 flex items-center justify-between gap-4">
-            <h2 className="font-bold" style={{ color: C.brown, fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif", fontSize: "clamp(1.45rem, 2vw, 1.7rem)" }}>
-              Todos los artículos
-            </h2>
-            <div className="flex items-center gap-3">
-              <button type="button" className="hidden h-[38px] items-center gap-2 rounded-md border px-4 text-[13px] md:inline-flex" style={{ borderColor: `${C.beige}88`, color: C.brown, backgroundColor: "#fffaf1" }}>
-                Más recientes
-                <span className="text-[12px]">⌄</span>
-              </button>
-              <div className="hidden overflow-hidden rounded-md border md:flex" style={{ borderColor: `${C.beige}88`, backgroundColor: "#fffaf1" }}>
-                <button type="button" className="grid h-[38px] w-[42px] place-items-center border-r" style={{ borderColor: `${C.beige}88`, color: C.brown }} aria-label="Vista en cuadrícula">
-                  <Grid3X3 size={16} />
+        <section className={`${pageShell} py-10 lg:py-12`}>
+          <div className="mx-auto w-full max-w-5xl">
+            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="font-bold" style={{ color: C.brown, fontFamily: editorialFont, fontSize: "clamp(1.7rem, 3vw, 2.25rem)" }}>
+                Todos los artículos
+              </h2>
+              <div className="flex items-center gap-3">
+                <button type="button" className="hidden h-[40px] items-center gap-2 rounded-md border px-4 text-[13px] md:inline-flex" style={{ borderColor: `${C.beige}88`, color: C.brown, backgroundColor: C.card }}>
+                  Más recientes
+                  <span className="text-[12px]">⌄</span>
                 </button>
-                <button type="button" className="grid h-[38px] w-[42px] place-items-center" style={{ color: C.brown }} aria-label="Vista en lista">
-                  <List size={17} />
-                </button>
+                <div className="hidden overflow-hidden rounded-md border md:flex" style={{ borderColor: `${C.beige}88`, backgroundColor: C.card }}>
+                  <button type="button" className="grid h-[40px] w-[42px] place-items-center border-r" style={{ borderColor: `${C.beige}88`, color: C.brown }} aria-label="Vista en cuadrícula">
+                    <Grid3X3 size={16} />
+                  </button>
+                  <button type="button" className="grid h-[40px] w-[42px] place-items-center" style={{ color: C.brown }} aria-label="Vista en lista">
+                    <List size={17} />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {visibleArticles.map((article) => (
-              <Link key={article.id} to={`/actualidad/${article.slug}`} className="group block">
-                <article
-                  className="flex h-full min-h-[246px] flex-col overflow-hidden rounded-lg"
-                  style={{
-                    backgroundColor: "#fffaf1",
-                    border: `1px solid ${C.beige}66`,
-                    boxShadow: "0 4px 16px rgba(61,43,31,0.07)",
-                  }}
-                >
-                  <div className="relative h-[142px] overflow-hidden">
-                    <img
-                      src={article.image}
-                      alt={article.title}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    <div className="absolute left-4 top-4 flex flex-wrap gap-2">
-                      <span className="rounded-md px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.05em]" style={{ backgroundColor: "#77552c", color: "#fffaf1" }}>
-                        {article.category}
-                      </span>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {visibleArticles.map((article) => (
+                <Link key={article.id} to={`/actualidad/${article.slug}`} className="group block">
+                  <article
+                    className="flex h-full min-h-[250px] flex-col overflow-hidden rounded-lg"
+                    style={{
+                      backgroundColor: C.card,
+                      border: `1px solid ${C.beige}66`,
+                      boxShadow: "0 8px 22px rgba(61,43,31,0.07)",
+                    }}
+                  >
+                    <div className="relative h-[140px] overflow-hidden">
+                      <img
+                        src={article.image}
+                        alt={article.title}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute left-5 top-5 flex flex-wrap gap-2">
+                        <span className="rounded-md px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.05em]" style={{ backgroundColor: "#77552c", color: C.card }}>
+                          {article.category}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex flex-1 flex-col p-5">
-                    <h3
-                      className="line-clamp-2 font-bold leading-[1.18]"
-                      style={{
-                        color: C.brown,
-                        fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif",
-                        fontSize: "18px",
-                      }}
-                    >
-                      {article.title}
-                    </h3>
-                    <div className="mt-auto flex items-center gap-3 pt-4 text-[12px]" style={{ color: "#6f614f" }}>
-                      <span>{article.date}</span>
-                      <span>·</span>
-                      <span>{article.readTime} min de lectura</span>
-                      <ArrowRight size={15} className="ml-auto transition-transform group-hover:translate-x-0.5" style={{ color: C.brown }} />
+                    <div className="flex flex-1 flex-col p-5">
+                      <h3
+                        className="line-clamp-2 text-balance font-bold leading-[1.18]"
+                        style={{
+                          color: C.brown,
+                          fontFamily: editorialFont,
+                          fontSize: "20px",
+                        }}
+                      >
+                        {article.title}
+                      </h3>
+                      <div className="mt-auto flex items-center gap-3 pt-5 text-[13px]" style={{ color: "#6f614f" }}>
+                        <span>{article.date}</span>
+                        <span>·</span>
+                        <span>{article.readTime} min de lectura</span>
+                        <ArrowRight size={16} className="ml-auto shrink-0 transition-transform group-hover:translate-x-0.5" style={{ color: C.brown }} />
+                      </div>
                     </div>
-                  </div>
-                </article>
-              </Link>
-            ))}
+                  </article>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        </section>
       </main>
 
       <Footer />
