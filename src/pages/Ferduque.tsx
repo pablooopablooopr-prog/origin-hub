@@ -136,8 +136,10 @@ const Ferduque = () => {
           style={{ background: `linear-gradient(180deg, ${C.cream} 0%, ${C.paper} 100%)` }}
         >
           {/* Logo RITMORIGEN grande y centrado */}
-          <div style={{ transform: "scale(2.8)", transformOrigin: "center", marginBottom: "2.4rem" }}>
-            <Logo size={24} showText={true} />
+          <div className="flex justify-center w-full" style={{ marginBottom: "2.4rem" }}>
+            <div style={{ transform: "scale(2.8)", transformOrigin: "center" }}>
+              <Logo size={24} showText={true} />
+            </div>
           </div>
 
           {/* Separador */}
