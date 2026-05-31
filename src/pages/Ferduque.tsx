@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CheckCircle, Loader2, Send } from "lucide-react";
@@ -18,6 +17,25 @@ const C = {
   olive: "#4F5D2A",
   beige: "#C8B89A",
   inkMuted: "#756650",
+};
+
+/* Logo grande inline — sin scale(), sin desvío */
+const BigLogo = () => {
+  const fs = 64;
+  const enso = fs * 0.85;
+  return (
+    <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+      <span style={{ fontSize: `${fs}px`, fontWeight: "bold", color: "#3D2B1F", letterSpacing: "-1px", lineHeight: 1, display: "inline-flex", alignItems: "center", whiteSpace: "nowrap" }}>
+        <span>RITM</span>
+        <span style={{ position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center", width: `${fs}px`, height: `${fs}px`, marginLeft: "2px", marginRight: "2px" }}>
+          <span style={{ visibility: "hidden" }}>O</span>
+          <img src="/lovable-uploads/enso-transparent.png" alt="" aria-hidden="true"
+            style={{ position: "absolute", width: `${enso}px`, height: `${enso}px`, objectFit: "contain", opacity: 0.9 }} />
+        </span>
+        <span>RIGEN</span>
+      </span>
+    </div>
+  );
 };
 
 const pageShell = "mx-auto w-full max-w-3xl px-4 sm:px-6";
@@ -136,10 +154,8 @@ const Ferduque = () => {
           style={{ background: `linear-gradient(180deg, ${C.cream} 0%, ${C.paper} 100%)` }}
         >
           {/* Logo RITMORIGEN grande y centrado */}
-          <div className="flex justify-center w-full" style={{ marginBottom: "2.4rem" }}>
-            <div style={{ transform: "scale(2.8)", transformOrigin: "center" }}>
-              <Logo size={24} showText={true} />
-            </div>
+          <div style={{ marginBottom: "2.2rem" }}>
+            <BigLogo />
           </div>
 
           {/* Separador */}
