@@ -151,7 +151,7 @@ const Ferduque = () => {
 
           {/* Logo FERDUQUE — imagen real con fondo eliminado por mix-blend-mode */}
           <img
-            src="/lovable-uploads/ferduque-logo.png"
+            src="/lovable-uploads/ferduque-logo.jpg"
             alt="FERDUQUE Porzuna 2026"
             style={{
               height: "90px",
