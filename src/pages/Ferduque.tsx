@@ -20,6 +20,62 @@ const C = {
   inkMuted: "#756650",
 };
 
+/* ── Logo FERDUQUE PORZUNA 2026 — SVG inline, sin archivo externo ── */
+const FerduqueLogo = () => (
+  <svg
+    viewBox="0 0 310 86"
+    xmlns="http://www.w3.org/2000/svg"
+    style={{ height: "78px", width: "auto", display: "block" }}
+    aria-label="FERDUQUE Porzuna 2026"
+  >
+    {/* Sombra sutil para definición */}
+    <defs>
+      <filter id="fq-shadow" x="-4%" y="-4%" width="108%" height="120%">
+        <feDropShadow dx="0" dy="1.5" stdDeviation="1" floodColor="#00000022" />
+      </filter>
+    </defs>
+
+    {/* FERDUQUE */}
+    <text
+      x="155" y="52"
+      textAnchor="middle"
+      fontFamily="Impact, 'Arial Black', 'Arial Narrow', Arial, sans-serif"
+      fontSize="54"
+      fontWeight="900"
+      letterSpacing="3"
+      filter="url(#fq-shadow)"
+    >
+      <tspan fill="#D4A800">FER</tspan>
+      <tspan fill="#1B6612">DUQUE</tspan>
+    </text>
+
+    {/* Icono circular con hoja */}
+    <g transform="translate(44, 62)" filter="url(#fq-shadow)">
+      <circle cx="0" cy="8" r="10" fill="none" stroke="#1B6612" strokeWidth="1.8" />
+      {/* hoja central */}
+      <path d="M0,15 Q5,8 0,2 Q-5,8 0,15Z" fill="#1B6612" />
+      <line x1="0" y1="15" x2="0" y2="18" stroke="#1B6612" strokeWidth="1.2" />
+      {/* brotes laterales */}
+      <path d="M0,9 Q4,5 6,6" fill="none" stroke="#1B6612" strokeWidth="1" />
+      <path d="M0,9 Q-4,5 -6,6" fill="none" stroke="#1B6612" strokeWidth="1" />
+    </g>
+
+    {/* PORZUNA 2026 */}
+    <text
+      x="165" y="76"
+      textAnchor="middle"
+      fontFamily="'Arial Narrow', Arial, sans-serif"
+      fontSize="16"
+      fontWeight="700"
+      fill="#1B6612"
+      letterSpacing="2.5"
+      filter="url(#fq-shadow)"
+    >
+      PORZUNA 2026
+    </text>
+  </svg>
+);
+
 const pageShell = "mx-auto w-full max-w-3xl px-4 sm:px-6";
 const editorialFont = "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif";
 const inputStyle = {
@@ -167,17 +223,8 @@ const Ferduque = () => {
               <span className="h-px w-10" style={{ backgroundColor: C.beige }} aria-hidden="true" />
             </div>
 
-            {/* Logo FERDUQUE — mix-blend-mode elimina el fondo blanco */}
-            <img
-              src="/lovable-uploads/ferduque-logo.png"
-              alt="FERDUQUE"
-              style={{
-                height: "80px",
-                width: "auto",
-                objectFit: "contain",
-                mixBlendMode: "multiply",
-              }}
-            />
+            {/* Logo FERDUQUE — SVG inline, sin archivo externo */}
+            <FerduqueLogo />
 
             {/* Texto principal */}
             <p
