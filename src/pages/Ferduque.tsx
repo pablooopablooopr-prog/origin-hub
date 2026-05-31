@@ -20,62 +20,6 @@ const C = {
   inkMuted: "#756650",
 };
 
-/* ── Logo FERDUQUE PORZUNA 2026 — SVG inline, sin archivo externo ── */
-const FerduqueLogo = () => (
-  <svg
-    viewBox="0 0 310 86"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ height: "78px", width: "auto", display: "block" }}
-    aria-label="FERDUQUE Porzuna 2026"
-  >
-    {/* Sombra sutil para definición */}
-    <defs>
-      <filter id="fq-shadow" x="-4%" y="-4%" width="108%" height="120%">
-        <feDropShadow dx="0" dy="1.5" stdDeviation="1" floodColor="#00000022" />
-      </filter>
-    </defs>
-
-    {/* FERDUQUE */}
-    <text
-      x="155" y="52"
-      textAnchor="middle"
-      fontFamily="Impact, 'Arial Black', 'Arial Narrow', Arial, sans-serif"
-      fontSize="54"
-      fontWeight="900"
-      letterSpacing="3"
-      filter="url(#fq-shadow)"
-    >
-      <tspan fill="#D4A800">FER</tspan>
-      <tspan fill="#1B6612">DUQUE</tspan>
-    </text>
-
-    {/* Icono circular con hoja */}
-    <g transform="translate(44, 62)" filter="url(#fq-shadow)">
-      <circle cx="0" cy="8" r="10" fill="none" stroke="#1B6612" strokeWidth="1.8" />
-      {/* hoja central */}
-      <path d="M0,15 Q5,8 0,2 Q-5,8 0,15Z" fill="#1B6612" />
-      <line x1="0" y1="15" x2="0" y2="18" stroke="#1B6612" strokeWidth="1.2" />
-      {/* brotes laterales */}
-      <path d="M0,9 Q4,5 6,6" fill="none" stroke="#1B6612" strokeWidth="1" />
-      <path d="M0,9 Q-4,5 -6,6" fill="none" stroke="#1B6612" strokeWidth="1" />
-    </g>
-
-    {/* PORZUNA 2026 */}
-    <text
-      x="165" y="76"
-      textAnchor="middle"
-      fontFamily="'Arial Narrow', Arial, sans-serif"
-      fontSize="16"
-      fontWeight="700"
-      fill="#1B6612"
-      letterSpacing="2.5"
-      filter="url(#fq-shadow)"
-    >
-      PORZUNA 2026
-    </text>
-  </svg>
-);
-
 const pageShell = "mx-auto w-full max-w-3xl px-4 sm:px-6";
 const editorialFont = "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif";
 const inputStyle = {
@@ -101,24 +45,13 @@ type FerduqueForm = z.infer<typeof ferduqueSchema>;
 const QUESTIONS: { key: keyof FerduqueForm; label: string; options: string[] }[] = [
   { key: "q1", label: "¿Tu empresa tiene página web?", options: ["Sí", "No", "Necesita mejora"] },
   { key: "q2", label: "¿Gestionáis facturas o albaranes digitalmente?", options: ["Sí", "Parcialmente", "No"] },
-  { key: "q3", label: "¿Usáis automatizaciones o herramientas digitales para ahorrar tiempo?", options: ["Sí", "No", "No sé qué podría automatizar"] },
-  { key: "q4", label: "¿Vendéis online o queréis vender más digitalmente?", options: ["Ya vendemos", "Queremos hacerlo", "No todavía"] },
+  { key: "q3", label: "¿Usáis automatizaciones o herramientas digitales para ahorrar tiempo y dinero?", options: ["Sí", "No", "No sé qué podría automatizar"] },
+  { key: "q4", label: "¿Vendéis online o queréis vender más?", options: ["Ya vendemos", "Queremos hacerlo", "No todavía"] },
   { key: "q5", label: "¿Te gustaría formar parte gratuitamente de RitmOrigen como empresa fundadora FERDUQUE?", options: ["Sí, me interesa", "Quiero más información", "No por ahora"] },
 ];
 
 const initialState: FerduqueForm = { name: "", company: "", phone: "", email: "", q1: "", q2: "", q3: "", q4: "", q5: "" };
 
-/* ── Minimal locked header — sin nav, sin links externos ── */
-const LockedHeader = () => (
-  <header
-    className="w-full py-3 flex justify-center items-center border-b"
-    style={{ backgroundColor: C.cream, borderColor: `${C.beige}55` }}
-  >
-    <Logo size={20} showText={true} />
-  </header>
-);
-
-/* ── Minimal footer — solo aviso legal ── */
 const LockedFooter = () => (
   <footer className="w-full py-5 text-center text-xs" style={{ color: C.inkMuted, backgroundColor: C.paper }}>
     © {new Date().getFullYear()} RitmOrigen · Todos los derechos reservados ·{" "}
@@ -176,70 +109,72 @@ const Ferduque = () => {
 
   if (submitted) {
     return (
-      <div className="min-h-screen flex flex-col" style={{ backgroundColor: C.paper }}>
-        <LockedHeader />
-        <main className="flex-1 flex items-center justify-center py-16 px-4">
-          <div
-            className="max-w-md w-full rounded-xl border p-10 text-center"
-            style={{ backgroundColor: C.card, borderColor: `${C.beige}66`, boxShadow: "0 16px 40px rgba(61,43,31,0.08)" }}
-          >
-            <CheckCircle className="mx-auto mb-5 h-14 w-14" style={{ color: C.olive }} />
-            <h1 className="mb-3 font-bold text-2xl" style={{ color: C.brown, fontFamily: editorialFont }}>
-              ¡Enviado correctamente!
-            </h1>
-            <p className="leading-relaxed text-sm" style={{ color: C.brownSoft }}>
-              Gracias por sumarte como empresa fundadora <strong>FERDUQUE</strong>.<br />
-              Nos pondremos en contacto contigo muy pronto.
-            </p>
-          </div>
-        </main>
-        <LockedFooter />
+      <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ backgroundColor: C.paper }}>
+        <div
+          className="max-w-md w-full rounded-xl border p-10 text-center"
+          style={{ backgroundColor: C.card, borderColor: `${C.beige}66`, boxShadow: "0 16px 40px rgba(61,43,31,0.08)" }}
+        >
+          <CheckCircle className="mx-auto mb-5 h-14 w-14" style={{ color: C.olive }} />
+          <h1 className="mb-3 font-bold text-2xl" style={{ color: C.brown, fontFamily: editorialFont }}>
+            ¡Enviado correctamente!
+          </h1>
+          <p className="leading-relaxed text-sm" style={{ color: C.brownSoft }}>
+            Gracias por sumarte como empresa fundadora <strong>FERDUQUE</strong>.<br />
+            Nos pondremos en contacto contigo muy pronto.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden" style={{ backgroundColor: C.paper }}>
-      <LockedHeader />
-
       <main className="flex-1">
-        {/* HERO compacto */}
-        <section
-          className="py-8 md:py-10"
+        {/* Cabecera limpia: logos centrados + tagline */}
+        <div
+          className="w-full flex flex-col items-center text-center px-4 pt-10 pb-6"
           style={{ background: `linear-gradient(180deg, ${C.cream} 0%, ${C.paper} 100%)` }}
         >
-          <div className={`${pageShell} flex flex-col items-center text-center gap-4`}>
-            {/* Logo RITMORIGEN — tamaño moderado */}
-            <div style={{ transform: "scale(1.9)", transformOrigin: "center", marginBottom: "1rem", marginTop: "0.5rem" }}>
-              <Logo size={22} showText={true} />
-            </div>
-
-            {/* Separador "en alianza con" */}
-            <div className="flex items-center gap-4 mt-2">
-              <span className="h-px w-10" style={{ backgroundColor: C.beige }} aria-hidden="true" />
-              <span className="text-[10px] font-semibold tracking-[0.22em] uppercase" style={{ color: C.brownSoft }}>
-                en alianza con
-              </span>
-              <span className="h-px w-10" style={{ backgroundColor: C.beige }} aria-hidden="true" />
-            </div>
-
-            {/* Logo FERDUQUE — SVG inline, sin archivo externo */}
-            <FerduqueLogo />
-
-            {/* Texto principal */}
-            <p
-              className="max-w-xl text-[15px] md:text-[17px] leading-[1.65] font-medium mt-1"
-              style={{ color: C.brown, fontFamily: editorialFont }}
-            >
-              Forma parte gratuitamente como empresa fundadora{" "}
-              <span style={{ color: C.olive, fontWeight: 700 }}>FERDUQUE</span>{" "}
-              y descubre nuevas oportunidades para tu negocio.
-            </p>
+          {/* Logo RITMORIGEN grande y centrado */}
+          <div style={{ transform: "scale(2.8)", transformOrigin: "center", marginBottom: "2.4rem" }}>
+            <Logo size={24} showText={true} />
           </div>
-        </section>
+
+          {/* Separador */}
+          <div className="flex items-center gap-4 mb-4">
+            <span className="h-px w-12" style={{ backgroundColor: C.beige }} aria-hidden="true" />
+            <span className="text-[10px] font-semibold tracking-[0.22em] uppercase" style={{ color: C.brownSoft }}>
+              en alianza con
+            </span>
+            <span className="h-px w-12" style={{ backgroundColor: C.beige }} aria-hidden="true" />
+          </div>
+
+          {/* Logo FERDUQUE — imagen real con fondo eliminado por mix-blend-mode */}
+          <img
+            src="/lovable-uploads/ferduque-logo.png"
+            alt="FERDUQUE Porzuna 2026"
+            style={{
+              height: "90px",
+              width: "auto",
+              objectFit: "contain",
+              mixBlendMode: "multiply",
+              marginBottom: "1.2rem",
+            }}
+          />
+
+          {/* Tagline */}
+          <p
+            className="max-w-xl text-[15px] md:text-[17px] leading-[1.65] font-medium"
+            style={{ color: C.brown, fontFamily: editorialFont }}
+          >
+            Forma parte gratuitamente como empresa fundadora{" "}
+            <span style={{ color: C.olive, fontWeight: 700 }}>FERDUQUE</span>{" "}
+            y descubre nuevas oportunidades para tu negocio.
+          </p>
+        </div>
 
         {/* FORMULARIO */}
-        <section className={`${pageShell} pb-14 pt-2`}>
+        <section className={`${pageShell} pb-14 pt-4`}>
           <div
             className="rounded-xl border p-6 md:p-9"
             style={{
@@ -256,7 +191,6 @@ const Ferduque = () => {
             </p>
 
             <form className="space-y-5" onSubmit={handleSubmit} noValidate>
-              {/* Datos básicos */}
               <div className="grid gap-4 md:grid-cols-2">
                 {[
                   { key: "name" as const, label: "Nombre", placeholder: "Tu nombre", type: "text" },
@@ -281,7 +215,6 @@ const Ferduque = () => {
 
               <div className="h-px" style={{ backgroundColor: `${C.beige}55` }} aria-hidden="true" />
 
-              {/* Preguntas */}
               <div className="space-y-5">
                 {QUESTIONS.map((q, i) => (
                   <fieldset key={q.key}>
