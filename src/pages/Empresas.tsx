@@ -209,13 +209,13 @@ const Empresas = () => {
                   className="text-balance font-bold leading-[1.02]"
                   style={{
                     fontFamily: editorialFont,
-                    fontSize: "clamp(3rem, 6vw, 5.3rem)",
+                    fontSize: "clamp(2.15rem, 4vw, 3.6rem)",
                     letterSpacing: "0",
                   }}
                 >
                   Todas las empresas
                 </h1>
-                <p className="mt-5 max-w-xl text-[17px] leading-[1.65]" style={{ color: "#4d3d2d" }}>
+                <p className="mt-5 max-w-xl text-[16px] leading-[1.65] md:text-[18px]" style={{ color: "#4d3d2d" }}>
                   Un directorio vivo de negocios, productores y proyectos que mantienen vivo el valor de cada territorio.
                 </p>
               </div>

@@ -57,8 +57,8 @@ const BusinessSection = () => {
           </div>
 
           {/* Lista de verificación */}
-          <div className="rounded-lg p-6 space-y-4 text-left max-w-md mx-auto" style={{ backgroundColor: "rgba(184,134,11,0.08)", border: "none" }}>
-            <h4 className="font-semibold text-primary mb-4 text-center">¿Tu negocio es ORIGEN?</h4>
+          <div className="rounded-lg p-6 space-y-4 text-left max-w-md mx-auto bg-primary/10">
+            <h4 className="font-semibold text-primary mb-4 text-center" style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}>¿Tu negocio es ORIGEN?</h4>
             <div className="space-y-3">
               {[
                 "Eres productor, restaurante o negocio",
@@ -70,7 +70,7 @@ const BusinessSection = () => {
               ].map((item, index) => (
                 <div key={index} className="flex items-center space-x-3">
                   <Check className="w-5 h-5 text-secondary flex-shrink-0" />
-                  <span className="text-muted-foreground">{item}</span>
+                  <span className="text-foreground/70 text-sm">{item}</span>
                 </div>
               ))}
             </div>
@@ -78,7 +78,7 @@ const BusinessSection = () => {
 
           {/* CTA */}
           <div className="space-y-4">
-            <Button size="lg" className="shadow-earth" onClick={() => navigate('/soy-empresa')}>
+            <Button size="lg" className="shadow-earth px-8" style={{ backgroundColor: "#6F4E37", color: "#FFFAF1" }} onClick={() => navigate('/soy-empresa')}>
               Solicita tu espacio
             </Button>
             <p className="text-sm text-foreground/70">
