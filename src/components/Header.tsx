@@ -25,6 +25,10 @@ const Header = () => {
 
   const isOnAccountPage = ACCOUNT_ROUTES.some((r) => location.pathname.startsWith(r));
   const hideLoginButtons = userType === "company" || isOnAccountPage;
+  const navLinkClass = (path: string) => {
+    const active = location.pathname === path || (path !== "/" && location.pathname.startsWith(`${path}/`));
+    return `relative py-2 transition-colors ${active ? "text-secondary after:absolute after:bottom-[-18px] after:left-0 after:h-0.5 after:w-full after:bg-secondary" : "text-muted-foreground hover:text-primary"}`;
+  };
 
   const detectUserType = async (userId: string) => {
     // Check if user has a company profile
@@ -139,22 +143,22 @@ const Header = () => {
 
           {/* Navegación desktop - Centrada */}
             <nav className="hidden md:flex items-center space-x-8 flex-1 justify-center">
-              <Link to="/mapa" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link to="/mapa" className={navLinkClass("/mapa")}>
                 Mapa
               </Link>
-              <Link to="/rutas" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link to="/rutas" className={navLinkClass("/rutas")}>
                 Experiencias
               </Link>
-              <Link to="/empresas" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link to="/empresas" className={navLinkClass("/empresas")}>
                 Empresas
               </Link>
-              <Link to="/actualidad" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link to="/actualidad" className={navLinkClass("/actualidad")}>
                 Actualidad
               </Link>
-              <Link to="/contacto" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link to="/contacto" className={navLinkClass("/contacto")}>
                 Contacto
               </Link>
-              <Link to="/sobre-origen" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link to="/sobre-origen" className={navLinkClass("/sobre-origen")}>
                 Historia
               </Link>
               {isAdmin && (
