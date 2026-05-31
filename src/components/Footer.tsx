@@ -38,8 +38,11 @@ const Footer = () => {
               <Link to="/rutas" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Experiencias
               </Link>
-              <Link to="/experiencias" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                Selecciones
+              <Link to="/empresas" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                Empresas
+              </Link>
+              <Link to="/actualidad" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                Actualidad
               </Link>
             </nav>
           </div>
@@ -48,17 +51,17 @@ const Footer = () => {
           <div className="space-y-6">
             <h4 className="text-lg font-semibold">Información</h4>
             <nav className="flex flex-col space-y-3">
-              <Link to="/sobre-origen" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+              <Link to="/historia" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Sobre Origen
               </Link>
               <Link to="/faq" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 Preguntas Frecuentes
               </Link>
-              <Link to="/contacto" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                Contacto
+              <Link to="/terminos-condiciones" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                Términos y condiciones
               </Link>
-              <Link to="/valoraciones" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                Valoraciones
+              <Link to="/politica-privacidad" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                Política de privacidad
               </Link>
             </nav>
           </div>

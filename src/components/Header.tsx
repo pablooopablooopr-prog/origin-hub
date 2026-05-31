@@ -158,7 +158,7 @@ const Header = () => {
               <Link to="/contacto" className={navLinkClass("/contacto")}>
                 Contacto
               </Link>
-              <Link to="/sobre-origen" className={navLinkClass("/sobre-origen")}>
+              <Link to="/historia" className={navLinkClass("/historia")}>
                 Historia
               </Link>
               {isAdmin && (
@@ -242,7 +242,7 @@ const Header = () => {
                   <Link to="/contacto" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                     Contacto
                   </Link>
-                  <Link to="/sobre-origen" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
+                  <Link to="/historia" className="text-muted-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                     Historia
                   </Link>
               {isAdmin && (

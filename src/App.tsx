@@ -93,6 +93,7 @@ const App = () => (
             <Route path="/contacto" element={<Contacto />} />
             <Route path="/soy-cliente" element={<SoyCliente />} />
             <Route path="/soy-empresa" element={<SoyEmpresa />} />
+            <Route path="/historia" element={<SobreOrigen />} />
             <Route path="/sobre-origen" element={<SobreOrigen />} />
             {/* /editar-pack/* DEPRECATED — sistema de packs */}
             <Route path="/editar-ruta/:slug" element={<EditarRuta />} />

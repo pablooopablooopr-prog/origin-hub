@@ -1,152 +1,237 @@
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Heart, Leaf, Scale, MapPin, Package, Users } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, HandHeart, Heart, Leaf, Mountain, Scale, Sprout } from "lucide-react";
 
 const SERIF = "'Playfair Display', 'Cormorant Garamond', Georgia, serif";
-const GOLD = "#b8923f";
-const BROWN = "#2a1c10";
-const BROWN_MID = "#5a3e20";
-const CARD_BG = "rgba(245,238,218,0.88)";
-const CARD_INNER = "rgba(245,235,210,0.90)";
-const CARD_BORDER = "1px solid rgba(180,140,80,0.3)";
+const C = {
+  cream: "#F4EDE1",
+  paper: "#FBF5EA",
+  card: "rgba(255, 250, 241, 0.62)",
+  brown: "#2F2118",
+  brownSoft: "#5F4A36",
+  olive: "#4F5D2A",
+  gold: "#A9782B",
+  line: "rgba(169, 120, 43, 0.34)",
+};
 
-const Eyebrow = ({ label }: { label: string }) => (
-  <div className="flex items-center justify-center gap-3 mb-4">
-    <span className="block h-px w-10" style={{ backgroundColor: GOLD }} aria-hidden="true" />
-    <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>{label}</span>
-    <span className="block h-px w-10" style={{ backgroundColor: GOLD }} aria-hidden="true" />
+const pageShell = "mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8";
+
+const SectionLabel = ({ children, align = "center" }: { children: string; align?: "left" | "center" }) => (
+  <div className={`mb-8 flex items-center gap-4 ${align === "center" ? "justify-center" : ""}`}>
+    {align === "center" && <span className="h-px w-12" style={{ backgroundColor: C.line }} aria-hidden="true" />}
+    <span className="text-[12px] font-bold uppercase tracking-[0.32em]" style={{ color: C.gold }}>
+      {children}
+    </span>
+    <span className="h-px w-12" style={{ backgroundColor: C.line }} aria-hidden="true" />
   </div>
 );
 
+const timeline = [
+  {
+    year: "2024",
+    title: "Nacimiento de ORIGEN",
+    text: "Iniciamos la misión de conectar consumidores con la autenticidad del territorio y sus productos.",
+    icon: Sprout,
+  },
+  {
+    year: "2025",
+    title: "Expansión nacional",
+    text: "Crecemos e integramos a más de 50 negocios verificados en toda España.",
+    icon: Mountain,
+  },
+  {
+    year: "Futuro",
+    title: "Preservando tradiciones",
+    text: "Seguimos construyendo un movimiento que pone en valor lo auténtico y protege nuestras raíces.",
+    icon: HandHeart,
+  },
+];
+
+const values = [
+  {
+    icon: Heart,
+    title: "Autenticidad",
+    text: "Negocios verificados que mantienen tradiciones ancestrales y procesos artesanales genuinos.",
+  },
+  {
+    icon: Leaf,
+    title: "Sostenibilidad",
+    text: "Compromiso con prácticas responsables que respetan el medio ambiente y las comunidades locales.",
+  },
+  {
+    icon: Scale,
+    title: "Comercio Justo",
+    text: "Precios justos para productores y transparencia total en toda la cadena de valor.",
+  },
+];
+
 const SobreOrigen = () => {
-  const values = [
-    { icon: Heart, title: "Autenticidad", description: "Negocios verificados que mantienen tradiciones ancestrales y procesos artesanales genuinos." },
-    { icon: Leaf, title: "Sostenibilidad", description: "Compromiso con prácticas responsables que respetan el medio ambiente y las comunidades locales." },
-    { icon: Scale, title: "Comercio Justo", description: "Precios justos para productores y transparencia total en toda la cadena de valor." },
-  ];
-  const howItWorks = [
-    { icon: MapPin, title: "Explora negocios", description: "Descubre negocios auténticos verificados por ORIGEN en toda España." },
-    { icon: Package, title: "Descubre experiencias", description: "Elige selecciones curadas o crea experiencias personalizadas para explorar." },
-    { icon: Users, title: "Apoya la economía local", description: "Cada compra fortalece a pequeños productores y preserva tradiciones." },
-  ];
-  const timeline = [
-    { year: "2024", title: "Nacimiento de ORIGEN", description: "Iniciamos la misión de conectar consumidores con la autenticidad." },
-    { year: "2025", title: "Expansión nacional", description: "Crecimos a más de 50 negocios verificados en toda España." },
-    { year: "Futuro", title: "Preservando tradiciones", description: "Continuamos nuestra misión de preservar lo tradicional y auténtico." },
-  ];
-
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundImage: "url('/textures/adobe-wall.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed" }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ backgroundColor: C.cream, color: C.brown }}>
       <Header />
-      <main className="flex-1">
 
-        {/* HERO */}
-        <section className="pt-3 pb-10" style={{ background: "rgba(230,210,170,0.75)" }}>
-          <div className="container text-center max-w-4xl mx-auto px-6">
-            <div className="flex items-center justify-center gap-3 mb-3 mt-3">
-              <span className="block h-px w-10" style={{ backgroundColor: GOLD }} aria-hidden="true" />
-              <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>Historia</span>
-              <span className="block h-px w-10" style={{ backgroundColor: GOLD }} aria-hidden="true" />
+      <main>
+        <section className="relative overflow-hidden border-b" style={{ borderColor: "rgba(95,74,54,0.08)", backgroundColor: C.paper }}>
+          <div
+            className="absolute inset-0 opacity-[0.18]"
+            style={{
+              backgroundImage: "url('/textures/adobe-wall.jpg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+            aria-hidden="true"
+          />
+          <div className="absolute inset-y-0 right-0 hidden w-[58%] md:block" aria-hidden="true">
+            <img
+              src="/lovable-uploads/historia-hero-reference.png"
+              alt=""
+              className="h-full w-full object-cover"
+              loading="eager"
+              style={{
+                filter: "saturate(0.96) contrast(0.98)",
+                WebkitMaskImage: "linear-gradient(90deg, transparent 0%, black 10%, black 100%)",
+                maskImage: "linear-gradient(90deg, transparent 0%, black 10%, black 100%)",
+              }}
+            />
+          </div>
+
+          <div className={`${pageShell} relative z-10 flex min-h-[520px] flex-col items-start justify-center py-12 lg:py-16`}>
+            <div className="relative z-10 max-w-xl">
+              <SectionLabel align="left">Nuestra historia</SectionLabel>
+              <h1
+                className="text-balance font-bold italic leading-[1.05]"
+                style={{
+                  fontFamily: SERIF,
+                  fontSize: "clamp(2.75rem, 5vw, 4.45rem)",
+                  letterSpacing: "0",
+                }}
+              >
+                Donde todo
+                <br />
+                tiene su origen
+              </h1>
+
+              <div className="my-8 flex items-center gap-7" aria-hidden="true">
+                <span className="h-px w-32" style={{ backgroundColor: C.olive }} />
+                <Leaf className="h-6 w-6" style={{ color: C.olive }} />
+              </div>
+
+              <p className="max-w-[520px] text-[17px] leading-[1.8]" style={{ color: "#221914" }}>
+                ORIGEN nace para dar visibilidad a quienes producen, cocinan y cuidan el territorio. Conectamos lo auténtico con quienes lo valoran, preservando tradiciones y construyendo un futuro más justo y sostenible.
+              </p>
+
+              <Button asChild className="mt-8 h-12 px-7 shadow-md" style={{ backgroundColor: C.olive, color: C.paper }}>
+                <a href="#mision">Conoce nuestra misión</a>
+              </Button>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-5 flex items-center justify-center flex-wrap tracking-tight" style={{ fontFamily: SERIF, color: BROWN }}>
-              <span>S</span>
-              <img src="/lovable-uploads/enso-transparent.png" alt="Ensō" className="w-12 h-12 md:w-16 md:h-16 object-contain mx-1" />
-              <span>bre ORIGEN</span>
-            </h1>
-            <p className="max-w-3xl mx-auto leading-relaxed" style={{ fontFamily: SERIF, color: BROWN_MID, fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)" }}>
-              Creemos en una España viva, conectada a su tierra, a sus oficios y a las personas que la sostienen. ORIGEN nace para dar visibilidad a quienes producen, cocinan y cuidan el territorio.
-            </p>
+            <img
+              src="/lovable-uploads/historia-hero-reference.png"
+              alt="Camino rural al atardecer con señales de territorio, tradición y futuro"
+              className="mt-10 block min-h-[260px] w-full object-cover md:hidden"
+              loading="eager"
+            />
           </div>
         </section>
 
-        {/* MISIÓN */}
-        <section className="py-14 px-6" style={{ background: CARD_BG, backdropFilter: "blur(2px)" }}>
-          <div className="container max-w-4xl mx-auto text-center">
-            <Eyebrow label="Nuestra Misión" />
-            <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ fontFamily: SERIF, color: BROWN }}>Conectar lo auténtico con quienes lo valoran</h2>
-            <p className="text-lg leading-relaxed" style={{ fontFamily: SERIF, color: BROWN_MID }}>
-              En ORIGEN sabemos que cada producto tiene una historia que merece ser contada. Nuestra misión es conectar a consumidores conscientes con negocios auténticos que mantienen vivas las tradiciones, preservando técnicas artesanales y valores como la sostenibilidad y el comercio justo.
-            </p>
-          </div>
-        </section>
+        <section className="py-10 md:py-12" style={{ backgroundColor: C.paper }}>
+          <div className={pageShell}>
+            <SectionLabel>Nuestro recorrido</SectionLabel>
 
-        {/* HISTORIA */}
-        <section className="py-14 px-6" style={{ background: "rgba(240,228,200,0.78)" }}>
-          <div className="container max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <Eyebrow label="Nuestra Historia" />
-              <h2 className="text-3xl md:text-4xl font-bold" style={{ fontFamily: SERIF, color: BROWN }}>El camino de ORIGEN</h2>
-            </div>
-            <div className="flex flex-col md:flex-row gap-4">
-              {timeline.map((step, i) => (
-                <div key={i} className="flex-1 p-6 rounded-xl text-center" style={{ background: CARD_INNER, border: CARD_BORDER }}>
-                  <div className="w-12 h-1 mx-auto mb-4 rounded" style={{ background: GOLD }} />
-                  <div className="text-2xl font-bold mb-2" style={{ fontFamily: SERIF, color: GOLD }}>{step.year}</div>
-                  <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: SERIF, color: BROWN }}>{step.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: BROWN_MID }}>{step.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CÓMO FUNCIONA */}
-        <section className="py-14 px-6" style={{ background: CARD_BG }}>
-          <div className="container max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <Eyebrow label="Cómo Funciona" />
-              <h2 className="text-3xl md:text-4xl font-bold" style={{ fontFamily: SERIF, color: BROWN }}>Así trabaja ORIGEN</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {howItWorks.map((item, i) => (
-                <div key={i} className="p-6 rounded-xl text-center" style={{ background: CARD_INNER, border: CARD_BORDER }}>
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(180,140,60,0.15)" }}>
-                    <item.icon className="w-8 h-8" style={{ color: GOLD }} />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: SERIF, color: BROWN }}>{item.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: BROWN_MID }}>{item.description}</p>
-                </div>
-              ))}
+            <div className="relative grid gap-7 md:grid-cols-3">
+              <div className="pointer-events-none absolute left-4 right-4 top-0 hidden h-px md:block" style={{ backgroundColor: C.line }} aria-hidden="true" />
+              {timeline.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <article key={item.year} className="relative rounded-lg border px-7 pb-7 pt-8 text-center" style={{ backgroundColor: C.card, borderColor: C.line }}>
+                    <span className="absolute left-1/2 top-0 hidden h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full md:block" style={{ backgroundColor: index === 2 ? "#D8C49C" : "#8C894B" }} aria-hidden="true" />
+                    <span className="inline-flex rounded-md px-3 py-1 text-sm font-bold text-white" style={{ backgroundColor: C.olive }}>
+                      {item.year}
+                    </span>
+                    <h2 className="mt-5 font-bold" style={{ fontFamily: SERIF, fontSize: "1.32rem" }}>
+                      {item.title}
+                    </h2>
+                    <p className="mx-auto mt-4 max-w-[260px] text-[15px] leading-[1.65]" style={{ color: "#231916" }}>
+                      {item.text}
+                    </p>
+                    <Icon className="mx-auto mt-7 h-12 w-12 stroke-[1.35]" style={{ color: C.gold }} />
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
 
-        {/* VALORES */}
-        <section className="py-14 px-6" style={{ background: "rgba(240,228,200,0.78)" }}>
-          <div className="container max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <Eyebrow label="Nuestros Valores" />
-              <h2 className="text-3xl md:text-4xl font-bold" style={{ fontFamily: SERIF, color: BROWN }}>Lo que nos define</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {values.map((v, i) => (
-                <div key={i} className="p-6 rounded-xl text-center" style={{ background: CARD_INNER, border: CARD_BORDER }}>
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(180,140,60,0.15)" }}>
-                    <v.icon className="w-8 h-8" style={{ color: GOLD }} />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: SERIF, color: BROWN }}>{v.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: BROWN_MID }}>{v.description}</p>
-                </div>
-              ))}
+        <section id="mision" className="py-8 md:py-12" style={{ backgroundColor: C.paper }}>
+          <div className={`${pageShell} grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-center`}>
+            <h2 className="max-w-md font-bold leading-[1.12]" style={{ fontFamily: SERIF, fontSize: "clamp(2rem, 3.4vw, 2.75rem)" }}>
+              Conectar lo auténtico
+              <br />
+              con quienes lo valoran
+            </h2>
+            <div>
+              <SectionLabel>Nuestra misión</SectionLabel>
+              <p className="text-[16px] leading-[1.85]" style={{ color: "#231916" }}>
+                En ORIGEN sabemos que cada producto tiene una historia que merece ser contada. Nuestra misión es conectar a consumidores conscientes con negocios auténticos que mantienen vivas las tradiciones, preservando técnicas artesanales y valores como la sostenibilidad y el comercio justo.
+              </p>
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-16 px-6 text-center" style={{ background: CARD_BG }}>
-          <div className="container max-w-2xl mx-auto">
-            <Eyebrow label="Únete" />
-            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: SERIF, color: BROWN }}>¿Tu negocio es ORIGEN?</h2>
-            <p className="mb-8 leading-relaxed" style={{ color: BROWN_MID, fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.125rem)" }}>Forma parte de nuestra comunidad de negocios auténticos</p>
-            <Button asChild size="lg" style={{ backgroundColor: "#5c6b2e", color: "#f2e4c0" }}>
-              <Link to="/soy-empresa">Unirse como Empresa</Link>
-            </Button>
+        <section className="py-10 md:py-12" style={{ backgroundColor: C.paper }}>
+          <div className={pageShell}>
+            <SectionLabel>Nuestros valores</SectionLabel>
+            <div className="grid gap-6 md:grid-cols-3">
+              {values.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <article key={item.title} className="rounded-lg border px-8 py-8 text-center" style={{ backgroundColor: C.card, borderColor: C.line }}>
+                    <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full" style={{ backgroundColor: "rgba(169,120,43,0.15)" }}>
+                      <Icon className="h-8 w-8 stroke-[1.7]" style={{ color: C.gold }} />
+                    </div>
+                    <h2 className="font-bold" style={{ fontFamily: SERIF, fontSize: "1.45rem" }}>
+                      {item.title}
+                    </h2>
+                    <p className="mx-auto mt-4 max-w-[280px] text-[15px] leading-[1.65]" style={{ color: "#231916" }}>
+                      {item.text}
+                    </p>
+                  </article>
+                );
+              })}
+            </div>
           </div>
         </section>
 
+        <section className="relative overflow-hidden" style={{ backgroundColor: "#41511F" }}>
+          <div
+            className="absolute inset-y-0 right-0 hidden w-[55%] md:block"
+            style={{
+              backgroundImage: "linear-gradient(90deg, #41511F 0%, rgba(65,81,31,0.7) 12%, rgba(65,81,31,0.12) 34%), url('/lovable-uploads/historia-cta-reference.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center right",
+            }}
+            aria-hidden="true"
+          />
+          <div className={`${pageShell} relative z-10 py-9 md:py-11`}>
+            <div className="max-w-md">
+              <h2 className="font-bold text-[#FBF5EA]" style={{ fontFamily: SERIF, fontSize: "clamp(2rem, 3.6vw, 2.8rem)" }}>
+                Únete al movimiento
+              </h2>
+              <p className="mt-3 text-[16px] leading-[1.65] text-[#FBF5EA]/90">
+                Forma parte de nuestra comunidad de negocios auténticos y consumidores conscientes.
+              </p>
+              <Button asChild className="mt-7 h-11 bg-[#FBF5EA] px-7 text-[#2F2118] hover:bg-[#F4EDE1]">
+                <Link to="/soy-empresa">
+                  Quiero formar parte
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </section>
       </main>
+
       <Footer />
     </div>
   );
