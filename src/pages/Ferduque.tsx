@@ -6,7 +6,7 @@ import { CheckCircle, Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxh_NzlpuSOhe8cEeKRsQjwrQxIgtUZN56kFVKyIXxCrxcnysDtt18yPR7IEuaqM12Ouw/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzB-GJfb7AIqhTZIN8r5QKCm7HevcCwRUsqAG-qXCadm-r3dWYOCfXvF_POyASCQRHtiQ/exec";
 
 const C = {
   cream: "#F5F0E8",
