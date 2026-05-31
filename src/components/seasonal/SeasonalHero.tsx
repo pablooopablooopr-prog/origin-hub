@@ -235,7 +235,7 @@ const SeasonalHero = ({ data }: Props) => {
           </div>
 
           <div
-            className="relative z-20 mt-10 grid grid-cols-1 gap-6 rounded-[18px] px-7 py-8 shadow-[0_16px_32px_rgba(61,43,31,0.13)] sm:grid-cols-2 md:absolute md:bottom-[34px] md:left-[clamp(38px,3.25vw,52px)] md:right-[clamp(38px,3.25vw,52px)] md:mt-0 md:min-h-[170px] md:items-center lg:grid-cols-4 lg:gap-0 lg:px-9"
+            className="relative z-20 mt-10 grid grid-cols-1 gap-6 rounded-[18px] px-7 py-8 shadow-[0_16px_32px_rgba(61,43,31,0.13)] sm:grid-cols-2 md:absolute md:bottom-[16px] md:left-[clamp(38px,3.25vw,52px)] md:right-[clamp(38px,3.25vw,52px)] md:mt-0 md:min-h-[170px] md:items-center lg:grid-cols-4 lg:gap-0 lg:px-9"
             style={{
               backgroundColor: "rgba(255,252,246,0.88)",
               border: "1px solid rgba(200,184,154,0.5)",
