@@ -9,129 +9,137 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
+  ArrowRight,
+  Calendar,
   Check,
-  Building,
-  Users,
-  Globe,
-  Phone,
+  Flower2,
+  Leaf,
+  Lock,
   Mail,
   MapPin,
-  ArrowRight,
-  Sparkles,
-  Wheat,
-  Flower2,
-  Trees,
-  Snowflake,
-  Lock,
-  FileText,
-  Star,
-  Calendar,
+  Phone,
   ShieldCheck,
+  Snowflake,
+  Sprout,
+  Store,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-/**
- * Soy Empresa — landing comercial alineada al modelo del PDF (Mayo 2026).
- *
- * Decisión de UX: nunca mostramos los precios aquí (igual que en el dashboard,
- * sólo aparecen en el modal de upgrade). Comunicamos planes con tres niveles
- * cualitativos: Básico · Intermedio · Premium.
- */
+const editorialFont = "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif";
+
+const BotanicalDetail = ({ className = "" }: { className?: string }) => (
+  <div
+    aria-hidden="true"
+    className={`pointer-events-none absolute opacity-[0.09] mix-blend-multiply ${className}`}
+  >
+    <div className="h-24 w-24 rotate-12 rounded-full border border-[#8a6337]" />
+    <div className="-mt-20 ml-12 h-20 w-20 -rotate-12 rounded-full border border-[#6c7d4b]" />
+    <div className="-mt-14 ml-5 h-16 w-16 rotate-45 rounded-full border border-[#c29848]" />
+  </div>
+);
 
 const SoyEmpresa = () => {
   const benefits = [
     {
-      icon: <Users className="w-6 h-6" />,
+      icon: <Users className="h-7 w-7" />,
       title: "Comunidad real",
       description:
-        "Acceso directo a consumidores conscientes que valoran la autenticidad de tu producto",
+        "Acceso directo a consumidores conscientes que valoran la autenticidad de tu producto.",
     },
     {
-      icon: <Globe className="w-6 h-6" />,
+      icon: <TrendingUp className="h-7 w-7" />,
       title: "Visibilidad nacional",
       description:
-        "Presencia en toda España manteniendo tu identidad y arraigo local",
+        "Presencia en toda España manteniendo tu identidad y arraigo local.",
     },
     {
-      icon: <Building className="w-6 h-6" />,
+      icon: <Store className="h-7 w-7" />,
       title: "Venta directa",
       description:
-        "Sin intermediarios. Relación directa con tus clientes y restaurantes",
+        "Sin intermediarios. Relación directa con tus clientes y restaurantes.",
     },
   ];
 
   const seasons = [
     {
       id: "primavera",
-      icon: <Flower2 className="w-5 h-5" />,
+      icon: <Sprout className="h-6 w-6" />,
       label: "Primavera",
-      range: "Mar – May",
+      range: "Mar - May",
       product: "Queso manchego",
-      color: "bg-emerald-50 text-emerald-900 border-emerald-200",
+      className: "border-emerald-200 bg-emerald-50/70 text-emerald-950",
     },
     {
       id: "verano",
-      icon: <Wheat className="w-5 h-5" />,
+      icon: <Flower2 className="h-6 w-6" />,
       label: "Verano",
-      range: "Jun – Ago",
+      range: "Jun - Ago",
       product: "Miel y aceite",
-      color: "bg-amber-50 text-amber-900 border-amber-200",
+      className: "border-amber-200 bg-amber-50/70 text-amber-950",
     },
     {
       id: "otono",
-      icon: <Trees className="w-5 h-5" />,
+      icon: <Leaf className="h-6 w-6" />,
       label: "Otoño",
-      range: "Sep – Nov",
+      range: "Sep - Nov",
       product: "Caza y vino vendimia",
-      color: "bg-orange-50 text-orange-900 border-orange-200",
+      className: "border-orange-200 bg-orange-50/70 text-orange-950",
     },
     {
       id: "invierno",
-      icon: <Snowflake className="w-5 h-5" />,
+      icon: <Snowflake className="h-6 w-6" />,
       label: "Invierno",
-      range: "Dic – Feb",
+      range: "Dic - Feb",
       product: "Vino reserva y gourmet",
-      color: "bg-sky-50 text-sky-900 border-sky-200",
+      className: "border-sky-200 bg-sky-50/70 text-sky-950",
     },
+  ];
+
+  const spotlightBullets = [
+    "Rotación automática por nicho y temporada.",
+    "Card con foto 16:9, descripción y badges.",
+    "Click directo a ficha completa con galería e historia.",
+    "Visibilidad aproximada varias veces al mes según plan.",
   ];
 
   const planTiers = [
     {
       tier: "Básico",
-      tagline: "Empieza a aparecer en ORIGEN",
-      icon: <Sparkles className="w-5 h-5 text-muted-foreground" />,
+      tagline: "Empieza a formar parte de RitmOrigen",
+      icon: <Leaf className="h-7 w-7" />,
       highlight: false,
       features: [
         "Ficha pública de tu empresa",
-        "Spotlight rotatorio en la home (~4 veces/mes)",
+        "Spotlight rotatorio en la home",
         "Mapa B2B en modo lectura",
         "Dashboard básico con estadísticas",
       ],
     },
     {
       tier: "Intermedio",
-      tagline: "Visibilidad reforzada en temporada",
-      icon: <Star className="w-5 h-5 text-primary" />,
+      tagline: "Más visibilidad, más oportunidades",
+      icon: <TrendingUp className="h-7 w-7" />,
       highlight: true,
       features: [
         "Todo lo del plan Básico",
-        "Pin dorado en mapa + borde dorado en spotlight",
-        "TOP de la newsletter trimestral",
-        "Aparición garantizada en rutas de tu temporada",
+        "Pin dorado en mapa",
+        "Borde destacado en spotlight",
+        "TOP de newsletter trimestral",
+        "Aparición garantizada en rutas de temporada",
         "Mensajes B2B con restaurantes verificados",
       ],
     },
     {
       tier: "Premium",
-      tagline: "Visibilidad + cumplimiento legal",
-      icon: <FileText className="w-5 h-5 text-amber-700" />,
+      tagline: "Visibilidad completa y beneficios exclusivos",
+      icon: <ShieldCheck className="h-7 w-7" />,
       highlight: false,
-      badge: "Nuevo · Antifraude",
       features: [
         "Todo lo del plan Intermedio",
-        "Digitalización de facturas (Verifactu / Ley Crea y Crece)",
+        "Digitalización de facturas / adaptación Verifactu y Ley Crea y Crece",
         "Soporte de implementación durante el periodo de adaptación",
         "Acceso prioritario a leads B2B",
       ],
@@ -149,234 +157,238 @@ const SoyEmpresa = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
+    <div className="min-h-screen overflow-x-hidden bg-[#f7f0e5] text-[#2a1c10]">
       <Header />
-      <main className="pt-6">
-        {/* HERO */}
-        <section className="container mx-auto px-6 py-10">
-          <div className="text-center max-w-3xl mx-auto space-y-6">
-            <Badge className="bg-emerald-50 text-emerald-900 border-emerald-200 gap-1.5">
-              <Sparkles className="w-3 h-3" />
-              Fase lanzamiento · Gratis para los primeros 150 productores
-            </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold text-primary flex items-center justify-center tracking-tight">
-              <span>S</span>
-              <img
-                src="/lovable-uploads/enso-transparent.png"
-                alt="Ensō"
-                className="w-8 h-8 md:w-10 md:h-10 object-contain mx-1"
-              />
-              <span>y Empresa</span>
+      <main className="relative">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(194,152,72,0.15),transparent_32%),radial-gradient(circle_at_80%_10%,rgba(98,119,65,0.13),transparent_26%)]" />
+
+        <section className="relative container mx-auto px-6 pb-9 pt-10 md:pb-12 md:pt-14">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-[#b07a2a]">
+              Únete a RitmOrigen
+            </p>
+            <h1
+              className="mx-auto max-w-2xl text-[clamp(2.45rem,7vw,4.85rem)] font-semibold leading-[0.94] text-[#1f140c]"
+              style={{ fontFamily: editorialFont }}
+            >
+              Forma parte de RitmOrigen
             </h1>
-            <p className="text-muted-foreground font-sans text-lg leading-relaxed">
+            <p className="mx-auto mt-5 max-w-2xl text-base font-medium leading-7 text-[#3c2b1d] md:text-lg">
               Únete a la comunidad estacional que conecta productores rurales,
               restaurantes y consumidores conscientes en toda España.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">
-              <Link to="/company-auth?tab=signup">
-                <Button size="lg" variant="default" className="shadow-earth gap-2">
-                  Unirme a ORIGEN
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </Link>
-              <Link to="/company-auth?tab=signin">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="bg-card shadow-md hover:shadow-lg border-border"
-                >
-                  Ya tengo cuenta
-                </Button>
-              </Link>
+            <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Button
+                asChild
+                size="lg"
+                className="min-w-[240px] bg-[#4f6f3f] text-[#fffaf2] shadow-[0_10px_24px_rgba(48,70,36,0.22)] hover:bg-[#425f34]"
+              >
+                <Link to="/company-auth?tab=signup">Unirme a RitmOrigen</Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="min-w-[210px] border-[#d8c7ad] bg-[#fffaf2]/82 text-[#2a1c10] shadow-[0_8px_18px_rgba(76,51,25,0.09)] hover:bg-[#f7ead8]"
+              >
+                <Link to="/company-auth?tab=signin">Ya tengo cuenta</Link>
+              </Button>
             </div>
           </div>
         </section>
 
-        {/* BENEFICIOS */}
-        <section className="container mx-auto px-6 pb-12">
-          <div className="text-center mb-8">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-2">
-              Por qué unirse
-            </p>
-            <h2 className="text-3xl font-semibold text-primary tracking-tight">
-              Lo que ganas con ORIGEN
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {benefits.map((benefit) => (
-              <Card
+        <section className="relative container mx-auto px-6 pb-10">
+          <div className="mx-auto grid max-w-6xl gap-7 md:grid-cols-3 md:gap-0">
+            {benefits.map((benefit, index) => (
+              <div
                 key={benefit.title}
-                className="text-center hover:shadow-lg transition-all duration-300"
+                className={`px-4 text-center ${
+                  index > 0 ? "md:border-l md:border-[#d7c7ad]" : ""
+                }`}
               >
-                <CardHeader>
-                  <div className="flex justify-center mb-3 text-primary">
-                    {benefit.icon}
-                  </div>
-                  <CardTitle className="text-xl">{benefit.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-muted-foreground">
-                    {benefit.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#efe4d3] text-[#7b572d]">
+                  {benefit.icon}
+                </div>
+                <h2
+                  className="text-xl font-semibold text-[#2a1c10]"
+                  style={{ fontFamily: editorialFont }}
+                >
+                  {benefit.title}
+                </h2>
+                <p className="mx-auto mt-2 max-w-[260px] text-sm font-medium leading-6 text-[#4e4032]">
+                  {benefit.description}
+                </p>
+              </div>
             ))}
           </div>
         </section>
 
-        {/* ROTACIÓN ESTACIONAL */}
-        <section className="container mx-auto px-6 pb-12">
-          <Card className="bg-gradient-warm border-border">
-            <CardHeader className="text-center">
-              <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-1">
-                Lo que nos hace únicos
-              </p>
-              <CardTitle className="text-3xl text-primary tracking-tight flex items-center justify-center gap-2">
-                <Calendar className="w-7 h-7" />
-                Una plataforma estacional
-              </CardTitle>
-              <CardDescription className="text-base max-w-2xl mx-auto pt-2">
-                Cada 3 meses cambia todo: el producto protagonista, las rutas
-                curadas, el TOP de la newsletter y el ranking del mapa. Tu
-                temporada es tu momento de máxima visibilidad.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {seasons.map((s) => (
+        <section className="relative container mx-auto px-6 pb-8">
+          <div className="relative overflow-hidden rounded-sm border border-[#ddceb8] bg-[#fffaf2]/72 p-6 shadow-[0_12px_36px_rgba(76,51,25,0.08)] md:p-9">
+            <BotanicalDetail className="-right-4 -top-4 hidden md:block" />
+            <div className="relative">
+              <div className="mb-6 max-w-3xl">
+                <div className="mb-2 flex items-center gap-3 text-[#7b572d]">
+                  <Calendar className="h-6 w-6" />
+                  <p className="text-xs font-bold uppercase tracking-[0.18em]">
+                    Lo que nos hace únicos
+                  </p>
+                </div>
+                <h2
+                  className="text-3xl font-semibold leading-tight text-[#1f140c] md:text-4xl"
+                  style={{ fontFamily: editorialFont }}
+                >
+                  Una plataforma estacional
+                </h2>
+                <p className="mt-3 max-w-4xl text-[15px] font-medium leading-7 text-[#5b4b3d]">
+                  Cada 3 meses cambia todo: el producto protagonista, las rutas
+                  curadas, el TOP de la newsletter, el ranking del mapa y el
+                  spotlight rotatorio. Tu temporada es tu momento de máxima
+                  visibilidad.
+                </p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {seasons.map((season) => (
                   <div
-                    key={s.id}
-                    className={`rounded-xl p-4 border ${s.color} flex flex-col gap-2`}
+                    key={season.id}
+                    className={`rounded-sm border p-5 shadow-[0_8px_18px_rgba(76,51,25,0.04)] ${season.className}`}
                   >
-                    <div className="flex items-center gap-2">
-                      {s.icon}
-                      <span className="font-semibold">{s.label}</span>
+                    <div className="mb-4 flex items-center gap-3">
+                      {season.icon}
+                      <h3 className="font-bold">{season.label}</h3>
                     </div>
-                    <p className="text-xs opacity-80">{s.range}</p>
-                    <p className="text-sm font-medium">{s.product}</p>
+                    <p className="mb-3 text-sm opacity-70">{season.range}</p>
+                    <p className="font-bold">{season.product}</p>
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+              <div className="mt-6 text-center">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="border-[#bba98e] bg-[#fffaf2]/75 text-[#2a1c10] hover:bg-[#f3e5cf]"
+                >
+                  <Link to="/rutas">
+                    Ver todas las temporadas
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
         </section>
 
-        {/* SPOTLIGHT 24H */}
-        <section className="container mx-auto px-6 pb-12">
-          <div className="grid md:grid-cols-2 gap-6 items-center">
-            <div className="space-y-4">
-              <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
-                Spotlight rotatorio · 24h
+        <section className="relative container mx-auto px-6 pb-10">
+          <div className="grid items-stretch gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+            <div className="rounded-sm border border-[#ddceb8] bg-[#fbf3e7]/76 p-6 shadow-[0_12px_30px_rgba(76,51,25,0.07)] md:p-8">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-[#b07a2a]">
+                Spotlight rotatorio
               </p>
-              <h2 className="text-3xl font-semibold text-primary tracking-tight">
+              <h2
+                className="text-3xl font-semibold leading-tight text-[#1f140c] md:text-4xl"
+                style={{ fontFamily: editorialFont }}
+              >
                 Tu turno en la home, cada semana
               </h2>
-              <p className="text-muted-foreground leading-relaxed">
-                Cada día 6 empresas se muestran destacadas en la home, una por
-                nicho. Aparecerás aproximadamente <strong>4 veces al mes</strong>{" "}
-                (8 si eres Premium), con foto principal, localidad y CTA directa
-                a tu ficha.
+              <p className="mt-4 text-[15px] font-medium leading-7 text-[#4e4032]">
+                Cada día se muestran empresas destacadas en la home, con
+                rotación por nicho y temporada. Tu empresa puede aparecer con
+                foto principal, localidad y acceso directo a su ficha.
               </p>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-secondary mt-0.5 shrink-0" />
-                  <span>Rotación automática por nicho y temporada</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-secondary mt-0.5 shrink-0" />
-                  <span>Card con foto 16:9, descripción y badges</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-secondary mt-0.5 shrink-0" />
-                  <span>Click → ficha completa con galería e historia</span>
-                </li>
+              <ul className="mt-6 grid gap-3 text-sm font-medium text-[#342519] sm:grid-cols-2">
+                {spotlightBullets.map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#4f6f3f]" />
+                    <span>{item}</span>
+                  </li>
+                ))}
               </ul>
             </div>
-            <Card className="border-2 border-amber-300/50 shadow-earth">
-              <CardContent className="p-5 space-y-3">
-                <div className="flex items-center justify-between">
-                  <Badge variant="outline" className="text-[10px] uppercase tracking-wider">
-                    Quesos y Lácteos
-                  </Badge>
-                  <Badge className="bg-amber-100 text-amber-900 border-amber-300 gap-1 text-[10px] uppercase tracking-wider">
-                    <Star className="w-3 h-3 fill-amber-700 text-amber-700" />
-                    Destacada
-                  </Badge>
+
+            <div className="rounded-sm border border-[#d2bd9b] bg-[#fffaf2]/82 p-5 shadow-[0_16px_36px_rgba(76,51,25,0.1)]">
+              <div className="aspect-video overflow-hidden rounded-sm bg-[linear-gradient(135deg,#eadfc9,#dfe8d4_52%,#f6ead5)]">
+                <div className="flex h-full items-center justify-center bg-[radial-gradient(circle_at_20%_20%,rgba(255,250,242,0.82),transparent_34%)]">
+                  <Leaf className="h-16 w-16 text-[#6c7d4b]/45" />
                 </div>
-                <div className="aspect-video bg-gradient-to-br from-amber-100/40 via-muted/30 to-emerald-100/30 rounded-lg flex items-center justify-center">
-                  <span className="text-xs text-muted-foreground italic">
-                    [ tu foto principal aparecerá aquí ]
-                  </span>
-                </div>
-                <div className="space-y-1">
-                  <h3 className="font-semibold tracking-tight">
-                    Quesería Los Montes
-                  </h3>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1">
-                    <MapPin className="w-3 h-3" />
-                    Porzuna, Ciudad Real
-                  </p>
-                </div>
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  Familia desde 1990 haciendo queso con ovejas propias. Leche
-                  cruda, método ancestral, 30 meses de curación.
-                </p>
-              </CardContent>
-            </Card>
+              </div>
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <Badge
+                  variant="outline"
+                  className="border-[#c9b68f] bg-[#f8efd6] text-[#6d4a1f]"
+                >
+                  Temporada
+                </Badge>
+                <Badge className="bg-[#4f6f3f] text-[#fffaf2]">Destacada</Badge>
+              </div>
+              <h3
+                className="mt-4 text-2xl font-semibold text-[#1f140c]"
+                style={{ fontFamily: editorialFont }}
+              >
+                Quesería Los Montes
+              </h3>
+              <p className="mt-1 flex items-center gap-2 text-sm font-medium text-[#6b5844]">
+                <MapPin className="h-4 w-4 text-[#7b572d]" />
+                Porzuna, Ciudad Real
+              </p>
+              <p className="mt-3 text-sm leading-6 text-[#4e4032]">
+                Card editorial con imagen principal, descripción breve, badges
+                de temporada y acceso directo a la ficha completa.
+              </p>
+            </div>
           </div>
         </section>
 
-        {/* PLANES (sin precios) */}
-        <section className="container mx-auto px-6 pb-12">
-          <div className="text-center mb-8">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-2">
-              Tres niveles de presencia
+        <section className="relative container mx-auto px-6 pb-10">
+          <div className="mb-7 text-center">
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-[#7b572d]">
+              Elige tu nivel de presencia
             </p>
-            <h2 className="text-3xl font-semibold text-primary tracking-tight">
-              Elige cómo quieres aparecer
+            <h2
+              className="text-3xl font-semibold leading-tight text-[#1f140c] md:text-4xl"
+              style={{ fontFamily: editorialFont }}
+            >
+              Planes pensados para cada etapa de tu negocio
             </h2>
-            <p className="text-sm text-muted-foreground max-w-2xl mx-auto pt-2">
-              Verás los precios al hacer "Upgrade" desde tu dashboard, una vez
-              registrada tu empresa.
-            </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-5">
-            {planTiers.map((p) => (
+          <div className="grid gap-5 lg:grid-cols-3">
+            {planTiers.map((plan) => (
               <Card
-                key={p.tier}
-                className={`relative flex flex-col ${
-                  p.highlight
-                    ? "border-2 border-primary shadow-earth"
-                    : p.tier === "Premium"
-                    ? "border-2 border-amber-300/70 bg-gradient-to-b from-amber-50/30 to-card"
-                    : "border border-border"
+                key={plan.tier}
+                className={`relative rounded-sm border-[#ddceb8] bg-[#fffaf2]/78 shadow-[0_10px_28px_rgba(76,51,25,0.06)] ${
+                  plan.highlight
+                    ? "border-[#4f6f3f] ring-1 ring-[#4f6f3f]"
+                    : ""
                 }`}
               >
-                {p.highlight && (
-                  <Badge className="absolute -top-2 left-1/2 -translate-x-1/2 z-10">
+                {plan.highlight && (
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#4f6f3f] text-[#fffaf2]">
                     Recomendado
                   </Badge>
                 )}
-                {p.badge && (
-                  <Badge className="absolute -top-2 left-1/2 -translate-x-1/2 z-10 bg-amber-100 text-amber-900 border-amber-300 gap-1">
-                    <FileText className="w-3 h-3" />
-                    {p.badge}
-                  </Badge>
-                )}
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl">{p.tier}</CardTitle>
-                    {p.icon}
+                <CardHeader className="pb-4">
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#efe4d3] text-[#7b572d]">
+                      {plan.icon}
+                    </div>
+                    <div>
+                      <CardTitle
+                        className="text-2xl text-[#1f140c]"
+                        style={{ fontFamily: editorialFont }}
+                      >
+                        {plan.tier}
+                      </CardTitle>
+                      <CardDescription className="mt-1 font-medium text-[#5b4b3d]">
+                        {plan.tagline}
+                      </CardDescription>
+                    </div>
                   </div>
-                  <CardDescription className="text-sm">{p.tagline}</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3 flex-1 flex flex-col">
-                  <Separator />
-                  <ul className="space-y-2 text-sm flex-1">
-                    {p.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                        <span>{f}</span>
+                <CardContent>
+                  <ul className="space-y-3 text-sm font-medium text-[#342519]">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-3">
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#4f6f3f]" />
+                        <span>{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -384,97 +396,94 @@ const SoyEmpresa = () => {
               </Card>
             ))}
           </div>
-          <p className="text-xs text-muted-foreground italic text-center mt-6">
+          <p className="mx-auto mt-6 max-w-4xl text-center text-sm italic text-[#7a6a5a]">
             Comisiones aplicables a las tres modalidades: 10% sobre ventas
             mediante QR del consumidor, 5% en deals B2B cerrados vía la
             plataforma.
           </p>
         </section>
 
-        {/* B2B PRIVADO */}
-        <section className="container mx-auto px-6 pb-12">
-          <Card className="bg-gradient-warm border-border">
-            <CardContent className="p-8 grid md:grid-cols-[auto,1fr] gap-6 items-center">
-              <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mx-auto md:mx-0">
-                <Lock className="w-10 h-10" />
+        <section className="relative container mx-auto px-6 pb-9">
+          <div className="relative overflow-hidden rounded-sm border border-[#ddceb8] bg-[#fbf3e7]/82 p-6 shadow-[0_10px_28px_rgba(76,51,25,0.06)] md:p-8">
+            <BotanicalDetail className="-right-2 -top-8 hidden md:block" />
+            <div className="relative flex flex-col gap-5 md:flex-row md:items-center">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#efe4d3] text-[#7b572d]">
+                <Lock className="h-8 w-8" />
               </div>
-              <div className="space-y-3 text-center md:text-left">
-                <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
+              <div>
+                <h2
+                  className="text-2xl font-semibold text-[#1f140c] md:text-3xl"
+                  style={{ fontFamily: editorialFont }}
+                >
                   Sistema B2B privado
-                </p>
-                <h2 className="text-2xl md:text-3xl font-semibold text-primary tracking-tight">
-                  Contacto anónimo restaurantes ↔ productores
                 </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  Un restaurante puede buscar nuevo proveedor sin que se entere
-                  el actual. Tu identidad permanece oculta hasta que ambos
-                  aceptáis revelarla. Solo entonces se intercambian datos de
-                  contacto. Privacidad por diseño.
+                <p className="mt-2 max-w-4xl text-[15px] font-medium leading-7 text-[#5b4b3d]">
+                  Contacto anónimo entre restaurantes y productores. Tu
+                  identidad permanece oculta hasta que ambas partes aceptáis
+                  compartirla. Privacidad por diseño.
                 </p>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* CRITERIOS */}
-        <section className="container mx-auto px-6 pb-12">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-center gap-2 mb-1">
-                <ShieldCheck className="w-5 h-5 text-secondary" />
-                <CardTitle className="text-2xl text-center text-primary tracking-tight">
-                  ¿Tu negocio es ORIGEN?
-                </CardTitle>
-              </div>
-              <CardDescription className="text-center">
-                Verifica si cumples con nuestros criterios de autenticidad
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex justify-center">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-fit">
-                {criteria.map((criterion) => (
-                  <div key={criterion} className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-secondary flex-shrink-0" />
-                    <span className="text-muted-foreground">{criterion}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* CONTACTO */}
-        <section className="container mx-auto px-6 pb-16">
-          <div className="bg-muted/30 rounded-2xl p-8 border border-border">
-            <h3 className="text-xl font-semibold text-primary mb-6 text-center tracking-tight">
-              ¿Tienes dudas antes de registrarte?
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-              <div className="flex items-center justify-center gap-2">
-                <Phone className="w-5 h-5 text-secondary" />
-                <span className="text-muted-foreground">+34 633 804 448</span>
-              </div>
-              <div className="flex items-center justify-center gap-2">
-                <Mail className="w-5 h-5 text-secondary" />
-                <span className="text-muted-foreground">info@origen.it.com</span>
-              </div>
-              <div className="flex items-center justify-center gap-2">
-                <MapPin className="w-5 h-5 text-secondary" />
-                <span className="text-muted-foreground">Ciudad Real, España</span>
               </div>
             </div>
-            <div className="mt-6 text-center">
-              <Link to="/company-auth?tab=signup">
-                <Button className="shadow-earth gap-2">
+          </div>
+        </section>
+
+        <section className="relative container mx-auto px-6 pb-9">
+          <div className="mx-auto max-w-5xl">
+            <div className="mb-5 flex flex-col items-center justify-center gap-2 text-center sm:flex-row sm:gap-3">
+              <ShieldCheck className="h-6 w-6 text-[#4f6f3f]" />
+              <h2
+                className="text-2xl font-semibold text-[#1f140c] md:text-3xl"
+                style={{ fontFamily: editorialFont }}
+              >
+                ¿Tu negocio es RitmOrigen?
+              </h2>
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              {criteria.map((criterion) => (
+                <div key={criterion} className="flex items-start gap-3 text-sm font-medium text-[#342519]">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#4f6f3f]" />
+                  <span>{criterion}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="relative container mx-auto px-6 pb-14">
+          <div className="rounded-sm border border-[#ddceb8] bg-[#fffaf2]/76 p-6 shadow-[0_12px_30px_rgba(76,51,25,0.07)] md:p-7">
+            <h2
+              className="mb-6 text-center text-2xl font-semibold text-[#1f140c] md:text-3xl"
+              style={{ fontFamily: editorialFont }}
+            >
+              ¿Tienes dudas antes de registrarte?
+            </h2>
+            <div className="grid gap-4 text-sm font-medium text-[#5b4b3d] md:grid-cols-[1fr_1fr_1fr_auto] md:items-center">
+              <div className="flex items-center justify-center gap-3 md:justify-start">
+                <Phone className="h-5 w-5 text-[#4f6f3f]" />
+                <span>+34 633 804 448</span>
+              </div>
+              <div className="flex items-center justify-center gap-3 md:justify-start">
+                <Mail className="h-5 w-5 text-[#4f6f3f]" />
+                <span>info@origen.it.com</span>
+              </div>
+              <div className="flex items-center justify-center gap-3 md:justify-start">
+                <MapPin className="h-5 w-5 text-[#4f6f3f]" />
+                <span>Ciudad Real, España</span>
+              </div>
+              <Button
+                asChild
+                className="bg-[#4f6f3f] text-[#fffaf2] shadow-[0_10px_24px_rgba(48,70,36,0.18)] hover:bg-[#425f34]"
+              >
+                <Link to="/company-auth?tab=signup">
                   Empezar registro
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </Link>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
             </div>
           </div>
         </section>
       </main>
-      <Footer />
+      <Footer brandLabel="RITMORIGEN" compact />
     </div>
   );
 };
