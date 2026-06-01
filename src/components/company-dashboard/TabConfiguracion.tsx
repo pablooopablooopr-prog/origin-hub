@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { KeyRound, Loader2, Lock, Mail, Settings, Trash2 } from "lucide-react";
+import { KeyRound, Loader2, Lock, Mail, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -70,13 +70,7 @@ const TabConfiguracion = ({ email }: TabConfiguracionProps) => {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h2
-          className="flex items-center gap-2 text-3xl font-semibold tracking-tight text-[#1f140c]"
-          style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif" }}
-        >
-          <Settings className="h-7 w-7" />
-          Configuración
-        </h2>
+        <h2 className="text-2xl font-bold tracking-tight">Configuración</h2>
         <p className="text-sm text-muted-foreground">
           Gestiona la seguridad de tu cuenta y las preferencias principales.
         </p>

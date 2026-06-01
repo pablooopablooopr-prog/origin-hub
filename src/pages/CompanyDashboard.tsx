@@ -9,7 +9,6 @@ import {
   LogOut,
   Loader2,
   ArrowUpRight,
-  Settings,
   FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -283,7 +282,6 @@ const CompanyDashboard = () => {
               Contactos B2B
             </TabsTrigger>
             <TabsTrigger value="config" className="gap-1.5">
-              <Settings className="w-3.5 h-3.5" />
               Configuración
             </TabsTrigger>
           </TabsList>
