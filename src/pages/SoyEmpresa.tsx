@@ -102,7 +102,7 @@ const SoyEmpresa = () => {
     "Rotación automática por nicho y temporada.",
     "Card con foto 16:9, descripción y badges.",
     "Click directo a ficha completa con galería e historia.",
-    "Visibilidad aproximada varias veces al mes según plan.",
+    "Máxima visibilidad durante 24h varias veces al mes en esta sección.",
   ];
 
   const planTiers = [
@@ -292,8 +292,8 @@ const SoyEmpresa = () => {
               </h2>
               <p className="mt-4 text-[15px] font-medium leading-7 text-[#4e4032]">
                 Cada día se muestran empresas destacadas en la home, con
-                rotación por nicho y temporada. Tu empresa puede aparecer con
-                foto principal, localidad y acceso directo a su ficha.
+                rotación por nicho y temporada. Tu empresa aparece con foto
+                principal, localidad y acceso directo a su ficha.
               </p>
               <ul className="mt-6 grid gap-3 text-sm font-medium text-[#342519] sm:grid-cols-2">
                 {spotlightBullets.map((item) => (
@@ -396,11 +396,6 @@ const SoyEmpresa = () => {
               </Card>
             ))}
           </div>
-          <p className="mx-auto mt-6 max-w-4xl text-center text-sm italic text-[#7a6a5a]">
-            Comisiones aplicables a las tres modalidades: 10% sobre ventas
-            mediante QR del consumidor, 5% en deals B2B cerrados vía la
-            plataforma.
-          </p>
         </section>
 
         <section className="relative container mx-auto px-6 pb-9">
@@ -418,9 +413,12 @@ const SoyEmpresa = () => {
                   Sistema B2B privado
                 </h2>
                 <p className="mt-2 max-w-4xl text-[15px] font-medium leading-7 text-[#5b4b3d]">
-                  Contacto anónimo entre restaurantes y productores. Tu
-                  identidad permanece oculta hasta que ambas partes aceptáis
-                  compartirla. Privacidad por diseño.
+                  Conecta directamente con restaurantes, productores y negocios
+                  verificados dentro de RitmOrigen para crear acuerdos,
+                  colaboraciones y nuevas oportunidades comerciales. La
+                  plataforma facilita el primer contacto de forma privada:
+                  ambas partes pueden hablar y valorar el acuerdo antes de
+                  compartir sus datos directos.
                 </p>
               </div>
             </div>
