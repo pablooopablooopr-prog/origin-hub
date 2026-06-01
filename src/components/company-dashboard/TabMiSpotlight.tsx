@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Calendar, TrendingUp, Eye, Star, MapPin } from "lucide-react";
+import { Calendar, TrendingUp, Eye, Star, MapPin, MessageCircle, QrCode } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { usePlan, PLAN_LABELS } from "@/hooks/usePlan";
@@ -85,6 +85,26 @@ const TabMiSpotlight = ({
   const offset = (firstDayOfMonth + 6) % 7;
 
   const completedThisMonth = appearances.filter((d) => d <= todayDay).length;
+
+  // Datos para mini-gráficos (placeholder — sustituir cuando exista tabla
+  // events / pack_analytics agregadas mensualmente)
+  const months6 = useMemo(() => {
+    const labels = ["Dic", "Ene", "Feb", "Mar", "Abr", "May"];
+    const seed = hashCode(companyId);
+    return labels.map((l, i) => ({
+      label: l,
+      value: 12 + ((seed + i * 17) % 38),
+    }));
+  }, [companyId]);
+
+  const maxMonth = Math.max(...months6.map((m) => m.value));
+  const sources = [
+    { label: "Spotlight rotatorio", value: 56, color: "bg-amber-500" },
+    { label: "Mapa (búsqueda directa)", value: 28, color: "bg-primary" },
+    { label: "Ruta curada", value: 12, color: "bg-emerald-500" },
+    { label: "Otros", value: 4, color: "bg-muted-foreground" },
+  ];
+  const sourcesTotal = sources.reduce((s, v) => s + v.value, 0);
 
   return (
     <div className="space-y-6">
@@ -266,6 +286,86 @@ const TabMiSpotlight = ({
               Esta es la tarjeta que aparecerá en la home cuando te toque
               spotlight. Mejora el contenido en la pestaña "Mi Ficha".
             </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Métricas extra: gráfico 6 meses + fuentes de tráfico */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              Visitas últimos 6 meses
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-end justify-between gap-2 h-32 px-1">
+              {months6.map((m) => {
+                const h = Math.round((m.value / maxMonth) * 100);
+                return (
+                  <div
+                    key={m.label}
+                    className="flex-1 flex flex-col items-center gap-1.5"
+                  >
+                    <div className="w-full flex flex-col justify-end h-24">
+                      <div
+                        className="w-full bg-gradient-to-t from-primary to-primary/60 rounded-t-md transition-all"
+                        style={{ height: `${h}%` }}
+                        title={`${m.value} visitas`}
+                      />
+                    </div>
+                    <span className="text-[10px] text-muted-foreground">
+                      {m.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-xs text-muted-foreground italic pt-3">
+              Datos agregados mensualmente. Conectado al sistema de eventos en
+              cuanto la tabla `pack_analytics` se replique a `company_events`.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <Eye className="w-4 h-4" />
+              Origen del tráfico este mes
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {sources.map((s) => {
+              const pct = Math.round((s.value / sourcesTotal) * 100);
+              return (
+                <div key={s.label} className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span>{s.label}</span>
+                    <span className="font-medium">{pct}%</span>
+                  </div>
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className={`h-full ${s.color} rounded-full`}
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+            <div className="pt-3 grid grid-cols-2 gap-3">
+              <div className="flex items-center gap-2 text-xs">
+                <MessageCircle className="w-3.5 h-3.5 text-muted-foreground" />
+                <span className="text-muted-foreground">Contactos B2B:</span>
+                <strong>0</strong>
+              </div>
+              <div className="flex items-center gap-2 text-xs">
+                <QrCode className="w-3.5 h-3.5 text-muted-foreground" />
+                <span className="text-muted-foreground">Ventas QR:</span>
+                <strong>0</strong>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>

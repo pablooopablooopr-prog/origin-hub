@@ -9,6 +9,9 @@ import {
   Eye,
   LogOut,
   Loader2,
+  ArrowUpRight,
+  Settings,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,12 +20,15 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import type { User as AuthUser } from "@supabase/supabase-js";
 import { signOutAndCleanup } from "@/lib/auth/signOut";
+import { usePlan, PLAN_LABELS } from "@/hooks/usePlan";
 
 import TabMiFicha from "@/components/company-dashboard/TabMiFicha";
 import TabDatosYPlan from "@/components/company-dashboard/TabDatosYPlan";
 import TabMiSpotlight from "@/components/company-dashboard/TabMiSpotlight";
 import TabContactosB2B from "@/components/company-dashboard/TabContactosB2B";
 import TabMisRutas from "@/components/company-dashboard/TabMisRutas";
+import TabConfiguracion from "@/components/company-dashboard/TabConfiguracion";
+import UpgradeModal from "@/components/company-dashboard/UpgradeModal";
 
 /**
  * DASHBOARD EMPRESA — rediseño FASE 4
@@ -58,7 +64,7 @@ interface Company {
   plan_expires_at: string | null;
 }
 
-const VALID_TABS = ["ficha", "plan", "spotlight", "b2b", "rutas"] as const;
+const VALID_TABS = ["ficha", "plan", "spotlight", "b2b", "rutas", "config"] as const;
 type TabId = (typeof VALID_TABS)[number];
 
 const isValidTab = (s: string | null): s is TabId =>
@@ -67,11 +73,13 @@ const isValidTab = (s: string | null): s is TabId =>
 const CompanyDashboard = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { plan: currentPlan, refresh: refreshPlan } = usePlan();
 
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
   const [company, setCompany] = useState<Company | null>(null);
   const [totalViews, setTotalViews] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [showUpgrade, setShowUpgrade] = useState(false);
 
   const tabFromUrl = searchParams.get("tab");
   const activeTab: TabId = isValidTab(tabFromUrl) ? tabFromUrl : "ficha";
@@ -208,7 +216,7 @@ const CompanyDashboard = () => {
             <h1 className="text-3xl font-bold tracking-tight">
               {company.business_name}
             </h1>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               {company.status === "approved" && (
                 <Badge className="bg-emerald-100 text-emerald-900 border-emerald-300 text-[10px]">
                   Verificada
@@ -219,11 +227,36 @@ const CompanyDashboard = () => {
                   Pendiente
                 </Badge>
               )}
+              <Badge
+                variant="outline"
+                className={`text-[10px] ${
+                  currentPlan === "destacado"
+                    ? "bg-amber-100 text-amber-900 border-amber-300"
+                    : currentPlan === "standard"
+                    ? "bg-primary/10 text-primary border-primary/30"
+                    : ""
+                }`}
+              >
+                Plan {PLAN_LABELS[currentPlan]}
+                {currentPlan === "destacado" && (
+                  <FileText className="w-2.5 h-2.5 ml-1" />
+                )}
+              </Badge>
               {company.business_type && <span>{company.business_type}</span>}
             </div>
           </div>
 
           <div className="flex flex-wrap gap-2">
+            {currentPlan !== "destacado" && (
+              <Button
+                size="sm"
+                onClick={() => setShowUpgrade(true)}
+                className="gap-1.5 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-md"
+              >
+                <ArrowUpRight className="w-4 h-4" />
+                Hacer upgrade
+              </Button>
+            )}
             <Button
               variant="outline"
               size="sm"
@@ -268,6 +301,10 @@ const CompanyDashboard = () => {
               <Compass className="w-3.5 h-3.5" />
               Mis rutas
             </TabsTrigger>
+            <TabsTrigger value="config" className="gap-1.5">
+              <Settings className="w-3.5 h-3.5" />
+              Configuración
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="ficha">
@@ -300,7 +337,20 @@ const CompanyDashboard = () => {
           <TabsContent value="rutas">
             <TabMisRutas userId={authUser.id} companyId={company.id} />
           </TabsContent>
+
+          <TabsContent value="config">
+            <TabConfiguracion email={authUser.email ?? company.email ?? ""} />
+          </TabsContent>
         </Tabs>
+
+        {/* Modal de upgrade accesible desde el header */}
+        <UpgradeModal
+          open={showUpgrade}
+          onOpenChange={setShowUpgrade}
+          currentPlan={currentPlan}
+          companyId={company.id}
+          onPlanChanged={() => void refreshPlan()}
+        />
       </div>
     </div>
   );

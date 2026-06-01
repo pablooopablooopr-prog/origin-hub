@@ -1,9 +1,23 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, Edit, Trash2, MapPin, Compass, Users, Loader2 } from "lucide-react";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  MapPin,
+  Compass,
+  Users,
+  Loader2,
+  Clock,
+  ChevronDown,
+  ChevronUp,
+  Star,
+  Calendar,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -272,53 +286,68 @@ const TabMisRutasInner = ({ userId, companyId }: TabMisRutasProps) => {
         </CardContent>
       </Card>
 
-      {/* Rutas donde aparezco */}
+      {/* Rutas donde aparezco — con itinerario expandible */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Apareces en estas rutas</CardTitle>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Compass className="w-4 h-4" />
+            Apareces en estas rutas
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {routesAsStop.length === 0 ? (
-            <div className="text-center py-8 space-y-3">
+            <div className="text-center py-8 space-y-4">
               <MapPin className="w-10 h-10 mx-auto text-muted-foreground/40" />
               <p className="text-sm text-muted-foreground">
-                Aún no apareces como parada en ninguna ruta. Contacta con
-                nosotros para entrar en una ruta esta temporada.
+                Aún no apareces como parada en ninguna ruta de ORIGEN.
               </p>
+              <Card className="bg-muted/40 max-w-md mx-auto text-left">
+                <CardContent className="p-4 space-y-2">
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
+                    Próxima temporada
+                  </p>
+                  <p className="text-sm">
+                    En tu temporada principal hay rutas curadas a las que puedes
+                    optar. Sugiérete y nuestro equipo te contactará.
+                  </p>
+                  <Button
+                    size="sm"
+                    className="gap-2 mt-2"
+                    onClick={() =>
+                      window.location.assign("mailto:rutas@origen.it.com?subject=Sugerencia%20de%20ruta")
+                    }
+                  >
+                    <Calendar className="w-3.5 h-3.5" />
+                    Sugerirme para próxima temporada
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-4">
-              {routesAsStop.map((route) => (
-                <Card
+              {routesAsStop.map((route, idx) => (
+                <RouteWithItinerary
                   key={route.id}
-                  className="border border-border hover:shadow-sm transition-shadow"
-                >
-                  <CardContent className="p-4 space-y-2">
-                    <h4 className="font-semibold text-sm">{route.title}</h4>
-                    {route.description && (
-                      <p className="text-xs text-muted-foreground line-clamp-2">
-                        {route.description}
-                      </p>
-                    )}
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                      {route.duration && <span>{route.duration}</span>}
-                      {route.total_participants !== null && (
-                        <span className="flex items-center gap-1">
-                          <Users className="w-3 h-3" />
-                          {route.total_participants}
-                        </span>
-                      )}
-                    </div>
-                    <Link to={`/rutas/${route.slug}`} className="block pt-2">
-                      <Button size="sm" variant="outline" className="w-full">
-                        Ver ruta pública
-                      </Button>
-                    </Link>
-                  </CardContent>
-                </Card>
+                  route={route}
+                  position={idx + 2}
+                  companyName={undefined}
+                />
               ))}
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Historial */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Historial de rutas pasadas</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground italic">
+            Cuando termine una ruta verás aquí los visitantes recibidos y la
+            puntuación media de los participantes.
+          </p>
         </CardContent>
       </Card>
 
@@ -347,6 +376,138 @@ const TabMisRutasInner = ({ userId, companyId }: TabMisRutasProps) => {
         </AlertDialogContent>
       </AlertDialog>
     </div>
+  );
+};
+
+/**
+ * Card de ruta con itinerario expandible. Datos de paradas son mock por ahora —
+ * cuando la tabla route_stops contenga `scheduled_time` por parada, sustituir.
+ */
+const RouteWithItinerary = ({
+  route,
+  position,
+}: {
+  route: CompanyRoute;
+  position: number;
+  companyName: string | undefined;
+}) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const mockStops = [
+    { time: "09:00", name: "Piedrabuena", note: "Punto de salida" },
+    { time: "10:30", name: "Tu empresa", note: "Parada · 15 min", you: true },
+    { time: "11:45", name: "Bodega Manchega", note: "Visita guiada" },
+    { time: "13:00", name: "Restaurante El Retablo", note: "Comida" },
+    { time: "15:00", name: "Apiarios del Bullaque", note: "Fin de ruta" },
+  ];
+
+  return (
+    <Card className="border border-border hover:shadow-sm transition-shadow">
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-start justify-between gap-2">
+          <div className="space-y-1 min-w-0">
+            <h4 className="font-semibold text-sm leading-snug">{route.title}</h4>
+            <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+              <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+              Eres parada #{position}
+            </p>
+          </div>
+          {route.difficulty && (
+            <Badge variant="outline" className="text-[10px] shrink-0">
+              {route.difficulty}
+            </Badge>
+          )}
+        </div>
+
+        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          {route.duration && (
+            <span className="flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {route.duration}
+            </span>
+          )}
+          {route.total_participants !== null && (
+            <span className="flex items-center gap-1">
+              <Users className="w-3 h-3" />
+              {route.total_participants} visitantes
+            </span>
+          )}
+        </div>
+
+        {expanded && (
+          <>
+            <Separator />
+            <div className="space-y-2">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
+                Itinerario
+              </p>
+              <ol className="space-y-2">
+                {mockStops.map((s, i) => (
+                  <li
+                    key={i}
+                    className={`flex items-start gap-3 text-sm ${
+                      s.you ? "bg-amber-50 border border-amber-200 rounded-lg p-2 -mx-2" : ""
+                    }`}
+                  >
+                    <div className="flex flex-col items-center pt-0.5">
+                      <div
+                        className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                          s.you
+                            ? "bg-amber-600 text-white"
+                            : "bg-muted text-muted-foreground"
+                        }`}
+                      >
+                        {i + 1}
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-muted-foreground">{s.time}</p>
+                      <p
+                        className={`text-sm leading-tight ${s.you ? "font-semibold" : "font-medium"}`}
+                      >
+                        {s.name}
+                        {s.you && (
+                          <Badge className="ml-2 bg-amber-100 text-amber-900 border-amber-300 text-[9px] px-1.5 py-0">
+                            Tú
+                          </Badge>
+                        )}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{s.note}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </>
+        )}
+
+        <div className="flex items-center gap-2 pt-2 border-t border-border">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setExpanded((v) => !v)}
+            className="gap-1 flex-1"
+          >
+            {expanded ? (
+              <>
+                <ChevronUp className="w-3.5 h-3.5" />
+                Ocultar itinerario
+              </>
+            ) : (
+              <>
+                <ChevronDown className="w-3.5 h-3.5" />
+                Ver itinerario
+              </>
+            )}
+          </Button>
+          <Link to={`/rutas/${route.slug}`}>
+            <Button size="sm" variant="outline">
+              Ruta pública
+            </Button>
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

@@ -15,14 +15,47 @@ export const PLAN_LEVEL: Record<CompanyPlan, number> = {
 
 export const PLAN_LABELS: Record<CompanyPlan, string> = {
   basico: "Básico",
-  standard: "Standard",
-  destacado: "Destacado",
+  standard: "Intermedio",
+  destacado: "Premium",
 };
 
 export const PLAN_PRICES: Record<CompanyPlan, number> = {
   basico: 20,
   standard: 35,
-  destacado: 40,
+  destacado: 50,
+};
+
+/**
+ * Resumen corto por plan, usado en popups de upgrade y comparativas.
+ * No incluye precios — los precios sólo se muestran dentro del modal.
+ */
+export const PLAN_TAGLINES: Record<CompanyPlan, string> = {
+  basico: "Empieza a aparecer en ORIGEN.",
+  standard: "Aparece en rutas estacionales, newsletter top y pin dorado.",
+  destacado: "Todo lo del Intermedio + digitalización de facturas (ley antifraude).",
+};
+
+/** Features visibles en el modal de upgrade. */
+export const PLAN_FEATURES: Record<CompanyPlan, string[]> = {
+  basico: [
+    "Ficha pública de tu empresa",
+    "Spotlight rotatorio en la home (~4 veces/mes)",
+    "Mapa B2B en modo lectura",
+    "Dashboard básico con estadísticas",
+  ],
+  standard: [
+    "Todo lo del plan Básico",
+    "Pin dorado en mapa + borde dorado en spotlight",
+    "TOP de la newsletter trimestral",
+    "Aparición garantizada en rutas de tu temporada",
+    "Mensajes B2B con restaurantes verificados",
+  ],
+  destacado: [
+    "Todo lo del plan Intermedio",
+    "Digitalización de facturas conforme a la nueva normativa antifraude",
+    "Soporte de implementación durante el periodo de adaptación legal",
+    "Acceso prioritario a leads B2B",
+  ],
 };
 
 export interface UsePlanResult {
