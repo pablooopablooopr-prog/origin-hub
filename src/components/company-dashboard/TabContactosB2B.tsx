@@ -1,39 +1,18 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
-  MessageCircle,
-  Send,
-  MapPin,
-  TrendingUp,
-  Inbox,
-  Building2,
-  Hotel,
-  Utensils,
-  Store,
+  Edit3,
   Filter,
   Lock,
-  Eye,
-  EyeOff,
-  CheckCircle2,
+  MapPin,
+  MessageCircle,
   Search,
-  ChevronRight,
+  SlidersHorizontal,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -41,814 +20,462 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { Separator } from "@/components/ui/separator";
-import CompanyPlanGate from "@/components/CompanyPlanGate";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-/**
- * PESTAÑA 4: CONTACTOS B2B (gated por plan Intermedio o superior).
- *
- * Bloque visual completo:
- *   1. Mini-mapa con pins de restaurantes/hoteles/catering verificados
- *   2. Filtros laterales: tipo · provincia · volumen · distancia · búsqueda
- *   3. Click en pin → side-sheet con ficha + CTA "Iniciar chat anónimo"
- *   4. Bandeja de chats (mock) con anonimato hasta revelado mutuo
- *   5. Demandas agregadas (sin nombres)
- *
- * El backend real de chat se conectará en una fase siguiente (tabla
- * b2b_conversations + b2b_messages + RLS). De momento, datos mock coherentes.
- */
-
-type ContactoTipo = "Restaurante" | "Hotel" | "Catering" | "Tienda" | "Cooperativa";
-
-interface Contacto {
+interface B2BCompany {
   id: string;
-  nombre: string;
-  tipo: ContactoTipo;
-  provincia: string;
-  localidad: string;
-  capacidad: string;
-  demanda: string;
-  rating: number;
-  volumen: "Pequeño" | "Mediano" | "Grande";
-  distancia_km: number;
-  /** Pos relativa sobre el mini-mapa SVG (0-100) */
-  x: number;
-  y: number;
+  business_name: string;
+  business_type: string | null;
+  address: string | null;
+  description: string | null;
+  logo_url: string | null;
+  slug: string | null;
+  status: string | null;
+  latitude: number | null;
+  longitude: number | null;
 }
 
-const MOCK_CONTACTOS: Contacto[] = [
-  {
-    id: "c1",
-    nombre: "Restaurante El Retablo",
-    tipo: "Restaurante",
-    provincia: "Ciudad Real",
-    localidad: "Piedrabuena",
-    capacidad: "~80 cubiertos",
-    demanda: "Buscan queso curado y cordero manchego",
-    rating: 4.8,
-    volumen: "Mediano",
-    distancia_km: 18,
-    x: 32,
-    y: 58,
-  },
-  {
-    id: "c2",
-    nombre: "Hotel Bodega La Encina",
-    tipo: "Hotel",
-    provincia: "Toledo",
-    localidad: "Yepes",
-    capacidad: "32 habitaciones · restaurante 60",
-    demanda: "AOVE de cosecha temprana, miel artesana",
-    rating: 4.6,
-    volumen: "Grande",
-    distancia_km: 84,
-    x: 56,
-    y: 32,
-  },
-  {
-    id: "c3",
-    nombre: "Catering Mesta",
-    tipo: "Catering",
-    provincia: "Madrid",
-    localidad: "Aranjuez",
-    capacidad: "Eventos 50-400 pax",
-    demanda: "Embutido ibérico, quesos D.O.",
-    rating: 4.7,
-    volumen: "Grande",
-    distancia_km: 142,
-    x: 64,
-    y: 18,
-  },
-  {
-    id: "c4",
-    nombre: "Tienda Sabor de la Tierra",
-    tipo: "Tienda",
-    provincia: "Cuenca",
-    localidad: "Belmonte",
-    capacidad: "Tienda gourmet",
-    demanda: "Productos D.O. La Mancha",
-    rating: 4.5,
-    volumen: "Pequeño",
-    distancia_km: 95,
-    x: 78,
-    y: 48,
-  },
-  {
-    id: "c5",
-    nombre: "Cooperativa San Isidro",
-    tipo: "Cooperativa",
-    provincia: "Ciudad Real",
-    localidad: "Almagro",
-    capacidad: "Cooperativa de 120 socios",
-    demanda: "Acuerdos marco con productores artesanos",
-    rating: 4.9,
-    volumen: "Grande",
-    distancia_km: 36,
-    x: 44,
-    y: 68,
-  },
-];
-
-const TIPO_ICON: Record<ContactoTipo, React.ReactNode> = {
-  Restaurante: <Utensils className="w-3.5 h-3.5" />,
-  Hotel: <Hotel className="w-3.5 h-3.5" />,
-  Catering: <Building2 className="w-3.5 h-3.5" />,
-  Tienda: <Store className="w-3.5 h-3.5" />,
-  Cooperativa: <Building2 className="w-3.5 h-3.5" />,
-};
-
-const TIPO_COLOR: Record<ContactoTipo, string> = {
-  Restaurante: "fill-emerald-500",
-  Hotel: "fill-sky-500",
-  Catering: "fill-amber-500",
-  Tienda: "fill-pink-500",
-  Cooperativa: "fill-indigo-500",
-};
-
-interface ChatMock {
+interface ConversationPreview {
   id: string;
-  contacto_anon: string;
-  region: string;
-  ultimo_mensaje: string;
-  fecha: string;
-  no_leidos: number;
-  identidad_revelada: boolean;
-  contacto_real?: string;
-  mensajes: { from: "yo" | "ellos"; text: string; ts: string }[];
+  name: string;
+  message: string;
+  time: string;
+  unread?: number;
+  logo?: string;
 }
 
-const MOCK_CHATS: ChatMock[] = [
+const DEMO_CONVERSATIONS: ConversationPreview[] = [
   {
-    id: "ch1",
-    contacto_anon: "Restaurante anónimo",
-    region: "Provincia de Toledo",
-    ultimo_mensaje: "¿Cuál es tu precio por kilo?",
-    fecha: "Ayer · 16:15",
-    no_leidos: 2,
-    identidad_revelada: false,
-    mensajes: [
-      {
-        from: "ellos",
-        text: "Hola, busco queso manchego curado, 50kg/mes, precio máx 12€/kg",
-        ts: "Ayer 14:02",
-      },
-      {
-        from: "yo",
-        text: "Hola, tenemos D.O. Manchego de 18 meses. Te puedo mandar ficha técnica.",
-        ts: "Ayer 14:30",
-      },
-      {
-        from: "ellos",
-        text: "¿Cuál es tu precio por kilo?",
-        ts: "Ayer 16:15",
-      },
-    ],
+    id: "verde-campo",
+    name: "Verde Campo S.L.",
+    message: "Hola, estamos interesados en tu aceite...",
+    time: "11:42",
+    unread: 2,
   },
   {
-    id: "ch2",
-    contacto_anon: "Hotel anónimo",
-    region: "Provincia de Madrid",
-    ultimo_mensaje: "Perfecto, te paso datos por aquí.",
-    fecha: "12 may · 11:08",
-    no_leidos: 0,
-    identidad_revelada: true,
-    contacto_real: "Hotel Bodega La Encina · contacto@laencina.es",
-    mensajes: [
-      {
-        from: "ellos",
-        text: "Estamos interesados en vuestro AOVE para temporada alta.",
-        ts: "10 may 09:11",
-      },
-      {
-        from: "yo",
-        text: "Genial, ¿qué volumen estimáis al mes?",
-        ts: "10 may 09:45",
-      },
-      {
-        from: "ellos",
-        text: "Unos 60L/mes en temporada. ¿Os interesa intercambiar identidad?",
-        ts: "12 may 10:50",
-      },
-      {
-        from: "yo",
-        text: "Sí, acepto revelar identidad.",
-        ts: "12 may 11:00",
-      },
-      {
-        from: "ellos",
-        text: "Perfecto, te paso datos por aquí.",
-        ts: "12 may 11:08",
-      },
-    ],
+    id: "despensa-chef",
+    name: "La Despensa del Chef",
+    message: "Gracias por la información, ¿tenéis...",
+    time: "10:15",
+    unread: 1,
+  },
+  {
+    id: "del-mar",
+    name: "Del Mar a la Mesa",
+    message: "Perfecto, quedamos a la espera.",
+    time: "Ayer",
+  },
+  {
+    id: "sabor-rural",
+    name: "Sabor Rural",
+    message: "¿Podrías enviarnos tu catálogo?",
+    time: "Ayer",
+  },
+  {
+    id: "hortus",
+    name: "Hortus Productos",
+    message: "Muchas gracias, hablaremos pronto.",
+    time: "2 jun",
+  },
+  {
+    id: "tierra-viva",
+    name: "Tierra Viva Eco",
+    message: "Hola, nos interesa tu producción.",
+    time: "1 jun",
   },
 ];
 
-const DEMO_DEMANDS = [
-  {
-    id: "d1",
-    text: "Este mes, 3 restaurantes buscan queso manchego (50 kg/mes)",
-    region: "Toledo · Madrid",
-  },
-  {
-    id: "d2",
-    text: "Este mes, 2 hoteles buscan AOVE cosecha temprana",
-    region: "Ciudad Real",
-  },
-  {
-    id: "d3",
-    text: "Este mes, 4 caterings buscan miel artesana y embutidos",
-    region: "Madrid · Barcelona",
-  },
-];
-
-const TIPOS: ContactoTipo[] = [
+const COMPANY_TYPES = [
+  "Todos",
   "Restaurante",
-  "Hotel",
-  "Catering",
+  "Productor",
   "Tienda",
   "Cooperativa",
+  "Alojamiento Rural",
+  "Otro",
 ];
 
-const PROVINCIAS = ["Todas", "Ciudad Real", "Toledo", "Madrid", "Cuenca", "Guadalajara"];
-const VOLUMENES = ["Cualquiera", "Pequeño", "Mediano", "Grande"];
+const PROVINCES = [
+  "Todas",
+  "Ciudad Real",
+  "Toledo",
+  "Madrid",
+  "Cuenca",
+  "Guadalajara",
+  "Barcelona",
+  "Valencia",
+];
 
-const TabContactosB2BInner = () => {
-  const [activeSubTab, setActiveSubTab] = useState("mapa");
-  const [filterTipos, setFilterTipos] = useState<ContactoTipo[]>(TIPOS);
-  const [filterProvincia, setFilterProvincia] = useState("Todas");
-  const [filterVolumen, setFilterVolumen] = useState("Cualquiera");
-  const [filterDistancia, setFilterDistancia] = useState(200);
-  const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<Contacto | null>(null);
-  const [chatDraft, setChatDraft] = useState("");
-  const [activeChat, setActiveChat] = useState<ChatMock | null>(MOCK_CHATS[0] ?? null);
+const CATEGORIES = [
+  "Todas",
+  "Quesos",
+  "Aceite",
+  "Vino",
+  "Miel",
+  "Carne",
+  "Restaurante",
+  "Gourmet",
+];
 
-  const filtered = useMemo(() => {
-    return MOCK_CONTACTOS.filter((c) => {
-      if (!filterTipos.includes(c.tipo)) return false;
-      if (filterProvincia !== "Todas" && c.provincia !== filterProvincia)
+const clusterPositions = [
+  { left: "22%", top: "20%" },
+  { left: "38%", top: "42%" },
+  { left: "51%", top: "60%" },
+  { left: "78%", top: "44%" },
+  { left: "64%", top: "78%" },
+  { left: "84%", top: "70%" },
+  { left: "56%", top: "18%" },
+  { left: "34%", top: "74%" },
+];
+
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+
+const TabContactosB2B = () => {
+  const [companies, setCompanies] = useState<B2BCompany[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [conversationSearch, setConversationSearch] = useState("");
+  const [companySearch, setCompanySearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("Todos");
+  const [provinceFilter, setProvinceFilter] = useState("Todas");
+  const [categoryFilter, setCategoryFilter] = useState("Todas");
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+
+    const loadCompanies = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("companies")
+        .select(
+          "id, business_name, business_type, address, description, logo_url, slug, status, latitude, longitude"
+        )
+        .eq("status", "approved")
+        .order("business_name", { ascending: true })
+        .limit(80);
+
+      if (!alive) return;
+
+      if (error) {
+        console.warn("b2b companies error:", error.message);
+        toast.error("No se pudieron cargar las empresas aprobadas");
+        setCompanies([]);
+      } else {
+        setCompanies((data ?? []) as B2BCompany[]);
+      }
+      setLoading(false);
+    };
+
+    void loadCompanies();
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const conversations = useMemo(() => {
+    const query = conversationSearch.trim().toLowerCase();
+    if (!query) return DEMO_CONVERSATIONS;
+    return DEMO_CONVERSATIONS.filter((conversation) =>
+      `${conversation.name} ${conversation.message}`.toLowerCase().includes(query)
+    );
+  }, [conversationSearch]);
+
+  const filteredCompanies = useMemo(() => {
+    const query = companySearch.trim().toLowerCase();
+    return companies.filter((company) => {
+      const haystack = `${company.business_name} ${company.business_type ?? ""} ${
+        company.address ?? ""
+      } ${company.description ?? ""}`.toLowerCase();
+
+      if (query && !haystack.includes(query)) return false;
+      if (typeFilter !== "Todos" && company.business_type !== typeFilter) return false;
+      if (
+        provinceFilter !== "Todas" &&
+        !(company.address ?? "").toLowerCase().includes(provinceFilter.toLowerCase())
+      ) {
         return false;
-      if (filterVolumen !== "Cualquiera" && c.volumen !== filterVolumen)
+      }
+      if (
+        categoryFilter !== "Todas" &&
+        !haystack.includes(categoryFilter.toLowerCase())
+      ) {
         return false;
-      if (c.distancia_km > filterDistancia) return false;
-      if (search && !`${c.nombre} ${c.localidad}`.toLowerCase().includes(search.toLowerCase()))
-        return false;
+      }
       return true;
     });
-  }, [filterTipos, filterProvincia, filterVolumen, filterDistancia, search]);
+  }, [companies, companySearch, typeFilter, provinceFilter, categoryFilter]);
 
-  const toggleTipo = (t: ContactoTipo) => {
-    setFilterTipos((prev) =>
-      prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]
-    );
-  };
+  const selectedCompany =
+    filteredCompanies.find((company) => company.id === selectedCompanyId) ??
+    filteredCompanies[0] ??
+    null;
 
-  const handleSendDraft = () => {
-    if (!chatDraft.trim() || !activeChat) return;
-    toast.success("Mensaje enviado (modo demostración)");
-    setChatDraft("");
-  };
-
-  const handleStartChat = (c: Contacto) => {
-    toast.success(`Solicitud de chat anónimo enviada a ${c.tipo} en ${c.provincia}`);
-    setSelected(null);
+  const handleStartConversation = (company: B2BCompany) => {
+    setSelectedCompanyId(company.id);
+    toast.success(`Conversación privada preparada con ${company.business_name}`);
   };
 
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-2xl font-bold tracking-tight">Contactos B2B</h2>
+        <h2
+          className="text-3xl font-semibold tracking-tight text-[#1f140c]"
+          style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif" }}
+        >
+          Contactos B2B
+        </h2>
         <p className="text-sm text-muted-foreground">
-          Conecta con restaurantes, hoteles y caterings verificados. Tu nombre
-          permanece oculto hasta que ambos aceptáis revelar identidad.
+          Conecta de forma privada con restaurantes, tiendas, productores y
+          negocios verificados dentro de RitmOrigen.
         </p>
       </div>
 
-      <Tabs value={activeSubTab} onValueChange={setActiveSubTab}>
-        <TabsList className="grid grid-cols-3 max-w-xl">
-          <TabsTrigger value="mapa" className="gap-1.5">
-            <MapPin className="w-3.5 h-3.5" />
-            Mapa
-          </TabsTrigger>
-          <TabsTrigger value="mensajes" className="gap-1.5">
-            <Inbox className="w-3.5 h-3.5" />
-            Mensajes
-            {MOCK_CHATS.some((c) => c.no_leidos > 0) && (
-              <Badge className="h-4 px-1.5 ml-1 text-[10px] bg-primary text-primary-foreground">
-                {MOCK_CHATS.reduce((s, c) => s + c.no_leidos, 0)}
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="demandas" className="gap-1.5">
-            <TrendingUp className="w-3.5 h-3.5" />
-            Demandas
-          </TabsTrigger>
-        </TabsList>
-
-        {/* SUB-TAB MAPA */}
-        <TabsContent value="mapa" className="mt-6">
-          <div className="grid lg:grid-cols-[280px,1fr] gap-4">
-            {/* Filtros */}
-            <Card className="h-fit">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <Filter className="w-4 h-4" />
-                  Filtros
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-xs">Buscar</Label>
-                  <div className="relative">
-                    <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Nombre o localidad"
-                      className="pl-8 h-9"
-                    />
-                  </div>
+      <Card className="overflow-hidden bg-[#fffaf2]/80">
+        <CardContent className="grid gap-0 p-0 lg:grid-cols-[340px,1fr]">
+          <aside className="border-b border-border bg-[#fffaf2]/70 lg:border-b-0 lg:border-r">
+            <div className="flex items-center justify-between gap-3 p-5">
+              <h3 className="font-semibold">Conversaciones</h3>
+              <Button size="icon" variant="outline" aria-label="Nueva conversación">
+                <Edit3 className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="px-5 pb-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  value={conversationSearch}
+                  onChange={(event) => setConversationSearch(event.target.value)}
+                  placeholder="Buscar conversaciones..."
+                  className="pl-9"
+                />
+              </div>
+            </div>
+            <div className="max-h-[560px] overflow-y-auto border-t border-border">
+              {conversations.length === 0 ? (
+                <div className="p-6 text-sm text-muted-foreground">
+                  Aún no tienes conversaciones abiertas. Busca una empresa en
+                  el mapa para iniciar el primer contacto.
                 </div>
-
-                <div className="space-y-2">
-                  <Label className="text-xs">Tipo de contacto</Label>
-                  <div className="flex flex-wrap gap-1.5">
-                    {TIPOS.map((t) => (
-                      <Badge
-                        key={t}
-                        variant={filterTipos.includes(t) ? "default" : "outline"}
-                        className="cursor-pointer text-[10px] gap-1"
-                        onClick={() => toggleTipo(t)}
-                      >
-                        {TIPO_ICON[t]}
-                        {t}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-xs">Provincia</Label>
-                  <Select
-                    value={filterProvincia}
-                    onValueChange={setFilterProvincia}
-                  >
-                    <SelectTrigger className="h-9">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {PROVINCIAS.map((p) => (
-                        <SelectItem key={p} value={p}>
-                          {p}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-xs">Volumen estimado</Label>
-                  <Select value={filterVolumen} onValueChange={setFilterVolumen}>
-                    <SelectTrigger className="h-9">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {VOLUMENES.map((v) => (
-                        <SelectItem key={v} value={v}>
-                          {v}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <Label className="text-xs">Distancia máxima</Label>
-                    <span className="text-xs text-muted-foreground">
-                      {filterDistancia} km
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={10}
-                    max={300}
-                    step={10}
-                    value={filterDistancia}
-                    onChange={(e) => setFilterDistancia(Number(e.target.value))}
-                    className="w-full accent-primary"
-                  />
-                </div>
-
-                <Separator />
-
-                <p className="text-xs text-muted-foreground">
-                  <strong className="text-foreground">{filtered.length}</strong>{" "}
-                  contacto{filtered.length === 1 ? "" : "s"} encontrado
-                  {filtered.length === 1 ? "" : "s"}
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Mini-mapa SVG */}
-            <Card className="overflow-hidden">
-              <CardContent className="p-0 relative">
-                <div className="relative aspect-[16/10] bg-gradient-to-br from-emerald-50 via-amber-50/30 to-sky-50 border-b border-border overflow-hidden">
-                  {/* Fondo decorativo tipo mapa */}
-                  <svg
-                    viewBox="0 0 100 62.5"
-                    className="absolute inset-0 w-full h-full"
-                    preserveAspectRatio="none"
-                  >
-                    {/* Contornos decorativos */}
-                    <path
-                      d="M5,40 Q20,25 35,32 T70,28 T95,38 L95,55 L5,55 Z"
-                      fill="hsl(100 25% 70% / 0.15)"
-                    />
-                    <path
-                      d="M10,20 Q30,15 50,22 T90,18"
-                      fill="none"
-                      stroke="hsl(25 35% 35% / 0.1)"
-                      strokeWidth="0.3"
-                      strokeDasharray="1,1"
-                    />
-                    <path
-                      d="M15,45 Q40,38 65,42 T95,40"
-                      fill="none"
-                      stroke="hsl(25 35% 35% / 0.1)"
-                      strokeWidth="0.3"
-                      strokeDasharray="1,1"
-                    />
-
-                    {/* Pin "yo" en el centro */}
-                    <circle cx="50" cy="50" r="1.6" fill="hsl(25 35% 35%)" />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="3"
-                      fill="hsl(25 35% 35% / 0.2)"
-                      className="animate-pulse"
-                    />
-
-                    {/* Pins de contactos */}
-                    {filtered.map((c) => (
-                      <g
-                        key={c.id}
-                        onClick={() => setSelected(c)}
-                        className="cursor-pointer"
-                        style={{ transition: "all 0.2s" }}
-                      >
-                        <circle
-                          cx={c.x}
-                          cy={c.y * 0.625}
-                          r="2.5"
-                          className={`${TIPO_COLOR[c.tipo]} stroke-white`}
-                          strokeWidth="0.4"
-                        />
-                        <circle
-                          cx={c.x}
-                          cy={c.y * 0.625}
-                          r="4.5"
-                          className={`${TIPO_COLOR[c.tipo]} opacity-20`}
-                        />
-                      </g>
-                    ))}
-                  </svg>
-
-                  {/* Leyenda */}
-                  <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-2 bg-card/90 backdrop-blur-sm rounded-lg p-2 border border-border">
-                    <div className="flex items-center gap-1.5 text-[10px]">
-                      <span className="w-2 h-2 rounded-full bg-[hsl(25,35%,35%)]" />
-                      Tú
-                    </div>
-                    {TIPOS.map((t) => (
-                      <div
-                        key={t}
-                        className="flex items-center gap-1.5 text-[10px]"
-                      >
-                        <span
-                          className={`w-2 h-2 rounded-full ${TIPO_COLOR[t].replace("fill-", "bg-")}`}
-                        />
-                        {t}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Lista debajo del mapa */}
-                <div className="p-4 space-y-2 max-h-[400px] overflow-y-auto">
-                  {filtered.length === 0 && (
-                    <p className="text-sm text-muted-foreground italic text-center py-6">
-                      Ningún contacto coincide con los filtros.
-                    </p>
-                  )}
-                  {filtered.map((c) => (
-                    <div
-                      key={c.id}
-                      onClick={() => setSelected(c)}
-                      className="flex items-center justify-between gap-3 p-3 rounded-lg border border-border hover:border-primary/40 hover:bg-muted/30 cursor-pointer transition-colors"
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div
-                          className={`w-8 h-8 rounded-full flex items-center justify-center ${TIPO_COLOR[c.tipo].replace("fill-", "bg-").replace("-500", "-100")} ${TIPO_COLOR[c.tipo].replace("fill-", "text-").replace("-500", "-700")}`}
-                        >
-                          {TIPO_ICON[c.tipo]}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="font-medium text-sm truncate">
-                            {c.tipo} verificado
-                          </p>
-                          <p className="text-xs text-muted-foreground truncate">
-                            {c.localidad}, {c.provincia} · {c.distancia_km} km ·{" "}
-                            {c.volumen}
-                          </p>
-                        </div>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Side-sheet del contacto */}
-          <Sheet open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
-            <SheetContent className="overflow-y-auto">
-              {selected && (
-                <>
-                  <SheetHeader>
-                    <Badge variant="outline" className="w-fit gap-1 text-[10px]">
-                      {TIPO_ICON[selected.tipo]}
-                      {selected.tipo} verificado
-                    </Badge>
-                    <SheetTitle className="flex items-center gap-2">
-                      <Lock className="w-4 h-4 text-muted-foreground" />
-                      Contacto anónimo
-                    </SheetTitle>
-                    <SheetDescription>
-                      Verás el nombre y los datos de contacto reales sólo si
-                      ambos aceptáis revelar identidad.
-                    </SheetDescription>
-                  </SheetHeader>
-
-                  <div className="space-y-4 mt-6">
-                    <div className="space-y-2">
-                      <FichaRow label="Provincia" value={selected.provincia} />
-                      <FichaRow label="Localidad" value={selected.localidad} />
-                      <FichaRow label="Capacidad" value={selected.capacidad} />
-                      <FichaRow label="Volumen estimado" value={selected.volumen} />
-                      <FichaRow
-                        label="Distancia"
-                        value={`${selected.distancia_km} km`}
-                      />
-                      <FichaRow
-                        label="Rating en red"
-                        value={`${selected.rating} / 5`}
-                      />
-                    </div>
-
-                    <Separator />
-
-                    <div>
-                      <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-1">
-                        Qué busca
-                      </p>
-                      <p className="text-sm leading-relaxed">{selected.demanda}</p>
-                    </div>
-
-                    <Separator />
-
-                    <div className="bg-muted/40 rounded-lg p-3 text-xs text-muted-foreground leading-relaxed">
-                      <strong className="text-foreground">Privacidad:</strong>{" "}
-                      tu nombre y tus datos seguirán ocultos. El otro lado sólo
-                      verá tu nicho y provincia hasta que ambos pulséis
-                      "Revelar identidad" en la conversación.
-                    </div>
-
-                    <Button
-                      className="w-full gap-2"
-                      onClick={() => handleStartChat(selected)}
-                    >
-                      <Send className="w-4 h-4" />
-                      Iniciar chat anónimo
-                    </Button>
-                  </div>
-                </>
-              )}
-            </SheetContent>
-          </Sheet>
-        </TabsContent>
-
-        {/* SUB-TAB MENSAJES */}
-        <TabsContent value="mensajes" className="mt-6">
-          <div className="grid lg:grid-cols-[300px,1fr] gap-4 min-h-[500px]">
-            {/* Bandeja */}
-            <Card className="overflow-hidden">
-              <CardHeader className="py-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <Inbox className="w-4 h-4" />
-                  Conversaciones
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0 divide-y divide-border">
-                {MOCK_CHATS.map((c) => (
-                  <button
-                    key={c.id}
-                    onClick={() => setActiveChat(c)}
-                    className={`w-full text-left p-3 hover:bg-muted/40 transition-colors ${
-                      activeChat?.id === c.id ? "bg-muted/60" : ""
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <span className="text-sm font-medium truncate flex items-center gap-1">
-                        {c.identidad_revelada ? (
-                          <Eye className="w-3 h-3 text-emerald-700" />
-                        ) : (
-                          <EyeOff className="w-3 h-3 text-muted-foreground" />
-                        )}
-                        {c.identidad_revelada
-                          ? c.contacto_real?.split(" · ")[0]
-                          : c.contacto_anon}
-                      </span>
-                      {c.no_leidos > 0 && (
-                        <Badge className="h-4 px-1.5 text-[10px]">
-                          {c.no_leidos}
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {c.ultimo_mensaje}
-                    </p>
-                    <p className="text-[10px] text-muted-foreground mt-1">
-                      {c.fecha} · {c.region}
-                    </p>
-                  </button>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Conversación activa */}
-            <Card className="flex flex-col">
-              {activeChat ? (
-                <>
-                  <CardHeader className="py-3 border-b border-border">
-                    <div className="flex items-center justify-between gap-2">
-                      <div>
-                        <CardTitle className="text-sm flex items-center gap-2">
-                          {activeChat.identidad_revelada ? (
-                            <>
-                              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                              {activeChat.contacto_real}
-                            </>
-                          ) : (
-                            <>
-                              <Lock className="w-4 h-4 text-muted-foreground" />
-                              {activeChat.contacto_anon}
-                            </>
-                          )}
-                        </CardTitle>
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                          {activeChat.region}
-                        </p>
-                      </div>
-                      {!activeChat.identidad_revelada && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="gap-1.5"
-                          onClick={() =>
-                            toast.info(
-                              "Solicitud de revelar identidad enviada. La otra parte debe aceptar."
-                            )
-                          }
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                          Revelar identidad
-                        </Button>
-                      )}
-                    </div>
-                  </CardHeader>
-
-                  <CardContent className="flex-1 p-4 space-y-3 overflow-y-auto max-h-[400px]">
-                    {activeChat.mensajes.map((m, i) => (
-                      <div
-                        key={i}
-                        className={`flex ${m.from === "yo" ? "justify-end" : "justify-start"}`}
-                      >
-                        <div
-                          className={`max-w-[75%] rounded-2xl px-4 py-2 ${
-                            m.from === "yo"
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-muted"
-                          }`}
-                        >
-                          <p className="text-sm leading-snug">{m.text}</p>
-                          <p
-                            className={`text-[10px] mt-1 ${
-                              m.from === "yo"
-                                ? "text-primary-foreground/60"
-                                : "text-muted-foreground"
-                            }`}
-                          >
-                            {m.ts}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </CardContent>
-
-                  <div className="p-3 border-t border-border flex gap-2">
-                    <Input
-                      value={chatDraft}
-                      onChange={(e) => setChatDraft(e.target.value)}
-                      placeholder="Escribe tu mensaje..."
-                      className="flex-1"
-                      onKeyDown={(e) => e.key === "Enter" && handleSendDraft()}
-                    />
-                    <Button onClick={handleSendDraft} className="gap-1.5">
-                      <Send className="w-3.5 h-3.5" />
-                      Enviar
-                    </Button>
-                  </div>
-                </>
               ) : (
-                <CardContent className="flex-1 flex items-center justify-center">
-                  <p className="text-sm text-muted-foreground italic">
-                    Selecciona una conversación para empezar.
-                  </p>
-                </CardContent>
+                conversations.map((conversation) => (
+                  <button
+                    key={conversation.id}
+                    type="button"
+                    className="flex w-full items-center gap-3 border-b border-border/70 p-4 text-left transition-colors hover:bg-[#f4eadc]"
+                  >
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={conversation.logo} alt="" />
+                      <AvatarFallback className="bg-[#e9dece] text-[#4f6f3f]">
+                        {initials(conversation.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="min-w-0 flex-1">
+                      <span className="flex items-center justify-between gap-3">
+                        <strong className="truncate text-sm">
+                          {conversation.name}
+                        </strong>
+                        <span className="shrink-0 text-xs text-muted-foreground">
+                          {conversation.time}
+                        </span>
+                      </span>
+                      <span className="mt-1 block truncate text-sm text-muted-foreground">
+                        {conversation.message}
+                      </span>
+                    </span>
+                    {conversation.unread ? (
+                      <Badge className="h-6 min-w-6 justify-center rounded-full bg-[#7b572d] px-2">
+                        {conversation.unread}
+                      </Badge>
+                    ) : null}
+                  </button>
+                ))
               )}
-            </Card>
-          </div>
+            </div>
+          </aside>
 
-          <Card className="mt-4 bg-muted/40">
-            <CardContent className="p-4 flex items-start gap-3">
-              <Lock className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                <strong className="text-foreground">Privacidad por diseño:</strong>{" "}
-                tu identidad permanece oculta al otro lado hasta que ambos
-                acepten "Revelar identidad". Cuando ambos lo aceptáis, se
-                intercambian nombre y datos de contacto.
+          <section className="p-5">
+            <div className="mb-5">
+              <h3 className="font-semibold">Descubre empresas</h3>
+              <p className="text-sm text-muted-foreground">
+                Busca y conecta con restaurantes, tiendas y productores en toda
+                España.
               </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </div>
 
-        {/* SUB-TAB DEMANDAS */}
-        <TabsContent value="demandas" className="mt-6 space-y-3">
-          <p className="text-sm text-muted-foreground">
-            Pedidos agregados de la red este mes. No verás nombres hasta que
-            envíes mensaje y acepten contacto.
-          </p>
-          {DEMO_DEMANDS.map((d) => (
-            <Card key={d.id} className="hover:shadow-sm transition-shadow">
-              <CardContent className="p-5 flex items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">{d.text}</p>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1">
-                    <MapPin className="w-3 h-3" />
-                    {d.region}
-                  </p>
+            <div className="mb-5 grid gap-3 md:grid-cols-[1.2fr_0.9fr_0.9fr_0.9fr_auto]">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  value={companySearch}
+                  onChange={(event) => setCompanySearch(event.target.value)}
+                  placeholder="Buscar empresas..."
+                  className="pl-9"
+                />
+              </div>
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Tipo de empresa" />
+                </SelectTrigger>
+                <SelectContent>
+                  {COMPANY_TYPES.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type === "Todos" ? "Tipo de empresa" : type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={provinceFilter} onValueChange={setProvinceFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Provincia" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PROVINCES.map((province) => (
+                    <SelectItem key={province} value={province}>
+                      {province === "Todas" ? "Provincia" : province}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Categoría / Producto" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category === "Todas" ? "Categoría / Producto" : category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button variant="outline" className="gap-2">
+                <Filter className="h-4 w-4" />
+                Más filtros
+              </Button>
+            </div>
+
+            <div className="relative min-h-[420px] overflow-hidden rounded-md border border-border bg-[#e8f2f3]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_48%,#fbf4e8_0_22%,transparent_23%),radial-gradient(circle_at_58%_58%,#f5ead8_0_18%,transparent_19%),radial-gradient(circle_at_70%_42%,#fbf4e8_0_20%,transparent_21%),linear-gradient(135deg,#d9eef6,#f7eddf_45%,#cfe8f2)]" />
+              <div className="absolute left-[18%] top-[18%] h-[68%] w-[62%] rounded-[45%_35%_42%_30%] border border-[#cdbb9c]/60 bg-[#fbf4e8]/80 shadow-inner" />
+              <div className="absolute left-[38%] top-[43%] text-sm text-[#8d7d6d]">
+                Madrid
+              </div>
+              <div className="absolute left-[48%] top-[60%] text-sm text-[#8d7d6d]">
+                Castilla-La Mancha
+              </div>
+              <div className="absolute left-[70%] top-[36%] text-sm text-[#8d7d6d]">
+                Aragón
+              </div>
+              <div className="absolute left-[20%] top-[40%] text-sm text-[#8d7d6d]">
+                Castilla y León
+              </div>
+
+              {filteredCompanies.length > 0 ? (
+                filteredCompanies.slice(0, 12).map((company, index) => {
+                  const position = clusterPositions[index % clusterPositions.length];
+                  return (
+                    <button
+                      key={company.id}
+                      type="button"
+                      onClick={() => handleStartConversation(company)}
+                      className="absolute flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#d7c4a3] text-sm font-bold text-[#3c2b1d] shadow-[0_4px_16px_rgba(76,51,25,0.22)] ring-4 ring-[#fffaf2]/70"
+                      style={{ left: position.left, top: position.top }}
+                      title={company.business_name}
+                    >
+                      {index + 1}
+                    </button>
+                  );
+                })
+              ) : (
+                <div className="absolute inset-x-6 bottom-6 rounded-md border border-border bg-[#fffaf2]/88 p-4 text-sm text-muted-foreground shadow-sm">
+                  No hay empresas aprobadas que coincidan con los filtros.
                 </div>
-                <Badge variant="outline" className="shrink-0">
-                  Activa
-                </Badge>
-              </CardContent>
-            </Card>
-          ))}
-          <p className="text-xs text-muted-foreground italic pt-2">
-            Datos agregados, sin nombres. Cuando una demanda coincide con tu
-            categoría, también te llega como notificación.
-          </p>
-        </TabsContent>
-      </Tabs>
+              )}
+
+              <div className="absolute bottom-4 right-4 overflow-hidden rounded-md border border-border bg-white/90 shadow-sm">
+                <button className="block h-9 w-9 border-b border-border text-xl">+</button>
+                <button className="block h-9 w-9 text-xl">-</button>
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_320px]">
+              <div>
+                <p className="text-sm text-muted-foreground">
+                  Haz clic en una empresa para ver sus detalles e iniciar una
+                  conversación privada.
+                </p>
+                <p className="mt-2 flex items-start gap-2 text-sm text-muted-foreground">
+                  <Lock className="mt-0.5 h-4 w-4 shrink-0 text-[#4f6f3f]" />
+                  Privacidad por diseño: tus datos directos solo se comparten
+                  cuando ambas partes aceptan continuar el acuerdo.
+                </p>
+              </div>
+
+              <Card className="bg-[#fffaf2]/82">
+                <CardContent className="p-4">
+                  {loading ? (
+                    <p className="text-sm text-muted-foreground">
+                      Cargando empresas aprobadas...
+                    </p>
+                  ) : selectedCompany ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Avatar>
+                          <AvatarImage src={selectedCompany.logo_url ?? undefined} alt="" />
+                          <AvatarFallback className="bg-[#e9dece] text-[#4f6f3f]">
+                            {initials(selectedCompany.business_name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0">
+                          <h4 className="truncate font-semibold">
+                            {selectedCompany.business_name}
+                          </h4>
+                          <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <MapPin className="h-3 w-3" />
+                            {selectedCompany.address ?? "Ubicación no indicada"}
+                          </p>
+                        </div>
+                      </div>
+                      <Badge variant="outline">
+                        {selectedCompany.business_type ?? "Empresa verificada"}
+                      </Badge>
+                      <p className="line-clamp-3 text-sm text-muted-foreground">
+                        {selectedCompany.description ??
+                          "Empresa aprobada dentro de RitmOrigen."}
+                      </p>
+                      <Button
+                        className="w-full gap-2 bg-[#4f6f3f] hover:bg-[#425f34]"
+                        onClick={() => handleStartConversation(selectedCompany)}
+                      >
+                        <MessageCircle className="h-4 w-4" />
+                        Iniciar conversación privada
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3 text-sm text-muted-foreground">
+                      <SlidersHorizontal className="h-5 w-5 text-[#7b572d]" />
+                      <p>
+                        No hay empresas aprobadas que coincidan con los filtros.
+                        Ajusta la búsqueda para iniciar el primer contacto.
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+        </CardContent>
+      </Card>
     </div>
   );
 };
-
-const FichaRow = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between gap-3 text-sm">
-    <span className="text-muted-foreground">{label}</span>
-    <span className="font-medium text-right">{value}</span>
-  </div>
-);
-
-const TabContactosB2B = () => (
-  <CompanyPlanGate
-    required="standard"
-    upgradeMessage="Los contactos B2B con restaurantes están disponibles a partir del plan Intermedio. Mejora tu plan para enviar y recibir mensajes."
-  >
-    <TabContactosB2BInner />
-  </CompanyPlanGate>
-);
 
 export default TabContactosB2B;

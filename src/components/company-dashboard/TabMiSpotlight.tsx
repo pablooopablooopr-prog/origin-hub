@@ -5,13 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { usePlan, PLAN_LABELS } from "@/hooks/usePlan";
 
 /**
- * PESTAÑA 3: MI SPOTLIGHT
- *
- *  - Calendario de próximas apariciones (días del mes que toca)
- *  - "Apareces aproximadamente N veces al mes"
- *  - Preview de la tarjeta en el spotlight
- *  - Contador del mes
- *  - Estadísticas semanales (vistas)
+ * Pestaña de estadísticas.
+ * Conserva la lógica de apariciones del antiguo spotlight, pero el foco visual
+ * es entender visibilidad, visitas y origen del tráfico.
  */
 
 interface TabMiSpotlightProps {
@@ -109,9 +105,14 @@ const TabMiSpotlight = ({
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-2xl font-bold tracking-tight">Mi spotlight</h2>
+        <h2
+          className="text-3xl font-semibold tracking-tight text-[#1f140c]"
+          style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif" }}
+        >
+          Mis estadísticas
+        </h2>
         <p className="text-sm text-muted-foreground">
-          Aquí ves cuándo apareces en la sección "Hoy en ORIGEN" de la home.
+          Aquí ves cómo te encuentran y cuántas veces apareces en RitmOrigen.
         </p>
       </div>
 
@@ -126,8 +127,10 @@ const TabMiSpotlight = ({
           <CardContent>
             <p className="text-3xl font-bold">~{appearancesPerMonth}</p>
             <p className="text-xs text-muted-foreground">
-              veces este mes ({PLAN_LABELS[plan]}
-              {isFeatured && " · peso x2"})
+              veces este mes ({PLAN_LABELS[plan]})
+            </p>
+            <p className="text-xs text-muted-foreground pt-3 leading-relaxed">
+              Tu empresa aparece visible hasta 24 horas cuando le toca rotación.
             </p>
           </CardContent>
         </Card>
@@ -147,7 +150,7 @@ const TabMiSpotlight = ({
               </span>
             </p>
             <p className="text-xs text-muted-foreground">
-              ya ocurridas en {monthName}
+              Ya ocurridas en {monthName}.
             </p>
           </CardContent>
         </Card>
@@ -162,7 +165,7 @@ const TabMiSpotlight = ({
           <CardContent>
             <p className="text-3xl font-bold">{totalViews ?? 0}</p>
             <p className="text-xs text-muted-foreground">
-              acumuladas en tu ficha
+              Acumuladas en tu ficha.
             </p>
           </CardContent>
         </Card>
@@ -284,7 +287,7 @@ const TabMiSpotlight = ({
 
             <p className="text-xs text-muted-foreground italic mt-3">
               Esta es la tarjeta que aparecerá en la home cuando te toque
-              spotlight. Mejora el contenido en la pestaña "Mi Ficha".
+              visibilidad. Mejora el contenido en la pestaña Mi ficha.
             </p>
           </CardContent>
         </Card>
@@ -324,7 +327,7 @@ const TabMiSpotlight = ({
             </div>
             <p className="text-xs text-muted-foreground italic pt-3">
               Datos agregados mensualmente. Conectado al sistema de eventos en
-              cuanto la tabla `pack_analytics` se replique a `company_events`.
+              cuanto la tabla post_analytics se replique a company_events.
             </p>
           </CardContent>
         </Card>

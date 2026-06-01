@@ -3,9 +3,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   User,
   CreditCard,
-  Sparkles,
+  BarChart3,
   MessageCircle,
-  Compass,
   Eye,
   LogOut,
   Loader2,
@@ -26,30 +25,15 @@ import TabMiFicha from "@/components/company-dashboard/TabMiFicha";
 import TabDatosYPlan from "@/components/company-dashboard/TabDatosYPlan";
 import TabMiSpotlight from "@/components/company-dashboard/TabMiSpotlight";
 import TabContactosB2B from "@/components/company-dashboard/TabContactosB2B";
-import TabMisRutas from "@/components/company-dashboard/TabMisRutas";
 import TabConfiguracion from "@/components/company-dashboard/TabConfiguracion";
 import UpgradeModal from "@/components/company-dashboard/UpgradeModal";
 
 /**
- * DASHBOARD EMPRESA — rediseño FASE 4
+ * Dashboard empresarial.
  *
- * 5 pestañas según briefing:
- *   1. Mi Ficha
- *   2. Mis Datos y Plan
- *   3. Mi Spotlight
- *   4. Contactos B2B (gated standard)
- *   5. Mis Rutas (gated standard)
- *
- * + accesos directos en header:
- *   - Ver mi página pública
- *   - Cerrar sesión
- *
- * URL params: ?tab=ficha|plan|spotlight|b2b|rutas (deep-link)
- *
- * Rotated OUT (no eliminadas, sólo no visibles):
- *   - Mis Packs (sistema deprecado FASE 3)
- *   - Estadísticas (integrada en Mi Spotlight)
- *   - Referidos (no en briefing FASE 4 - se podrá restaurar si se decide)
+ * URL params: ?tab=ficha|plan|spotlight|b2b|config
+ * `spotlight` se conserva internamente para no romper deep-links antiguos,
+ * pero se muestra como "Mis estadísticas".
  */
 
 interface Company {
@@ -64,7 +48,7 @@ interface Company {
   plan_expires_at: string | null;
 }
 
-const VALID_TABS = ["ficha", "plan", "spotlight", "b2b", "rutas", "config"] as const;
+const VALID_TABS = ["ficha", "plan", "spotlight", "b2b", "config"] as const;
 type TabId = (typeof VALID_TABS)[number];
 
 const isValidTab = (s: string | null): s is TabId =>
@@ -114,11 +98,12 @@ const CompanyDashboard = () => {
               .from("company_packs")
               .select("id")
               .eq("company_id", comp.id)
-          ).data?.map((p: any) => p.id) ?? []
+          ).data?.map((p: { id: string }) => p.id) ?? []
         );
 
       const sum = (analytics ?? []).reduce(
-        (acc: number, a: any) => acc + (a.views_count ?? 0),
+        (acc: number, a: { views_count: number | null }) =>
+          acc + (a.views_count ?? 0),
         0
       );
       setTotalViews(sum);
@@ -205,7 +190,7 @@ const CompanyDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
+    <div className="min-h-screen bg-[#f7f0e5] text-[#2a1c10]">
       <div className="container mx-auto p-4 md:p-6 max-w-6xl">
         {/* Header */}
         <header className="flex flex-wrap items-start justify-between gap-4 mb-8">
@@ -290,16 +275,12 @@ const CompanyDashboard = () => {
               Datos y plan
             </TabsTrigger>
             <TabsTrigger value="spotlight" className="gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
-              Mi spotlight
+              <BarChart3 className="w-3.5 h-3.5" />
+              Mis estadísticas
             </TabsTrigger>
             <TabsTrigger value="b2b" className="gap-1.5">
               <MessageCircle className="w-3.5 h-3.5" />
               Contactos B2B
-            </TabsTrigger>
-            <TabsTrigger value="rutas" className="gap-1.5">
-              <Compass className="w-3.5 h-3.5" />
-              Mis rutas
             </TabsTrigger>
             <TabsTrigger value="config" className="gap-1.5">
               <Settings className="w-3.5 h-3.5" />
@@ -332,10 +313,6 @@ const CompanyDashboard = () => {
 
           <TabsContent value="b2b">
             <TabContactosB2B />
-          </TabsContent>
-
-          <TabsContent value="rutas">
-            <TabMisRutas userId={authUser.id} companyId={company.id} />
           </TabsContent>
 
           <TabsContent value="config">

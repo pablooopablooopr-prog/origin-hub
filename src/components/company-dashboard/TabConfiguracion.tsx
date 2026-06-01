@@ -1,20 +1,9 @@
 import { useState } from "react";
-import {
-  Settings,
-  Bell,
-  Lock,
-  Eye,
-  Mail,
-  KeyRound,
-  Trash2,
-  Loader2,
-} from "lucide-react";
+import { KeyRound, Loader2, Lock, Mail, Settings, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,50 +17,23 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-/**
- * PESTAÑA 7: CONFIGURACIÓN
- *
- *   - Privacidad: mostrar teléfono/email público, bloquear contactos anónimos
- *   - Notificaciones: nuevo B2B, venta QR, spotlight próximo, newsletter empresa
- *   - Cambiar contraseña
- *   - Eliminar cuenta (irreversible)
- */
-
 interface TabConfiguracionProps {
   email: string;
 }
 
 const TabConfiguracion = ({ email }: TabConfiguracionProps) => {
-  // Privacidad
-  const [showPhone, setShowPhone] = useState(true);
-  const [showEmail, setShowEmail] = useState(true);
-  const [blockAnon, setBlockAnon] = useState(false);
-
-  // Notificaciones
-  const [notifyB2B, setNotifyB2B] = useState(true);
-  const [notifyQR, setNotifyQR] = useState(true);
-  const [notifySpotlight, setNotifySpotlight] = useState(true);
-  const [notifyNewsletter, setNotifyNewsletter] = useState<"weekly" | "monthly" | "quarterly">("monthly");
-
-  // Password
   const [pwCurrent, setPwCurrent] = useState("");
   const [pwNew, setPwNew] = useState("");
   const [pwConfirm, setPwConfirm] = useState("");
   const [savingPw, setSavingPw] = useState(false);
-
-  // Eliminar
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  const handleSavePrivacy = () => {
-    toast.success("Preferencias de privacidad guardadas");
-  };
-
-  const handleSaveNotifications = () => {
-    toast.success("Preferencias de notificación guardadas");
-  };
-
   const handleChangePassword = async () => {
+    if (!pwCurrent.trim()) {
+      toast.error("Introduce tu contraseña actual");
+      return;
+    }
     if (!pwNew || pwNew.length < 8) {
       toast.error("La contraseña nueva debe tener al menos 8 caracteres");
       return;
@@ -98,8 +60,6 @@ const TabConfiguracion = ({ email }: TabConfiguracionProps) => {
 
   const handleDeleteAccount = async () => {
     setDeleting(true);
-    // En producción: edge function que llama a auth.admin.deleteUser
-    // De momento: cerramos sesión y marcamos la empresa como "deletion_requested"
     toast.error(
       "El borrado de cuenta requiere confirmación por email. Te enviaremos instrucciones."
     );
@@ -110,116 +70,34 @@ const TabConfiguracion = ({ email }: TabConfiguracionProps) => {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <Settings className="w-6 h-6" />
+        <h2
+          className="flex items-center gap-2 text-3xl font-semibold tracking-tight text-[#1f140c]"
+          style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif" }}
+        >
+          <Settings className="h-7 w-7" />
           Configuración
         </h2>
         <p className="text-sm text-muted-foreground">
-          Privacidad, notificaciones y seguridad de tu cuenta.
+          Gestiona la seguridad de tu cuenta y las preferencias principales.
         </p>
       </div>
 
-      {/* Privacidad */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Eye className="w-4 h-4" />
-            Privacidad de tu ficha
+          <CardTitle className="flex items-center gap-3 text-base">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#efe4d3] text-[#7b572d]">
+              <Lock className="h-5 w-5" />
+            </span>
+            <span>
+              Seguridad de la cuenta
+              <span className="mt-1 block text-sm font-normal text-muted-foreground">
+                Actualiza tu contraseña de acceso al dashboard empresarial.
+              </span>
+            </span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <ToggleRow
-            label="Mostrar teléfono en la ficha pública"
-            description="Los visitantes verán tu número directamente."
-            checked={showPhone}
-            onCheckedChange={setShowPhone}
-          />
-          <ToggleRow
-            label="Mostrar email en la ficha pública"
-            description="Tu email aparecerá visible en la página de tu empresa."
-            checked={showEmail}
-            onCheckedChange={setShowEmail}
-          />
-          <ToggleRow
-            label="Bloquear contactos anónimos"
-            description="Sólo permitir mensajes B2B de cuentas con identidad revelada."
-            checked={blockAnon}
-            onCheckedChange={setBlockAnon}
-          />
-          <Separator />
-          <div className="flex justify-end">
-            <Button onClick={handleSavePrivacy}>Guardar privacidad</Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Notificaciones */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Bell className="w-4 h-4" />
-            Notificaciones
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <ToggleRow
-            label="Nuevo contacto B2B"
-            description="Email + push cuando un restaurante te contacte."
-            checked={notifyB2B}
-            onCheckedChange={setNotifyB2B}
-          />
-          <ToggleRow
-            label="Venta vía QR"
-            description="Email cuando un consumidor gaste crédito ORIGEN en tu local."
-            checked={notifyQR}
-            onCheckedChange={setNotifyQR}
-          />
-          <ToggleRow
-            label="Spotlight próximo (24h antes)"
-            description="Aviso anticipado cuando te toque aparecer en home."
-            checked={notifySpotlight}
-            onCheckedChange={setNotifySpotlight}
-          />
-
-          <div className="space-y-2 pt-2">
-            <Label className="text-sm">Frecuencia de newsletter empresa</Label>
-            <div className="flex gap-2">
-              {(["weekly", "monthly", "quarterly"] as const).map((f) => (
-                <Button
-                  key={f}
-                  variant={notifyNewsletter === f ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setNotifyNewsletter(f)}
-                >
-                  {f === "weekly"
-                    ? "Semanal"
-                    : f === "monthly"
-                    ? "Mensual"
-                    : "Trimestral"}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          <Separator />
-          <div className="flex justify-end">
-            <Button onClick={handleSaveNotifications}>
-              Guardar notificaciones
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Seguridad */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <KeyRound className="w-4 h-4" />
-            Cambiar contraseña
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
+        <CardContent className="space-y-5">
+          <div className="grid gap-4 md:grid-cols-3">
             <div>
               <Label htmlFor="pw_current">Contraseña actual</Label>
               <Input
@@ -227,53 +105,51 @@ const TabConfiguracion = ({ email }: TabConfiguracionProps) => {
                 type="password"
                 value={pwCurrent}
                 onChange={(e) => setPwCurrent(e.target.value)}
+                placeholder="Introduce tu contraseña actual"
                 autoComplete="current-password"
               />
             </div>
             <div>
-              <Label htmlFor="pw_email">Email de la cuenta</Label>
-              <Input
-                id="pw_email"
-                type="email"
-                value={email}
-                disabled
-                className="bg-muted"
-              />
-            </div>
-            <div>
-              <Label htmlFor="pw_new">Contraseña nueva</Label>
+              <Label htmlFor="pw_new">Nueva contraseña</Label>
               <Input
                 id="pw_new"
                 type="password"
                 value={pwNew}
                 onChange={(e) => setPwNew(e.target.value)}
+                placeholder="Introduce tu nueva contraseña"
                 autoComplete="new-password"
               />
             </div>
             <div>
-              <Label htmlFor="pw_confirm">Confirmar nueva</Label>
+              <Label htmlFor="pw_confirm">Confirmar nueva contraseña</Label>
               <Input
                 id="pw_confirm"
                 type="password"
                 value={pwConfirm}
                 onChange={(e) => setPwConfirm(e.target.value)}
+                placeholder="Repite tu nueva contraseña"
                 autoComplete="new-password"
               />
             </div>
           </div>
-          <p className="text-xs text-muted-foreground">
-            Mínimo 8 caracteres. Recibirás un email de confirmación tras el cambio.
-          </p>
-          <div className="flex justify-end">
-            <Button onClick={handleChangePassword} disabled={savingPw} className="gap-2">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <p className="text-sm text-muted-foreground">
+              Mínimo 8 caracteres. Te enviaremos una confirmación si el cambio
+              se realiza correctamente.
+            </p>
+            <Button
+              onClick={handleChangePassword}
+              disabled={savingPw}
+              className="gap-2 bg-[#59682f] hover:bg-[#4d5b28]"
+            >
               {savingPw ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Guardando...
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Actualizando...
                 </>
               ) : (
                 <>
-                  <Lock className="w-4 h-4" />
+                  <KeyRound className="h-4 w-4" />
                   Actualizar contraseña
                 </>
               )}
@@ -282,31 +158,56 @@ const TabConfiguracion = ({ email }: TabConfiguracionProps) => {
         </CardContent>
       </Card>
 
-      {/* Zona peligrosa */}
-      <Card className="border-destructive/30">
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2 text-destructive">
-            <Trash2 className="w-4 h-4" />
-            Eliminar cuenta
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Esta acción es <strong className="text-destructive">irreversible</strong>.
-            Se eliminarán tu ficha, mensajes, suscripciones activas y todo el
-            historial asociado. Te enviaremos un email de confirmación antes
-            de proceder.
-          </p>
-          <div className="flex justify-end">
-            <Button
-              variant="destructive"
-              onClick={() => setShowDeleteDialog(true)}
-              className="gap-2"
-            >
-              <Mail className="w-4 h-4" />
-              Solicitar eliminación
-            </Button>
+      <Card>
+        <CardContent className="grid gap-5 p-6 md:grid-cols-[1fr_1fr] md:items-center">
+          <div className="flex items-start gap-4">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#efe4d3] text-[#7b572d]">
+              <Mail className="h-5 w-5" />
+            </span>
+            <div>
+              <h3 className="font-semibold">Email de acceso</h3>
+              <p className="text-sm text-muted-foreground">
+                Este email se usa para iniciar sesión y recibir avisos
+                importantes de tu cuenta.
+              </p>
+            </div>
           </div>
+          <div>
+            <Label htmlFor="account_email">Email de la cuenta</Label>
+            <Input
+              id="account_email"
+              type="email"
+              value={email}
+              disabled
+              className="bg-muted"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-red-200 bg-red-50/20">
+        <CardContent className="flex flex-col gap-5 p-6 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-start gap-4">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600">
+              <Trash2 className="h-5 w-5" />
+            </span>
+            <div>
+              <h3 className="font-semibold">Eliminar cuenta</h3>
+              <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
+                Esta acción es irreversible. Se eliminará tu ficha empresarial,
+                mensajes, configuración y datos asociados. Antes de proceder,
+                te enviaremos una confirmación por email.
+              </p>
+            </div>
+          </div>
+          <Button
+            variant="destructive"
+            onClick={() => setShowDeleteDialog(true)}
+            className="gap-2"
+          >
+            <Mail className="h-4 w-4" />
+            Solicitar eliminación
+          </Button>
         </CardContent>
       </Card>
 
@@ -326,7 +227,7 @@ const TabConfiguracion = ({ email }: TabConfiguracionProps) => {
               disabled={deleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Sí, enviar confirmación
+              {deleting ? "Enviando..." : "Sí, enviar confirmación"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -334,27 +235,5 @@ const TabConfiguracion = ({ email }: TabConfiguracionProps) => {
     </div>
   );
 };
-
-interface ToggleRowProps {
-  label: string;
-  description: string;
-  checked: boolean;
-  onCheckedChange: (v: boolean) => void;
-}
-
-const ToggleRow = ({
-  label,
-  description,
-  checked,
-  onCheckedChange,
-}: ToggleRowProps) => (
-  <div className="flex items-start justify-between gap-3">
-    <div className="flex-1">
-      <Label className="text-sm">{label}</Label>
-      <p className="text-xs text-muted-foreground">{description}</p>
-    </div>
-    <Switch checked={checked} onCheckedChange={onCheckedChange} />
-  </div>
-);
 
 export default TabConfiguracion;

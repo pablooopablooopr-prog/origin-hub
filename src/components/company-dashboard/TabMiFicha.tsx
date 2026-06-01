@@ -21,8 +21,8 @@ import { SEASONS } from "@/lib/season";
 
 /**
  * PESTAÑA 1: MI FICHA
- * Es la ficha que se muestra en el spotlight rotatorio.
- * Lo que el mundo verá durante los días de spotlight.
+ * Es la ficha que se muestra en la página pública y en las tarjetas de
+ * directorio/home.
  *
  * Conecta con tabla `companies` (campos extendidos en migración 20260424_000002).
  */
@@ -254,8 +254,9 @@ const TabMiFicha = ({ companyId, onSaved }: TabMiFichaProps) => {
         <div className="space-y-1">
           <h2 className="text-2xl font-bold tracking-tight">Mi ficha</h2>
           <p className="text-sm text-muted-foreground">
-            Esta información aparece en el spotlight rotatorio de la home y en
-            tu página pública. Cuanto más completa, más confianza generas.
+            Esta información aparece en tu página pública y en el spotlight
+            rotatorio de la home. Cuanto más completa esté, más confianza
+            generas.
           </p>
         </div>
         <Button
@@ -268,12 +269,12 @@ const TabMiFicha = ({ companyId, onSaved }: TabMiFichaProps) => {
         </Button>
       </div>
 
-      {/* Preview de la tarjeta de spotlight */}
+      {/* Preview de la tarjeta pública */}
       {showPreview && (
         <Card className="border-2 border-primary/40 bg-muted/30">
           <CardHeader>
             <p className="text-xs uppercase tracking-widest text-muted-foreground">
-              Vista previa de tu tarjeta en spotlight
+              Vista previa de tu tarjeta
             </p>
           </CardHeader>
           <CardContent>
@@ -329,7 +330,7 @@ const TabMiFicha = ({ companyId, onSaved }: TabMiFichaProps) => {
                 onValueChange={(v) => update("business_type", v)}
               >
                 <SelectTrigger id="ficha_nicho">
-                  <SelectValue placeholder="Selecciona un nicho" />
+                  <SelectValue placeholder="Selecciona una categoría" />
                 </SelectTrigger>
                 <SelectContent>
                   {NICHO_OPTIONS.map((n) => (
@@ -489,7 +490,7 @@ const TabMiFicha = ({ companyId, onSaved }: TabMiFichaProps) => {
               <div>
                 <Label className="text-base">¿Aceptas visitas?</Label>
                 <p className="text-xs text-muted-foreground">
-                  Activa si los clientes pueden ir a tu local/finca.
+                  Activa si los clientes pueden ir a tu local, finca o establecimiento.
                 </p>
               </div>
               <Switch
@@ -614,7 +615,7 @@ const TabMiFicha = ({ companyId, onSaved }: TabMiFichaProps) => {
             <div>
               <Label className="text-base">Quiero participar en rutas</Label>
               <p className="text-xs text-muted-foreground">
-                Permites que ORIGEN incluya tu empresa como parada en rutas curadas.
+                Permites que RitmOrigen incluya tu empresa como parada en rutas curadas.
               </p>
             </div>
             <Switch
@@ -627,8 +628,8 @@ const TabMiFicha = ({ companyId, onSaved }: TabMiFichaProps) => {
             <div>
               <Label className="text-base">Activar ventas B2B a restaurantes</Label>
               <p className="text-xs text-muted-foreground">
-                Restaurantes podrán contactarte para pedidos al por mayor.
-                Requiere plan Standard o Destacado.
+                Restaurantes y negocios verificados podrán contactarte para
+                pedidos al por mayor.
               </p>
             </div>
             <Switch
@@ -638,15 +639,13 @@ const TabMiFicha = ({ companyId, onSaved }: TabMiFichaProps) => {
           </div>
 
           <p className="text-xs text-muted-foreground italic pt-2">
-            Disponibilidad para visitas: el calendario detallado estará en la
-            siguiente versión. Por ahora, indica el horario en la sección
-            "Sobre la empresa".
+            Recuerda guardar antes de cambiar de pestaña.
           </p>
         </CardContent>
       </Card>
 
       {/* Botón guardar */}
-      <div className="sticky bottom-4 z-10">
+      <div>
         <Card className="border-2 border-primary/40 shadow-lg">
           <CardContent className="p-4 flex items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">

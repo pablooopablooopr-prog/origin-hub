@@ -5,7 +5,6 @@ import {
   ShieldCheck,
   Loader2,
   ArrowUpRight,
-  FileText,
   MapPin,
   Camera,
   Building2,
@@ -16,32 +15,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { usePlan, PLAN_LABELS, PLAN_TAGLINES } from "@/hooks/usePlan";
+import { usePlan, PLAN_LABELS } from "@/hooks/usePlan";
 import UpgradeModal from "./UpgradeModal";
 
 /**
- * PESTAÑA 2: MIS DATOS Y PLAN
- *
- * Estilo "AI app": el precio NUNCA es visible en el dashboard. Para verlo el
- * usuario pulsa "Hacer upgrade", se abre el modal y ahí ve la comparativa
- * con precios.
- *
- *  - Estado plan actual (label + tagline, sin €)
- *  - CTA "Hacer upgrade" → UpgradeModal
- *  - Cancelar suscripción
- *  - Historial de planes (timeline)
- *  - Verificación granular: CIF · fotos · ubicación
- *  - Historial de facturas (placeholder Stripe)
+ * Datos y plan: suscripción actual, verificación e historial básico.
  */
 
 interface TabDatosYPlanProps {
@@ -72,26 +50,6 @@ const PLAN_BADGE_CLASS: Record<string, string> = {
 const TabDatosYPlan = ({ companyId, status, planExpiresAt }: TabDatosYPlanProps) => {
   const { plan, isLoading, refresh } = usePlan();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [showCancelDialog, setShowCancelDialog] = useState(false);
-  const [cancelling, setCancelling] = useState(false);
-
-  const handleCancelSubscription = async () => {
-    setCancelling(true);
-    const { error } = await supabase
-      .from("companies")
-      .update({ plan: "basico" })
-      .eq("id", companyId);
-    setCancelling(false);
-
-    if (error) {
-      toast.error("No se pudo cancelar: " + error.message);
-      return;
-    }
-
-    toast.success("Suscripción cancelada. Has vuelto al plan Básico.");
-    setShowCancelDialog(false);
-    await refresh();
-  };
 
   if (isLoading) {
     return (
@@ -103,7 +61,6 @@ const TabDatosYPlan = ({ companyId, status, planExpiresAt }: TabDatosYPlanProps)
 
   const isVerified = status === "approved";
   const nextBillingLabel = formatDate(planExpiresAt);
-  const isPremium = plan === "destacado";
 
   // Timeline de planes (placeholder hasta tener tabla plan_history)
   const planHistory = [
@@ -113,10 +70,15 @@ const TabDatosYPlan = ({ companyId, status, planExpiresAt }: TabDatosYPlanProps)
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-2xl font-bold tracking-tight">Mis datos y plan</h2>
+        <h2
+          className="text-3xl font-semibold tracking-tight text-[#1f140c]"
+          style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif" }}
+        >
+          Mis datos y plan
+        </h2>
         <p className="text-sm text-muted-foreground">
           Tu suscripción actual, verificación y facturas. Para ver precios y
-          mejorar tu plan, pulsa <strong>"Hacer upgrade"</strong>.
+          mejorar tu plan, pulsa <strong>Hacer upgrade</strong>.
         </p>
       </div>
 
@@ -127,7 +89,7 @@ const TabDatosYPlan = ({ companyId, status, planExpiresAt }: TabDatosYPlanProps)
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
               <Sparkles className="w-4 h-4" />
-              Tu plan
+              Tu plan actual
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -138,15 +100,9 @@ const TabDatosYPlan = ({ companyId, status, planExpiresAt }: TabDatosYPlanProps)
               >
                 {PLAN_LABELS[plan]}
               </Badge>
-              {isPremium && (
-                <Badge className="bg-amber-50 text-amber-900 border-amber-300 gap-1 text-[10px] uppercase tracking-wider">
-                  <FileText className="w-3 h-3" />
-                  Digitalización facturas
-                </Badge>
-              )}
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              {PLAN_TAGLINES[plan]}
+              Empieza a aparecer en RitmOrigen.
             </p>
             {nextBillingLabel && plan !== "basico" && (
               <p className="text-sm text-muted-foreground">
@@ -165,14 +121,6 @@ const TabDatosYPlan = ({ companyId, status, planExpiresAt }: TabDatosYPlanProps)
                 <ArrowUpRight className="w-4 h-4" />
                 Hacer upgrade
               </Button>
-              {plan !== "basico" && (
-                <Button
-                  variant="outline"
-                  onClick={() => setShowCancelDialog(true)}
-                >
-                  Cancelar suscripción
-                </Button>
-              )}
             </div>
           </CardContent>
         </Card>
@@ -182,7 +130,7 @@ const TabDatosYPlan = ({ companyId, status, planExpiresAt }: TabDatosYPlanProps)
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
               <ShieldCheck className="w-4 h-4" />
-              Verificación
+              Verificación de tu empresa
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -203,7 +151,7 @@ const TabDatosYPlan = ({ companyId, status, planExpiresAt }: TabDatosYPlanProps)
             />
             <p className="text-xs text-muted-foreground pt-2 leading-relaxed">
               {isVerified
-                ? "Tu cuenta está verificada por el equipo de ORIGEN."
+                ? "Tu cuenta está verificada por el equipo de RitmOrigen."
                 : "Estamos revisando tu solicitud. Recibirás un email cuando se apruebe."}
             </p>
           </CardContent>
@@ -274,33 +222,6 @@ const TabDatosYPlan = ({ companyId, status, planExpiresAt }: TabDatosYPlanProps)
         onPlanChanged={() => void refresh()}
       />
 
-      {/* Dialog cancelar */}
-      <Dialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>¿Cancelar suscripción?</DialogTitle>
-            <DialogDescription>
-              Volverás al plan Básico y perderás acceso a las funciones de tu
-              plan actual hasta que vuelvas a suscribirte.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowCancelDialog(false)}
-            >
-              Mantener mi plan
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleCancelSubscription}
-              disabled={cancelling}
-            >
-              {cancelling ? "Cancelando..." : "Sí, cancelar"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
