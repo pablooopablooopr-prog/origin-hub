@@ -70,7 +70,12 @@ const TabConfiguracion = ({ email }: TabConfiguracionProps) => {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-2xl font-bold tracking-tight">Configuración</h2>
+        <h2
+          className="text-3xl font-semibold tracking-tight text-[#1f140c]"
+          style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif" }}
+        >
+          Configuración
+        </h2>
         <p className="text-sm text-muted-foreground">
           Gestiona la seguridad de tu cuenta y las preferencias principales.
         </p>

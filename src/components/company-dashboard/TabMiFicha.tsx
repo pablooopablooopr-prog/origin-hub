@@ -252,7 +252,12 @@ const TabMiFicha = ({ companyId, onSaved }: TabMiFichaProps) => {
       {/* Cabecera */}
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
-          <h2 className="text-2xl font-bold tracking-tight">Mi ficha</h2>
+          <h2
+            className="text-3xl font-semibold tracking-tight text-[#1f140c]"
+            style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Georgia', serif" }}
+          >
+            Mi ficha
+          </h2>
           <p className="text-sm text-muted-foreground">
             Esta información aparece en tu página pública y en el spotlight
             rotatorio de la home. Cuanto más completa esté, más confianza
