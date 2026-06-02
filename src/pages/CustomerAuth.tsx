@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,8 +38,14 @@ const toE164ES = (value: string) => {
   return `+34${local}`;
 };
 
+const getErrorMessage = (error: unknown, fallback = "No se pudo completar la acción.") =>
+  error instanceof Error ? error.message : fallback;
+
 const CustomerAuth = () => {
-  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState<"login" | "register">(
+    searchParams.get("tab") === "register" ? "register" : "login"
+  );
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -56,6 +62,12 @@ const CustomerAuth = () => {
 
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (searchParams.get("tab") === "register") {
+      setActiveTab("register");
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     let mounted = true;
@@ -121,10 +133,10 @@ const CustomerAuth = () => {
         title: "Email reenviado",
         description: "Revisa tu bandeja de entrada y la carpeta de spam.",
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "Error",
-        description: err.message,
+        description: getErrorMessage(err),
         variant: "destructive",
       });
     } finally {
@@ -204,10 +216,10 @@ const CustomerAuth = () => {
         title: "Revisa tu correo",
         description: "Te hemos enviado un correo para verificar tu cuenta.",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error",
-        description: error.message,
+        description: getErrorMessage(error),
         variant: "destructive",
       });
     } finally {
@@ -261,8 +273,9 @@ const CustomerAuth = () => {
       setRedirecting(true);
       await postLoginRedirect(navigate, "/mi-cuenta");
       return;
-    } catch (error: any) {
-      const msg = (error?.message || "").toLowerCase();
+    } catch (error: unknown) {
+      const errorMessage = getErrorMessage(error, "No se pudo iniciar sesión.");
+      const msg = errorMessage.toLowerCase();
 
       const notConfirmed =
         msg.includes("email not confirmed") ||
@@ -286,7 +299,7 @@ const CustomerAuth = () => {
         title: "Error de acceso",
         description: isInvalidCredentials
           ? "Email o contraseña incorrectos. Revisa tus datos e inténtalo de nuevo."
-          : (error?.message ?? "No se pudo iniciar sesión."),
+          : errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -319,10 +332,10 @@ const CustomerAuth = () => {
         description: "Revisa tu correo para restablecer la contraseña.",
       });
       setShowResetPassword(false);
-    } catch (e: any) {
+    } catch (e: unknown) {
       toast({
         title: "Error",
-        description: e?.message ?? "No se pudo enviar el enlace.",
+        description: getErrorMessage(e, "No se pudo enviar el enlace."),
         variant: "destructive",
       });
     } finally {

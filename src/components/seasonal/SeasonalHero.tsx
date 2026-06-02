@@ -16,7 +16,7 @@ const HERO_IMG: Record<string, string> = {
   queso: "/seasons/queso/hero-cheese.jpg",
   vino: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1100&q=90",
   caza: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1100&q=90",
-  mielAceite: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=1100&q=90",
+  mielAceite: "/seasons/miel-aceite/hero-aceite.png",
 };
 
 interface Props {
@@ -29,6 +29,7 @@ const formatMonth = (month: string | undefined, fallback: string) =>
 const SeasonalHero = ({ data }: Props) => {
   const heroImg = HERO_IMG[data.id] ?? HERO_IMG.queso;
   const titleProduct = data.id === "queso" ? "Queso Manchego" : data.productName;
+  const titlePrefix = data.id === "mielAceite" ? "La Temporada de la" : "La Temporada del";
   const sealTop = data.months[0]?.slice(0, 3) ?? "MAR";
   const sealBottom = data.months[data.months.length - 1]?.slice(0, 3) ?? "JUN";
   const seasonStart = formatMonth(data.months[0], "marzo");
@@ -152,7 +153,7 @@ const SeasonalHero = ({ data }: Props) => {
                 letterSpacing: "0",
               }}
             >
-              La Temporada del<br />{titleProduct}
+              {titlePrefix}<br />{titleProduct}
             </h1>
 
             <p

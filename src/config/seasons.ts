@@ -185,7 +185,7 @@ export const seasons: Record<SeasonKey, SeasonData> = {
     seasonLabel: "VERANO",
     activeBadge: "TEMPORADA ACTIVA",
     productName: "Miel y Aceite",
-    title: "La Temporada de la Miel y el Aceite",
+    title: "La Temporada de la\nMiel y Aceite",
     description:
       "Apicultores que cuidan colmenas centenarias, almazaras de cosecha temprana y rutas por sierras donde el AOVE y la miel marcan el calendario gastronómico del verano manchego.",
     months: ["JUNIO", "JULIO", "AGOSTO"],

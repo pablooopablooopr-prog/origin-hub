@@ -52,7 +52,7 @@ const Hero = () => {
       video.removeEventListener("ended", advanceVideo);
       clearTimeout(crossfadeTimer);
     };
-  }, [currentVideo, advanceVideo]);
+  }, [currentVideo, advanceVideo, prevVideo]);
 
   return (
     <section className="relative overflow-hidden" style={{ height: "92vh" }}>
@@ -148,18 +148,19 @@ const Hero = () => {
 
         {/* BOTONES */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4 mx-auto w-full max-w-4xl">
-          <Link to="/mapa" className="w-full sm:w-auto">
+          <Link to="/experiencias" className="w-full sm:w-auto">
             <Button size="lg" className="w-full sm:w-auto px-8 py-3 text-lg font-semibold" style={{ backgroundColor: "#5C6B2E", color: "#FFFFFF" }}>
               DESCUBRIR EXPERIENCIAS
             </Button>
           </Link>
-          <button
-            onClick={() => { document.querySelector('[data-section="mapa"]')?.scrollIntoView({ behavior: "smooth" }); }}
-            className="w-full sm:w-auto px-8 py-3 text-base font-semibold rounded-md text-white transition-all hover:opacity-90 whitespace-nowrap"
-            style={{ backgroundColor: "#8B6233" }}
-          >
-            VER EL MAPA
-          </button>
+          <Link to="/mapa" className="w-full sm:w-auto">
+            <button
+              className="w-full sm:w-auto px-8 py-3 text-base font-semibold rounded-md text-white transition-all hover:opacity-90 whitespace-nowrap"
+              style={{ backgroundColor: "#8B6233" }}
+            >
+              VER EL MAPA
+            </button>
+          </Link>
           <Link to="/soy-empresa" className="w-full sm:w-auto">
             <Button size="lg" className="w-full sm:w-auto px-8 py-3 text-lg font-semibold" style={{ backgroundColor: "#B8860B", color: "#3D2B1F", border: "2px solid #B8860B" }}>
               UNIRME COMO EMPRESA
