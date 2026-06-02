@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import { ChevronDown, Star, Route, SlidersHorizontal } from 'lucide-react';
+import { ChevronDown, Star, Route, MoreHorizontal } from 'lucide-react';
 import { ORIGEN_COLORS } from './mapStyles';
 
 type IconKey =
@@ -86,8 +86,7 @@ const NICHO_OPTIONS = [
   { id: 'vinos', label: 'Vino', icon: 'vino' as IconKey },
   { id: 'caza', label: 'Caza', icon: 'caza' as IconKey },
   { id: 'miel', label: 'Miel', icon: 'miel' as IconKey },
-  { id: 'cooperativas', label: 'Cooperativas', icon: 'cooperativas' as IconKey },
-  { id: 'todos', label: 'Todos', icon: 'todos' as IconKey },
+  { id: 'cooperativas', label: 'Más', icon: 'cooperativas' as IconKey },
 ];
 
 const TIPO_OPTIONS = [
@@ -95,7 +94,6 @@ const TIPO_OPTIONS = [
   { id: 'restaurante', label: 'Restaurante', icon: 'restaurante' as IconKey },
   { id: 'experiencia', label: 'Experiencia', icon: 'experiencia' as IconKey },
   { id: 'alojamiento', label: 'Alojamiento', icon: 'alojamiento' as IconKey },
-  { id: 'todos', label: 'Todos', icon: 'todos' as IconKey },
 ];
 
 const PROVINCIAS = [
@@ -128,29 +126,30 @@ const Chip: React.FC<{
   <button
     type="button"
     onClick={onClick}
-    className="flex items-center gap-1 px-2 py-1.5 rounded-lg border transition-all duration-150 flex-shrink-0 whitespace-nowrap"
+    className="flex h-9 items-center gap-2 rounded-xl border px-3.5 text-[13px] font-semibold transition-all duration-150 flex-shrink-0 whitespace-nowrap hover:-translate-y-px"
     style={{
-      backgroundColor: active ? ORIGEN_COLORS.olive : 'transparent',
-      borderColor: active ? ORIGEN_COLORS.olive : ORIGEN_COLORS.beigeSoft,
-      color: active ? '#fff' : ORIGEN_COLORS.brown,
+      backgroundColor: active ? 'rgba(92, 107, 46, 0.1)' : 'rgba(255, 253, 248, 0.92)',
+      borderColor: active ? 'rgba(92, 107, 46, 0.45)' : 'rgba(200, 184, 154, 0.48)',
+      color: ORIGEN_COLORS.brown,
+      boxShadow: active ? 'inset 0 0 0 1px rgba(92, 107, 46, 0.12)' : '0 1px 4px rgba(60, 43, 32, 0.035)',
     }}
   >
-    <span style={{ color: active ? '#fff' : ORIGEN_COLORS.olive }}>{icon}</span>
-    <span className="text-[11px] font-semibold">{label}</span>
+    <span style={{ color: ORIGEN_COLORS.olive }}>{label === 'Más' ? <MoreHorizontal size={15} strokeWidth={2.3} /> : icon}</span>
+    <span>{label}</span>
   </button>
 );
 
 const VSep: React.FC = () => (
   <span
     className="flex-shrink-0 w-px self-stretch"
-    style={{ backgroundColor: ORIGEN_COLORS.beigeSoft }}
+    style={{ backgroundColor: 'rgba(200, 184, 154, 0.5)' }}
     aria-hidden="true"
   />
 );
 
 const SectionLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <span
-    className="block text-[9px] font-bold uppercase tracking-[0.22em] mb-1.5 whitespace-nowrap"
+    className="block text-[10px] font-bold uppercase tracking-[0.26em] mb-3 whitespace-nowrap"
     style={{ color: ORIGEN_COLORS.brownSoft }}
   >
     {children}
@@ -166,15 +165,15 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
     <div
       className="hidden lg:flex items-stretch rounded-2xl overflow-hidden mt-6"
       style={{
-        backgroundColor: ORIGEN_COLORS.cream,
-        border: `1px solid ${ORIGEN_COLORS.beigeSoft}`,
-        boxShadow: '0 2px 12px rgba(60, 43, 32, 0.06)',
+        backgroundColor: 'rgba(255, 253, 248, 0.92)',
+        border: '1px solid rgba(200, 184, 154, 0.42)',
+        boxShadow: '0 12px 30px rgba(60, 43, 32, 0.08), 0 1px 2px rgba(60, 43, 32, 0.04)',
       }}
     >
       {/* NICHO */}
-      <div className="flex flex-col px-4 py-3 min-w-0">
+      <div className="flex min-w-0 flex-[1.12] flex-col px-8 py-5">
         <SectionLabel>Nicho</SectionLabel>
-        <div className="flex items-center gap-1 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+        <div className="flex items-center gap-2 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
           {NICHO_OPTIONS.map((opt) => (
             <Chip
               key={opt.id}
@@ -190,9 +189,9 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
       <VSep />
 
       {/* TIPO */}
-      <div className="flex flex-col px-4 py-3 min-w-0">
+      <div className="flex min-w-0 flex-[0.9] flex-col px-8 py-5">
         <SectionLabel>Tipo</SectionLabel>
-        <div className="flex items-center gap-1 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+        <div className="flex items-center gap-2 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
           {TIPO_OPTIONS.map((opt) => (
             <Chip
               key={opt.id}
@@ -208,17 +207,17 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
       <VSep />
 
       {/* PROVINCIA + TOGGLES */}
-      <div className="flex flex-col px-4 py-3 flex-shrink-0">
+      <div className="flex min-w-[385px] flex-col px-8 py-5 flex-shrink-0">
         <SectionLabel>Provincia</SectionLabel>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <div className="relative">
             <select
               value={provincia}
               onChange={(e) => onProvinciaChange(e.target.value)}
-              className="appearance-none pl-2.5 pr-6 py-1.5 text-[11px] font-semibold rounded-lg border cursor-pointer"
+              className="h-9 min-w-[118px] appearance-none rounded-xl border pl-4 pr-8 text-[13px] font-semibold cursor-pointer"
               style={{
-                backgroundColor: 'transparent',
-                borderColor: ORIGEN_COLORS.beigeSoft,
+                backgroundColor: 'rgba(255, 253, 248, 0.92)',
+                borderColor: 'rgba(200, 184, 154, 0.48)',
                 color: ORIGEN_COLORS.brown,
               }}
             >
@@ -227,8 +226,8 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
               ))}
             </select>
             <ChevronDown
-              size={11}
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none"
+              size={14}
+              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
               style={{ color: ORIGEN_COLORS.brownSoft }}
             />
           </div>
@@ -236,53 +235,34 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
           <button
             type="button"
             onClick={() => onDestacadosChange(!destacadosPrimero)}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[11px] font-semibold transition-all whitespace-nowrap"
+            className="flex h-9 items-center gap-2 rounded-xl border px-4 text-[13px] font-semibold transition-all whitespace-nowrap hover:-translate-y-px"
             style={{
-              backgroundColor: destacadosPrimero ? ORIGEN_COLORS.gold : 'transparent',
-              borderColor: destacadosPrimero ? ORIGEN_COLORS.gold : ORIGEN_COLORS.beigeSoft,
-              color: destacadosPrimero ? '#fff' : ORIGEN_COLORS.brown,
+              backgroundColor: destacadosPrimero ? 'rgba(184, 134, 11, 0.12)' : 'rgba(255, 253, 248, 0.92)',
+              borderColor: destacadosPrimero ? 'rgba(184, 134, 11, 0.46)' : 'rgba(200, 184, 154, 0.48)',
+              color: ORIGEN_COLORS.brown,
             }}
           >
-            <Star size={12} fill={destacadosPrimero ? '#fff' : 'none'} stroke={destacadosPrimero ? '#fff' : ORIGEN_COLORS.gold} />
+            <Star size={14} fill={destacadosPrimero ? ORIGEN_COLORS.gold : 'none'} stroke={ORIGEN_COLORS.gold} />
             Solo destacados
           </button>
 
           <button
             type="button"
             onClick={() => onEnRutasChange(!enRutas)}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[11px] font-semibold transition-all whitespace-nowrap"
+            className="flex h-9 items-center gap-2 rounded-xl border px-4 text-[13px] font-semibold transition-all whitespace-nowrap hover:-translate-y-px"
             style={{
-              backgroundColor: enRutas ? ORIGEN_COLORS.olive : 'transparent',
-              borderColor: enRutas ? ORIGEN_COLORS.olive : ORIGEN_COLORS.beigeSoft,
-              color: enRutas ? '#fff' : ORIGEN_COLORS.brown,
+              backgroundColor: enRutas ? 'rgba(92, 107, 46, 0.1)' : 'rgba(255, 253, 248, 0.92)',
+              borderColor: enRutas ? 'rgba(92, 107, 46, 0.45)' : 'rgba(200, 184, 154, 0.48)',
+              color: ORIGEN_COLORS.brown,
             }}
           >
-            <Route size={12} style={{ color: enRutas ? '#fff' : ORIGEN_COLORS.olive }} />
+            <Route size={14} style={{ color: ORIGEN_COLORS.olive }} />
             En rutas
           </button>
         </div>
       </div>
 
-      {/* LIMPIAR */}
-      {onReset && (
-        <>
-          <VSep />
-          <div className="flex items-center px-4 py-3 flex-shrink-0">
-            <button
-              type="button"
-              onClick={onReset}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg border text-[11px] font-semibold transition-all whitespace-nowrap hover:bg-white"
-              style={{
-                borderColor: ORIGEN_COLORS.beigeSoft,
-                color: ORIGEN_COLORS.brownSoft,
-              }}
-            >
-              <SlidersHorizontal size={12} />
-              Limpiar filtros
-            </button>
-          </div>
-        </>
-      )}
+      {onReset && <button type="button" className="sr-only" onClick={onReset}>Limpiar filtros</button>}
     </div>
   );
 };

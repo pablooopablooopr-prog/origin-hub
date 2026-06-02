@@ -5,10 +5,15 @@
  */
 
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { ArrowRight, MapPin } from 'lucide-react';
 import { LaurelDecor } from './LaurelDecor';
 import { ORIGEN_COLORS } from './mapStyles';
 
 export const MapHeader: React.FC = () => {
+  const location = useLocation();
+  const showMapButton = location.pathname !== '/mapa';
+
   return (
     <header className="relative text-center">
       {/* Eyebrow dorado con laureles a los lados */}
@@ -61,6 +66,26 @@ export const MapHeader: React.FC = () => {
         Explora productores, restaurantes, experiencias y alojamientos de la
         región con una navegación clara, curada y visualmente elegante.
       </p>
+
+      {showMapButton && (
+        <div className="mt-6 flex justify-center">
+          <Link to="/mapa">
+            <button
+              type="button"
+              className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-xl px-6 text-[14px] font-semibold transition-all hover:-translate-y-0.5"
+              style={{
+                backgroundColor: ORIGEN_COLORS.olive,
+                color: ORIGEN_COLORS.cream,
+                boxShadow: '0 12px 24px rgba(92, 107, 46, 0.2)',
+              }}
+            >
+              <MapPin size={16} strokeWidth={1.8} />
+              Ver mapa completo
+              <ArrowRight size={15} strokeWidth={1.9} />
+            </button>
+          </Link>
+        </div>
+      )}
     </header>
   );
 };
