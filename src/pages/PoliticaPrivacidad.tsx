@@ -70,7 +70,7 @@ const PoliticaPrivacidad = () => {
                 <p><strong>Identidad:</strong> ORIGEN S.L.</p>
                 <p><strong>NIF:</strong> B-12345678</p>
                 <p><strong>Dirección:</strong> Calle Ejemplo, 123, 28001 Madrid, España</p>
-                <p><strong>Email:</strong> privacidad@origen.es</p>
+                <p><strong>Email:</strong> ritmorigen@gmail.com</p>
                 <p><strong>Teléfono:</strong> +34 900 123 456</p>
               </div>
             </div>
@@ -269,7 +269,7 @@ const PoliticaPrivacidad = () => {
                 </li>
               </ul>
               <p>
-                Para ejercitar tus derechos, puedes contactarnos en: <strong>privacidad@origen.es</strong>
+                Para ejercitar tus derechos, puedes contactarnos en: <strong>ritmorigen@gmail.com</strong>
               </p>
               <p>
                 También tienes derecho a presentar una reclamación ante la Agencia Española de Protección 
@@ -349,7 +349,7 @@ const PoliticaPrivacidad = () => {
                 Si tienes alguna pregunta o inquietud sobre nuestra Política de Privacidad o sobre 
                 el tratamiento de tus datos personales, puedes contactarnos en:
               </p>
-              <p><strong>Email:</strong> privacidad@origen.es</p>
+              <p><strong>Email:</strong> ritmorigen@gmail.com</p>
               <p><strong>Teléfono:</strong> +34 900 123 456</p>
               <p><strong>Dirección postal:</strong> Calle Ejemplo, 123, 28001 Madrid, España</p>
             </div>

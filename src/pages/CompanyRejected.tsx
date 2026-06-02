@@ -15,7 +15,7 @@ export default function CompanyRejected() {
           <CardHeader className="text-center">
             <CardTitle className="text-xl">Tu empresa ha sido rechazada</CardTitle>
             <CardDescription className="mt-2">
-              Tu solicitud no ha sido aprobada. Si crees que es un error, contacta con soporte en info@origen.it.com.
+              Tu solicitud no ha sido aprobada. Si crees que es un error, contacta con soporte en ritmorigen@gmail.com.
             </CardDescription>
           </CardHeader>
           <CardContent>

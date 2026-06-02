@@ -462,7 +462,7 @@ const SoyEmpresa = () => {
               </div>
               <div className="flex items-center justify-center gap-3 md:justify-start">
                 <Mail className="h-5 w-5 text-[#4f6f3f]" />
-                <span>info@origen.it.com</span>
+                <span>ritmorigen@gmail.com</span>
               </div>
               <div className="flex items-center justify-center gap-3 md:justify-start">
                 <MapPin className="h-5 w-5 text-[#4f6f3f]" />

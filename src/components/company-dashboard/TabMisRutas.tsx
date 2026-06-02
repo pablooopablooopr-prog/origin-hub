@@ -314,7 +314,7 @@ const TabMisRutasInner = ({ userId, companyId }: TabMisRutasProps) => {
                     size="sm"
                     className="gap-2 mt-2"
                     onClick={() =>
-                      window.location.assign("mailto:rutas@origen.it.com?subject=Sugerencia%20de%20ruta")
+                      window.location.assign("mailto:ritmorigen@gmail.com?subject=Sugerencia%20de%20ruta")
                     }
                   >
                     <Calendar className="w-3.5 h-3.5" />

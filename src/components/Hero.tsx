@@ -121,7 +121,7 @@ const Hero = () => {
 
         {/* TAGLINE */}
         <p
-          className="text-center font-medium text-white mb-5 px-4 mt-10"
+          className="mx-auto max-w-fit text-center font-medium text-white mb-5 px-4 mt-10"
           style={{
             fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif",
             fontSize: "clamp(1.25rem, 1.5vw + 0.5rem, 2.1rem)",
@@ -129,7 +129,7 @@ const Hero = () => {
             lineHeight: 1.35,
           }}
         >
-          Negocios tradicionales. Calidad real. Comunidad nacional.
+          Negocios tradicionales. Calidad real. Comunidad manchega.
         </p>
 
         {/* DESCRIPCIÓN */}

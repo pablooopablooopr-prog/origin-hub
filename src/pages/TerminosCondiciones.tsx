@@ -202,7 +202,7 @@ const TerminosCondiciones = () => {
               <p>
                 Para ejercer el derecho de desistimiento, el Usuario deberá notificar su decisión a 
                 ORIGEN mediante una declaración inequívoca (por ejemplo, un correo electrónico enviado 
-                a devoluciones@origen.es).
+                a ritmorigen@gmail.com).
               </p>
             </div>
           </section>
@@ -302,7 +302,7 @@ const TerminosCondiciones = () => {
             <h3 className="text-lg font-bold mb-3 text-[#8B7355]">Datos de contacto</h3>
             <div className="text-muted-foreground space-y-2">
               <p><strong>Nombre comercial:</strong> ORIGEN</p>
-              <p><strong>Email:</strong> legal@origen.es</p>
+              <p><strong>Email:</strong> ritmorigen@gmail.com</p>
               <p><strong>Teléfono:</strong> +34 900 123 456</p>
               <p><strong>Dirección:</strong> Calle Ejemplo, 123, 28001 Madrid, España</p>
             </div>

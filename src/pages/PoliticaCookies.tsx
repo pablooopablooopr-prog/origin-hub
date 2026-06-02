@@ -334,7 +334,7 @@ const PoliticaCookies = () => {
               <p>
                 Si tienes alguna pregunta sobre nuestra Política de Cookies, puedes contactarnos en:
               </p>
-              <p><strong>Email:</strong> privacidad@origen.es</p>
+              <p><strong>Email:</strong> ritmorigen@gmail.com</p>
               <p><strong>Teléfono:</strong> +34 900 123 456</p>
             </div>
           </section>

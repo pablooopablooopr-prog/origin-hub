@@ -294,7 +294,7 @@ const Contacto = () => {
                     <Mail className="mt-1 h-7 w-7 shrink-0" style={{ color: C.olive }} />
                     <div>
                       <p className="font-semibold" style={{ color: C.brown }}>Email</p>
-                      <p className="mt-1" style={{ color: "#201812" }}>info@origen.it.com</p>
+                      <p className="mt-1" style={{ color: "#201812" }}>ritmorigen@gmail.com</p>
                     </div>
                   </div>
                   <div className="flex gap-5">

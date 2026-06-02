@@ -520,9 +520,9 @@ const FAQ = () => {
                     Ir a Contacto
                   </button>
                 </a>
-                <a href="mailto:info@origen.es">
+                <a href="mailto:ritmorigen@gmail.com">
                   <button className="w-full sm:w-auto px-6 py-3 border-2 border-[#8B7355] text-[#8B7355] hover:bg-[#8B7355] hover:text-white rounded-lg font-medium transition-colors">
-                    info@origen.es
+                    ritmorigen@gmail.com
                   </button>
                 </a>
               </div>

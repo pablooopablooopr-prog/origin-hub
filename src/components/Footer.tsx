@@ -83,7 +83,7 @@ const Footer = ({ brandLabel = "ORIGEN", compact = false }: FooterProps) => {
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-secondary" />
-                <span className="text-primary-foreground/80">info@origen.it.com</span>
+                <span className="text-primary-foreground/80">ritmorigen@gmail.com</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-secondary" />
