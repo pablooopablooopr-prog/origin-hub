@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import { ChevronDown, Star, Route, MoreHorizontal } from 'lucide-react';
+import { ChevronDown, Star, Route, MoreHorizontal, X } from 'lucide-react';
 import { ORIGEN_COLORS } from './mapStyles';
 
 type IconKey =
@@ -126,7 +126,7 @@ const Chip: React.FC<{
   <button
     type="button"
     onClick={onClick}
-    className="flex h-9 items-center gap-2 rounded-xl border px-3.5 text-[13px] font-semibold transition-all duration-150 flex-shrink-0 whitespace-nowrap hover:-translate-y-px"
+    className="flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-semibold transition-all duration-150 flex-shrink-0 whitespace-nowrap hover:-translate-y-px 2xl:h-9 2xl:gap-2 2xl:px-3 2xl:text-[12px]"
     style={{
       backgroundColor: active ? 'rgba(92, 107, 46, 0.1)' : 'rgba(255, 253, 248, 0.92)',
       borderColor: active ? 'rgba(92, 107, 46, 0.45)' : 'rgba(200, 184, 154, 0.48)',
@@ -134,7 +134,9 @@ const Chip: React.FC<{
       boxShadow: active ? 'inset 0 0 0 1px rgba(92, 107, 46, 0.12)' : '0 1px 4px rgba(60, 43, 32, 0.035)',
     }}
   >
-    <span style={{ color: ORIGEN_COLORS.olive }}>{label === 'Más' ? <MoreHorizontal size={15} strokeWidth={2.3} /> : icon}</span>
+    <span className="flex-shrink-0" style={{ color: ORIGEN_COLORS.olive }}>
+      {label === 'Más' ? <MoreHorizontal size={14} strokeWidth={2.3} /> : icon}
+    </span>
     <span>{label}</span>
   </button>
 );
@@ -149,7 +151,7 @@ const VSep: React.FC = () => (
 
 const SectionLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <span
-    className="block text-[10px] font-bold uppercase tracking-[0.26em] mb-3 whitespace-nowrap"
+    className="block text-[9px] font-bold uppercase tracking-[0.26em] mb-2 whitespace-nowrap 2xl:text-[10px] 2xl:mb-3"
     style={{ color: ORIGEN_COLORS.brownSoft }}
   >
     {children}
@@ -161,9 +163,16 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
   onNichoChange, onTipoChange, onProvinciaChange,
   onEnRutasChange, onDestacadosChange, onReset,
 }) => {
+  const hasActiveFilters =
+    nicho !== 'todos' ||
+    tipo !== 'todos' ||
+    provincia !== 'todas' ||
+    enRutas ||
+    destacadosPrimero;
+
   return (
     <div
-      className="hidden lg:flex items-stretch rounded-2xl overflow-hidden mt-6"
+      className="relative hidden xl:flex items-stretch rounded-2xl overflow-visible mt-6"
       style={{
         backgroundColor: 'rgba(255, 253, 248, 0.92)',
         border: '1px solid rgba(200, 184, 154, 0.42)',
@@ -171,9 +180,9 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
       }}
     >
       {/* NICHO */}
-      <div className="flex min-w-0 flex-[1.12] flex-col px-8 py-5">
+      <div className="flex min-w-0 flex-[1.04] flex-col px-4 py-3 2xl:px-6 2xl:py-4">
         <SectionLabel>Nicho</SectionLabel>
-        <div className="flex items-center gap-2 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+        <div className="flex min-w-0 items-center gap-1.5 2xl:gap-2">
           {NICHO_OPTIONS.map((opt) => (
             <Chip
               key={opt.id}
@@ -189,9 +198,9 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
       <VSep />
 
       {/* TIPO */}
-      <div className="flex min-w-0 flex-[0.9] flex-col px-8 py-5">
+      <div className="flex min-w-0 flex-[1.02] flex-col px-4 py-3 2xl:px-6 2xl:py-4">
         <SectionLabel>Tipo</SectionLabel>
-        <div className="flex items-center gap-2 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+        <div className="flex min-w-0 items-center gap-1.5 2xl:gap-2">
           {TIPO_OPTIONS.map((opt) => (
             <Chip
               key={opt.id}
@@ -207,14 +216,14 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
       <VSep />
 
       {/* PROVINCIA + TOGGLES */}
-      <div className="flex min-w-[385px] flex-col px-8 py-5 flex-shrink-0">
+      <div className="flex min-w-[330px] flex-[0.8] flex-col px-4 py-3 2xl:min-w-[370px] 2xl:px-6 2xl:py-4">
         <SectionLabel>Provincia</SectionLabel>
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-1.5 2xl:gap-2">
           <div className="relative">
             <select
               value={provincia}
               onChange={(e) => onProvinciaChange(e.target.value)}
-              className="h-9 min-w-[118px] appearance-none rounded-xl border pl-4 pr-8 text-[13px] font-semibold cursor-pointer"
+              className="h-8 min-w-[88px] appearance-none rounded-lg border pl-3 pr-7 text-[11px] font-semibold cursor-pointer 2xl:h-9 2xl:min-w-[105px] 2xl:text-[12px]"
               style={{
                 backgroundColor: 'rgba(255, 253, 248, 0.92)',
                 borderColor: 'rgba(200, 184, 154, 0.48)',
@@ -226,8 +235,8 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
               ))}
             </select>
             <ChevronDown
-              size={14}
-              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              size={13}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
               style={{ color: ORIGEN_COLORS.brownSoft }}
             />
           </div>
@@ -235,34 +244,49 @@ export const MapFiltersCard: React.FC<MapFiltersCardProps> = ({
           <button
             type="button"
             onClick={() => onDestacadosChange(!destacadosPrimero)}
-            className="flex h-9 items-center gap-2 rounded-xl border px-4 text-[13px] font-semibold transition-all whitespace-nowrap hover:-translate-y-px"
+            className="flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-semibold transition-all whitespace-nowrap hover:-translate-y-px 2xl:h-9 2xl:gap-2 2xl:px-3 2xl:text-[12px]"
             style={{
               backgroundColor: destacadosPrimero ? 'rgba(184, 134, 11, 0.12)' : 'rgba(255, 253, 248, 0.92)',
               borderColor: destacadosPrimero ? 'rgba(184, 134, 11, 0.46)' : 'rgba(200, 184, 154, 0.48)',
               color: ORIGEN_COLORS.brown,
             }}
           >
-            <Star size={14} fill={destacadosPrimero ? ORIGEN_COLORS.gold : 'none'} stroke={ORIGEN_COLORS.gold} />
+            <Star size={13} fill={destacadosPrimero ? ORIGEN_COLORS.gold : 'none'} stroke={ORIGEN_COLORS.gold} />
             Solo destacados
           </button>
 
           <button
             type="button"
             onClick={() => onEnRutasChange(!enRutas)}
-            className="flex h-9 items-center gap-2 rounded-xl border px-4 text-[13px] font-semibold transition-all whitespace-nowrap hover:-translate-y-px"
+            className="flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-semibold transition-all whitespace-nowrap hover:-translate-y-px 2xl:h-9 2xl:gap-2 2xl:px-3 2xl:text-[12px]"
             style={{
               backgroundColor: enRutas ? 'rgba(92, 107, 46, 0.1)' : 'rgba(255, 253, 248, 0.92)',
               borderColor: enRutas ? 'rgba(92, 107, 46, 0.45)' : 'rgba(200, 184, 154, 0.48)',
               color: ORIGEN_COLORS.brown,
             }}
           >
-            <Route size={14} style={{ color: ORIGEN_COLORS.olive }} />
+            <Route size={13} style={{ color: ORIGEN_COLORS.olive }} />
             En rutas
           </button>
         </div>
       </div>
 
-      {onReset && <button type="button" className="sr-only" onClick={onReset}>Limpiar filtros</button>}
+      {onReset && hasActiveFilters && (
+        <button
+          type="button"
+          onClick={onReset}
+          className="absolute -right-2 -top-3 inline-flex h-7 rotate-[-1deg] items-center gap-1.5 rounded-full border px-3 text-[10px] font-bold uppercase tracking-[0.16em] transition-all hover:rotate-0 hover:-translate-y-0.5"
+          style={{
+            backgroundColor: ORIGEN_COLORS.brown,
+            borderColor: 'rgba(255, 250, 240, 0.75)',
+            color: ORIGEN_COLORS.cream,
+            boxShadow: '0 10px 20px rgba(61, 43, 31, 0.2)',
+          }}
+        >
+          <X size={12} strokeWidth={2.4} />
+          Limpiar
+        </button>
+      )}
     </div>
   );
 };

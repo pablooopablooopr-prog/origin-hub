@@ -20,7 +20,7 @@ import React, {
   useMemo,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, SlidersHorizontal } from 'lucide-react';
+import { Loader2, SlidersHorizontal, X } from 'lucide-react';
 import { MapFiltersModal } from '@/components/MapFiltersModal';
 import { MapHeader } from './map/MapHeader';
 import { MapFiltersCard } from './map/MapFiltersCard';
@@ -96,6 +96,13 @@ export function MapSection({ hideHeader = false }: { hideHeader?: boolean }) {
     () => empresasOrdenadas.find((e) => e.id === selectedId) || null,
     [empresasOrdenadas, selectedId]
   );
+
+  const hasActiveFilters =
+    filtros.nicho !== 'todos' ||
+    filtros.tipo !== 'todos' ||
+    filtros.provincia !== 'todas' ||
+    filtros.enRutas ||
+    filtros.mostrarDestacadosFirst;
 
   // Inicializar mapa
   useEffect(() => {
@@ -260,19 +267,37 @@ export function MapSection({ hideHeader = false }: { hideHeader?: boolean }) {
         />
 
         {/* TOGGLE FILTROS MOBILE */}
-        <button
-          onClick={() => setMobileFiltersOpen(true)}
-          className="lg:hidden mt-6 w-full flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-sm font-semibold transition-all"
-          style={{
-            backgroundColor: ORIGEN_COLORS.cream,
-            border: `1px solid ${ORIGEN_COLORS.beigeSoft}`,
-            color: ORIGEN_COLORS.brown,
-            boxShadow: '0 2px 8px rgba(60, 43, 32, 0.06)',
-          }}
-        >
-          <SlidersHorizontal size={16} style={{ color: ORIGEN_COLORS.olive }} />
-          Filtros
-        </button>
+        <div className="xl:hidden mt-6 flex gap-2">
+          <button
+            onClick={() => setMobileFiltersOpen(true)}
+            className="flex min-h-[46px] flex-1 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-semibold transition-all"
+            style={{
+              backgroundColor: ORIGEN_COLORS.cream,
+              border: `1px solid ${ORIGEN_COLORS.beigeSoft}`,
+              color: ORIGEN_COLORS.brown,
+              boxShadow: '0 2px 8px rgba(60, 43, 32, 0.06)',
+            }}
+          >
+            <SlidersHorizontal size={16} style={{ color: ORIGEN_COLORS.olive }} />
+            Filtros
+          </button>
+
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={resetFiltros}
+              className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-2xl px-4 text-xs font-bold uppercase tracking-[0.12em] transition-all hover:-translate-y-0.5"
+              style={{
+                backgroundColor: ORIGEN_COLORS.brown,
+                color: ORIGEN_COLORS.cream,
+                boxShadow: '0 8px 18px rgba(61, 43, 31, 0.18)',
+              }}
+            >
+              <X size={14} strokeWidth={2.4} />
+              Limpiar
+            </button>
+          )}
+        </div>
 
         <MapFiltersModal
           isOpen={mobileFiltersOpen}

@@ -3,7 +3,8 @@
  */
 
 import React from 'react';
-import { Building2, Star, Route } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { ArrowRight, Building2, MapPin, Star, Route } from 'lucide-react';
 import { ORIGEN_COLORS } from './mapStyles';
 import { LaurelDecor } from './LaurelDecor';
 
@@ -18,6 +19,9 @@ export const MapMetrics: React.FC<MapMetricsProps> = ({
   destacados,
   enRutas,
 }) => {
+  const location = useLocation();
+  const showMapButton = location.pathname !== '/mapa';
+
   return (
     <div
       className="relative mt-2 rounded-2xl px-4 md:px-8 py-4"
@@ -42,7 +46,7 @@ export const MapMetrics: React.FC<MapMetricsProps> = ({
         <LaurelDecor size={48} color={ORIGEN_COLORS.olive} variant="sprig" flip />
       </div>
 
-      <div className="flex items-center justify-around md:justify-center gap-2 md:gap-12">
+      <div className="flex flex-wrap items-center justify-around gap-3 md:justify-center md:gap-10">
         <Metric
           icon={<Building2 size={22} strokeWidth={1.6} />}
           value={empresas}
@@ -63,6 +67,23 @@ export const MapMetrics: React.FC<MapMetricsProps> = ({
           label="En rutas activas"
           tone="olive"
         />
+        {showMapButton && (
+          <Link to="/mapa" className="w-full sm:w-auto">
+            <button
+              type="button"
+              className="inline-flex min-h-[42px] w-full items-center justify-center gap-2 rounded-xl px-5 text-[13px] font-semibold transition-all hover:-translate-y-0.5 sm:w-auto"
+              style={{
+                backgroundColor: ORIGEN_COLORS.brown,
+                color: ORIGEN_COLORS.cream,
+                boxShadow: '0 12px 24px rgba(61, 43, 31, 0.18)',
+              }}
+            >
+              <MapPin size={15} strokeWidth={1.8} />
+              Ver mapa completo
+              <ArrowRight size={14} strokeWidth={1.9} />
+            </button>
+          </Link>
+        )}
       </div>
     </div>
   );
