@@ -13,6 +13,7 @@ import SpotlightToday from "@/components/home/SpotlightToday";
 import SeasonalRoutes from "@/components/home/SeasonalRoutes";
 import { MapSection } from "@/components/home/MapSection";
 import HowItWorks from "@/components/home/HowItWorks";
+import FerduqueBanner from "@/components/home/FerduqueBanner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -84,6 +85,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      {/* Banner FERDUQUE — visible nada más entrar, se puede cerrar */}
+      <FerduqueBanner />
       <Header />
 
       <main>
