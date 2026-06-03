@@ -10,7 +10,7 @@ const FerduqueBanner = () => {
 
   return (
     <div
-      className="w-full"
+      className="w-full sticky top-0 z-[60]"
       style={{
         background: "linear-gradient(90deg, #2A3D14 0%, #3a5a1a 60%, #4F5D2A 100%)",
       }}
