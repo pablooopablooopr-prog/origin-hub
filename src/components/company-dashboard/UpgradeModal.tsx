@@ -109,12 +109,6 @@ const UpgradeModal = ({
                     Recomendado
                   </Badge>
                 )}
-                {isPremium && (
-                  <Badge className="absolute -top-2 left-1/2 -translate-x-1/2 z-10 bg-amber-100 text-amber-900 border-amber-300 gap-1">
-                    <FileText className="w-3 h-3" />
-                    Nuevo · Antifraude
-                  </Badge>
-                )}
                 <CardContent className="p-5 space-y-4 flex flex-col flex-1">
                   <div>
                     <h3 className="font-semibold text-lg">
@@ -171,21 +165,6 @@ const UpgradeModal = ({
           })}
         </div>
 
-        <div className="space-y-2 pt-2 text-xs text-muted-foreground">
-          <p className="flex items-start gap-2">
-            <FileText className="w-3.5 h-3.5 mt-0.5 shrink-0 text-amber-600" />
-            <span>
-              <strong className="text-foreground">Sobre el plan Premium:</strong>{" "}
-              incluye la digitalización de tu facturación conforme a la nueva
-              normativa antifraude (Verifactu / Ley Crea y Crece). Tendrás que
-              tener facturas digitalizadas antes del despliegue obligatorio.
-            </span>
-          </p>
-          <p className="italic">
-            Las comisiones por venta (10% vía QR del consumidor, 5% en deals
-            B2B) son iguales en los tres planes.
-          </p>
-        </div>
       </DialogContent>
     </Dialog>
   );
