@@ -124,7 +124,10 @@ const BusinessDetail = () => {
       const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
       const isUuid = uuidRegex.test(param);
 
-      const selectColumns = `
+      // Consultamos la VIEW companies_public (filtra status approved y es
+      // accesible para anónimos). El owner-check se hace después contra la
+      // tabla companies (RLS solo deja ver al dueño).
+      const publicCols = `
         id,
         business_name,
         business_type,
@@ -149,16 +152,12 @@ const BusinessDetail = () => {
         longitude,
         email,
         phone,
-        user_id,
-        status,
-        categories!category_id(name),
-        regions!region_id(name)
+        status
       `;
 
       let companyQuery = supabase
-        .from("companies")
-        .select(selectColumns)
-        .in("status", ["approved", "APPROVED", "APROVVED"]);
+        .from("companies_public")
+        .select(publicCols);
       companyQuery = isUuid ? companyQuery.eq("id", param) : companyQuery.eq("slug", param);
 
       const { data: companyData, error: companyError } = await companyQuery.maybeSingle();
@@ -207,8 +206,8 @@ const BusinessDetail = () => {
       const normalizedCompany: Company = {
         ...row,
         business_name: row.business_name || "Empresa sin nombre",
-        category_name: row.categories?.name || null,
-        region_name: row.regions?.name || null,
+        category_name: null,
+        region_name: null,
         social_media: (row.social_media as SocialMedia) || null,
         gallery_image_urls: Array.isArray(row.gallery_image_urls)
           ? row.gallery_image_urls
@@ -217,8 +216,17 @@ const BusinessDetail = () => {
 
       setCompany(normalizedCompany);
 
+      // Owner-check separado: RLS de companies solo deja al dueño ver su user_id
       const { data: authData } = await supabase.auth.getUser();
-      setIsOwner(Boolean(authData.user && row.user_id === authData.user.id));
+      if (authData.user) {
+        const { data: ownerRow } = await supabase
+          .from("companies")
+          .select("user_id")
+          .eq("id", row.id)
+          .eq("user_id", authData.user.id)
+          .maybeSingle();
+        setIsOwner(Boolean(ownerRow));
+      }
 
       const [routesRes, reviewsRes] = await Promise.all([
         supabase
