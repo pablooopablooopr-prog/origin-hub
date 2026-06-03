@@ -42,11 +42,19 @@ const inputStyle = {
   color: C.brown,
 };
 
+const NEGOCIO_TIPOS = [
+  "Productor agrícola", "Ganadero", "Bodega / Vinos", "Almazara / Aceite",
+  "Quesería / Lácteos", "Carnicería", "Restaurante / Bar", "Panadería / Pastelería",
+  "Cooperativa", "Turismo rural", "Artesanía", "Ropa / Moda eco",
+  "Comercio local", "Otro",
+];
+
 const schema = z.object({
   name: z.string().trim().min(1, "Obligatorio").max(100),
   company: z.string().trim().min(1, "Obligatorio").max(150),
   phone: z.string().trim().min(6, "Teléfono inválido").max(30),
   email: z.string().trim().email("Email inválido").max(255),
+  negocio: z.string().min(1, "Selecciona tu tipo de negocio"),
   q1: z.string().min(1, "Selecciona"),
   q2: z.string().min(1, "Selecciona"),
   q3: z.string().min(1, "Selecciona"),
@@ -56,14 +64,14 @@ const schema = z.object({
 type Form = z.infer<typeof schema>;
 
 const QUESTIONS: { key: keyof Form; label: string; options: string[] }[] = [
-  { key: "q1", label: "¿Tu empresa tiene página web?", options: ["Sí", "No", "Necesita mejora"] },
-  { key: "q2", label: "¿Gestionáis facturas o albaranes digitalmente?", options: ["Sí", "Parcialmente", "No"] },
-  { key: "q3", label: "¿Usáis automatizaciones o herramientas digitales para ahorrar tiempo y dinero?", options: ["Sí", "No", "No sé qué podría automatizar"] },
-  { key: "q4", label: "¿Vendéis online o queréis vender más?", options: ["Ya vendemos", "Queremos hacerlo", "No todavía"] },
-  { key: "q5", label: "¿Te gustaría formar parte gratuitamente de RitmOrigen como empresa fundadora FERDUQUE?", options: ["Sí, me interesa", "Quiero más información", "No por ahora"] },
+  { key: "q1", label: "2. ¿Tu empresa tiene página web?", options: ["Sí", "No", "Necesita mejora"] },
+  { key: "q2", label: "3. ¿Gestionáis facturas o albaranes digitalmente?", options: ["Sí", "Parcialmente", "No"] },
+  { key: "q3", label: "4. ¿Usáis automatizaciones o herramientas digitales para ahorrar tiempo y dinero?", options: ["Sí", "No", "No sé qué podría automatizar"] },
+  { key: "q4", label: "5. ¿Vendéis online o queréis vender más?", options: ["Ya vendemos", "Queremos hacerlo", "No todavía"] },
+  { key: "q5", label: "6. ¿Te gustaría formar parte gratuitamente de RitmOrigen como empresa fundadora FERDUQUE?", options: ["Sí, me interesa", "Quiero más información", "No por ahora"] },
 ];
 
-const init: Form = { name: "", company: "", phone: "", email: "", q1: "", q2: "", q3: "", q4: "", q5: "" };
+const init: Form = { name: "", company: "", phone: "", email: "", negocio: "", q1: "", q2: "", q3: "", q4: "", q5: "" };
 
 const FerduqueModal = () => {
   const [open, setOpen] = useState(() => sessionStorage.getItem(SESSION_KEY) !== "1");
@@ -204,12 +212,35 @@ const FerduqueModal = () => {
 
                 <div className="h-px" style={{ backgroundColor: `${C.beige}55` }} />
 
-                {/* Preguntas */}
+                {/* Pregunta 1 — Tipo de negocio */}
+                <fieldset>
+                  <legend className="mb-2 text-xs font-semibold" style={{ color: C.brown }}>
+                    1. ¿Qué tipo de negocio eres?
+                  </legend>
+                  <div className="flex flex-wrap gap-1.5">
+                    {NEGOCIO_TIPOS.map((opt) => {
+                      const active = form.negocio === opt;
+                      return (
+                        <button type="button" key={opt} onClick={() => set("negocio", opt)}
+                          className="rounded-full border px-2.5 py-1 text-xs font-medium transition-all"
+                          style={{
+                            backgroundColor: active ? C.olive : "rgba(255,250,241,0.7)",
+                            color: active ? C.card : C.brown,
+                            borderColor: active ? C.olive : `${C.beige}88`,
+                          }}
+                        >{opt}</button>
+                      );
+                    })}
+                  </div>
+                  {errors.negocio && <p className="mt-1 text-xs text-red-600">{errors.negocio}</p>}
+                </fieldset>
+
+                {/* Preguntas 2-6 */}
                 <div className="space-y-4">
-                  {QUESTIONS.map((q, i) => (
+                  {QUESTIONS.map((q) => (
                     <fieldset key={q.key}>
                       <legend className="mb-2 text-xs font-semibold" style={{ color: C.brown }}>
-                        {i + 1}. {q.label}
+                        {q.label}
                       </legend>
                       <div className="flex flex-wrap gap-1.5">
                         {q.options.map((opt) => {
