@@ -14,6 +14,7 @@ import SeasonalRoutes from "@/components/home/SeasonalRoutes";
 import { MapSection } from "@/components/home/MapSection";
 import HowItWorks from "@/components/home/HowItWorks";
 import FerduqueModal from "@/components/home/FerduqueModal";
+// FerduqueBanner se carga globalmente en App.tsx
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 

@@ -1,6 +1,19 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Logo } from "@/components/Logo";
+/* Logo inline centrado — sin scale(), sin desvío */
+const ModalLogo = () => (
+  <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+    <span style={{ fontSize: "22px", fontWeight: "bold", color: "#3D2B1F", letterSpacing: "-0.5px", lineHeight: 1, display: "inline-flex", alignItems: "center", whiteSpace: "nowrap" }}>
+      <span>RITM</span>
+      <span style={{ position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center", width: "22px", height: "22px", marginLeft: "1px", marginRight: "1px" }}>
+        <span style={{ visibility: "hidden" }}>O</span>
+        <img src="/lovable-uploads/enso-transparent.png" alt="" aria-hidden="true"
+          style={{ position: "absolute", width: "18.7px", height: "18.7px", objectFit: "contain", opacity: 0.9 }} />
+      </span>
+      <span>RIGEN</span>
+    </span>
+  </div>
+);
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Loader2, Send, X } from "lucide-react";
@@ -143,7 +156,7 @@ const FerduqueModal = () => {
             <>
               {/* ── Cabecera logos ── */}
               <div className="flex flex-col items-center text-center gap-3 mb-6">
-                <Logo size={20} showText={true} />
+                <ModalLogo />
 
                 <div className="flex items-center gap-3">
                   <span className="h-px w-8" style={{ backgroundColor: C.beige }} />
@@ -160,7 +173,7 @@ const FerduqueModal = () => {
                 />
 
                 <p className="text-sm md:text-[15px] leading-snug font-medium max-w-md" style={{ color: C.brown, fontFamily: ef }}>
-                  Forma parte <strong style={{ color: C.olive }}>gratuitamente</strong> como empresa fundadora{" "}
+                  Forma parte <strong style={{ color: C.olive }}>GRATUITAMENTE</strong> como empresa fundadora{" "}
                   <strong style={{ color: C.olive }}>FERDUQUE</strong> y descubre nuevas oportunidades para tu negocio.
                 </p>
               </div>

@@ -59,6 +59,7 @@ const Ferduque = lazy(() => import("./pages/Ferduque"));
 // Gate components (small, keep eager)
 import CompanyGate from "./components/CompanyGate";
 import AdminGate from "./components/AdminGate";
+import FerduqueBanner from "./components/home/FerduqueBanner";
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -75,6 +76,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <FerduqueBanner />
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Index />} />
