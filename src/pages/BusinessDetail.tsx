@@ -2,6 +2,15 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { findMockEmpresa } from "@/data/mockEmpresas";
 import { SEASONS, type Season } from "@/lib/season";
@@ -17,13 +26,15 @@ import {
   Leaf,
   Mail,
   MapPin,
-  MessageCircle,
+  Pencil,
   Phone,
   Route,
+  Save,
   Share2,
   ShieldCheck,
   Star,
   Twitter,
+  X,
 } from "lucide-react";
 
 type SocialMedia = {
@@ -111,6 +122,71 @@ const BusinessDetail = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
+
+  // Edición inline (solo visible si isOwner). Cada campo se edita en su tarjeta;
+  // un botón global "Guardar" persiste todo a la vez y "Cancelar" descarta.
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [editForm, setEditForm] = useState<Partial<Company>>({});
+
+  const startEditing = () => {
+    if (!company) return;
+    setEditForm({
+      business_name: company.business_name,
+      description: company.description,
+      authenticity_story: company.authenticity_story,
+      what_makes_us_different: company.what_makes_us_different,
+      star_product: company.star_product,
+      main_season: company.main_season,
+      locality: company.locality,
+      address: company.address,
+      phone: company.phone,
+      website: company.website,
+      instagram: company.instagram,
+    });
+    setEditing(true);
+  };
+
+  const cancelEditing = () => {
+    setEditForm({});
+    setEditing(false);
+  };
+
+  const handleSaveEdits = async () => {
+    if (!company) return;
+    setSaving(true);
+    const payload: Record<string, unknown> = {};
+    (Object.keys(editForm) as (keyof Company)[]).forEach((k) => {
+      const v = editForm[k];
+      if (v !== undefined) {
+        payload[k as string] = typeof v === "string" ? (v as string).trim() || null : v;
+      }
+    });
+
+    const { error } = await supabase
+      .from("companies")
+      .update(payload)
+      .eq("id", company.id);
+
+    setSaving(false);
+    if (error) {
+      toast({
+        title: "No se pudo guardar",
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setCompany({ ...company, ...payload } as Company);
+    setEditing(false);
+    setEditForm({});
+    toast({ title: "Ficha actualizada", description: "Tus cambios están publicados." });
+  };
+
+  const setField = <K extends keyof Company>(key: K, value: Company[K]) => {
+    setEditForm((prev) => ({ ...prev, [key]: value }));
+  };
 
   useEffect(() => {
     if (id) void loadCompanyData(id);
@@ -372,16 +448,21 @@ const BusinessDetail = () => {
       <main className="mx-auto w-full max-w-[1460px] px-4 py-5 md:px-8 md:py-7">
         <TopBar
           isOwner={isOwner}
+          editing={editing}
+          saving={saving}
           onBack={() => navigate(-1)}
           onShare={handleShare}
+          onStartEdit={startEditing}
+          onCancelEdit={cancelEditing}
+          onSaveEdit={handleSaveEdits}
         />
 
         <section
           className="relative mt-5 overflow-hidden rounded-xl md:rounded-2xl"
           style={{
-            minHeight: "clamp(280px, 36vw, 460px)",
+            height: "clamp(180px, 22vw, 280px)",
             backgroundColor: "#D8CBB6",
-            boxShadow: "0 12px 30px rgba(61, 43, 31, 0.08)",
+            boxShadow: "0 8px 22px rgba(61, 43, 31, 0.08)",
           }}
         >
           {heroImage ? (
@@ -400,38 +481,38 @@ const BusinessDetail = () => {
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 to-black/10" />
-          <div className="relative z-10 flex min-h-[inherit] flex-col justify-end gap-6 p-6 md:flex-row md:items-end md:justify-start md:p-10">
+          <div className="relative z-10 flex h-full flex-col justify-end gap-3 p-4 md:flex-row md:items-end md:justify-start md:gap-5 md:p-6">
             <div
-              className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-2xl md:h-40 md:w-40"
+              className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-xl md:h-24 md:w-24"
               style={{
                 backgroundColor: "rgba(255, 252, 247, 0.94)",
-                boxShadow: "0 18px 38px rgba(0,0,0,0.2)",
+                boxShadow: "0 12px 26px rgba(0,0,0,0.2)",
               }}
             >
               {company.logo_url ? (
-                <img src={company.logo_url} alt={`Logo de ${company.business_name}`} className="h-full w-full object-contain p-2" />
+                <img src={company.logo_url} alt={`Logo de ${company.business_name}`} className="h-full w-full object-contain p-1.5" />
               ) : (
-                <Leaf size={46} style={{ color: C.tan }} />
+                <Leaf size={36} style={{ color: C.tan }} />
               )}
             </div>
 
             <div className="pb-1 text-white">
               <h1
-                className="text-4xl font-bold leading-none md:text-6xl"
+                className="text-3xl font-bold leading-none md:text-4xl"
                 style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}
               >
                 {company.business_name}
               </h1>
-              <div className="mt-4 flex flex-wrap items-center gap-3">
+              <div className="mt-2 flex flex-wrap items-center gap-2.5">
                 <span
-                  className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"
+                  className="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide"
                   style={{ backgroundColor: "rgba(92, 107, 46, 0.92)" }}
                 >
                   {categoryLabel}
                 </span>
                 {locationText && (
-                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white/95">
-                    <MapPin size={16} />
+                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-white/95">
+                    <MapPin size={13} />
                     {locationText}
                   </span>
                 )}
@@ -467,21 +548,46 @@ const BusinessDetail = () => {
 
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
           <div className="space-y-7">
-            <PublicCard icon={<Leaf size={23} />} title="Nuestra historia">
-              <p className="leading-relaxed whitespace-pre-line" style={{ color: C.brown }}>
-                {company.authenticity_story || "Esta empresa todavía está completando su historia."}
-              </p>
+            <PublicCard icon={<Leaf size={23} />} title="Nuestra historia" editing={editing}>
+              {editing ? (
+                <Textarea
+                  value={editForm.authenticity_story ?? ""}
+                  onChange={(e) => setField("authenticity_story", e.target.value)}
+                  rows={5}
+                  placeholder="Cuéntanos tu historia: cuándo empezaste, por qué lo haces..."
+                  className="bg-white"
+                />
+              ) : (
+                <p className="leading-relaxed whitespace-pre-line" style={{ color: C.brown }}>
+                  {company.authenticity_story || "Esta empresa todavía está completando su historia."}
+                </p>
+              )}
             </PublicCard>
 
-            <PublicCard icon={<Award size={23} />} title="Sobre nosotros" flushBottom>
-              <p className="leading-relaxed whitespace-pre-line" style={{ color: C.brown }}>
-                {company.description || "Esta empresa está completando su presentación pública en RitmOrigen."}
-              </p>
+            <PublicCard icon={<Award size={23} />} title="Sobre nosotros" flushBottom editing={editing}>
+              {editing ? (
+                <Textarea
+                  value={editForm.description ?? ""}
+                  onChange={(e) => setField("description", e.target.value)}
+                  rows={4}
+                  placeholder="Presenta tu empresa al mundo..."
+                  className="bg-white"
+                />
+              ) : (
+                <p className="leading-relaxed whitespace-pre-line" style={{ color: C.brown }}>
+                  {company.description || "Esta empresa está completando su presentación pública en RitmOrigen."}
+                </p>
+              )}
 
               <InfoHighlights
-                different={company.what_makes_us_different}
-                product={company.star_product}
-                season={seasonText(company.main_season)}
+                editing={editing}
+                different={editing ? editForm.what_makes_us_different ?? "" : company.what_makes_us_different}
+                product={editing ? editForm.star_product ?? "" : company.star_product}
+                season={editing ? editForm.main_season ?? "" : company.main_season}
+                seasonLabel={!editing ? seasonText(company.main_season) : null}
+                onDifferentChange={(v) => setField("what_makes_us_different", v)}
+                onProductChange={(v) => setField("star_product", v)}
+                onSeasonChange={(v) => setField("main_season", v)}
               />
             </PublicCard>
 
@@ -654,44 +760,60 @@ const BusinessDetail = () => {
 
 const TopBar = ({
   isOwner,
+  editing,
+  saving,
   onBack,
   onShare,
+  onStartEdit,
+  onCancelEdit,
+  onSaveEdit,
 }: {
   isOwner: boolean;
+  editing: boolean;
+  saving: boolean;
   onBack: () => void;
   onShare: () => void;
+  onStartEdit: () => void;
+  onCancelEdit: () => void;
+  onSaveEdit: () => void;
 }) => (
   <div className="flex items-center justify-between gap-4">
-    <button
-      type="button"
-      onClick={onBack}
-      className="inline-flex items-center gap-2 text-sm font-semibold transition-opacity hover:opacity-70"
-      style={{ color: C.brown }}
-    >
+    <Button variant="ghost" size="sm" onClick={onBack} className="gap-2">
       <ArrowLeft size={16} />
       Volver
-    </button>
+    </Button>
 
     <div className="flex items-center gap-2">
-      {isOwner && (
-        <Link
-          to="/company-dashboard?tab=ficha"
-          className="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-          style={{ backgroundColor: C.tan }}
-        >
-          <MessageCircle size={15} />
+      {isOwner && !editing && (
+        <Button onClick={onStartEdit} className="gap-2 shadow-md">
+          <Pencil size={15} />
           Editar mi ficha
-        </Link>
+        </Button>
       )}
-      <button
-        type="button"
+      {isOwner && editing && (
+        <>
+          <Button variant="outline" onClick={onCancelEdit} className="gap-2">
+            <X size={15} />
+            Cancelar
+          </Button>
+          <Button
+            onClick={onSaveEdit}
+            disabled={saving}
+            className="gap-2 shadow-md"
+          >
+            <Save size={15} />
+            {saving ? "Guardando..." : "Guardar cambios"}
+          </Button>
+        </>
+      )}
+      <Button
+        variant="outline"
+        size="icon"
         onClick={onShare}
-        className="inline-flex h-[42px] w-[42px] items-center justify-center rounded-lg border transition-colors hover:bg-white"
-        style={{ borderColor: C.border, color: C.brown }}
         aria-label="Compartir ficha"
       >
         <Share2 size={18} />
-      </button>
+      </Button>
     </div>
   </div>
 );
@@ -701,22 +823,27 @@ const PublicCard = ({
   title,
   children,
   flushBottom = false,
+  editing = false,
 }: {
   icon: JSX.Element;
   title: string;
   children: React.ReactNode;
   flushBottom?: boolean;
+  editing?: boolean;
 }) => (
   <section
     className={`overflow-hidden rounded-xl border ${flushBottom ? "pb-0" : ""}`}
     style={{
       backgroundColor: C.card,
-      borderColor: C.border,
-      boxShadow: "0 10px 28px rgba(61, 43, 31, 0.04)",
+      borderColor: editing ? "rgba(184, 134, 11, 0.45)" : C.border,
+      boxShadow: editing
+        ? "0 0 0 2px rgba(184, 134, 11, 0.18), 0 10px 28px rgba(61, 43, 31, 0.04)"
+        : "0 10px 28px rgba(61, 43, 31, 0.04)",
+      transition: "border-color .15s, box-shadow .15s",
     }}
   >
     <div className="p-6 md:p-7">
-      <SectionTitle icon={icon} title={title} />
+      <SectionTitle icon={icon} title={title} editing={editing} />
       <div className="mt-5">{children}</div>
     </div>
   </section>
@@ -748,10 +875,12 @@ const SectionTitle = ({
   icon,
   title,
   compact = false,
+  editing = false,
 }: {
   icon: JSX.Element;
   title: string;
   compact?: boolean;
+  editing?: boolean;
 }) => (
   <div className="flex items-center gap-3">
     <span style={{ color: C.tan }}>{icon}</span>
@@ -761,6 +890,12 @@ const SectionTitle = ({
     >
       {title}
     </h2>
+    {editing && (
+      <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-900">
+        <Pencil size={10} />
+        Editando
+      </span>
+    )}
   </div>
 );
 
@@ -768,11 +903,75 @@ const InfoHighlights = ({
   different,
   product,
   season,
+  seasonLabel,
+  editing = false,
+  onDifferentChange,
+  onProductChange,
+  onSeasonChange,
 }: {
   different?: string | null;
   product?: string | null;
   season?: string | null;
+  seasonLabel?: string | null;
+  editing?: boolean;
+  onDifferentChange?: (v: string) => void;
+  onProductChange?: (v: string) => void;
+  onSeasonChange?: (v: string) => void;
 }) => {
+  // En modo edición siempre se muestran las 3 celdas para poder rellenarlas
+  if (editing) {
+    return (
+      <div className="mt-6 grid gap-0 border-t md:grid-cols-3" style={{ borderColor: C.border }}>
+        <div className="p-5 text-center">
+          <div className="mx-auto mb-3 flex justify-center" style={{ color: C.gold }}>
+            <Leaf size={22} />
+          </div>
+          <p className="text-sm font-bold mb-2" style={{ color: C.brown }}>Qué nos hace diferentes</p>
+          <Textarea
+            value={different ?? ""}
+            onChange={(e) => onDifferentChange?.(e.target.value)}
+            rows={3}
+            placeholder="Calidad artesanal, ingredientes locales..."
+            className="bg-white text-sm"
+          />
+        </div>
+        <div className="p-5 text-center" style={{ borderLeft: `1px solid ${C.border}` }}>
+          <div className="mx-auto mb-3 flex justify-center" style={{ color: C.gold }}>
+            <Star size={24} />
+          </div>
+          <p className="text-sm font-bold mb-2" style={{ color: C.brown }}>Nuestro producto estrella</p>
+          <Input
+            value={product ?? ""}
+            onChange={(e) => onProductChange?.(e.target.value)}
+            placeholder="Aceite de Oliva Virgen Extra Premium"
+            className="bg-white text-sm"
+          />
+        </div>
+        <div className="p-5 text-center" style={{ borderLeft: `1px solid ${C.border}` }}>
+          <div className="mx-auto mb-3 flex justify-center" style={{ color: C.gold }}>
+            <CalendarDays size={24} />
+          </div>
+          <p className="text-sm font-bold mb-2" style={{ color: C.brown }}>Nuestra temporada</p>
+          <Select
+            value={season ?? ""}
+            onValueChange={(v) => onSeasonChange?.(v)}
+          >
+            <SelectTrigger className="bg-white text-sm">
+              <SelectValue placeholder="Elige temporada" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.values(SEASONS).map((s) => (
+                <SelectItem key={s.id} value={s.id}>
+                  {s.label} · {s.range}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+    );
+  }
+
   const items = [
     different && {
       icon: <Leaf size={22} />,
@@ -784,10 +983,10 @@ const InfoHighlights = ({
       title: "Nuestro producto estrella",
       value: product,
     },
-    season && {
+    seasonLabel && {
       icon: <CalendarDays size={24} />,
       title: "Nuestra temporada",
-      value: season,
+      value: seasonLabel,
     },
   ].filter(Boolean) as Array<{ icon: JSX.Element; title: string; value: string }>;
 
