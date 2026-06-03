@@ -17,6 +17,7 @@ import {
   Clock, Instagram, Facebook, Twitter, ExternalLink, Route, Users, Leaf,
   Camera, Save, X, Loader2
 } from "lucide-react";
+import { findMockEmpresa } from "@/data/mockEmpresas";
 
 interface Company {
   id: string;
@@ -114,8 +115,41 @@ const BusinessDetail = () => {
       let companyQuery = supabase.from('companies_public').select('*');
       companyQuery = isUuid ? companyQuery.eq('id', param) : companyQuery.eq('slug', param);
 
-      const { data: companyData, error: companyError } = await companyQuery.single();
-      if (companyError) throw companyError;
+      const { data: companyData, error: companyError } = await companyQuery.maybeSingle();
+
+      // Fallback a mockEmpresas si la DB no devuelve fila (ej: cards demo de la home)
+      if (!companyData) {
+        const mock = !isUuid ? findMockEmpresa(param) : undefined;
+        if (mock) {
+          setCompany({
+            id: mock.id,
+            business_name: mock.business_name,
+            description: mock.description,
+            authenticity_story: mock.authenticity_story,
+            address: mock.address,
+            website: mock.website,
+            logo_url: mock.logo_url,
+            cover_image_url: mock.cover_image_url,
+            avg_rating: mock.avg_rating,
+            total_reviews: mock.total_reviews,
+            social_media: mock.social_media,
+            slug: mock.slug,
+            latitude: mock.latitude,
+            longitude: mock.longitude,
+            email: mock.email,
+            phone: mock.phone,
+            business_type: mock.business_type,
+          } as Company);
+          // Mocks no tienen packs/rutas/reviews reales asociados
+          setPacks([]);
+          setRoutes([]);
+          setReviews([]);
+          setLoading(false);
+          return;
+        }
+        if (companyError) throw companyError;
+        throw new Error("Empresa no encontrada");
+      }
 
       const companyResult = companyData as any;
       setCompany(companyResult as Company);

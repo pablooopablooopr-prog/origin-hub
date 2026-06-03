@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import CompanyPlanGate from "@/components/CompanyPlanGate";
 import { useB2BChat, type B2BConversation } from "@/hooks/useB2BChat";
 import B2BMiniMap, { type B2BMapCompany } from "./B2BMiniMap";
+import { MOCK_EMPRESAS } from "@/data/mockEmpresas";
 
 /**
  * PESTAÑA 4 (rediseño LIVE): Contactos B2B.
@@ -145,25 +146,49 @@ const TabContactosB2BInner = () => {
     let alive = true;
     (async () => {
       setLoadingCompanies(true);
+      // El status en DB existe como 'approved' y 'APPROVED' indistintamente
+      // (legado). Usamos ilike para cubrir ambas variantes.
       const { data, error } = await supabase
         .from("companies")
         .select(
           "id, business_name, business_type, address, description, logo_url, slug, status, locality, latitude, longitude"
         )
-        .eq("status", "approved")
+        .ilike("status", "approved")
         .order("business_name", { ascending: true })
         .limit(120);
 
       if (!alive) return;
       if (error) {
         console.warn("companies error:", error.message);
-        setCompanies([]);
-      } else {
-        const list = ((data ?? []) as B2BCompanyRow[]).filter(
-          (c) => c.id !== myCompanyId
-        );
-        setCompanies(list);
       }
+
+      const real = ((data ?? []) as B2BCompanyRow[]).filter(
+        (c) => c.id !== myCompanyId
+      );
+
+      // Mezclar empresas mock (las que aparecen en la home) para que el mapa
+      // luzca poblado mientras la plataforma arranca. Las mock no son
+      // contactables vía chat (no tienen user_id real) pero aparecen como pin
+      // demostrativo de "así funcionará".
+      const mocks: B2BCompanyRow[] = MOCK_EMPRESAS.map((m) => ({
+        id: m.id,
+        business_name: m.business_name,
+        business_type: m.business_type,
+        address: m.address,
+        description: m.description,
+        logo_url: m.logo_url,
+        slug: m.slug,
+        status: "approved",
+        locality: m.locality,
+        latitude: m.latitude,
+        longitude: m.longitude,
+      }));
+
+      // Evitar duplicados si una mock coincide por slug con una real
+      const realSlugs = new Set(real.map((r) => r.slug).filter(Boolean));
+      const mocksFiltered = mocks.filter((m) => !realSlugs.has(m.slug));
+
+      setCompanies([...real, ...mocksFiltered]);
       setLoadingCompanies(false);
     })();
     return () => {
@@ -218,6 +243,13 @@ const TabContactosB2BInner = () => {
   );
 
   const handleStartChat = async (companyId: string) => {
+    // Las empresas mock no existen en DB → el RPC fallaría. Mostrar aviso.
+    if (companyId.startsWith("mock-")) {
+      toast.info(
+        "Esta empresa es una ficha demo. Cuando se una a ORIGEN podrás iniciar conversación."
+      );
+      return;
+    }
     const convId = await openConversationWith(companyId);
     if (convId) {
       toast.success("Conversación lista");

@@ -94,7 +94,7 @@ const EmpresaCard = ({ e }: { e: typeof EMPRESAS[0] }) => (
         <span className="flex items-center gap-1.5 text-[13px]" style={{ color: "#8a7a62" }}>
           <User size={14} />{e.persona}
         </span>
-        <Link to={`/empresa/${e.slug}`} className="flex items-center gap-1.5 text-[13px] font-semibold group" style={{ color: C.olive }}>
+        <Link to={`/negocio/${e.slug}`} className="flex items-center gap-1.5 text-[13px] font-semibold group" style={{ color: C.olive }}>
           Ver perfil
           <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
         </Link>
