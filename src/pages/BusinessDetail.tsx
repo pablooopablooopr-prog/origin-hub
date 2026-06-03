@@ -125,34 +125,19 @@ const BusinessDetail = () => {
       const isUuid = uuidRegex.test(param);
 
       // Consultamos la VIEW companies_public (filtra status approved y es
-      // accesible para anónimos). El owner-check se hace después contra la
-      // tabla companies (RLS solo deja ver al dueño).
+      // accesible para anónimos). Solo pedimos columnas que existen en el
+      // VIEW base; las extendidas (locality, phone, star_product, etc.) se
+      // mergean después desde la tabla companies si el VIEW extendido está
+      // aplicado (migración 20260603_000002), o si el visitante es owner.
       const publicCols = `
-        id,
-        business_name,
-        business_type,
-        description,
-        authenticity_story,
-        what_makes_us_different,
-        star_product,
-        main_season,
-        address,
-        locality,
-        website,
-        instagram,
-        logo_url,
-        cover_image_url,
-        hero_image_url,
-        gallery_image_urls,
-        avg_rating,
-        total_reviews,
+        id, business_name, business_type, slug,
+        description, authenticity_story,
+        address, website,
+        logo_url, cover_image_url,
+        avg_rating, total_reviews,
         social_media,
-        slug,
-        latitude,
-        longitude,
-        email,
-        phone,
-        status
+        latitude, longitude,
+        region_id, category_id
       `;
 
       let companyQuery = supabase
@@ -161,6 +146,19 @@ const BusinessDetail = () => {
       companyQuery = isUuid ? companyQuery.eq("id", param) : companyQuery.eq("slug", param);
 
       const { data: companyData, error: companyError } = await companyQuery.maybeSingle();
+
+      // Intentar enriquecer con columnas extendidas (no críticas si fallan)
+      let extendedData: Record<string, unknown> = {};
+      if (companyData) {
+        const { data: extRow } = await supabase
+          .from("companies_public")
+          .select(
+            "locality, instagram, hero_image_url, gallery_image_urls, email, phone, what_makes_us_different, star_product, main_season, accepts_visits, visit_schedule"
+          )
+          .eq("id", (companyData as any).id)
+          .maybeSingle();
+        if (extRow) extendedData = extRow as Record<string, unknown>;
+      }
 
       if (!companyData) {
         const mock = !isUuid ? findMockEmpresa(param) : undefined;
@@ -202,7 +200,7 @@ const BusinessDetail = () => {
         throw new Error("Empresa no encontrada");
       }
 
-      const row = companyData as any;
+      const row = { ...(companyData as any), ...extendedData };
       const normalizedCompany: Company = {
         ...row,
         business_name: row.business_name || "Empresa sin nombre",
