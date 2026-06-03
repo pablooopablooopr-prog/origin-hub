@@ -1,51 +1,66 @@
-import { useEffect, useState, useRef, useCallback } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AddressAutocompleteInput, AddressComponents } from "@/components/AddressAutocompleteInput";
-import {
-  MapPin, Star, Phone, Globe, Mail, Package, Edit, Plus,
-  Building2, Award, History, ChevronRight,
-  Clock, Instagram, Facebook, Twitter, ExternalLink, Route, Users, Leaf,
-  Camera, Save, X, Loader2
-} from "lucide-react";
 import { findMockEmpresa } from "@/data/mockEmpresas";
+import { SEASONS, type Season } from "@/lib/season";
+import {
+  ArrowLeft,
+  Award,
+  CalendarDays,
+  Camera,
+  ExternalLink,
+  Facebook,
+  Globe,
+  Instagram,
+  Leaf,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
+  Route,
+  Share2,
+  ShieldCheck,
+  Star,
+  Twitter,
+} from "lucide-react";
+
+type SocialMedia = {
+  instagram?: string | null;
+  facebook?: string | null;
+  twitter?: string | null;
+  x?: string | null;
+};
 
 interface Company {
   id: string;
   business_name: string;
+  business_type: string | null;
+  category_name?: string | null;
+  region_name?: string | null;
+  locality?: string | null;
   description: string | null;
   authenticity_story: string | null;
+  what_makes_us_different?: string | null;
+  star_product?: string | null;
+  main_season?: string | null;
   address: string | null;
   website: string | null;
+  instagram?: string | null;
   logo_url: string | null;
   cover_image_url: string | null;
+  hero_image_url?: string | null;
+  gallery_image_urls?: string[] | null;
   avg_rating: number | null;
   total_reviews: number | null;
-  social_media: any;
+  social_media: SocialMedia | null;
   slug: string | null;
   latitude: number | null;
   longitude: number | null;
   email?: string | null;
   phone?: string | null;
-  business_type?: string | null;
-}
-
-interface CompanyPack {
-  id: string;
-  title: string;
-  slug: string;
-  price: number | null;
-  tags: string[] | null;
-  status: string | null;
+  user_id?: string | null;
 }
 
 interface CompanyRoute {
@@ -67,69 +82,108 @@ interface Review {
   created_at: string;
 }
 
+const C = {
+  paper: "#F6F0E6",
+  card: "#FFFCF7",
+  border: "rgba(139, 99, 66, 0.16)",
+  brown: "#3D2B1F",
+  brownSoft: "#6F5A47",
+  olive: "#5C6B2E",
+  oliveSoft: "#EEF2E0",
+  gold: "#B8860B",
+  tan: "#8B5E34",
+};
+
+const SEASON_LABELS: Record<string, string> = Object.fromEntries(
+  Object.values(SEASONS).map((season) => [
+    season.id,
+    `${season.label} · ${season.range}`,
+  ])
+);
+
 const BusinessDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const param = id;
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const [company, setCompany] = useState<Company | null>(null);
-  const [packs, setPacks] = useState<CompanyPack[]>([]);
   const [routes, setRoutes] = useState<CompanyRoute[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
 
-  // Inline editing state
-  const [editing, setEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [editForm, setEditForm] = useState({
-    business_name: "",
-    description: "",
-    authenticity_story: "",
-    address: "",
-    website: "",
-    email: "",
-    phone: "",
-    social_instagram: "",
-    social_facebook: "",
-    social_twitter: "",
-  });
-  const [editLatLng, setEditLatLng] = useState<{ lat: number | null; lng: number | null }>({ lat: null, lng: null });
-  const [uploadingCover, setUploadingCover] = useState(false);
-  const [uploadingLogo, setUploadingLogo] = useState(false);
-  const coverInputRef = useRef<HTMLInputElement>(null);
-  const logoInputRef = useRef<HTMLInputElement>(null);
-
   useEffect(() => {
-    if (id) loadCompanyData();
+    if (id) void loadCompanyData(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  const loadCompanyData = async () => {
-    try {
-      if (!param) return;
+  const loadCompanyData = async (param: string) => {
+    setLoading(true);
 
+    try {
       const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
       const isUuid = uuidRegex.test(param);
 
-      let companyQuery = supabase.from('companies_public').select('*');
-      companyQuery = isUuid ? companyQuery.eq('id', param) : companyQuery.eq('slug', param);
+      const selectColumns = `
+        id,
+        business_name,
+        business_type,
+        description,
+        authenticity_story,
+        what_makes_us_different,
+        star_product,
+        main_season,
+        address,
+        locality,
+        website,
+        instagram,
+        logo_url,
+        cover_image_url,
+        hero_image_url,
+        gallery_image_urls,
+        avg_rating,
+        total_reviews,
+        social_media,
+        slug,
+        latitude,
+        longitude,
+        email,
+        phone,
+        user_id,
+        status,
+        categories!category_id(name),
+        regions!region_id(name)
+      `;
+
+      let companyQuery = supabase
+        .from("companies")
+        .select(selectColumns)
+        .in("status", ["approved", "APPROVED", "APROVVED"]);
+      companyQuery = isUuid ? companyQuery.eq("id", param) : companyQuery.eq("slug", param);
 
       const { data: companyData, error: companyError } = await companyQuery.maybeSingle();
 
-      // Fallback a mockEmpresas si la DB no devuelve fila (ej: cards demo de la home)
       if (!companyData) {
         const mock = !isUuid ? findMockEmpresa(param) : undefined;
         if (mock) {
           setCompany({
             id: mock.id,
             business_name: mock.business_name,
+            business_type: mock.business_type,
+            category_name: mock.category,
+            region_name: mock.province,
+            locality: mock.locality,
             description: mock.description,
             authenticity_story: mock.authenticity_story,
+            what_makes_us_different: null,
+            star_product: mock.star_product,
+            main_season: null,
             address: mock.address,
             website: mock.website,
             logo_url: mock.logo_url,
             cover_image_url: mock.cover_image_url,
+            hero_image_url: mock.cover_image_url,
+            gallery_image_urls: [],
             avg_rating: mock.avg_rating,
             total_reviews: mock.total_reviews,
             social_media: mock.social_media,
@@ -138,86 +192,60 @@ const BusinessDetail = () => {
             longitude: mock.longitude,
             email: mock.email,
             phone: mock.phone,
-            business_type: mock.business_type,
-          } as Company);
-          // Mocks no tienen packs/rutas/reviews reales asociados
-          setPacks([]);
+          });
           setRoutes([]);
           setReviews([]);
-          setLoading(false);
+          setIsOwner(false);
           return;
         }
+
         if (companyError) throw companyError;
         throw new Error("Empresa no encontrada");
       }
 
-      const companyResult = companyData as any;
-      setCompany(companyResult as Company);
-      const companyId = companyResult.id;
+      const row = companyData as any;
+      const normalizedCompany: Company = {
+        ...row,
+        business_name: row.business_name || "Empresa sin nombre",
+        category_name: row.categories?.name || null,
+        region_name: row.regions?.name || null,
+        social_media: (row.social_media as SocialMedia) || null,
+        gallery_image_urls: Array.isArray(row.gallery_image_urls)
+          ? row.gallery_image_urls
+          : [],
+      };
 
-      // Check ownership
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: ownerCheck } = await supabase
-          .from('companies')
-          .select('user_id, email, phone')
-          .eq('id', companyId)
-          .eq('user_id', user.id)
-          .single();
-        if (ownerCheck) {
-          setIsOwner(true);
-          const sm = (companyResult.social_media as any) || {};
-          setEditForm({
-            business_name: companyResult.business_name || "",
-            description: companyResult.description || "",
-            authenticity_story: companyResult.authenticity_story || "",
-            address: companyResult.address || "",
-            website: companyResult.website || "",
-            email: (ownerCheck as any).email || "",
-            phone: (ownerCheck as any).phone || "",
-            social_instagram: sm.instagram || "",
-            social_facebook: sm.facebook || "",
-            social_twitter: sm.twitter || "",
-          });
-          // Store email/phone on company for display
-          setCompany(prev => prev ? { ...prev, email: (ownerCheck as any).email, phone: (ownerCheck as any).phone } : prev);
-        }
-      }
+      setCompany(normalizedCompany);
 
-      // Load packs, routes, and reviews in parallel
-      const [packsRes, routesRes, reviewsRes] = await Promise.all([
+      const { data: authData } = await supabase.auth.getUser();
+      setIsOwner(Boolean(authData.user && row.user_id === authData.user.id));
+
+      const [routesRes, reviewsRes] = await Promise.all([
         supabase
-          .from('company_packs')
-          .select('id, title, slug, price, tags, status')
-          .eq('company_id', companyId)
-          .eq('status', 'published')
-          .limit(9),
-        supabase
-          .from('route_stops')
-          .select('route_id, routes!inner(id, title, slug, description, duration, difficulty, image_url, is_public, is_active)')
-          .eq('company_id', companyId)
+          .from("route_stops")
+          .select("route_id, routes!inner(id, title, slug, description, duration, difficulty, image_url, is_public, is_active)")
+          .eq("company_id", row.id)
           .limit(20),
         supabase
-          .from('company_reviews')
-          .select('*')
-          .eq('company_id', companyId)
-          .eq('is_approved', true)
-          .order('created_at', { ascending: false })
+          .from("company_reviews")
+          .select("*")
+          .eq("company_id", row.id)
+          .eq("is_approved", true)
+          .order("created_at", { ascending: false })
           .limit(6),
       ]);
 
-      setPacks(packsRes.data || []);
-
       const routeMap = new Map<string, CompanyRoute>();
       (routesRes.data || []).forEach((stop: any) => {
-        const r = stop.routes;
-        if (r && r.is_public && r.is_active && !routeMap.has(r.id)) {
-          routeMap.set(r.id, r);
+        const route = stop.routes;
+        if (route?.is_public && route?.is_active && !routeMap.has(route.id)) {
+          routeMap.set(route.id, route);
         }
       });
+
       setRoutes(Array.from(routeMap.values()));
-      setReviews(reviewsRes.data || []);
-    } catch (error: any) {
+      setReviews((reviewsRes.data || []) as Review[]);
+    } catch (error) {
       toast({
         title: "Error",
         description: "No se pudieron cargar los datos de la empresa",
@@ -228,118 +256,47 @@ const BusinessDetail = () => {
     }
   };
 
-  const handleImageUpload = async (file: File, type: 'cover' | 'logo') => {
-    if (!company) return;
-    const setUploading = type === 'cover' ? setUploadingCover : setUploadingLogo;
-    setUploading(true);
+  const handleShare = async () => {
+    const url = window.location.href;
+    const title = company?.business_name || "Ficha de empresa en RitmOrigen";
 
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${company.id}/${type}/${Date.now()}.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('company-files')
-        .upload(fileName, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('company-files')
-        .getPublicUrl(fileName);
-
-      const updateField = type === 'cover' ? 'cover_image_url' : 'logo_url';
-      const { error: updateError } = await supabase
-        .from('companies')
-        .update({ [updateField]: publicUrl })
-        .eq('id', company.id);
-
-      if (updateError) throw updateError;
-
-      setCompany({ ...company, [updateField]: publicUrl });
-      toast({ title: "Imagen actualizada", description: `${type === 'cover' ? 'Portada' : 'Logo'} actualizado correctamente` });
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const saveProfile = async () => {
-    if (!company) return;
-    setSaving(true);
-
-    try {
-      const socialMedia: any = {};
-      if (editForm.social_instagram) socialMedia.instagram = editForm.social_instagram;
-      if (editForm.social_facebook) socialMedia.facebook = editForm.social_facebook;
-      if (editForm.social_twitter) socialMedia.twitter = editForm.social_twitter;
-
-      const updateData: any = {
-        business_name: editForm.business_name,
-        description: editForm.description || null,
-        authenticity_story: editForm.authenticity_story || null,
-        address: editForm.address || null,
-        website: editForm.website || null,
-        email: editForm.email || null,
-        phone: editForm.phone || null,
-        social_media: socialMedia,
-      };
-      if (editLatLng.lat !== null && editLatLng.lng !== null) {
-        updateData.latitude = editLatLng.lat;
-        updateData.longitude = editLatLng.lng;
+      if (navigator.share) {
+        await navigator.share({ title, url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        toast({ title: "Enlace copiado", description: "Ya puedes compartir esta ficha." });
       }
-
-      const { error } = await supabase
-        .from('companies')
-        .update(updateData)
-        .eq('id', company.id);
-
-      if (error) throw error;
-
-      setCompany({
-        ...company,
-        business_name: editForm.business_name,
-        description: editForm.description || null,
-        authenticity_story: editForm.authenticity_story || null,
-        address: editForm.address || null,
-        website: editForm.website || null,
-        email: editForm.email || null,
-        phone: editForm.phone || null,
-        social_media: socialMedia,
-      });
-
-      setEditing(false);
-      toast({ title: "Perfil actualizado", description: "Los cambios se han guardado correctamente" });
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-    } finally {
-      setSaving(false);
+    } catch {
+      // The native share dialog can be cancelled; no visible error needed.
     }
   };
 
-  const cancelEditing = () => {
-    setEditing(false);
-    const sm = company?.social_media || {};
-    setEditForm({
-      business_name: company?.business_name || "",
-      description: company?.description || "",
-      authenticity_story: company?.authenticity_story || "",
-      address: company?.address || "",
-      website: company?.website || "",
-      email: company?.email || "",
-      phone: company?.phone || "",
-      social_instagram: sm.instagram || "",
-      social_facebook: sm.facebook || "",
-      social_twitter: sm.twitter || "",
-    });
-  };
+  const avgRating = company?.avg_rating || (reviews.length
+    ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
+    : 0);
+
+  const images = useMemo(() => {
+    if (!company) return [];
+    return [
+      company.hero_image_url,
+      company.cover_image_url,
+      company.logo_url,
+      ...(company.gallery_image_urls || []),
+    ]
+      .filter((url): url is string => Boolean(url && url.trim()))
+      .filter((url, index, arr) => arr.indexOf(url) === index)
+      .slice(0, 6);
+  }, [company]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: C.paper }}>
         <div className="text-center">
-          <Building2 className="w-16 h-16 mx-auto mb-4 text-primary animate-pulse" />
-          <p className="text-lg text-muted-foreground">Cargando empresa...</p>
+          <Leaf className="w-14 h-14 mx-auto mb-4 animate-pulse" style={{ color: C.olive }} />
+          <p className="text-sm font-semibold tracking-[0.18em] uppercase" style={{ color: C.brownSoft }}>
+            Cargando ficha pública
+          </p>
         </div>
       </div>
     );
@@ -347,632 +304,562 @@ const BusinessDetail = () => {
 
   if (!company) {
     return (
-      <div className="min-h-screen flex flex-col bg-background">
-        <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold mb-2">Empresa no encontrada</h1>
-            <Button onClick={() => navigate('/mapa')}>Volver al mapa</Button>
-          </div>
-        </main>
-        <Footer />
+      <div className="min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: C.paper }}>
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-3" style={{ color: C.brown }}>
+            Empresa no encontrada
+          </h1>
+          <Button onClick={() => navigate("/mapa")}>Volver al mapa</Button>
+        </div>
       </div>
     );
   }
 
-  const avgRating = company.avg_rating || (reviews.length > 0
-    ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
-    : 0);
-
+  const heroImage = company.hero_image_url || company.cover_image_url;
   const socialMedia = company.social_media || {};
+  const instagramValue = company.instagram || socialMedia.instagram;
+  const locationText = [company.locality, company.region_name || provinceFromAddress(company.address)]
+    .filter(Boolean)
+    .join(", ");
+  const categoryLabel = company.business_type || company.category_name || "Empresa local";
+  const contactItems = [
+    company.email && {
+      key: "email",
+      icon: <Mail size={16} />,
+      label: company.email,
+      href: `mailto:${company.email}`,
+    },
+    company.phone && {
+      key: "phone",
+      icon: <Phone size={16} />,
+      label: company.phone,
+      href: `tel:${company.phone.replace(/\s/g, "")}`,
+    },
+    company.website && {
+      key: "website",
+      icon: <Globe size={16} />,
+      label: "Web",
+      href: toAbsoluteUrl(company.website),
+    },
+    instagramValue && {
+      key: "instagram",
+      icon: <Instagram size={16} />,
+      label: "Instagram",
+      href: socialHref("instagram", instagramValue),
+    },
+    socialMedia.facebook && {
+      key: "facebook",
+      icon: <Facebook size={16} />,
+      label: "Facebook",
+      href: socialHref("facebook", socialMedia.facebook),
+    },
+    (socialMedia.twitter || socialMedia.x) && {
+      key: "twitter",
+      icon: <Twitter size={16} />,
+      label: "Twitter/X",
+      href: socialHref("twitter", socialMedia.twitter || socialMedia.x),
+    },
+  ].filter(Boolean) as Array<{ key: string; icon: JSX.Element; label: string; href: string }>;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
+    <div className="min-h-screen" style={{ backgroundColor: C.paper, color: C.brown }}>
+      <main className="mx-auto w-full max-w-[1460px] px-4 py-5 md:px-8 md:py-7">
+        <TopBar
+          isOwner={isOwner}
+          onBack={() => navigate(-1)}
+          onShare={handleShare}
+        />
 
-      {/* Hidden file inputs for image uploads */}
-      <input
-        ref={coverInputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) handleImageUpload(file, 'cover');
-          e.target.value = '';
-        }}
-      />
-      <input
-        ref={logoInputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) handleImageUpload(file, 'logo');
-          e.target.value = '';
-        }}
-      />
-
-      {/* Hero / Cover */}
-      <section className="relative">
-        {company.cover_image_url ? (
-          <div className="h-64 md:h-80 w-full overflow-hidden">
+        <section
+          className="relative mt-5 overflow-hidden rounded-xl md:rounded-2xl"
+          style={{
+            minHeight: "clamp(280px, 36vw, 460px)",
+            backgroundColor: "#D8CBB6",
+            boxShadow: "0 12px 30px rgba(61, 43, 31, 0.08)",
+          }}
+        >
+          {heroImage ? (
             <img
-              src={company.cover_image_url}
+              src={heroImage}
               alt={company.business_name}
-              className="w-full h-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-          </div>
-        ) : (
-          <div className="h-64 md:h-80 w-full bg-gradient-to-br from-primary/80 to-primary-foreground/20" />
-        )}
+          ) : (
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(92,107,46,0.35), rgba(139,94,52,0.35)), url('/textures/sage-paper.jpg') center/cover",
+              }}
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 to-black/10" />
+          <div className="relative z-10 flex min-h-[inherit] flex-col justify-end gap-6 p-6 md:flex-row md:items-end md:justify-start md:p-10">
+            <div
+              className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-2xl md:h-40 md:w-40"
+              style={{
+                backgroundColor: "rgba(255, 252, 247, 0.94)",
+                boxShadow: "0 18px 38px rgba(0,0,0,0.2)",
+              }}
+            >
+              {company.logo_url ? (
+                <img src={company.logo_url} alt={`Logo de ${company.business_name}`} className="h-full w-full object-contain p-2" />
+              ) : (
+                <Leaf size={46} style={{ color: C.tan }} />
+              )}
+            </div>
 
-        {/* Business type badge - top left */}
-        {company.business_type && (
-          <div className="absolute top-4 left-4 z-10">
-            <Badge variant="secondary" className="bg-secondary text-secondary-foreground font-semibold text-sm px-3 py-1.5 shadow-lg">
-              {company.business_type}
-            </Badge>
-          </div>
-        )}
-
-        {/* Owner: cover image upload button */}
-        {isOwner && (
-          <button
-            onClick={() => coverInputRef.current?.click()}
-            disabled={uploadingCover}
-            className={`absolute ${company.business_type ? 'top-14' : 'top-4'} left-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-colors disabled:opacity-50`}
-            title="Cambiar imagen de portada"
-          >
-            {uploadingCover ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
-          </button>
-        )}
-
-        {/* Owner action buttons - top right */}
-        {isOwner && (
-          <div className="absolute top-4 right-4 z-10 flex gap-2">
-            {editing ? (
-              <>
-                <Button
-                  onClick={saveProfile}
-                  disabled={saving}
-                  size="sm"
-                  className="shadow-lg"
+            <div className="pb-1 text-white">
+              <h1
+                className="text-4xl font-bold leading-none md:text-6xl"
+                style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}
+              >
+                {company.business_name}
+              </h1>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <span
+                  className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"
+                  style={{ backgroundColor: "rgba(92, 107, 46, 0.92)" }}
                 >
-                  {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                  Guardar cambios
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="bg-background shadow-lg"
-                  onClick={cancelEditing}
-                >
-                  <X className="w-4 h-4 mr-2" />
-                  Cancelar
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  size="sm"
-                  className="shadow-lg"
-                  onClick={() => setEditing(true)}
-                >
-                  <Edit className="w-4 h-4 mr-2" />
-                  Editar datos
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="bg-background shadow-lg"
-                  onClick={() => navigate('/company-dashboard')}
-                >
-                  <ChevronRight className="w-4 h-4 mr-2 rotate-180" />
-                  Volver
-                </Button>
-              </>
-            )}
-          </div>
-        )}
-
-        {/* Overlay content */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <div className="container mx-auto px-6 pb-8 max-w-6xl">
-            <div className="flex items-end gap-5">
-              {/* Logo */}
-              <div className="relative w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-card border-4 border-background shadow-lg flex items-center justify-center overflow-hidden -mb-4 group">
-                {company.logo_url ? (
-                  <img src={company.logo_url} alt={company.business_name} className="w-full h-full object-cover" />
-                ) : (
-                  <Building2 className="w-12 h-12 text-muted-foreground" />
-                )}
-                {isOwner && (
-                  <button
-                    onClick={() => logoInputRef.current?.click()}
-                    disabled={uploadingLogo}
-                    className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer disabled:opacity-50"
-                    title="Cambiar logo"
-                  >
-                    {uploadingLogo ? <Loader2 className="w-6 h-6 text-white animate-spin" /> : <Camera className="w-6 h-6 text-white" />}
-                  </button>
-                )}
-              </div>
-              <div className="flex-1 pb-1">
-                {editing ? (
-                  <Input
-                    value={editForm.business_name}
-                    onChange={(e) => setEditForm({ ...editForm, business_name: e.target.value })}
-                    className="text-3xl md:text-4xl font-bold bg-white/20 text-white border-white/40 placeholder:text-white/50"
-                    placeholder="Nombre del negocio"
-                  />
-                ) : (
-                  <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
-                    {company.business_name}
-                  </h1>
-                )}
-                {editing ? (
-                  <div className="flex items-center gap-2 mt-2">
-                    <MapPin className="w-4 h-4 text-white/80 flex-shrink-0" />
-                    <AddressAutocompleteInput
-                      value={editForm.address}
-                      onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
-                      onAddressSelect={(addr: AddressComponents) => {
-                        setEditForm(prev => ({ ...prev, address: addr.formatted_address }));
-                        setEditLatLng({ lat: addr.latitude, lng: addr.longitude });
-                      }}
-                      className="bg-white/20 text-white border-white/40 placeholder:text-white/50 text-sm"
-                      placeholder="Busca tu dirección o nombre de empresa..."
-                    />
-                  </div>
-                ) : (
-                  company.address && (
-                    <p className="text-white/90 flex items-center gap-1.5 mt-1 text-sm md:text-base drop-shadow">
-                      <MapPin className="w-4 h-4 flex-shrink-0" />
-                      {company.address}
-                    </p>
-                  )
+                  {categoryLabel}
+                </span>
+                {locationText && (
+                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white/95">
+                    <MapPin size={16} />
+                    {locationText}
+                  </span>
                 )}
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Quick Stats Bar */}
-      <div className="bg-card border-b">
-        <div className="container mx-auto px-6 max-w-6xl py-4">
-          <div className="flex flex-wrap items-center gap-4 ml-0 md:ml-36">
-            {avgRating > 0 && (
-              <Badge variant="secondary" className="px-3 py-1.5 text-sm">
-                <Star className="w-4 h-4 mr-1 fill-yellow-500 text-yellow-500" />
-                {avgRating.toFixed(1)} ({company.total_reviews || reviews.length} valoraciones)
-              </Badge>
-            )}
-            {packs.length > 0 && !['Restaurante', 'Cooperativa'].includes(company.business_type || '') && (
-              <Badge variant="outline" className="px-3 py-1.5 text-sm">
-                <Package className="w-4 h-4 mr-1" />
-                {packs.length} packs
-              </Badge>
-            )}
-            {routes.length > 0 && (
-              <Badge variant="outline" className="px-3 py-1.5 text-sm">
-                <Route className="w-4 h-4 mr-1" />
-                {routes.length} rutas
-              </Badge>
-            )}
-
-            {/* Website & Social - editable only in edit mode */}
-            {isOwner && editing ? (
-              <>
-                <div className="flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-muted-foreground" />
-                  <Input
-                    value={editForm.website}
-                    onChange={(e) => setEditForm({ ...editForm, website: e.target.value })}
-                    className="h-8 text-sm w-56"
-                    placeholder="https://www.tuempresa.com"
-                  />
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1">
-                    <Instagram className="w-4 h-4 text-muted-foreground" />
-                    <Input
-                      value={editForm.social_instagram}
-                      onChange={(e) => setEditForm({ ...editForm, social_instagram: e.target.value })}
-                      className="h-8 text-sm w-40"
-                      placeholder="URL Instagram"
-                    />
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Facebook className="w-4 h-4 text-muted-foreground" />
-                    <Input
-                      value={editForm.social_facebook}
-                      onChange={(e) => setEditForm({ ...editForm, social_facebook: e.target.value })}
-                      className="h-8 text-sm w-40"
-                      placeholder="URL Facebook"
-                    />
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Twitter className="w-4 h-4 text-muted-foreground" />
-                    <Input
-                      value={editForm.social_twitter}
-                      onChange={(e) => setEditForm({ ...editForm, social_twitter: e.target.value })}
-                      className="h-8 text-sm w-40"
-                      placeholder="URL Twitter"
-                    />
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                {company.website && (
-                  <a href={company.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
-                    <Globe className="w-4 h-4" />
-                    Sitio web
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                )}
-                {socialMedia.instagram && (
-                  <a href={socialMedia.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                    <Instagram className="w-5 h-5" />
-                  </a>
-                )}
-                {socialMedia.facebook && (
-                  <a href={socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                    <Facebook className="w-5 h-5" />
-                  </a>
-                )}
-                {socialMedia.twitter && (
-                  <a href={socialMedia.twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                    <Twitter className="w-5 h-5" />
-                  </a>
-                )}
-              </>
-            )}
+        {contactItems.length > 0 && (
+          <div
+            className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-3 rounded-xl px-5 py-4"
+            style={{
+              backgroundColor: C.card,
+              border: `1px solid ${C.border}`,
+              boxShadow: "0 8px 20px rgba(61, 43, 31, 0.05)",
+            }}
+          >
+            {contactItems.map((item) => (
+              <a
+                key={item.key}
+                href={item.href}
+                target={item.key === "email" || item.key === "phone" ? undefined : "_blank"}
+                rel={item.key === "email" || item.key === "phone" ? undefined : "noopener noreferrer"}
+                className="inline-flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-75"
+                style={{ color: C.brown }}
+              >
+                <span style={{ color: C.tan }}>{item.icon}</span>
+                {item.label}
+              </a>
+            ))}
           </div>
-        </div>
-      </div>
+        )}
 
-      {/* Main Content */}
-      <main className="container mx-auto px-6 py-10 max-w-6xl">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* Left Column - Main content */}
-          <div className="lg:col-span-2 space-y-10">
-            {/* Story - first */}
-            <section>
-              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                <Award className="w-6 h-6 text-primary" />
-                Nuestra historia
-              </h2>
-              {isOwner ? (
-                <Card className="bg-muted/30 border-dashed">
-                  <CardContent className="p-6">
-                    <Textarea
-                      value={editing ? editForm.authenticity_story : (company.authenticity_story || "")}
-                      onChange={(e) => setEditForm({ ...editForm, authenticity_story: e.target.value })}
-                      readOnly={!editing}
-                      rows={5}
-                      placeholder="Cuenta la historia de tu empresa, tu tradición familiar, valores..."
-                      className={`italic text-base leading-relaxed ${!editing ? 'cursor-default focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0' : ''}`}
-                    />
-                  </CardContent>
-                </Card>
-              ) : company.authenticity_story ? (
-                <Card className="bg-muted/30 border-dashed">
-                  <CardContent className="p-6">
-                    <p className="text-muted-foreground leading-relaxed italic whitespace-pre-line">
-                      {company.authenticity_story}
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : null}
-            </section>
+        <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
+          <div className="space-y-7">
+            <PublicCard icon={<Leaf size={23} />} title="Nuestra historia">
+              <p className="leading-relaxed whitespace-pre-line" style={{ color: C.brown }}>
+                {company.authenticity_story || "Esta empresa todavía está completando su historia."}
+              </p>
+            </PublicCard>
 
-            {/* About - second */}
-            <section>
-              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                <Leaf className="w-6 h-6 text-primary" />
-                Sobre nosotros
-              </h2>
-              {isOwner ? (
-                <Textarea
-                  value={editing ? editForm.description : (company.description || "")}
-                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                  readOnly={!editing}
-                  rows={6}
-                  placeholder="Describe tu empresa, qué productos ofreces y qué te hace único..."
-                  className={`text-base leading-relaxed ${!editing ? 'cursor-default focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0' : ''}`}
-                />
-              ) : company.description ? (
-                <p className="text-muted-foreground leading-relaxed text-base whitespace-pre-line">
-                  {company.description}
-                </p>
-              ) : null}
-            </section>
+            <PublicCard icon={<Award size={23} />} title="Sobre nosotros" flushBottom>
+              <p className="leading-relaxed whitespace-pre-line" style={{ color: C.brown }}>
+                {company.description || "Esta empresa está completando su presentación pública en RitmOrigen."}
+              </p>
 
-            {/* Packs - hidden for Restaurante/Cooperativa */}
-            {!['Restaurante', 'Cooperativa'].includes(company.business_type || '') && (
-            <section>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold flex items-center gap-2">
-                  <Package className="w-6 h-6 text-primary" />
-                  Packs que ofrece
-                </h2>
-              </div>
+              <InfoHighlights
+                different={company.what_makes_us_different}
+                product={company.star_product}
+                season={seasonText(company.main_season)}
+              />
+            </PublicCard>
 
-              {packs.length === 0 ? (
-                <Card>
-                  <CardContent className="py-10 text-center">
-                    <Package className="w-12 h-12 mx-auto mb-3 text-muted-foreground/30" />
-                    <p className="text-muted-foreground">
-                      {isOwner ? "Aún no tienes packs publicados" : "Esta empresa aún no tiene packs publicados"}
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {packs.map((pack) => (
-                    <Card
-                      key={pack.id}
-                      className="hover:shadow-lg transition-all cursor-pointer group"
-                      onClick={() => navigate("/mapa")}
-                    >
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base group-hover:text-primary transition-colors">{pack.title}</CardTitle>
-                        {pack.price && (
-                          <p className="text-xl font-bold text-primary">{pack.price}€</p>
-                        )}
-                      </CardHeader>
-                      <CardContent>
-                        {pack.tags && pack.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5">
-                            {pack.tags.slice(0, 3).map((tag, i) => (
-                              <Badge key={i} variant="secondary" className="text-xs">{tag}</Badge>
-                            ))}
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </section>
-            )}
-
-            {/* Routes */}
-            <section>
-              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <Route className="w-6 h-6 text-primary" />
-                Experiencias donde aparece
-              </h2>
-
+            <PublicCard icon={<Route size={23} />} title="Experiencias en las que aparecemos">
               {routes.length === 0 ? (
-                <Card>
-                  <CardContent className="py-10 text-center">
-                    <Route className="w-12 h-12 mx-auto mb-3 text-muted-foreground/30" />
-                    <p className="text-muted-foreground">Esta empresa aún no forma parte de ninguna ruta</p>
-                  </CardContent>
-                </Card>
+                <p className="text-sm" style={{ color: C.brownSoft }}>
+                  Esta empresa aún no forma parte de ninguna experiencia.
+                </p>
               ) : (
-                <div className="space-y-4">
-                  {routes.map((route) => (
-                    <Card
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                  {routes.slice(0, 3).map((route) => (
+                    <Link
                       key={route.id}
-                      className="hover:shadow-lg transition-all cursor-pointer group"
-                      onClick={() => navigate(`/rutas/${route.slug || route.id}`)}
+                      to={`/rutas/${route.slug || route.id}`}
+                      className="group overflow-hidden rounded-xl border transition-all hover:-translate-y-0.5 hover:shadow-md"
+                      style={{ borderColor: C.border, backgroundColor: "#FFF8EF" }}
                     >
-                      <CardContent className="p-4 flex gap-4 items-center">
-                        <div className="w-20 h-20 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
-                          {route.image_url ? (
-                            <img src={route.image_url} alt={route.title} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <Route className="w-8 h-8 text-muted-foreground/40" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold group-hover:text-primary transition-colors truncate">{route.title}</h3>
-                          {route.description && (
-                            <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{route.description}</p>
-                          )}
-                          <div className="flex gap-3 mt-2">
-                            {route.duration && (
-                              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Clock className="w-3 h-3" /> {route.duration}
-                              </span>
-                            )}
-                            {route.difficulty && (
-                              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Users className="w-3 h-3" /> {route.difficulty}
-                              </span>
-                            )}
+                      <div className="relative h-32 overflow-hidden">
+                        {route.image_url ? (
+                          <img src={route.image_url} alt={route.title} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center" style={{ backgroundColor: C.oliveSoft }}>
+                            <Route size={28} style={{ color: C.olive }} />
                           </div>
-                        </div>
-                        <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                      </CardContent>
-                    </Card>
+                        )}
+                        <span className="absolute bottom-2 left-2 rounded-full bg-white px-2 py-1 text-[10px] font-bold uppercase" style={{ color: C.brown }}>
+                          Ruta
+                        </span>
+                      </div>
+                      <div className="p-3">
+                        <h3 className="font-semibold leading-tight" style={{ color: C.brown }}>{route.title}</h3>
+                        <p className="mt-1 text-xs" style={{ color: C.brownSoft }}>
+                          {route.duration || route.difficulty || "Experiencia RitmOrigen"}
+                        </p>
+                      </div>
+                    </Link>
                   ))}
                 </div>
               )}
-            </section>
+            </PublicCard>
 
-            {/* Reviews */}
-            <section>
-              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <Award className="w-6 h-6 text-primary" />
-                Valoraciones
-                {avgRating > 0 && (
-                  <span className="text-base font-normal text-muted-foreground ml-2">
-                    {avgRating.toFixed(1)}/5
-                  </span>
-                )}
-              </h2>
-
-              {reviews.length === 0 ? (
-                <Card>
-                  <CardContent className="py-10 text-center">
-                    <Star className="w-12 h-12 mx-auto mb-3 text-muted-foreground/30" />
-                    <p className="text-muted-foreground">Aún no hay valoraciones</p>
-                  </CardContent>
-                </Card>
+            <PublicCard icon={<Camera size={23} />} title="Fotos">
+              {images.length === 0 ? (
+                <p className="text-sm" style={{ color: C.brownSoft }}>
+                  Esta empresa todavía está preparando su galería pública.
+                </p>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {reviews.map((review) => (
-                    <Card key={review.id}>
-                      <CardHeader className="pb-2">
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-sm">{review.customer_name}</CardTitle>
-                          <div className="flex items-center gap-0.5">
-                            {Array.from({ length: 5 }).map((_, i) => (
-                              <Star key={i} className={`w-3.5 h-3.5 ${i < review.rating ? "fill-yellow-500 text-yellow-500" : "text-muted-foreground/30"}`} />
-                            ))}
-                          </div>
-                        </div>
-                        <CardDescription className="text-xs">
-                          {new Date(review.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
-                        </CardDescription>
-                      </CardHeader>
-                      {(review.title || review.comment) && (
-                        <CardContent className="pt-0">
-                          {review.title && <p className="font-medium text-sm mb-1">{review.title}</p>}
-                          {review.comment && <p className="text-sm text-muted-foreground italic">"{review.comment}"</p>}
-                        </CardContent>
-                      )}
-                    </Card>
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                  {images.map((image, index) => (
+                    <div
+                      key={image}
+                      className={`overflow-hidden rounded-lg border ${index === 0 ? "col-span-2" : ""}`}
+                      style={{ borderColor: C.border, aspectRatio: index === 0 ? "16 / 9" : "4 / 3", backgroundColor: "#F4EBDD" }}
+                    >
+                      <img
+                        src={image}
+                        alt={`${company.business_name} foto ${index + 1}`}
+                        className={`h-full w-full ${image === company.logo_url ? "object-contain p-4" : "object-cover"}`}
+                      />
+                    </div>
                   ))}
                 </div>
               )}
-            </section>
+            </PublicCard>
           </div>
 
-          {/* Right Column - Sidebar */}
-          <div className="space-y-6">
-            {/* Contact Card */}
-            <Card className="sticky top-24">
-              <CardHeader>
-                <CardTitle className="text-lg">
-                  Información de contacto
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {/* Owner: always show email/phone fields, editable only in edit mode */}
-                {isOwner ? (
-                  <>
-                    <div className="flex items-center gap-3">
-                      <Mail className="w-4 h-4 text-primary flex-shrink-0" />
-                      <Input
-                        value={company.email || ""}
-                        readOnly
-                        className="h-9 text-sm border-transparent bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-default"
-                      />
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Phone className="w-4 h-4 text-primary flex-shrink-0" />
-                      <Input
-                        value={editing ? editForm.phone : (company.phone || "")}
-                        onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                        readOnly={!editing}
-                        className={`h-9 text-sm ${!editing ? 'border-transparent bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0' : ''}`}
-                        placeholder="Teléfono de contacto"
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {company.email && (
-                      <div className="flex items-center gap-3">
-                        <Mail className="w-4 h-4 text-primary flex-shrink-0" />
-                        <span className="text-sm">{company.email}</span>
-                      </div>
-                    )}
-                    {company.phone && (
-                      <div className="flex items-center gap-3">
-                        <Phone className="w-4 h-4 text-primary flex-shrink-0" />
-                        <span className="text-sm">{company.phone}</span>
-                      </div>
-                    )}
-                    {company.website && (
-                      <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-                        <Globe className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="text-xs text-muted-foreground">Web</p>
-                          <a href={company.website} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline truncate block max-w-[200px]">
-                            {company.website.replace(/^https?:\/\//, '')}
-                          </a>
-                        </div>
-                      </div>
-                    )}
-                    {(socialMedia.instagram || socialMedia.facebook || socialMedia.twitter) && (
-                      <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                        {socialMedia.instagram && (
-                          <a href={socialMedia.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                            <Instagram className="w-5 h-5" />
-                          </a>
-                        )}
-                        {socialMedia.facebook && (
-                          <a href={socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                            <Facebook className="w-5 h-5" />
-                          </a>
-                        )}
-                        {socialMedia.twitter && (
-                          <a href={socialMedia.twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                            <Twitter className="w-5 h-5" />
-                          </a>
-                        )}
-                      </div>
-                    )}
-                  </>
-                )}
-
-                <Separator />
-
+          <aside className="space-y-6">
+            <SidebarCard icon={<Mail size={22} />} title="Información de contacto">
+              <div className="space-y-4">
+                {company.email && <ContactRow icon={<Mail size={16} />} text={company.email} href={`mailto:${company.email}`} />}
+                {company.phone && <ContactRow icon={<Phone size={16} />} text={company.phone} href={`tel:${company.phone.replace(/\s/g, "")}`} />}
                 <Button
-                  className="w-full"
-                  onClick={() => navigate('/contacto')}
+                  className="mt-2 w-full gap-2"
+                  style={{ backgroundColor: C.tan, color: "#FFF8EF" }}
+                  onClick={() => {
+                    if (company.email) window.location.href = `mailto:${company.email}`;
+                    else navigate("/contacto");
+                  }}
                 >
-                  <Mail className="w-4 h-4 mr-2" />
+                  <Mail size={16} />
                   Contactar empresa
                 </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </SidebarCard>
 
-            {/* Map preview if coordinates available */}
-            {company.latitude && company.longitude && (
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-primary" />
-                    Ubicación
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <a
-                    href={`https://www.google.com/maps?q=${company.latitude},${company.longitude}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
+            {(company.latitude && company.longitude) || company.address ? (
+              <SidebarCard icon={<MapPin size={22} />} title="Ubicación">
+                <div
+                  className="relative flex h-56 items-center justify-center overflow-hidden rounded-xl"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, rgba(61,43,31,0.06) 1px, transparent 1px), linear-gradient(rgba(61,43,31,0.06) 1px, transparent 1px)",
+                    backgroundSize: "34px 34px",
+                    backgroundColor: "#EFE6DA",
+                  }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/20 to-black/5" />
+                  <div className="relative flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg" style={{ backgroundColor: C.tan }}>
+                    <MapPin size={24} fill="currentColor" />
+                  </div>
+                </div>
+                <a
+                  href={googleMapsUrl(company)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg border text-sm font-semibold transition-colors hover:bg-white"
+                  style={{ borderColor: C.border, color: C.brown }}
+                >
+                  Ver en Google Maps
+                  <ExternalLink size={15} />
+                </a>
+              </SidebarCard>
+            ) : null}
+
+            <SidebarCard icon={<Star size={22} />} title="Valoraciones">
+              {reviews.length === 0 ? (
+                <div className="py-8 text-center">
+                  <Star size={68} className="mx-auto mb-5" style={{ color: "rgba(61,43,31,0.14)" }} />
+                  <p className="font-semibold" style={{ color: C.brown }}>
+                    Aún no hay valoraciones
+                  </p>
+                  <p className="mt-2 text-sm" style={{ color: C.brownSoft }}>
+                    Sé el primero en valorar esta empresa.
+                  </p>
+                  <Button
+                    className="mt-6"
+                    style={{ backgroundColor: C.olive, color: "#FFF8EF" }}
+                    onClick={() => navigate("/escribir-valoracion")}
                   >
-                    <div className="h-48 rounded-lg bg-muted flex items-center justify-center hover:bg-muted/70 transition-colors cursor-pointer">
-                      <div className="text-center">
-                        <MapPin className="w-8 h-8 text-primary mx-auto mb-2" />
-                        <p className="text-sm text-primary font-medium">Ver en Google Maps</p>
+                    Dejar una valoración
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl font-bold" style={{ color: C.brown }}>
+                      {avgRating.toFixed(1)}
+                    </span>
+                    <RatingStars rating={avgRating} />
+                  </div>
+                  {reviews.slice(0, 2).map((review) => (
+                    <div key={review.id} className="border-t pt-4" style={{ borderColor: C.border }}>
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-sm font-semibold">{review.customer_name}</p>
+                        <RatingStars rating={review.rating} compact />
                       </div>
+                      {(review.title || review.comment) && (
+                        <p className="mt-2 text-sm leading-relaxed" style={{ color: C.brownSoft }}>
+                          {review.title || review.comment}
+                        </p>
+                      )}
                     </div>
-                  </a>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+                  ))}
+                </div>
+              )}
+            </SidebarCard>
+          </aside>
+        </div>
+
+        <div className="mx-auto mt-10 flex max-w-md items-center justify-center gap-3 text-xs" style={{ color: C.olive }}>
+          <span className="h-px flex-1" style={{ backgroundColor: C.border }} />
+          <ShieldCheck size={15} />
+          Empresa verificada en RitmOrigen
+          <span className="h-px flex-1" style={{ backgroundColor: C.border }} />
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };
+
+const TopBar = ({
+  isOwner,
+  onBack,
+  onShare,
+}: {
+  isOwner: boolean;
+  onBack: () => void;
+  onShare: () => void;
+}) => (
+  <div className="flex items-center justify-between gap-4">
+    <button
+      type="button"
+      onClick={onBack}
+      className="inline-flex items-center gap-2 text-sm font-semibold transition-opacity hover:opacity-70"
+      style={{ color: C.brown }}
+    >
+      <ArrowLeft size={16} />
+      Volver
+    </button>
+
+    <div className="flex items-center gap-2">
+      {isOwner && (
+        <Link
+          to="/company-dashboard?tab=ficha"
+          className="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          style={{ backgroundColor: C.tan }}
+        >
+          <MessageCircle size={15} />
+          Editar mi ficha
+        </Link>
+      )}
+      <button
+        type="button"
+        onClick={onShare}
+        className="inline-flex h-[42px] w-[42px] items-center justify-center rounded-lg border transition-colors hover:bg-white"
+        style={{ borderColor: C.border, color: C.brown }}
+        aria-label="Compartir ficha"
+      >
+        <Share2 size={18} />
+      </button>
+    </div>
+  </div>
+);
+
+const PublicCard = ({
+  icon,
+  title,
+  children,
+  flushBottom = false,
+}: {
+  icon: JSX.Element;
+  title: string;
+  children: React.ReactNode;
+  flushBottom?: boolean;
+}) => (
+  <section
+    className={`overflow-hidden rounded-xl border ${flushBottom ? "pb-0" : ""}`}
+    style={{
+      backgroundColor: C.card,
+      borderColor: C.border,
+      boxShadow: "0 10px 28px rgba(61, 43, 31, 0.04)",
+    }}
+  >
+    <div className="p-6 md:p-7">
+      <SectionTitle icon={icon} title={title} />
+      <div className="mt-5">{children}</div>
+    </div>
+  </section>
+);
+
+const SidebarCard = ({
+  icon,
+  title,
+  children,
+}: {
+  icon: JSX.Element;
+  title: string;
+  children: React.ReactNode;
+}) => (
+  <section
+    className="rounded-xl border p-6"
+    style={{
+      backgroundColor: C.card,
+      borderColor: C.border,
+      boxShadow: "0 10px 28px rgba(61, 43, 31, 0.04)",
+    }}
+  >
+    <SectionTitle icon={icon} title={title} compact />
+    <div className="mt-5">{children}</div>
+  </section>
+);
+
+const SectionTitle = ({
+  icon,
+  title,
+  compact = false,
+}: {
+  icon: JSX.Element;
+  title: string;
+  compact?: boolean;
+}) => (
+  <div className="flex items-center gap-3">
+    <span style={{ color: C.tan }}>{icon}</span>
+    <h2
+      className={`${compact ? "text-xl" : "text-2xl"} font-bold leading-tight`}
+      style={{ color: C.brown, fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}
+    >
+      {title}
+    </h2>
+  </div>
+);
+
+const InfoHighlights = ({
+  different,
+  product,
+  season,
+}: {
+  different?: string | null;
+  product?: string | null;
+  season?: string | null;
+}) => {
+  const items = [
+    different && {
+      icon: <Leaf size={22} />,
+      title: "Qué nos hace diferentes",
+      value: different,
+    },
+    product && {
+      icon: <Star size={24} />,
+      title: "Nuestro producto estrella",
+      value: product,
+    },
+    season && {
+      icon: <CalendarDays size={24} />,
+      title: "Nuestra temporada",
+      value: season,
+    },
+  ].filter(Boolean) as Array<{ icon: JSX.Element; title: string; value: string }>;
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className="mt-6 grid gap-0 border-t md:grid-cols-3" style={{ borderColor: C.border }}>
+      {items.map((item, index) => (
+        <div
+          key={item.title}
+          className="p-5 text-center"
+          style={{ borderLeft: index > 0 ? `1px solid ${C.border}` : undefined }}
+        >
+          <div className="mx-auto mb-3 flex justify-center" style={{ color: C.gold }}>
+            {item.icon}
+          </div>
+          <p className="text-sm font-bold" style={{ color: C.brown }}>{item.title}</p>
+          <p className="mt-2 text-sm leading-relaxed" style={{ color: C.brownSoft }}>{item.value}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const ContactRow = ({ icon, text, href }: { icon: JSX.Element; text: string; href: string }) => (
+  <a href={href} className="flex items-center gap-3 text-sm transition-opacity hover:opacity-75" style={{ color: C.brown }}>
+    <span style={{ color: C.tan }}>{icon}</span>
+    <span className="break-all">{text}</span>
+  </a>
+);
+
+const RatingStars = ({ rating, compact = false }: { rating: number; compact?: boolean }) => (
+  <div className="flex items-center gap-0.5">
+    {Array.from({ length: 5 }).map((_, index) => (
+      <Star
+        key={index}
+        size={compact ? 13 : 16}
+        className={index < Math.round(rating) ? "fill-current" : ""}
+        style={{ color: index < Math.round(rating) ? C.gold : "rgba(61,43,31,0.18)" }}
+      />
+    ))}
+  </div>
+);
+
+function seasonText(value?: string | null) {
+  if (!value) return null;
+  return SEASON_LABELS[value] || SEASON_LABELS[value as Season] || value;
+}
+
+function toAbsoluteUrl(value: string) {
+  const trimmed = value.trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}
+
+function socialHref(platform: "instagram" | "facebook" | "twitter", value?: string | null) {
+  const clean = (value || "").trim().replace(/^@/, "");
+  if (!clean) return "#";
+  if (/^https?:\/\//i.test(clean)) return clean;
+  const base = platform === "instagram"
+    ? "https://instagram.com/"
+    : platform === "facebook"
+    ? "https://facebook.com/"
+    : "https://twitter.com/";
+  return `${base}${clean}`;
+}
+
+function provinceFromAddress(address?: string | null) {
+  if (!address) return null;
+  const pieces = address.split(",").map((part) => part.trim()).filter(Boolean);
+  return pieces.length > 1 ? pieces[pieces.length - 1] : null;
+}
+
+function googleMapsUrl(company: Company) {
+  if (company.latitude && company.longitude) {
+    return `https://www.google.com/maps?q=${company.latitude},${company.longitude}`;
+  }
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(company.address || company.business_name)}`;
+}
 
 export default BusinessDetail;
