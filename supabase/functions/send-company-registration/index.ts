@@ -15,7 +15,7 @@
 //   GMAIL_APP_PASSWORD    = "abcd efgh ijkl mnop"   (App Password de Google)
 //   ADMIN_NOTIFY_EMAIL    = "ritmorigen@gmail.com"  (puede coincidir con GMAIL_USER)
 //   VERIFIER_EMAIL        = "pablo@contactaevum.com"
-//   SITE_URL              = "https://www.origen.it.com"
+//   SITE_URL              = "https://www.ritmorigen.com"
 //   SUPABASE_URL          = (auto)
 //   SUPABASE_SERVICE_ROLE_KEY = (auto)
 
@@ -29,11 +29,13 @@ const GMAIL_USER = Deno.env.get("GMAIL_USER") ?? "";
 const GMAIL_APP_PASSWORD = Deno.env.get("GMAIL_APP_PASSWORD") ?? "";
 const ADMIN_NOTIFY_EMAIL = Deno.env.get("ADMIN_NOTIFY_EMAIL") || "ritmorigen@gmail.com";
 const VERIFIER_EMAIL = Deno.env.get("VERIFIER_EMAIL") || "pablo@contactaevum.com";
-const SITE_URL = Deno.env.get("SITE_URL") || "https://www.origen.it.com";
+const SITE_URL = Deno.env.get("SITE_URL") || "https://www.ritmorigen.com";
 
 const ALLOWED_ORIGINS = new Set([
   "http://localhost:5173",
   "http://localhost:8080",
+  "https://ritmorigen.com",
+  "https://www.ritmorigen.com",
   "https://origen.it.com",
   "https://www.origen.it.com",
   "https://origenn.pages.dev",
