@@ -10,7 +10,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Building, Loader2, CheckCircle2, Mail } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Building, Loader2, CheckCircle2, Mail, ShieldCheck, Clock } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import AddressAutocompleteInput, { AddressComponents } from "@/components/AddressAutocompleteInput";
 import { postLoginRedirect } from "@/lib/auth/postLoginRedirect";
@@ -81,6 +89,8 @@ export default function CompanyAuth() {
   const [password, setPassword] = useState("");
   const [redirecting, setRedirecting] = useState(false);
   const redirectingRef = useRef(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [registeredBusinessName, setRegisteredBusinessName] = useState("");
 
   const [companyData, setCompanyData] = useState({
     business_name: "",
@@ -470,13 +480,28 @@ export default function CompanyAuth() {
         }
       }
 
-      toast.success("¡Solicitud enviada! Te notificaremos cuando sea aprobada.");
-      await checkCompanyStatus(user.id);
+      // Disparar emails de registro (a empresario + admins). No bloquea el flujo
+      // si falla; los logs quedan en la Edge Function.
+      try {
+        await supabase.functions.invoke("send-company-registration", {
+          body: { companyId: newCompanyRow.id },
+        });
+      } catch (mailErr) {
+        console.warn("[send-company-registration] failed:", mailErr);
+      }
+
+      setRegisteredBusinessName(companyData.business_name);
+      setShowSuccessModal(true);
     } catch (err: any) {
       toast.error(err.message ?? "No se pudo enviar la solicitud.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const closeSuccessModalAndContinue = async () => {
+    setShowSuccessModal(false);
+    if (user) await checkCompanyStatus(user.id);
   };
 
   // -------- UI STATES --------
@@ -602,24 +627,36 @@ export default function CompanyAuth() {
 
                   <div className="space-y-2">
                     <Label htmlFor="business_type">Tipo de negocio *</Label>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-64 overflow-y-auto pr-1">
                       {[
-                        { value: "Productor", label: "Productor" },
-                        { value: "Negocio tradicional", label: "Negocio tradicional" },
-                        { value: "Restaurante", label: "Restaurante" },
-                        { value: "Cooperativa", label: "Cooperativa" },
-                      ].map((opt) => (
+                        "Productor",
+                        "Restaurante",
+                        "Quesos y Lácteos",
+                        "Carnes y Embutidos",
+                        "Vinos y Bodegas",
+                        "Caza y Monterías",
+                        "Miel y Apicultura",
+                        "Cooperativas y Aceite",
+                        "Alojamiento Rural",
+                        "Tienda gourmet",
+                        "Catering",
+                        "Panadería y Dulce",
+                        "Pescados y Mariscos",
+                        "Hortalizas y Frutas",
+                        "Negocio tradicional",
+                        "Otro",
+                      ].map((value) => (
                         <button
-                          key={opt.value}
+                          key={value}
                           type="button"
-                          onClick={() => setCompanyData({ ...companyData, business_type: opt.value })}
-                          className={`px-3 py-2.5 rounded-lg border text-sm font-medium transition-all ${
-                            companyData.business_type === opt.value
+                          onClick={() => setCompanyData({ ...companyData, business_type: value })}
+                          className={`px-2.5 py-2 rounded-lg border text-xs font-medium transition-all text-left ${
+                            companyData.business_type === value
                               ? "bg-primary text-primary-foreground border-primary shadow-md"
                               : "bg-background text-foreground border-input hover:bg-muted"
                           }`}
                         >
-                          {opt.label}
+                          {value}
                         </button>
                       ))}
                     </div>
@@ -722,6 +759,67 @@ export default function CompanyAuth() {
           </Card>
         </main>
         <Footer />
+
+        {/* Modal de confirmación post-registro */}
+        <Dialog open={showSuccessModal} onOpenChange={(open) => {
+          if (!open) void closeSuccessModalAndContinue();
+        }}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
+                <CheckCircle2 className="h-9 w-9 text-emerald-600" />
+              </div>
+              <DialogTitle
+                className="text-center text-2xl"
+                style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif" }}
+              >
+                ¡Solicitud enviada!
+              </DialogTitle>
+              <DialogDescription className="text-center pt-2">
+                <strong className="text-foreground">{registeredBusinessName}</strong> está
+                en cola de verificación de RitmOrigen.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-3 py-2">
+              <div className="flex items-start gap-3 rounded-lg bg-amber-50 border border-amber-200 p-3">
+                <Mail className="w-5 h-5 text-amber-700 mt-0.5 shrink-0" />
+                <div className="text-sm">
+                  <p className="font-semibold text-amber-900">Te hemos enviado un email</p>
+                  <p className="text-amber-800 text-xs mt-1">
+                    Revisa tu bandeja de entrada para confirmar que hemos recibido tu solicitud.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 rounded-lg bg-primary/5 border border-primary/20 p-3">
+                <Clock className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+                <div className="text-sm">
+                  <p className="font-semibold text-foreground">Tiempo estimado: 24–48h</p>
+                  <p className="text-muted-foreground text-xs mt-1">
+                    Nuestro equipo revisa cada solicitud manualmente para asegurar la
+                    autenticidad de la comunidad.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 rounded-lg bg-emerald-50 border border-emerald-200 p-3">
+                <ShieldCheck className="w-5 h-5 text-emerald-700 mt-0.5 shrink-0" />
+                <div className="text-sm">
+                  <p className="font-semibold text-emerald-900">Cuando estés verificada</p>
+                  <p className="text-emerald-800 text-xs mt-1">
+                    Recibirás un segundo email y podrás acceder al dashboard empresarial
+                    completo.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button onClick={() => void closeSuccessModalAndContinue()} className="w-full">
+                Entendido, ver estado de mi solicitud
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }

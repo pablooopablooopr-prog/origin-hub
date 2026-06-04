@@ -123,9 +123,18 @@ export default function AdminCompanies() {
       return;
     }
 
+    // Notificar al empresario por email (no bloquea si falla)
+    try {
+      await supabase.functions.invoke("send-company-approved", {
+        body: { companyId },
+      });
+    } catch (mailErr) {
+      console.warn("[send-company-approved] failed:", mailErr);
+    }
+
     toast({
       title: "Empresa aprobada",
-      description: "La empresa se aprobó correctamente.",
+      description: "La empresa se aprobó correctamente. Email enviado al empresario.",
     });
 
     await loadCompanies();
