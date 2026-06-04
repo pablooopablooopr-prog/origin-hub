@@ -14,6 +14,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { findMockEmpresa } from "@/data/mockEmpresas";
 import { SEASONS, type Season } from "@/lib/season";
+import { ImageUpload } from "@/components/ImageUpload";
+import { PlaceAutocompleteInput, type PlaceResult } from "@/components/PlaceAutocompleteInput";
 import {
   ArrowLeft,
   Award,
@@ -22,20 +24,41 @@ import {
   ExternalLink,
   Facebook,
   Globe,
+  Image as ImageIcon,
   Instagram,
   Leaf,
   Mail,
   MapPin,
   Pencil,
   Phone,
+  Plus,
   Route,
   Save,
+  Search,
   Share2,
   ShieldCheck,
   Star,
   Twitter,
   X,
 } from "lucide-react";
+
+/** Adjetivos sugeridos para "Qué nos hace diferentes" — toggles tipo chip */
+const DIFFERENT_TAGS = [
+  "Artesanal",
+  "Sostenible",
+  "Familiar",
+  "Ecológico",
+  "Tradicional",
+  "Local",
+  "Premium",
+  "Innovador",
+  "Auténtico",
+  "Selección manual",
+  "Sin aditivos",
+  "Origen controlado",
+  "Producto de proximidad",
+  "Procesos lentos",
+] as const;
 
 type SocialMedia = {
   instagram?: string | null;
@@ -141,10 +164,54 @@ const BusinessDetail = () => {
       locality: company.locality,
       address: company.address,
       phone: company.phone,
+      email: company.email,
       website: company.website,
       instagram: company.instagram,
+      social_media: company.social_media,
+      latitude: company.latitude,
+      longitude: company.longitude,
+      logo_url: company.logo_url,
+      cover_image_url: company.cover_image_url,
+      hero_image_url: company.hero_image_url,
+      gallery_image_urls: company.gallery_image_urls ?? [],
     });
     setEditing(true);
+  };
+
+  const setSocialField = (key: "facebook" | "twitter" | "instagram", value: string) => {
+    setEditForm((prev) => {
+      const current: SocialMedia = (prev.social_media as SocialMedia) || {};
+      return {
+        ...prev,
+        social_media: { ...current, [key]: value || null },
+      };
+    });
+  };
+
+  const handlePlaceSelected = (p: PlaceResult) => {
+    setEditForm((prev) => ({
+      ...prev,
+      address: p.formatted_address || p.address || prev.address,
+      latitude: p.latitude,
+      longitude: p.longitude,
+    }));
+  };
+
+  const addGalleryImage = (url: string) => {
+    setEditForm((prev) => {
+      const arr = Array.isArray(prev.gallery_image_urls) ? [...prev.gallery_image_urls] : [];
+      if (arr.length >= 8) return prev;
+      arr.push(url);
+      return { ...prev, gallery_image_urls: arr };
+    });
+  };
+
+  const removeGalleryImage = (index: number) => {
+    setEditForm((prev) => {
+      const arr = Array.isArray(prev.gallery_image_urls) ? [...prev.gallery_image_urls] : [];
+      arr.splice(index, 1);
+      return { ...prev, gallery_image_urls: arr };
+    });
   };
 
   const cancelEditing = () => {
@@ -158,8 +225,13 @@ const BusinessDetail = () => {
     const payload: Record<string, unknown> = {};
     (Object.keys(editForm) as (keyof Company)[]).forEach((k) => {
       const v = editForm[k];
-      if (v !== undefined) {
-        payload[k as string] = typeof v === "string" ? (v as string).trim() || null : v;
+      if (v === undefined) return;
+      if (typeof v === "string") {
+        payload[k as string] = v.trim() || null;
+      } else if (Array.isArray(v)) {
+        payload[k as string] = v.filter((x) => typeof x === "string" && x.trim().length > 0);
+      } else {
+        payload[k as string] = v;
       }
     });
 
@@ -465,9 +537,9 @@ const BusinessDetail = () => {
             boxShadow: "0 8px 22px rgba(61, 43, 31, 0.08)",
           }}
         >
-          {heroImage ? (
+          {(editing ? (editForm.hero_image_url || editForm.cover_image_url) : heroImage) ? (
             <img
-              src={heroImage}
+              src={editing ? (editForm.hero_image_url || editForm.cover_image_url || "") : heroImage || ""}
               alt={company.business_name}
               className="absolute inset-0 h-full w-full object-cover"
             />
@@ -481,18 +553,38 @@ const BusinessDetail = () => {
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 to-black/10" />
+
+          {/* Botón cambiar foto de portada (modo edición) */}
+          {editing && (
+            <HeroImagePicker
+              companyId={company.id}
+              currentUrl={editForm.cover_image_url || editForm.hero_image_url || ""}
+              onChange={(url) => {
+                setField("cover_image_url", url);
+                setField("hero_image_url", url);
+              }}
+            />
+          )}
+
           <div className="relative z-10 flex h-full flex-col justify-end gap-3 p-4 md:flex-row md:items-end md:justify-start md:gap-5 md:p-6">
             <div
-              className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-xl md:h-24 md:w-24"
+              className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-xl md:h-24 md:w-24"
               style={{
                 backgroundColor: "rgba(255, 252, 247, 0.94)",
                 boxShadow: "0 12px 26px rgba(0,0,0,0.2)",
               }}
             >
-              {company.logo_url ? (
-                <img src={company.logo_url} alt={`Logo de ${company.business_name}`} className="h-full w-full object-contain p-1.5" />
+              {(editing ? editForm.logo_url : company.logo_url) ? (
+                <img src={(editing ? editForm.logo_url : company.logo_url) || ""} alt={`Logo de ${company.business_name}`} className="h-full w-full object-contain p-1.5" />
               ) : (
                 <Leaf size={36} style={{ color: C.tan }} />
+              )}
+              {editing && (
+                <LogoImagePicker
+                  companyId={company.id}
+                  currentUrl={editForm.logo_url || ""}
+                  onChange={(url) => setField("logo_url", url)}
+                />
               )}
             </div>
 
@@ -521,7 +613,28 @@ const BusinessDetail = () => {
           </div>
         </section>
 
-        {contactItems.length > 0 && (
+        {editing ? (
+          <div
+            className="mt-5 rounded-xl px-5 py-4 space-y-3"
+            style={{
+              backgroundColor: C.card,
+              border: `1px solid rgba(184,134,11,0.4)`,
+              boxShadow: "0 0 0 2px rgba(184,134,11,0.15), 0 8px 20px rgba(61, 43, 31, 0.05)",
+            }}
+          >
+            <p className="text-xs uppercase tracking-widest font-semibold flex items-center gap-2" style={{ color: C.brown }}>
+              <Pencil size={11} /> Contacto y redes sociales
+            </p>
+            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              <EditField icon={<Mail size={14} />} label="Email público" value={editForm.email ?? ""} onChange={(v) => setField("email", v)} placeholder="contacto@tuempresa.com" type="email" />
+              <EditField icon={<Phone size={14} />} label="Teléfono" value={editForm.phone ?? ""} onChange={(v) => setField("phone", v)} placeholder="+34 ..." />
+              <EditField icon={<Globe size={14} />} label="Web" value={editForm.website ?? ""} onChange={(v) => setField("website", v)} placeholder="https://www.tuempresa.com" />
+              <EditField icon={<Instagram size={14} />} label="Instagram" value={editForm.instagram ?? ""} onChange={(v) => setField("instagram", v.replace(/^@/, ""))} placeholder="tu_usuario" />
+              <EditField icon={<Facebook size={14} />} label="Facebook" value={(editForm.social_media as SocialMedia)?.facebook ?? ""} onChange={(v) => setSocialField("facebook", v)} placeholder="tu_pagina" />
+              <EditField icon={<Twitter size={14} />} label="Twitter / X" value={(editForm.social_media as SocialMedia)?.twitter ?? ""} onChange={(v) => setSocialField("twitter", v)} placeholder="tu_usuario" />
+            </div>
+          </div>
+        ) : contactItems.length > 0 ? (
           <div
             className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-3 rounded-xl px-5 py-4"
             style={{
@@ -544,7 +657,7 @@ const BusinessDetail = () => {
               </a>
             ))}
           </div>
-        )}
+        ) : null}
 
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
           <div className="space-y-7">
@@ -629,8 +742,15 @@ const BusinessDetail = () => {
               )}
             </PublicCard>
 
-            <PublicCard icon={<Camera size={23} />} title="Fotos">
-              {images.length === 0 ? (
+            <PublicCard icon={<Camera size={23} />} title="Fotos" editing={editing}>
+              {editing ? (
+                <GalleryEditor
+                  companyId={company.id}
+                  urls={editForm.gallery_image_urls || []}
+                  onAdd={addGalleryImage}
+                  onRemove={removeGalleryImage}
+                />
+              ) : images.length === 0 ? (
                 <p className="text-sm" style={{ color: C.brownSoft }}>
                   Esta empresa todavía está preparando su galería pública.
                 </p>
@@ -673,8 +793,32 @@ const BusinessDetail = () => {
               </div>
             </SidebarCard>
 
-            {(company.latitude && company.longitude) || company.address ? (
+            {editing || (company.latitude && company.longitude) || company.address ? (
               <SidebarCard icon={<MapPin size={22} />} title="Ubicación">
+                {editing && (
+                  <div className="mb-4 space-y-2">
+                    <p className="text-xs font-semibold flex items-center gap-1.5" style={{ color: C.brown }}>
+                      <Search size={12} />
+                      Busca tu negocio en Google Places
+                    </p>
+                    <PlaceAutocompleteInput
+                      value={editForm.address ?? ""}
+                      onChange={(v) => setField("address", v)}
+                      onPlaceSelect={handlePlaceSelected}
+                      placeholder="Escribe el nombre o dirección de tu empresa..."
+                      className="text-sm"
+                    />
+                    <p className="text-[11px]" style={{ color: C.brownSoft }}>
+                      Al seleccionar un resultado se actualizan dirección y coordenadas.
+                    </p>
+                    <Input
+                      value={editForm.locality ?? ""}
+                      onChange={(e) => setField("locality", e.target.value)}
+                      placeholder="Localidad (ej. Ciudad Real)"
+                      className="text-sm bg-white"
+                    />
+                  </div>
+                )}
                 <div
                   className="relative flex h-56 items-center justify-center overflow-hidden rounded-xl"
                   style={{
@@ -690,7 +834,7 @@ const BusinessDetail = () => {
                   </div>
                 </div>
                 <a
-                  href={googleMapsUrl(company)}
+                  href={googleMapsUrl(editing ? { ...company, ...editForm } : company)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg border text-sm font-semibold transition-colors hover:bg-white"
@@ -927,12 +1071,9 @@ const InfoHighlights = ({
             <Leaf size={22} />
           </div>
           <p className="text-sm font-bold mb-2" style={{ color: C.brown }}>Qué nos hace diferentes</p>
-          <Textarea
+          <DifferentTagsEditor
             value={different ?? ""}
-            onChange={(e) => onDifferentChange?.(e.target.value)}
-            rows={3}
-            placeholder="Calidad artesanal, ingredientes locales..."
-            className="bg-white text-sm"
+            onChange={(v) => onDifferentChange?.(v)}
           />
         </div>
         <div className="p-5 text-center" style={{ borderLeft: `1px solid ${C.border}` }}>
@@ -1066,5 +1207,270 @@ function googleMapsUrl(company: Company) {
   }
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(company.address || company.business_name)}`;
 }
+
+// ============================================================================
+// Helpers de edición (inputs, pickers de imagen, chip tags)
+// ============================================================================
+
+const EditField = ({
+  icon,
+  label,
+  value,
+  onChange,
+  placeholder,
+  type = "text",
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  type?: string;
+}) => (
+  <div className="space-y-1">
+    <label className="text-[11px] font-semibold uppercase tracking-wider flex items-center gap-1.5" style={{ color: C.brownSoft }}>
+      <span style={{ color: C.tan }}>{icon}</span>
+      {label}
+    </label>
+    <Input
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      type={type}
+      className="h-9 text-sm bg-white"
+    />
+  </div>
+);
+
+/**
+ * Chips de adjetivos preestablecidos + texto libre. La cadena se almacena
+ * con tags y descripción libre separados por " · ", p.ej:
+ * "Artesanal · Sostenible · Familiar · Hacemos todo a mano en obrador propio".
+ */
+const DifferentTagsEditor = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) => {
+  // Parsear: separamos por " · " y los tokens que coinciden con DIFFERENT_TAGS
+  // son etiquetas; el resto va a texto libre.
+  const parts = (value || "")
+    .split(/\s*[·,]\s*/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const selectedTags = parts.filter((p) =>
+    (DIFFERENT_TAGS as readonly string[]).includes(p)
+  );
+  const freeText = parts.filter((p) => !(DIFFERENT_TAGS as readonly string[]).includes(p)).join(" · ");
+
+  const buildValue = (tags: string[], free: string) =>
+    [...tags, free.trim()].filter(Boolean).join(" · ");
+
+  const toggleTag = (tag: string) => {
+    const next = selectedTags.includes(tag)
+      ? selectedTags.filter((t) => t !== tag)
+      : [...selectedTags, tag];
+    onChange(buildValue(next, freeText));
+  };
+
+  return (
+    <div className="space-y-3 text-left">
+      <div className="flex flex-wrap gap-1.5 justify-center">
+        {DIFFERENT_TAGS.map((tag) => {
+          const isSel = selectedTags.includes(tag);
+          return (
+            <button
+              key={tag}
+              type="button"
+              onClick={() => toggleTag(tag)}
+              className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition-all ${
+                isSel
+                  ? "bg-amber-600 text-white shadow-sm"
+                  : "bg-white border hover:border-amber-500"
+              }`}
+              style={!isSel ? { borderColor: C.border, color: C.brown } : undefined}
+            >
+              {tag}
+            </button>
+          );
+        })}
+      </div>
+      <Textarea
+        value={freeText}
+        onChange={(e) => onChange(buildValue(selectedTags, e.target.value))}
+        rows={2}
+        placeholder="Opcional: añade tu propia frase..."
+        className="bg-white text-sm"
+      />
+    </div>
+  );
+};
+
+/** Botón flotante "cambiar foto de portada" sobre el hero */
+const HeroImagePicker = ({
+  companyId,
+  currentUrl,
+  onChange,
+}: {
+  companyId: string;
+  currentUrl: string;
+  onChange: (url: string) => void;
+}) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="absolute top-3 right-3 z-20 inline-flex items-center gap-1.5 rounded-lg bg-black/55 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur transition-colors hover:bg-black/70"
+      >
+        <Camera size={13} />
+        Cambiar portada
+      </button>
+      {open && (
+        <div className="absolute inset-3 z-30 rounded-xl bg-card/95 backdrop-blur-md p-4 shadow-2xl border" style={{ borderColor: C.border }}>
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-semibold" style={{ color: C.brown }}>Foto de portada</p>
+            <button onClick={() => setOpen(false)} className="opacity-60 hover:opacity-100">
+              <X size={16} />
+            </button>
+          </div>
+          <ImageUpload
+            bucket="company-files"
+            folder={`${companyId}/cover`}
+            currentImage={currentUrl}
+            onImageUploaded={(url) => {
+              onChange(url);
+              setOpen(false);
+            }}
+            aspectRatio="video"
+          />
+        </div>
+      )}
+    </>
+  );
+};
+
+/** Mini-overlay sobre el logo para reemplazarlo */
+const LogoImagePicker = ({
+  companyId,
+  currentUrl,
+  onChange,
+}: {
+  companyId: string;
+  currentUrl: string;
+  onChange: (url: string) => void;
+}) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="absolute inset-0 z-10 flex items-center justify-center bg-black/0 hover:bg-black/40 text-transparent hover:text-white transition-all rounded-xl"
+        aria-label="Cambiar logo"
+      >
+        <Camera size={20} />
+      </button>
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={() => setOpen(false)}>
+          <div className="bg-card rounded-xl p-5 max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-3">
+              <p className="font-semibold" style={{ color: C.brown }}>Logo de la empresa</p>
+              <button onClick={() => setOpen(false)} className="opacity-60 hover:opacity-100">
+                <X size={16} />
+              </button>
+            </div>
+            <ImageUpload
+              bucket="company-files"
+              folder={`${companyId}/logo`}
+              currentImage={currentUrl}
+              onImageUploaded={(url) => {
+                onChange(url);
+                setOpen(false);
+              }}
+              aspectRatio="square"
+            />
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+/** Editor de galería: muestra imágenes existentes con botón X + slot para añadir */
+const GalleryEditor = ({
+  companyId,
+  urls,
+  onAdd,
+  onRemove,
+}: {
+  companyId: string;
+  urls: string[];
+  onAdd: (url: string) => void;
+  onRemove: (index: number) => void;
+}) => {
+  const [showUploader, setShowUploader] = useState(false);
+  return (
+    <div className="space-y-3">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        {urls.map((image, index) => (
+          <div
+            key={`${image}-${index}`}
+            className="relative aspect-[4/3] overflow-hidden rounded-lg border group"
+            style={{ borderColor: C.border, backgroundColor: "#F4EBDD" }}
+          >
+            <img src={image} alt={`Galería ${index + 1}`} className="h-full w-full object-cover" />
+            <button
+              type="button"
+              onClick={() => onRemove(index)}
+              className="absolute top-1.5 right-1.5 rounded-full bg-black/60 p-1 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+              aria-label="Eliminar foto"
+            >
+              <X size={12} />
+            </button>
+          </div>
+        ))}
+        {urls.length < 8 && (
+          <button
+            type="button"
+            onClick={() => setShowUploader(true)}
+            className="aspect-[4/3] rounded-lg border-2 border-dashed flex flex-col items-center justify-center gap-1.5 hover:border-amber-500 hover:bg-amber-50/30 transition-colors"
+            style={{ borderColor: C.border, color: C.brownSoft }}
+          >
+            <Plus size={20} />
+            <span className="text-[11px] font-semibold">Añadir foto</span>
+          </button>
+        )}
+      </div>
+      {showUploader && (
+        <div className="rounded-xl border p-4 bg-amber-50/40" style={{ borderColor: C.border }}>
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-semibold flex items-center gap-2" style={{ color: C.brown }}>
+              <ImageIcon size={15} /> Nueva foto de galería
+            </p>
+            <button onClick={() => setShowUploader(false)} className="opacity-60 hover:opacity-100">
+              <X size={16} />
+            </button>
+          </div>
+          <ImageUpload
+            bucket="company-files"
+            folder={`${companyId}/gallery`}
+            onImageUploaded={(url) => {
+              onAdd(url);
+              setShowUploader(false);
+            }}
+            aspectRatio="video"
+          />
+        </div>
+      )}
+      <p className="text-[11px]" style={{ color: C.brownSoft }}>
+        Máximo 8 fotos. Recomendado 16:9, archivo &lt; 5MB.
+      </p>
+    </div>
+  );
+};
 
 export default BusinessDetail;
