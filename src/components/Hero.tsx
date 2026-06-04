@@ -27,21 +27,20 @@ const Hero = () => {
     videoRefs.current.forEach((v) => { if (v) v.load(); });
   }, []);
 
+  // 1) Cambio de vídeo activo: hace UN único seek + play en el nuevo,
+  //    sin tocar el anterior (que sigue visible durante el crossfade).
+  //    NO depende de prevVideo, así que el cleanup posterior no re-ejecuta esto.
   useEffect(() => {
     advancingRef.current = false;
-    videoRefs.current.forEach((v, i) => {
-      if (!v) return;
-      if (i === currentVideo) { v.currentTime = HERO_VIDEOS[i].startTime ?? 0; v.play().catch(() => {}); }
-      else if (i !== prevVideo) { v.pause(); v.currentTime = 0; }
-    });
-    const crossfadeTimer = setTimeout(() => { setPrevVideo(null); }, 1200);
     const video = videoRefs.current[currentVideo];
     if (!video) return;
+    video.currentTime = HERO_VIDEOS[currentVideo].startTime ?? 0;
+    video.play().catch(() => {});
+
     const { maxTime } = HERO_VIDEOS[currentVideo];
     const onTimeUpdate = () => {
       if (video.currentTime >= maxTime) {
         video.removeEventListener("timeupdate", onTimeUpdate);
-        video.pause();
         advanceVideo();
       }
     };
@@ -50,9 +49,24 @@ const Hero = () => {
     return () => {
       video.removeEventListener("timeupdate", onTimeUpdate);
       video.removeEventListener("ended", advanceVideo);
-      clearTimeout(crossfadeTimer);
     };
-  }, [currentVideo, advanceVideo, prevVideo]);
+  }, [currentVideo, advanceVideo]);
+
+  // 2) Limpieza del vídeo saliente tras el crossfade. Cuando termina el
+  //    fundido, pausa el video previo y resetea su tiempo a 0 para el
+  //    siguiente ciclo. Independiente del effect de arriba.
+  useEffect(() => {
+    if (prevVideo === null) return;
+    const timer = setTimeout(() => {
+      const v = videoRefs.current[prevVideo];
+      if (v) {
+        v.pause();
+        v.currentTime = 0;
+      }
+      setPrevVideo(null);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [prevVideo]);
 
   return (
     <section className="relative overflow-hidden" style={{ height: "92vh" }}>

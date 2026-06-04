@@ -157,14 +157,25 @@ const SeasonalHero = ({ data }: Props) => {
             </h1>
 
             <p
-              className="mb-9 max-w-[590px] leading-[1.38]"
+              className="mb-9 max-w-[620px] leading-[1.38]"
               style={{ color: "#2f251a", fontSize: "clamp(1rem, 1.32vw, 1.35rem)" }}
             >
               <span className="block">
-                De {seasonStart} a {seasonEnd}, el {data.id === "queso" ? "queso manchego" : data.productName.toLowerCase()} alcanza su mejor momento.
+                De {seasonStart} a {seasonEnd},{" "}
+                {data.id === "queso"
+                  ? "el queso manchego"
+                  : data.id === "mielAceite"
+                  ? "la miel y el aceite"
+                  : data.id === "caza"
+                  ? "la caza"
+                  : data.id === "vino"
+                  ? "el vino"
+                  : data.productName.toLowerCase()}{" "}
+                alcanza su mejor momento.
               </span>
               <span className="block">
-                Un sabor intenso que hace del pasto fresco y de una tradición que se mantiene viva.
+                Un sabor intenso que hace del pasto fresco y de una tradición que
+                se mantiene{" "}viva.
               </span>
             </p>
 
