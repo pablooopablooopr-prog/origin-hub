@@ -393,8 +393,8 @@ const Empresas = () => {
           className="relative overflow-hidden"
           style={{ background: `linear-gradient(180deg, ${C.cream} 0%, ${C.paper} 100%)` }}
         >
-          <div className={`${pageShell} relative pt-10 pb-9 md:pt-14 md:pb-10`}>
-            <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
+          <div className={`${pageShell} relative py-8 md:py-10`}>
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
               <div className="max-w-2xl">
                 <p
                   className="text-xs font-bold uppercase tracking-[0.22em]"
@@ -403,7 +403,7 @@ const Empresas = () => {
                   Directorio · Castilla-La Mancha
                 </p>
                 <h1
-                  className="mt-3 text-balance font-bold leading-[1.02]"
+                  className="mt-2 text-balance font-bold leading-[1.02]"
                   style={{
                     fontFamily: editorialFont,
                     fontSize: "clamp(2.15rem, 4vw, 3.6rem)",
@@ -412,13 +412,13 @@ const Empresas = () => {
                   Todas las empresas
                 </h1>
                 <p
-                  className="mt-5 max-w-xl text-[16px] leading-[1.65] md:text-[18px]"
+                  className="mt-4 max-w-xl text-[16px] leading-[1.6] md:text-[17px]"
                   style={{ color: "#4d3d2d" }}
                 >
                   Un directorio vivo de negocios, productores y proyectos que
                   mantienen vivo el valor de cada territorio.
                 </p>
-                <div className="mt-6 flex flex-wrap gap-2">
+                <div className="mt-5 flex flex-wrap gap-2">
                   {TEMPORADA_ORDER.map((id) => {
                     const t = TEMPORADAS[id];
                     const active = id === getCurrentTemporada();
@@ -441,33 +441,30 @@ const Empresas = () => {
                 </div>
               </div>
 
-              {/* Logo grande RITM⊙RIGEN con color característico de la página */}
-              <div className="hidden lg:flex items-center justify-center">
+              {/* Logo RITM⊙RIGEN — versión compacta, sin tag inferior */}
+              <div className="hidden lg:flex items-start justify-center pt-2">
                 <div
                   className="relative flex items-center justify-center rounded-full"
                   style={{
-                    width: "340px",
-                    height: "340px",
+                    width: "260px",
+                    height: "260px",
                     background: `radial-gradient(circle at 50% 45%, ${C.cream} 0%, ${C.paper} 70%, transparent 100%)`,
                   }}
                 >
-                  {/* Anillos decorativos */}
                   <div
-                    className="absolute inset-4 rounded-full border"
+                    className="absolute inset-3 rounded-full border"
                     style={{ borderColor: `${C.olive}33` }}
                   />
                   <div
-                    className="absolute inset-10 rounded-full border"
+                    className="absolute inset-8 rounded-full border"
                     style={{ borderColor: `${C.gold}55` }}
                   />
-
-                  {/* Logo tipográfico */}
-                  <div className="relative flex items-center text-center" aria-label="RitmOrigen">
+                  <div className="relative flex items-center" aria-label="RitmOrigen">
                     <span
                       className="font-bold leading-none tracking-tight"
                       style={{
                         fontFamily: editorialFont,
-                        fontSize: "56px",
+                        fontSize: "42px",
                         color: C.oliveDark,
                       }}
                     >
@@ -475,7 +472,7 @@ const Empresas = () => {
                     </span>
                     <span
                       className="relative inline-flex items-center justify-center"
-                      style={{ width: "58px", height: "58px", margin: "0 2px" }}
+                      style={{ width: "44px", height: "44px", margin: "0 1px" }}
                     >
                       <img
                         src="/lovable-uploads/enso-transparent.png"
@@ -483,7 +480,7 @@ const Empresas = () => {
                         className="absolute inset-0 h-full w-full object-contain"
                         style={{
                           filter:
-                            "drop-shadow(0 4px 10px rgba(184, 134, 11, 0.35))",
+                            "drop-shadow(0 3px 8px rgba(184, 134, 11, 0.35))",
                         }}
                       />
                     </span>
@@ -491,25 +488,13 @@ const Empresas = () => {
                       className="font-bold leading-none tracking-tight"
                       style={{
                         fontFamily: editorialFont,
-                        fontSize: "56px",
+                        fontSize: "42px",
                         color: C.oliveDark,
                       }}
                     >
                       RIGEN
                     </span>
                   </div>
-
-                  {/* Tag inferior */}
-                  <span
-                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] shadow-sm"
-                    style={{
-                      backgroundColor: C.oliveDark,
-                      color: C.cream,
-                      letterSpacing: "0.18em",
-                    }}
-                  >
-                    Directorio Oficial
-                  </span>
                 </div>
               </div>
             </div>
@@ -668,7 +653,7 @@ const Empresas = () => {
               </div>
             </div>
 
-            <aside className="space-y-6 lg:pt-[72px]">
+            <aside className="space-y-6">
               <div
                 className="rounded-lg border p-6"
                 style={{
