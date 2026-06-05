@@ -541,18 +541,22 @@ const CustomerAuth = () => {
                       {loading ? "Cargando..." : "Crear Cuenta"}
                     </Button>
 
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full"
-                      disabled={loading || !(lastSignupEmail || email).trim()}
-                      onClick={handleResendSignupEmail}
-                    >
-                      Reenviar verificación
-                    </Button>
+                    {lastSignupEmail && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full"
+                        disabled={loading}
+                        onClick={handleResendSignupEmail}
+                      >
+                        Reenviar verificación
+                      </Button>
+                    )}
 
                     <p className="text-xs text-muted-foreground text-center">
-                      Si no lo ves, revisa "Promociones" o "Spam".
+                      {lastSignupEmail
+                        ? 'Si no lo ves, revisa "Promociones" o "Spam" y pulsa reenviar.'
+                        : "Te llegará un email de confirmación para activar tu cuenta."}
                     </p>
 
                     <p className="text-[11px] text-secondary font-medium text-center mt-2">

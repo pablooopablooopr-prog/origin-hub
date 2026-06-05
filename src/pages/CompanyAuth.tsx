@@ -91,6 +91,9 @@ export default function CompanyAuth() {
   const redirectingRef = useRef(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [registeredBusinessName, setRegisteredBusinessName] = useState("");
+  // El botón "Reenviar email" solo se muestra después de que el usuario
+  // haya enviado el formulario al menos una vez. Antes, no tiene sentido.
+  const [signupAttempted, setSignupAttempted] = useState(false);
 
   const [companyData, setCompanyData] = useState({
     business_name: "",
@@ -109,8 +112,12 @@ export default function CompanyAuth() {
   });
 
   const emailRedirectTo = useMemo(
-    // CAMBIO emailRedirectTo
-    () => `${window.location.origin}/auth/callback?redirect_to=/company-dashboard`,
+    // Tras confirmar el email, volvemos a /company-auth. Si el usuario no
+    // tiene aún fila en `companies`, la página renderiza el mini-formulario
+    // de creación de empresa (nombre, tipo, dirección, etc.). Si ya la tiene
+    // (caso raro: re-confirmación), redirige al estado correcto vía
+    // checkCompanyStatus.
+    () => `${window.location.origin}/auth/callback?redirect_to=/company-auth`,
     []
   );
 
@@ -175,6 +182,24 @@ export default function CompanyAuth() {
       setExistingCompany(null);
     }
   }, [navigate, user?.email]);
+
+  /**
+   * Devuelve true si el usuario tiene fila en `customers` (es decir, se
+   * registró como cliente real). Si no hay tabla customers en este proyecto
+   * o falla la query, devuelve false (no bloquea).
+   */
+  const checkIfCustomerOnly = async (userId: string): Promise<boolean> => {
+    try {
+      const { data } = await supabase
+        .from("customers")
+        .select("user_id")
+        .eq("user_id", userId)
+        .maybeSingle();
+      return Boolean(data);
+    } catch {
+      return false;
+    }
+  };
 
   const checkAdminAndRedirect = useCallback(async (userId: string): Promise<boolean> => {
     const { data } = await supabase
@@ -290,6 +315,7 @@ export default function CompanyAuth() {
         return;
       }
 
+      setSignupAttempted(true);
       toast.success("Revisa tu email para confirmar tu cuenta.");
     } catch (err: any) {
       toast.error(err.message ?? "Error en el registro.");
@@ -327,11 +353,32 @@ export default function CompanyAuth() {
             .limit(1);
 
           if (!companyRows || companyRows.length === 0) {
-            // No company — this is a customer account, block access
-            await supabase.auth.signOut();
+            // Sin empresa. Distinguimos 2 casos:
+            //   a) El usuario se registró ANTES vía /customer-auth → es cliente real
+            //      → bloqueamos y le dirigimos al login de cliente.
+            //   b) El usuario se registró vía /company-auth pero no terminó el mini
+            //      formulario de empresa → metadata.user_type === "company".
+            //      → no bloqueamos; CompanyAuth detecta sesión sin empresa y
+            //      renderiza el mini-formulario para que lo termine ahora.
+            const userType = (signInData.user?.user_metadata as { user_type?: string })?.user_type;
+            const isCustomerLeftover = await checkIfCustomerOnly(userId);
+
+            if (userType !== "company" && isCustomerLeftover) {
+              await supabase.auth.signOut();
+              setRedirecting(false);
+              redirectingRef.current = false;
+              toast.error(
+                "Esta cuenta es de cliente. Usa el acceso de clientes para iniciar sesión."
+              );
+              setLoading(false);
+              return;
+            }
+            // Caso b: dejamos la sesión activa. checkCompanyStatus se ejecutará
+            // y, al no encontrar empresa, mostrará el mini-form.
+            setUser(signInData.user);
             setRedirecting(false);
             redirectingRef.current = false;
-            toast.error("Esta cuenta es de cliente. Usa el acceso de clientes para iniciar sesión.");
+            await checkCompanyStatus(userId);
             setLoading(false);
             return;
           }
@@ -949,13 +996,17 @@ export default function CompanyAuth() {
                       {loading ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />Creando cuenta...</>) : "Crear cuenta"}
                     </Button>
 
-                    <Button type="button" variant="outline" className="w-full" onClick={handleResendVerification} disabled={loading}>
-                      <Mail className="w-4 h-4 mr-2" />
-                      Reenviar email de verificación
-                    </Button>
+                    {signupAttempted && (
+                      <Button type="button" variant="outline" className="w-full" onClick={handleResendVerification} disabled={loading}>
+                        <Mail className="w-4 h-4 mr-2" />
+                        Reenviar email de verificación
+                      </Button>
+                    )}
 
                     <p className="text-xs text-muted-foreground text-center">
-                      Te llegará un email de confirmación para activar tu cuenta.
+                      {signupAttempted
+                        ? "Si no encuentras el email, revisa la carpeta de spam o pulsa reenviar."
+                        : "Te llegará un email de confirmación para activar tu cuenta."}
                     </p>
 
                     <p className="text-[11px] text-secondary font-medium text-center mt-2">
