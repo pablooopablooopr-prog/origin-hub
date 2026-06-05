@@ -393,11 +393,17 @@ const Empresas = () => {
           className="relative overflow-hidden"
           style={{ background: `linear-gradient(180deg, ${C.cream} 0%, ${C.paper} 100%)` }}
         >
-          <div className={`${pageShell} relative py-12 lg:pb-10 lg:pt-14`}>
-            <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_520px] lg:items-end">
+          <div className={`${pageShell} relative pt-10 pb-9 md:pt-14 md:pb-10`}>
+            <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
               <div className="max-w-2xl">
+                <p
+                  className="text-xs font-bold uppercase tracking-[0.22em]"
+                  style={{ color: C.gold }}
+                >
+                  Directorio · Castilla-La Mancha
+                </p>
                 <h1
-                  className="text-balance font-bold leading-[1.02]"
+                  className="mt-3 text-balance font-bold leading-[1.02]"
                   style={{
                     fontFamily: editorialFont,
                     fontSize: "clamp(2.15rem, 4vw, 3.6rem)",
@@ -435,26 +441,75 @@ const Empresas = () => {
                 </div>
               </div>
 
-              <div className="relative hidden min-h-[230px] lg:block">
+              {/* Logo grande RITM⊙RIGEN con color característico de la página */}
+              <div className="hidden lg:flex items-center justify-center">
                 <div
-                  className="absolute right-16 top-2 h-[190px] w-[360px] rotate-[-1deg] overflow-hidden border p-2 shadow-[0_18px_42px_rgba(61,43,31,0.15)]"
-                  style={{ backgroundColor: C.card, borderColor: `${C.beige}77` }}
+                  className="relative flex items-center justify-center rounded-full"
+                  style={{
+                    width: "340px",
+                    height: "340px",
+                    background: `radial-gradient(circle at 50% 45%, ${C.cream} 0%, ${C.paper} 70%, transparent 100%)`,
+                  }}
                 >
-                  <img
-                    src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=920&q=86"
-                    alt=""
-                    className="h-full w-full object-cover grayscale-[0.28] sepia-[0.18]"
+                  {/* Anillos decorativos */}
+                  <div
+                    className="absolute inset-4 rounded-full border"
+                    style={{ borderColor: `${C.olive}33` }}
                   />
-                </div>
-                <div
-                  className="absolute left-6 top-24 grid h-28 w-28 place-items-center rounded-full border text-center shadow-[0_10px_28px_rgba(61,43,31,0.16)]"
-                  style={{ backgroundColor: "rgba(255,250,241,0.88)", borderColor: C.gold, color: C.gold }}
-                >
-                  <div className="text-[10px] font-bold uppercase tracking-[0.18em]">
-                    Ritmo
-                    <br />
-                    Origen
+                  <div
+                    className="absolute inset-10 rounded-full border"
+                    style={{ borderColor: `${C.gold}55` }}
+                  />
+
+                  {/* Logo tipográfico */}
+                  <div className="relative flex items-center text-center" aria-label="RitmOrigen">
+                    <span
+                      className="font-bold leading-none tracking-tight"
+                      style={{
+                        fontFamily: editorialFont,
+                        fontSize: "56px",
+                        color: C.oliveDark,
+                      }}
+                    >
+                      RITM
+                    </span>
+                    <span
+                      className="relative inline-flex items-center justify-center"
+                      style={{ width: "58px", height: "58px", margin: "0 2px" }}
+                    >
+                      <img
+                        src="/lovable-uploads/enso-transparent.png"
+                        alt=""
+                        className="absolute inset-0 h-full w-full object-contain"
+                        style={{
+                          filter:
+                            "drop-shadow(0 4px 10px rgba(184, 134, 11, 0.35))",
+                        }}
+                      />
+                    </span>
+                    <span
+                      className="font-bold leading-none tracking-tight"
+                      style={{
+                        fontFamily: editorialFont,
+                        fontSize: "56px",
+                        color: C.oliveDark,
+                      }}
+                    >
+                      RIGEN
+                    </span>
                   </div>
+
+                  {/* Tag inferior */}
+                  <span
+                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] shadow-sm"
+                    style={{
+                      backgroundColor: C.oliveDark,
+                      color: C.cream,
+                      letterSpacing: "0.18em",
+                    }}
+                  >
+                    Directorio Oficial
+                  </span>
                 </div>
               </div>
             </div>
