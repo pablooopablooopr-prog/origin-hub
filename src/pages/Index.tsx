@@ -13,8 +13,6 @@ import SpotlightToday from "@/components/home/SpotlightToday";
 import SeasonalRoutes from "@/components/home/SeasonalRoutes";
 import { MapSection } from "@/components/home/MapSection";
 import HowItWorks from "@/components/home/HowItWorks";
-import FerduqueModal from "@/components/home/FerduqueModal";
-// FerduqueBanner se carga globalmente en App.tsx
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -86,8 +84,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Modal FERDUQUE — aparece automáticamente al entrar, formulario completo */}
-      <FerduqueModal />
       <Header />
 
       <main>
