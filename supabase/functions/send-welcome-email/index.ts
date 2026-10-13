@@ -10,7 +10,7 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
-const SITE_URL = Deno.env.get("SITE_URL") || "https://www.origen.it.com";
+const SITE_URL = Deno.env.get("SITE_URL") || "https://ritmorigen.com";
 const FROM_EMAIL = Deno.env.get("FROM_EMAIL") || "ORIGEN <no-reply@origen.it.com>";
 
 const resend = new Resend(RESEND_API_KEY);
@@ -19,12 +19,14 @@ const resend = new Resend(RESEND_API_KEY);
 const allowedOrigins = new Set([
   "http://localhost:5173",
   "https://origen-natural-mapa.pages.dev",
+  "https://ritmorigen.com",
+  "https://www.ritmorigen.com",
   "https://origen.it.com",
   "https://www.origen.it.com",
 ]);
 
 function corsHeaders(origin: string | null) {
-  const o = origin && allowedOrigins.has(origin) ? origin : "https://www.origen.it.com";
+  const o = origin && allowedOrigins.has(origin) ? origin : "https://ritmorigen.com";
   return {
     "Access-Control-Allow-Origin": o,
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -47,11 +49,11 @@ function escapeHtml(s: string) {
 function customerTemplate(name: string) {
   const safe = escapeHtml(name);
   return {
-    subject: "¡Bienvenido a ORIGEN! 🌿",
+    subject: "¡Bienvenido a RitmOrigen! 🌿",
     html: `
 <div style="font-family: Arial, sans-serif; max-width: 640px; margin: 0 auto; background:#FAF6F0;">
   <div style="background:#8B7355; padding:28px 24px; text-align:center;">
-    <h1 style="color:#fff; margin:0; font-size:26px;">Bienvenido a ORIGEN</h1>
+    <h1 style="color:#fff; margin:0; font-size:26px;">Bienvenido a RitmOrigen</h1>
     <p style="color:#f2e9df; margin:10px 0 0;">Productos auténticos, sin postureo</p>
   </div>
   <div style="padding:26px 24px; color:#222;">
@@ -80,7 +82,7 @@ function customerTemplate(name: string) {
   </div>
 
   <div style="background:#1f1f1f; color:#fff; padding:16px 20px; text-align:center; font-size:12px;">
-    © ${new Date().getFullYear()} ORIGEN
+    © ${new Date().getFullYear()} RitmOrigen
   </div>
 </div>`,
   };
@@ -89,11 +91,11 @@ function customerTemplate(name: string) {
 function companyTemplate(name: string) {
   const safe = escapeHtml(name);
   return {
-    subject: "Tu empresa ya está en ORIGEN ✅",
+    subject: "Tu empresa ya está en RitmOrigen ✅",
     html: `
 <div style="font-family: Arial, sans-serif; max-width: 640px; margin: 0 auto; background:#F5FAF8;">
   <div style="background:#2E5D4E; padding:28px 24px; text-align:center;">
-    <h1 style="color:#fff; margin:0; font-size:26px;">ORIGEN para Empresas</h1>
+    <h1 style="color:#fff; margin:0; font-size:26px;">RitmOrigen para Empresas</h1>
     <p style="color:#d9efe6; margin:10px 0 0;">Conecta con clientes que valoran lo auténtico</p>
   </div>
 
@@ -123,7 +125,7 @@ function companyTemplate(name: string) {
   </div>
 
   <div style="background:#1f1f1f; color:#fff; padding:16px 20px; text-align:center; font-size:12px;">
-    © ${new Date().getFullYear()} ORIGEN
+    © ${new Date().getFullYear()} RitmOrigen
   </div>
 </div>`,
   };

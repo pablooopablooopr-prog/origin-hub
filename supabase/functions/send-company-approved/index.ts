@@ -13,7 +13,7 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const GMAIL_USER = Deno.env.get("GMAIL_USER") ?? "";
 const GMAIL_APP_PASSWORD = Deno.env.get("GMAIL_APP_PASSWORD") ?? "";
-const SITE_URL = Deno.env.get("SITE_URL") || "https://www.ritmorigen.com";
+const SITE_URL = Deno.env.get("SITE_URL") || "https://ritmorigen.com";
 
 const ALLOWED_ORIGINS = new Set([
   "http://localhost:5173",
