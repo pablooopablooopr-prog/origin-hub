@@ -103,7 +103,7 @@ const Footer = ({ brandLabel = "ORIGEN", compact = false }: FooterProps) => {
         <div className={`border-t border-primary-foreground/20 ${compact ? "mt-8 pt-6" : "mt-12 pt-8"}`}>
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-primary-foreground/60 text-sm">
-              © 2025 {brandLabel}. Todos los derechos reservados.
+              © 2025 RitmOrigen. Todos los derechos reservados.
             </p>
             <div className="flex gap-4 text-primary-foreground/60 text-sm">
               <Link to="/terminos-condiciones" className="hover:text-secondary transition-colors">

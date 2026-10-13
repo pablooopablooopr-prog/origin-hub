@@ -52,13 +52,13 @@ const TerminosCondiciones = () => {
                 y la compra de productos a través del mismo.
               </p>
               <p>
-                ORIGEN es una plataforma de comercio electrónico especializada en la venta de productos 
+                RitmOrigen es una plataforma de comercio electrónico especializada en la venta de productos 
                 locales y artesanales de distintas regiones de España, agrupados en "packs" temáticos 
                 por región.
               </p>
               <p>
-                <strong>ORIGEN es una plataforma digital y solo actúa como intermediario tecnológico.</strong> 
-                ORIGEN no manipula, no almacena, no empaca y no gestiona envíos. El productor es siempre 
+                <strong>RitmOrigen es una plataforma digital y solo actúa como intermediario tecnológico.</strong> 
+                RitmOrigen no manipula, no almacena, no empaca y no gestiona envíos. El productor es siempre 
                 el responsable del envío y la preparación del pedido.
               </p>
               <p>
@@ -80,10 +80,10 @@ const TerminosCondiciones = () => {
               <p>
                 El Usuario es responsable de mantener la confidencialidad de su contraseña y de todas 
                 las actividades que se realicen bajo su cuenta. El Usuario se compromete a notificar 
-                inmediatamente a ORIGEN cualquier uso no autorizado de su cuenta.
+                inmediatamente a RitmOrigen cualquier uso no autorizado de su cuenta.
               </p>
               <p>
-                ORIGEN se reserva el derecho de rechazar cualquier solicitud de registro o de cancelar 
+                RitmOrigen se reserva el derecho de rechazar cualquier solicitud de registro o de cancelar 
                 un registro previamente aceptado, sin que esté obligado a comunicar o exponer las razones 
                 de su decisión y sin que ello genere algún derecho a indemnización o resarcimiento.
               </p>
@@ -95,7 +95,7 @@ const TerminosCondiciones = () => {
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
                 Los productos ofrecidos en la Plataforma son aquellos que aparecen en el catálogo online 
-                en el momento en que el Usuario realiza su pedido. ORIGEN se compromete a mantener 
+                en el momento en que el Usuario realiza su pedido. RitmOrigen se compromete a mantener 
                 actualizado el catálogo de productos disponibles.
               </p>
               <p>
@@ -104,7 +104,7 @@ const TerminosCondiciones = () => {
                 de conservación.
               </p>
               <p>
-                ORIGEN garantiza que todos los productos ofrecidos cumplen con la normativa vigente en 
+                RitmOrigen garantiza que todos los productos ofrecidos cumplen con la normativa vigente en 
                 materia de seguridad alimentaria y están debidamente autorizados para su comercialización.
               </p>
               <p>
@@ -123,7 +123,7 @@ const TerminosCondiciones = () => {
                 aplicables (IVA) y los gastos de envío. No existen costes adicionales ocultos.
               </p>
               <p>
-                Los precios pueden ser modificados en cualquier momento por ORIGEN, pero los cambios 
+                Los precios pueden ser modificados en cualquier momento por RitmOrigen, pero los cambios 
                 no afectarán a los pedidos respecto a los cuales el Usuario ya haya recibido una 
                 confirmación de pedido.
               </p>
@@ -133,7 +133,7 @@ const TerminosCondiciones = () => {
                 a través de pasarelas de pago seguras y certificadas.
               </p>
               <p>
-                El cargo se realizará en el momento de la confirmación del pedido. ORIGEN se reserva 
+                El cargo se realizará en el momento de la confirmación del pedido. RitmOrigen se reserva 
                 el derecho de cancelar cualquier pedido en caso de que se detecte un problema con el 
                 pago o se sospeche de fraude.
               </p>
@@ -158,7 +158,7 @@ const TerminosCondiciones = () => {
               </ul>
               <p>
                 Estos plazos son estimados y comienzan a contar desde la confirmación del pedido y pago. 
-                El productor hará todo lo posible por cumplir con estos plazos, pero ORIGEN no se hace 
+                El productor hará todo lo posible por cumplir con estos plazos, pero RitmOrigen no se hace 
                 responsable de retrasos causados por el productor, la empresa de transporte o causas de 
                 fuerza mayor.
               </p>
@@ -170,7 +170,7 @@ const TerminosCondiciones = () => {
                 En el momento de la entrega, el Usuario debe verificar el estado del paquete. Si el 
                 paquete presenta daños evidentes, el Usuario debe rechazarlo. <strong>Si un producto 
                 llega dañado o en mal estado, el cliente debe contactar primero con el productor 
-                responsable del envío. ORIGEN puede actuar como mediador en caso necesario.</strong>
+                responsable del envío. RitmOrigen puede actuar como mediador en caso necesario.</strong>
               </p>
             </div>
           </section>
@@ -196,12 +196,12 @@ const TerminosCondiciones = () => {
                 defectos o no correspondan con lo solicitado.
               </p>
               <p>
-                <strong>Cada productor define su propia política de devoluciones. ORIGEN no gestiona 
+                <strong>Cada productor define su propia política de devoluciones. RitmOrigen no gestiona 
                 devoluciones de forma directa.</strong>
               </p>
               <p>
                 Para ejercer el derecho de desistimiento, el Usuario deberá notificar su decisión a 
-                ORIGEN mediante una declaración inequívoca (por ejemplo, un correo electrónico enviado 
+                RitmOrigen mediante una declaración inequívoca (por ejemplo, un correo electrónico enviado 
                 a ritmorigen@gmail.com).
               </p>
             </div>
@@ -211,7 +211,7 @@ const TerminosCondiciones = () => {
             <h2 className="text-2xl font-bold mb-4 text-[#8B7355]">7. Garantías</h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                ORIGEN garantiza que todos los productos comercializados son conformes con el contrato 
+                RitmOrigen garantiza que todos los productos comercializados son conformes con el contrato 
                 de compraventa y cumplen con la normativa vigente aplicable.
               </p>
               <p>
@@ -220,7 +220,7 @@ const TerminosCondiciones = () => {
                 imposible o desproporcionada.
               </p>
               <p>
-                El Usuario debe informar a ORIGEN de cualquier falta de conformidad en un plazo de 2 
+                El Usuario debe informar a RitmOrigen de cualquier falta de conformidad en un plazo de 2 
                 meses desde que tuvo conocimiento de la misma. Las garantías legales tienen una duración 
                 de 2 años desde la entrega del producto.
               </p>
@@ -233,13 +233,13 @@ const TerminosCondiciones = () => {
               <p>
                 Todos los contenidos del Sitio Web, incluyendo textos, gráficos, logotipos, iconos, 
                 imágenes, clips de audio y vídeo, descargas digitales y compilaciones de datos, son 
-                propiedad de ORIGEN o de sus proveedores de contenidos y están protegidos por las leyes 
+                propiedad de RitmOrigen o de sus proveedores de contenidos y están protegidos por las leyes 
                 de propiedad intelectual e industrial.
               </p>
               <p>
                 El Usuario se compromete a no reproducir, copiar, distribuir, poner a disposición o 
                 comunicar públicamente, transformar o modificar los contenidos del Sitio Web sin la 
-                autorización expresa de ORIGEN.
+                autorización expresa de RitmOrigen.
               </p>
             </div>
           </section>
@@ -248,12 +248,12 @@ const TerminosCondiciones = () => {
             <h2 className="text-2xl font-bold mb-4 text-[#8B7355]">9. Limitación de responsabilidad</h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                ORIGEN no será responsable de los daños o perjuicios causados por el uso inadecuado 
+                RitmOrigen no será responsable de los daños o perjuicios causados por el uso inadecuado 
                 de la Plataforma o de los productos adquiridos, ni de aquellos derivados de casos de 
                 fuerza mayor.
               </p>
               <p>
-                ORIGEN no garantiza la disponibilidad y continuidad del funcionamiento del Sitio Web 
+                RitmOrigen no garantiza la disponibilidad y continuidad del funcionamiento del Sitio Web 
                 ni se hace responsable de los daños causados por interrupciones del servicio, errores 
                 en el acceso o virus informáticos.
               </p>
@@ -268,7 +268,7 @@ const TerminosCondiciones = () => {
             <h2 className="text-2xl font-bold mb-4 text-[#8B7355]">10. Modificación de los términos</h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                ORIGEN se reserva el derecho de modificar las presentes Condiciones Generales en cualquier 
+                RitmOrigen se reserva el derecho de modificar las presentes Condiciones Generales en cualquier 
                 momento. Las modificaciones serán aplicables desde su publicación en el Sitio Web.
               </p>
               <p>
@@ -301,10 +301,11 @@ const TerminosCondiciones = () => {
           <section className="bg-[#FAF6F0] p-6 rounded-lg mt-8">
             <h3 className="text-lg font-bold mb-3 text-[#8B7355]">Datos de contacto</h3>
             <div className="text-muted-foreground space-y-2">
-              <p><strong>Nombre comercial:</strong> ORIGEN</p>
+              <p><strong>Titular:</strong> PABLO RODRIGUEZ GOMEZ</p>
+              <p><strong>Nombre comercial:</strong> RitmOrigen</p>
               <p><strong>Email:</strong> ritmorigen@gmail.com</p>
-              <p><strong>Teléfono:</strong> +34 900 123 456</p>
-              <p><strong>Dirección:</strong> Calle Ejemplo, 123, 28001 Madrid, España</p>
+              <p><strong>Teléfono:</strong> +34 633 804 448</p>
+              <p><strong>Dirección:</strong> Calle Orestes Gómez 7, 13120 Porzuna, Ciudad Real, España</p>
             </div>
           </section>
         </div>

@@ -46,13 +46,13 @@ const PoliticaPrivacidad = () => {
           <section>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                En ORIGEN respetamos tu privacidad y nos comprometemos a proteger tus datos personales. 
+                En RitmOrigen respetamos tu privacidad y nos comprometemos a proteger tus datos personales. 
                 Esta Política de Privacidad te informa sobre cómo recabamos, utilizamos, compartimos y 
                 protegemos tu información personal cuando utilizas nuestra plataforma.
               </p>
               <p>
-                <strong>ORIGEN es una plataforma digital y solo actúa como intermediario tecnológico.</strong> 
-                ORIGEN no manipula, no almacena, no empaca y no gestiona envíos. El productor es siempre 
+                <strong>RitmOrigen es una plataforma digital y solo actúa como intermediario tecnológico.</strong> 
+                RitmOrigen no manipula, no almacena, no empaca y no gestiona envíos. El productor es siempre 
                 el responsable del envío y la preparación del pedido.
               </p>
               <p>
@@ -71,6 +71,7 @@ const PoliticaPrivacidad = () => {
                 <p><strong>Nombre comercial:</strong> RitmOrigen</p>
                 <p><strong>Dirección:</strong> Calle Orestes Gómez 7, 13120 Porzuna, Ciudad Real, España</p>
                 <p><strong>Email:</strong> ritmorigen@gmail.com</p>
+                <p><strong>Teléfono:</strong> +34 633 804 448</p>
               </div>
             </div>
           </section>
@@ -92,7 +93,7 @@ const PoliticaPrivacidad = () => {
               <ul className="list-disc pl-6 space-y-2">
                 <li>Historial de pedidos</li>
                 <li>Información de facturación</li>
-                <li>Datos bancarios (tratados por el proveedor de pago, no almacenados por ORIGEN)</li>
+                <li>Datos bancarios (tratados por el proveedor de pago, no almacenados por RitmOrigen)</li>
               </ul>
 
               <h3 className="text-lg font-semibold text-[#8B7355] mt-6">Datos de navegación</h3>
@@ -349,6 +350,7 @@ const PoliticaPrivacidad = () => {
                 el tratamiento de tus datos personales, puedes contactarnos en:
               </p>
               <p><strong>Email:</strong> ritmorigen@gmail.com</p>
+              <p><strong>Teléfono:</strong> +34 633 804 448</p>
               <p><strong>Dirección postal:</strong> Calle Orestes Gómez 7, 13120 Porzuna, Ciudad Real, España</p>
             </div>
           </section>

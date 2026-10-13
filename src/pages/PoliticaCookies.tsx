@@ -43,7 +43,7 @@ const PoliticaCookies = () => {
           <section>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                En ORIGEN utilizamos cookies y tecnologías similares para mejorar tu experiencia en 
+                En RitmOrigen utilizamos cookies y tecnologías similares para mejorar tu experiencia en 
                 nuestra plataforma, analizar el tráfico y personalizar el contenido. Esta Política 
                 de Cookies explica qué son las cookies, qué tipos utilizamos y cómo puedes gestionarlas.
               </p>
@@ -125,7 +125,7 @@ const PoliticaCookies = () => {
           <section id="cookies-especificas">
             <h2 className="text-2xl font-bold mb-4 text-[#8B7355]">3. Cookies específicas que utilizamos</h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
-              <p>A continuación, detallamos las cookies específicas que utiliza ORIGEN:</p>
+              <p>A continuación, detallamos las cookies específicas que utiliza RitmOrigen:</p>
               
               <div className="overflow-x-auto mt-4">
                 <table className="w-full border-collapse">
@@ -320,7 +320,7 @@ const PoliticaCookies = () => {
                 esta política.
               </p>
               <p className="mt-4">
-                <strong>Nota importante:</strong> ORIGEN utiliza cookies únicamente para mejorar la 
+                <strong>Nota importante:</strong> RitmOrigen utiliza cookies únicamente para mejorar la 
                 experiencia de navegación y facilitar la conexión entre productores y consumidores. 
                 No están relacionadas con procesos logísticos ni de envío.
               </p>
@@ -335,7 +335,7 @@ const PoliticaCookies = () => {
                 Si tienes alguna pregunta sobre nuestra Política de Cookies, puedes contactarnos en:
               </p>
               <p><strong>Email:</strong> ritmorigen@gmail.com</p>
-              <p><strong>Teléfono:</strong> +34 900 123 456</p>
+              <p><strong>Teléfono:</strong> +34 633 804 448</p>
             </div>
           </section>
         </div>
