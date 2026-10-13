@@ -12,4 +12,4 @@ Disallow: /mis-carritos
 Disallow: /company-pending
 Disallow: /company-rejected
 
-Sitemap: https://www.origen.it.com/sitemap.xml
+Sitemap: https://ritmorigen.com/sitemap.xml

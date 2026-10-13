@@ -49,6 +49,7 @@ const Actualidad = lazy(() => import("./pages/Actualidad"));
 const ActualidadArticulo = lazy(() => import("./pages/ActualidadArticulo"));
 const TerminosCondiciones = lazy(() => import("./pages/TerminosCondiciones"));
 const PoliticaPrivacidad = lazy(() => import("./pages/PoliticaPrivacidad"));
+const AvisoLegal = lazy(() => import("./pages/AvisoLegal"));
 const PoliticaCookies = lazy(() => import("./pages/PoliticaCookies"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminCompanies = lazy(() => import("./pages/AdminCompanies"));
@@ -116,6 +117,7 @@ const App = () => (
             <Route path="/actualidad/:slug" element={<ActualidadArticulo />} />
             <Route path="/terminos-condiciones" element={<TerminosCondiciones />} />
             <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
+            <Route path="/aviso-legal" element={<AvisoLegal />} />
             <Route path="/politica-cookies" element={<PoliticaCookies />} />
             <Route path="/admin" element={<Navigate to="/admin/companies" replace />} />
             <Route path="/admin/companies" element={<AdminGate><AdminCompanies /></AdminGate>} />
