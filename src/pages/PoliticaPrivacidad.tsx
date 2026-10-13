@@ -15,7 +15,7 @@ const PoliticaPrivacidad = () => {
             Política de Privacidad
           </h1>
           <p className="text-white/90">
-            Última actualización: Enero 2025
+            Última actualización: Octubre 2026 (identificación del responsable)
           </p>
         </div>
       </section>
@@ -67,11 +67,10 @@ const PoliticaPrivacidad = () => {
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>El responsable del tratamiento de tus datos personales es:</p>
               <div className="bg-[#FAF6F0] p-4 rounded-lg">
-                <p><strong>Identidad:</strong> ORIGEN S.L.</p>
-                <p><strong>NIF:</strong> B-12345678</p>
-                <p><strong>Dirección:</strong> Calle Ejemplo, 123, 28001 Madrid, España</p>
+                <p><strong>Identidad:</strong> PABLO RODRIGUEZ GOMEZ</p>
+                <p><strong>Nombre comercial:</strong> RitmOrigen</p>
+                <p><strong>Dirección:</strong> Calle Orestes Gómez 7, 13120 Porzuna, Ciudad Real, España</p>
                 <p><strong>Email:</strong> ritmorigen@gmail.com</p>
-                <p><strong>Teléfono:</strong> +34 900 123 456</p>
               </div>
             </div>
           </section>
@@ -350,8 +349,7 @@ const PoliticaPrivacidad = () => {
                 el tratamiento de tus datos personales, puedes contactarnos en:
               </p>
               <p><strong>Email:</strong> ritmorigen@gmail.com</p>
-              <p><strong>Teléfono:</strong> +34 900 123 456</p>
-              <p><strong>Dirección postal:</strong> Calle Ejemplo, 123, 28001 Madrid, España</p>
+              <p><strong>Dirección postal:</strong> Calle Orestes Gómez 7, 13120 Porzuna, Ciudad Real, España</p>
             </div>
           </section>
         </div>

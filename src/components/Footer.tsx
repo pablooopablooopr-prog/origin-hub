@@ -115,6 +115,9 @@ const Footer = ({ brandLabel = "ORIGEN", compact = false }: FooterProps) => {
               <Link to="/politica-cookies" className="hover:text-secondary transition-colors">
                 Cookies
               </Link>
+              <Link to="/aviso-legal" className="hover:text-secondary transition-colors">
+                Aviso legal
+              </Link>
             </div>
           </div>
         </div>
