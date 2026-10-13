@@ -18,12 +18,14 @@ const allowedOrigins = new Set([
   "http://localhost:5174",
   "http://localhost:8080",
   "https://origen-natural-mapa.pages.dev",
+  "https://ritmorigen.com",
+  "https://www.ritmorigen.com",
   "https://origen.it.com",
   "https://www.origen.it.com",
 ]);
 
 function corsHeaders(origin: string | null) {
-  const o = origin && allowedOrigins.has(origin) ? origin : "https://www.origen.it.com";
+  const o = origin && allowedOrigins.has(origin) ? origin : "https://ritmorigen.com";
   return {
     "Access-Control-Allow-Origin": o,
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -132,7 +134,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
         </div>
         <div style="background: #333; color: white; padding: 20px; text-align: center; font-size: 12px;">
-          <p>&copy; 2026 ORIGEN - Productos artesanos de Espana</p>
+          <p>&copy; 2026 RitmOrigen - Productos artesanos de Espana</p>
         </div>
       </div>
     `;
